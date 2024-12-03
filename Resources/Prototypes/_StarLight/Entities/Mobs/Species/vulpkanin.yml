@@ -24,7 +24,7 @@
       Dead: 0
     baseDecayRate: 0.15
   - type: Icon
-    sprite: Corvax/Mobs/Species/Vulpkanin/parts.rsi
+    sprite: _Starlight/Mobs/Species/Vulpkanin/parts.rsi
     state: full
   - type: Body
     prototype: Vulpkanin
@@ -35,12 +35,12 @@
       jumpsuit:
         sizeMaps:
           32:
-            sprite: Corvax/Mobs/Species/displacement.rsi
+            sprite: _Starlight/Mobs/Species/displacement.rsi
             state: jumpsuit
       shoes: # DM only for colored shoes!
         sizeMaps:
           32:
-            sprite: Corvax/Mobs/Species/displacement.rsi
+            sprite: _Starlight/Mobs/Species/displacement.rsi
             state: shoes
   - type: ContentEye
     targetZoom: "1.125, 1.125"
@@ -88,10 +88,10 @@
       jumpsuit:
         sizeMaps:
           32:
-            sprite: Corvax/Mobs/Species/displacement.rsi
+            sprite: _Starlight/Mobs/Species/displacement.rsi
             state: jumpsuit
       shoes: # DM only for colored shoes!
         sizeMaps:
           32:
-            sprite: Corvax/Mobs/Species/displacement.rsi
+            sprite: _Starlight/Mobs/Species/displacement.rsi
             state: shoes
