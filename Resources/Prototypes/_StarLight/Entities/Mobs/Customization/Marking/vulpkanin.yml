@@ -8,6 +8,42 @@
       state: pawsocks
 
 - type: marking
+  id: PawSocksFeet
+  bodyPart: RFoot
+  markingCategory: Overlay
+  speciesRestriction: [Vulpkanin]
+  sprites:
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi
+      state: pawsocks_feet
+
+- type: marking
+  id: PawSocksLegs
+  bodyPart: LLeg
+  markingCategory: Legs
+  speciesRestriction: [Vulpkanin]
+  sprites:
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi
+      state: pawsocks_legs
+
+- type: marking
+  id: PawSocksHands
+  bodyPart: RHand
+  markingCategory: Overlay
+  speciesRestriction: [Vulpkanin]
+  sprites:
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi
+      state: pawsocks_hands
+
+- type: marking
+  id: PawSocksArms
+  bodyPart: LArm
+  markingCategory: Arms
+  speciesRestriction: [Vulpkanin]
+  sprites:
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi
+      state: pawsocks_arms
+
+- type: marking
   id: FoxTail
   bodyPart: Tail
   markingCategory: Tail
@@ -309,6 +345,8 @@
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi/head_markings.rsi
       state: blaze
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi/head_markings.rsi
+      state: nose
 
 - type: marking
   id: VulpSnoutPatch
@@ -318,6 +356,8 @@
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi/head_markings.rsi
       state: patch
+    - sprite: _Starlight/Mobs/Customization/vulpkanin.rsi/head_markings.rsi
+      state: nose
 
 # Head Markings (Head)
 - type: marking
