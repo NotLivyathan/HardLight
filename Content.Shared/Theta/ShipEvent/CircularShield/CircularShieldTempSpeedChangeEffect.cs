@@ -1,6 +1,9 @@
 using Content.Shared.Projectiles;
 using Content.Shared.Theta.ShipEvent.Components;
 using Robust.Shared.Physics.Systems;
+using System.Collections.Concurrent;
+using System.Linq;
+using Content.Shared._Mono.SpaceArtillery;
 
 namespace Content.Shared.Theta.ShipEvent.CircularShield;
 
@@ -96,6 +99,10 @@ public sealed partial class CircularShieldTempSpeedChangeEffect : CircularShield
         {
             // If we're only affecting projectiles, check if this entity is a projectile
             if (!_entMan.HasComponent<ProjectileComponent>(uid))
+                return;
+
+            // Check if the projectile has the ShipWeaponProjectile component
+            if (!_entMan.HasComponent<ShipWeaponProjectileComponent>(uid))
                 return;
 
             // Make sure we have a valid shield entity
