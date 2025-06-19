@@ -14,7 +14,7 @@
     torso:
       part: TorsoVulpkanin
       organs:
-        heart: OrganAnimalHeart
+        heart: OrganVulpkaninHeart
         lungs: OrganHumanLungs
         stomach: OrganVulpkaninStomach
         liver: OrganAnimalLiver
