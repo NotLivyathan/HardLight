@@ -4,9 +4,9 @@
   name: Experimental Synthetic Plating
   description: This is a test item. How did you get ahold of it?!
   components:
-  #- type: Contraband
-  #  severity: Class2
-  #  allowedDepartments: [ Security, Command ]
+  - type: Contraband
+    severity: Class2
+    allowedDepartments: [ Security, Command ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/defaultarmor.rsi
     state: icon
@@ -33,6 +33,11 @@
   - type: ClothingSpeedModifier  # Stacks with other slowdowns. Be careful!
     walkModifier: 0.9
     sprintModifier: 0.9
+  - type: HLClothingWhitelist # Only borgs may equip this item on their head slot
+    denyReason: hl-clothing-whitelist-cyborg-denied
+    whitelist:
+      components:
+      - BorgChassis
   - type: Tag
     tags:
     - BorgWearable # Required for all variants, as this is what controls wearability!

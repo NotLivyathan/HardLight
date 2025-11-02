@@ -11,8 +11,9 @@
   name: ERTS-04 'AEGIS'
   description: Light, thin plates, wired with a mixture of emitters and heavy power conduits. This armour is designed to sync to a synthetics power-cell, and allow for the projection of short-range shields. Due to the aftermarket nature of these modifications, they replace a synthetic's internal light mechanisms and switch.
   components:
-  #- type: Contraband
-   # severity: Class1
+  - type: Contraband
+    severity: Class1
+    allowedDepartments: [ Civilian, Security, Command, Frontier, CentralCommand ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/defaultarmor.rsi
     state: icon
@@ -45,10 +46,9 @@
   name: ERTS-09 'ROTUNDAE'
   description: A heavier, chassis-mounted shield unit. Hooked directly into a synthetics power-cell, this one is more efficient at drawing charge, and projects a larger field, at the cost of movement capabilities due to the increased power draw. Due to the aftermarket nature of these modifications, they replace a synthetic's internal light mechanisms and switch.
   components:
-  #- type: Contraband
-   # severity: Class2
-    #This is annoying as fuck to deal with.
-    #allowedDepartments: [ Security, Command ]
+  - type: Contraband
+    severity: Class2
+    allowedDepartments: [ Security, Command ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/defaultarmor.rsi
     state: icon
@@ -84,10 +84,9 @@
   name: ERTS-14 'FATMAN'
   description: The Gold Standard in aftermarket synth-mounted shield projectors. A heavy, robust unit designed to project a high-energy field over a large zone. Typically used as a means of pacifying riots; this shield actively attempts to encompass foe and ally alike. Due to the aftermarket nature of these modifications, they replace a synthetic's internal light mechanisms and switch.
   components:
-  #- type: Contraband
-   # severity: Class2
-    #This is annoying as fuck to deal with.
-    #allowedDepartments: [ Security, Command ]
+  - type: Contraband
+    severity: Class2
+    allowedDepartments: [ Security, Command ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/defaultarmor.rsi
     state: icon
@@ -124,8 +123,6 @@
   name: ERPS-01 'PARA'
   description: Designed as a particular experiment between Zheng-Hu Pharmaceuticals and Interdyne Medical; this shield was designed to be fast, nimble, and a means of support for operatives in the field. Due to the extensive, and unique modifications to this shield set, it replaces a synthetic's flash lamp entirely.
   components:
-  #- type: Contraband
-   # severity: Class1
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/defaultarmor.rsi
     state: icon

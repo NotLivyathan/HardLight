@@ -9,8 +9,9 @@
   name: LSAP-MKII Armour Plating
   description: Light Synthetic Armour. Thin, interwoven plates of plasteel, synthetic fibers, and steel. Mildly protective.
   components:
-  #- type: Contraband
-  #  severity: Class1
+  - type: Contraband
+    severity: Class1
+    allowedDepartments: [ Civilian, Security, Command, Frontier, CentralCommand ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/borglightarmor.rsi
   - type: ExplosionResistance
@@ -34,10 +35,6 @@
   name: MSAP-MKIV Medium Plating
   description: Medium Synthetic Armour Plates. A mix of plastitanium and plasteel alloys, thick enough to shrug off small arms fire, while not heavily impeding mobility.
   components:
-  #- type: Contraband
-   # severity: Class2
-    #This is annoying as fuck to deal with.
-    #allowedDepartments: [ Security, Command ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/borgmediumarmor.rsi
   - type: ExplosionResistance
@@ -61,10 +58,6 @@
   name: HSAP-MKV Heavy Plating
   description: Heavy-Duty and rugged; meant for active combat, this set of heavy synthetic armour plates boasts near-three-inch ballistic plates, mixed with synthetic fibers, underlying support structures and kinetic gel to disperse impact. Whatever you strap this to, isn't going anywhere anytime soon.
   components:
-  #- type: Contraband
-   # severity: Class2
-    #This is annoying as fuck to deal with.
-   # allowedDepartments: [ Security, Command ]
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/borgheavyarmor.rsi
   - type: ExplosionResistance
@@ -88,8 +81,9 @@
   name: TVOK-Terminator Plating
   description: Salvaged, Acquired, or otherwise procured; this set of armor is clearly designed for the heaviest duties, and most extreme environments. Lifting it is nearly impossible, with the near foot-thick plates of solid alloys and plates meant to deflect projectiles creaking with each motion.
   components:
-  #- type: Contraband
-  #  severity: Class3Syndicate
+  - type: Contraband
+    severity: Class3Syndicate
+    allowedDepartments: []
   - type: Sprite
     sprite: _HL/Objects/BorgArmor/physarmor/borgheavyarmor.rsi
   - type: ExplosionResistance
