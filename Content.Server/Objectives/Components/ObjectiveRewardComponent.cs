@@ -6,7 +6,7 @@ namespace Content.Server.Objectives.Components;
 /// Attach to an objective entity prototype to award bank currency when completed.
 /// Amount is awarded once per player the first time the objective is detected as complete.
 /// </summary>
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent]
 public sealed partial class ObjectiveRewardComponent : Component
 {
     /// <summary>
