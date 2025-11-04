@@ -65,7 +65,7 @@
     - type: Speech
       speechVerb: Parrot # RMC did it right.
       speechSounds: MaleAvali
-      allowedEmotes: ['Chirp', 'Hisses', 'Purr', 'Growl', 'Trill', 'Scree', 'Call', 'Squawk']
+      allowedEmotes: ['Chirp', 'Hiss', 'Purr', 'Growl', 'Trill', 'Scree', 'Call', 'Squawk']
     - type: MobThresholds
       thresholds:
         0: Alive
