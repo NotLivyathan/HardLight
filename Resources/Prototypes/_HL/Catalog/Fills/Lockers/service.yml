@@ -7,6 +7,16 @@
     containers:
       entity_storage: !type:NestedSelector
         tableId: FillLockerBooze
+      entity_storage: !type:NestedSelector
+        tableId: HLFillLockerBooze
+
+- type: entityTable
+  id: HLFillLockerBooze
+  table: !type:AllSelector
+    children:
+    - id: WeaponShotgunDoubleBarreledRubber
+    - id: AmmoBox12_gaugeBeanbag
+    - id: AmmoBox12_gaugeBeanbag
 
 - type: entity
   id: HLLockerBotanistFilled

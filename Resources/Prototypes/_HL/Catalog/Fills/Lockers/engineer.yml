@@ -39,6 +39,8 @@
         - !type:NestedSelector
           tableId: FillLockerAtmospherics
         - !type:NestedSelector
+          tableId: HLFillLockerAtmospherics
+        - !type:NestedSelector
           tableId: FillAtmosphericsHardsuit
 
 - type: entity
@@ -52,6 +54,16 @@
         children:
         - !type:NestedSelector
           tableId: FillLockerAtmospherics
+        - !type:NestedSelector
+          tableId: HLFillLockerAtmospherics
+
+- type: entityTable
+  id: HLFillLockerAtmospherics
+  table: !type:AllSelector
+    children:
+    - id: DoorRemoteFirefight
+    - id: RCD
+    - id: RCDAmmo
 
 - type: entity
   id: HLLockerEngineerFilledHardsuit
@@ -65,6 +77,8 @@
         - !type:NestedSelector
           tableId: FillLockerEngineer
         - !type:NestedSelector
+          tableId: HLFillLockerEngineer
+        - !type:NestedSelector
           tableId: FillEngineerHardsuit
 
 - type: entity
@@ -74,5 +88,17 @@
   components:
   - type: EntityTableContainerFill
     containers:
-      entity_storage: !type:NestedSelector
-        tableId: FillLockerEngineer
+      entity_storage: !type:AllSelector
+        children:
+        - !type:NestedSelector
+          tableId: FillLockerEngineer
+        - !type:NestedSelector
+          tableId: HLFillLockerEngineer
+
+- type: entityTable
+  id: HLFillLockerEngineer
+  table: !type:AllSelector
+    children:
+    - id: RCD
+    - id: RCDAmmo
+    - id: MetalFoamGrenade
