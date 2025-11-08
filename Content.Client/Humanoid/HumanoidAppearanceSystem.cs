@@ -27,6 +27,8 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
 
         SubscribeLocalEvent<HumanoidAppearanceComponent, AfterAutoHandleStateEvent>(OnHandleState);
         SubscribeLocalEvent<HumanoidAppearanceComponent, AppearanceChangeEvent>(OnAppearanceChange);
+
+        _consentManager.OnServerDataLoaded += OnConsentChanged;
     }
 
     private void OnHandleState(EntityUid uid, HumanoidAppearanceComponent component, ref AfterAutoHandleStateEvent args)
@@ -57,6 +59,15 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
         if (_appearance.TryGetData<Vector2>(uid, HumanoidVisuals.Scale, out var scale, args.Component))
         {
             args.Sprite.Scale = scale;
+        }
+    }
+
+    private void OnConsentChanged()
+    {
+        var humanoidQuery = EntityManager.AllEntityQueryEnumerator<HumanoidAppearanceComponent, SpriteComponent>();
+        while (humanoidQuery.MoveNext(out var _, out var humanoid, out var sprite))
+        {
+            UpdateSprite(humanoid, sprite);
         }
     }
 
