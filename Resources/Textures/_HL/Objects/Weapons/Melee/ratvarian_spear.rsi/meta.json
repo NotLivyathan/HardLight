@@ -37,14 +37,6 @@
 		{
 			"name": "equipped-SUITSTORAGE",
 			"directions": 4
-		},
-        {
-            "name": "inhand-left-old",
-            "directions": 4
-        },
-        {
-            "name": "inhand-right-old",
-            "directions": 4
-        }
+		}
     ]
 }
