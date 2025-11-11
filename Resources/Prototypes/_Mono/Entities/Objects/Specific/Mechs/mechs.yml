@@ -70,7 +70,7 @@
     baseState: broadsword
     openState: broadsword-open
     brokenState: broadsword-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     airtight: true
     maxIntegrity: 600
     pilotWhitelist:
@@ -95,7 +95,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 0.2
     baseSprintSpeed: 1
-    weightlessModifier: 40
+    baseWeightlessModifier: 20
   - type: RadarBlip
     radarColor: "#CF0E0E"
     scale: 4
@@ -160,7 +160,7 @@
     baseState: broadsword
     openState: broadsword-open
     brokenState: broadsword-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     airtight: true
     maxIntegrity: 450
     pilotWhitelist:
@@ -185,7 +185,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 0.2
     baseSprintSpeed: 1
-    weightlessModifier: 35
+    baseWeightlessModifier: 20
   - type: Damageable
     damageModifierSet: MediumArmorNT
   - type: RadarBlip
@@ -240,7 +240,7 @@
     baseState: broadsword
     openState: broadsword-open
     brokenState: broadsword-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     airtight: false
     maxIntegrity: 800
     pilotWhitelist:
@@ -320,7 +320,7 @@
     baseState: flail
     openState: flail-open
     brokenState: flail-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     airtight: true
     maxIntegrity: 900
     pilotWhitelist:
@@ -345,7 +345,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 0.1
     baseSprintSpeed: 1
-    weightlessModifier: 25
+    baseWeightlessModifier: 25
   - type: RadarBlip
     radarColor: "#CF0E0E"
     scale: 4
@@ -400,7 +400,7 @@
     baseState: flail
     openState: flail-open
     brokenState: flail-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     airtight: true
     maxIntegrity: 500
     pilotWhitelist:
@@ -425,7 +425,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 0.25
     baseSprintSpeed: 0.5
-    weightlessModifier: 20
+    baseWeightlessModifier: 30
   - type: RadarBlip
     radarColor: "#CF0E0E"
     scale: 4
@@ -480,7 +480,7 @@
     baseState: flail
     openState: flail-open
     brokenState: flail-broken
-    mechToPilotDamageMultiplier: 0
+    mechToPilotDamageMultiplier: 0.2
     maxEquipmentAmount: 1
     airtight: true
     maxIntegrity: 600
@@ -506,7 +506,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 0.1
     baseSprintSpeed: 1
-    weightlessModifier: 30
+    baseWeightlessModifier: 35
   - type: RadarBlip
     radarColor: "#CF0E0E"
     scale: 4

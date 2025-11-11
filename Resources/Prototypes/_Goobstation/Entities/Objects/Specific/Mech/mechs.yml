@@ -132,8 +132,9 @@
       types:
         Blunt: 26
   - type: MovementSpeedModifier
-    baseWalkSpeed: 2.5
-    baseSprintSpeed: 4.5
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: CanMoveInAir
   - type: MovementAlwaysTouching
   - type: StaticPrice
@@ -206,8 +207,9 @@
   - type: CanMoveInAir
   - type: MovementAlwaysTouching
   - type: MovementSpeedModifier
-    baseWalkSpeed: 5
-    baseSprintSpeed: 7
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: StaticPrice
     price: 3000
   - type: Tag
@@ -252,7 +254,7 @@
     brokenState: durand-broken
     mechToPilotDamageMultiplier: 0.25
     airtight: true
-    maxIntegrity: 400
+    maxIntegrity: 300
     pilotWhitelist:
       components:
         - HumanoidAppearance
@@ -264,8 +266,9 @@
         Blunt: 40
         Structural: 220
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 3
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: Damageable
     damageModifierSet: MediumArmorNT
   - type: CanMoveInAir
@@ -319,7 +322,7 @@
     brokenState: marauder-broken
     mechToPilotDamageMultiplier: 0.1
     airtight: true
-    maxIntegrity: 500
+    maxIntegrity: 300
     maxEquipmentAmount: 4
     pilotWhitelist:
       components:
@@ -332,8 +335,9 @@
         Blunt: 40
         Structural: 200
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 3
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: CanMoveInAir
@@ -392,7 +396,7 @@
     brokenState: seraph-broken
     mechToPilotDamageMultiplier: 0.05
     airtight: true
-    maxIntegrity: 550
+    maxIntegrity: 300
     maxEquipmentAmount: 5
     pilotWhitelist:
       components:
@@ -405,8 +409,9 @@
         Blunt: 60
         Structural: 400
   - type: MovementSpeedModifier
-    baseWalkSpeed: 5
-    baseSprintSpeed: 7
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 3
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: CanMoveInAir
@@ -481,8 +486,9 @@
         Blunt: 30
         Structural: 200
   - type: MovementSpeedModifier
-    baseWalkSpeed: 5
-    baseSprintSpeed: 7
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: Damageable
     damageModifierSet: MediumArmorSyndi
   - type: CanMoveInAir
@@ -541,7 +547,7 @@
     brokenState: mauler-broken
     mechToPilotDamageMultiplier: 0.1
     airtight: true
-    maxIntegrity: 500
+    maxIntegrity: 300
     maxEquipmentAmount: 5
     pilotWhitelist:
       components:
@@ -554,8 +560,9 @@
         Blunt: 50
         Structural: 400
   - type: MovementSpeedModifier
-    baseWalkSpeed: 1.5
-    baseSprintSpeed: 3
+    baseWalkSpeed: 1
+    baseSprintSpeed: 2
+    baseWeightlessModifier: 2
   - type: Damageable
     damageModifierSet: HeavyArmorSyndi
   - type: CanMoveInAir
