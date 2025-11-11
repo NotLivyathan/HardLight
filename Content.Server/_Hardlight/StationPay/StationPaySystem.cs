@@ -5,11 +5,14 @@ using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Shared._NF.Bank.Components;
 using Content.Shared._NF.Roles.Components;
+using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
 using JetBrains.Annotations;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
@@ -23,9 +26,9 @@ public sealed class StationPaySystem : EntitySystem
     [Dependency] private readonly BankSystem _bank = default!;
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
 
-    // TODO: this should probably be a cvar
-    private const int PayoutDelay = 1200;
+    public int PayoutDelay { get; private set; }
 
     // map of {Mind.OwnedEntity: lastPayoutTime} where lastPayoutTime was the round duration at time of payout
     // sorted in ascending order
@@ -62,6 +65,7 @@ public sealed class StationPaySystem : EntitySystem
          * we also don't have to do any complex bookkeeping
          */
         // SubscribeLocalEvent<MindRemovedMessage>(OnMindRemoved);
+        Subs.CVar(_cfg, CCVars.GameStationPayoutLength, time => PayoutDelay = (int)time.TotalSeconds, true);
     }
 
     private void OnRunLevelChanged(GameRunLevelChangedEvent ev)
@@ -217,7 +221,7 @@ public sealed class StationPaySystem : EntitySystem
         foreach (var (uid, scheduledPayoutTime) in _scheduledPayouts)
         {
             if (scheduledPayoutTime > now)
-                break;
+                continue;
 
             var dict = updated.Value;
             dict.Remove(uid);

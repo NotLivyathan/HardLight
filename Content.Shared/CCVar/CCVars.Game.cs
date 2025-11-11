@@ -397,4 +397,10 @@ public sealed partial class CCVars
     /// </summary>
     public static readonly CVarDef<bool> GameHostnameInTitlebar =
         CVarDef.Create("game.hostname_in_titlebar", true, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    /// How long a job must work to receive their payment. Hardlight CVar.
+    /// </summary>
+    public static readonly CVarDef<TimeSpan> GameStationPayoutLength =
+        CVarDef.Create("game.station_payout_length", TimeSpan.FromMinutes(20), CVar.SERVERONLY);
 }
