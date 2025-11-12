@@ -209,7 +209,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 1
     baseSprintSpeed: 2
-    baseWeightlessModifier: 2
+    baseWeightlessModifier: 3
   - type: StaticPrice
     price: 3000
   - type: Tag
@@ -411,7 +411,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 1
     baseSprintSpeed: 2
-    baseWeightlessModifier: 3
+    baseWeightlessModifier: 4
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: CanMoveInAir
@@ -488,7 +488,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 1
     baseSprintSpeed: 2
-    baseWeightlessModifier: 2
+    baseWeightlessModifier: 3
   - type: Damageable
     damageModifierSet: MediumArmorSyndi
   - type: CanMoveInAir
