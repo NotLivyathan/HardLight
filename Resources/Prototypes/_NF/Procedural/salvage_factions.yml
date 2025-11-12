@@ -56,7 +56,7 @@
       prob: 0.1
   configs:
     DefenseStructure: XenoWardingTower
-    Megafauna: NFMobXenoQueen
+    Megafauna: MobXenoQueenNPC
     Difficulties: NFModerate
 
 - type: salvageFaction
