@@ -149,7 +149,7 @@
     - state: icon
   - type: TradeCrate
     valueAtDestination: 22000
-    valueElsewhere: 2200
+    valueElsewhere: 1900
 
 - type: entity
   parent: [BaseTradeItem, BaseC2ContrabandUnredeemable]
