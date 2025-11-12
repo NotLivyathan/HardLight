@@ -231,7 +231,7 @@ public sealed class TargetSeekingSystem : EntitySystem
             // This targets the ship grid rather than just the console
             EntityUid effectiveTargetToConsider;
             TransformComponent currentCandidateXform;
-            
+
             if (targetXform.GridUid.HasValue)
             {
                 effectiveTargetToConsider = targetXform.GridUid.Value;

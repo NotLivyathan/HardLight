@@ -68,6 +68,12 @@
   - type: Physics
     bodyType: KinematicController
   - type: Clickable
+  - type: RadarBlip
+    radarColor: "#e48315"
+    scale: 2
+    requireNoGrid: true
+    shape: diamond
+    VisibleFromOtherGrids: true
   - type: WiresPanel
   - type: Fixtures
     fixtures:

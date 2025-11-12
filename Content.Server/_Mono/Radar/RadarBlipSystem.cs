@@ -5,14 +5,11 @@
 
 using System.Numerics;
 using Content.Shared._Mono.Radar;
-using RadarBlipShapeNF = Content.Shared._NF.Radar.RadarBlipShape;
 using Content.Shared.Shuttles.Components;
 using RadarBlipServerComp = Content.Server._NF.Radar.RadarBlipComponent;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
-using RequestBlipsEventNF = Content.Shared._NF.Radar.RequestBlipsEvent;
-using GiveBlipsEventNF = Content.Shared._NF.Radar.GiveBlipsEvent;
 using Robust.Shared.GameObjects;
 
 namespace Content.Server.Mono.Radar;
@@ -27,12 +24,12 @@ public sealed partial class RadarBlipSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-    SubscribeNetworkEvent<RequestBlipsEventNF>(OnBlipsRequested);
+        SubscribeNetworkEvent<RequestBlipsEvent>(OnBlipsRequested);
 
         _physQuery = GetEntityQuery<PhysicsComponent>();
     }
 
-    private void OnBlipsRequested(RequestBlipsEventNF ev, EntitySessionEventArgs args)
+    private void OnBlipsRequested(RequestBlipsEvent ev, EntitySessionEventArgs args)
     {
         if (!TryGetEntity(ev.Radar, out var radarUid))
             return;
@@ -42,13 +39,13 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
         var blips = AssembleBlipsReport((EntityUid)radarUid, radar);
 
-        var giveEv = new GiveBlipsEventNF(blips);
+        var giveEv = new GiveBlipsEvent(blips);
         RaiseNetworkEvent(giveEv, args.SenderSession);
     }
 
-    private List<(NetEntity? Grid, Vector2 Position, float Scale, Color Color, RadarBlipShapeNF Shape)> AssembleBlipsReport(EntityUid uid, RadarConsoleComponent? component = null)
+    private List<(NetCoordinates Position, Vector2 Vel, float Scale, Color Color, RadarBlipShape Shape)> AssembleBlipsReport(EntityUid uid, RadarConsoleComponent? component = null)
     {
-        var blips = new List<(NetEntity? Grid, Vector2 Position, float Scale, Color Color, RadarBlipShapeNF Shape)>();
+        var blips = new List<(NetCoordinates Position, Vector2 Vel, float Scale, Color Color, RadarBlipShape Shape)>();
 
         if (Resolve(uid, ref component))
         {
@@ -107,8 +104,17 @@ public sealed partial class RadarBlipSystem : EntitySystem
                 if (!blip.VisibleFromOtherGrids && blipGrid != radarGrid)
                     continue;
 
-                // Send world positions with null grid for NF radar messages.
-                blips.Add((null, blipXform.WorldPosition, blip.Scale, blip.RadarColor, blip.Shape));
+                // Get velocity for prediction
+                var blipVelocity = _physQuery.TryGetComponent(blipUid, out var phys)
+                    ? _physics.GetMapLinearVelocity(blipUid, component: phys)
+ `                   : Vector2.Zero;
+
+                // Convert RadarBlipShapeNF to RadarBlipShape (they should be compatible enums)
+                var shape = (RadarBlipShape)(int)blip.Shape;
+
+                // Send as NetCoordinates for proper client-side handling
+                var netCoords = GetNetCoordinates(_xform.GetMoverCoordinates(blipUid));
+                blips.Add((netCoords, blipVelocity, blip.Scale, blip.RadarColor, shape));
             }
         }
 

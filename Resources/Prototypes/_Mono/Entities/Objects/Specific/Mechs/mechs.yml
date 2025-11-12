@@ -101,6 +101,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Damageable
     damageModifierSet: MediumArmorNT
   - type: Repairable
@@ -193,6 +194,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Repairable
     fuelCost: 40
     doAfterDelay: 30
@@ -272,6 +274,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Repairable
     fuelCost: 40
     doAfterDelay: 30
@@ -351,6 +354,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: Repairable
@@ -431,6 +435,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: Repairable
@@ -512,6 +517,7 @@
     scale: 4
     requireNoGrid: true
     shape: square
+    VisibleFromOtherGrids: true
   - type: Damageable
     damageModifierSet: HeavyArmorNT
   - type: Repairable
