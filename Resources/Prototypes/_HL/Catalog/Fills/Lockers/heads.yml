@@ -340,6 +340,7 @@
     - id: NFHyperlinkBookSpaceLaw
     - id: BoxEncryptionKeySecurity
     - id: CigarGoldCase
+    - id: WeaponEnergyGunMultiphase
       prob: 0.50
     - id: ClothingBeltSecurityFilled
     - id: ClothingEyesGlassesSecurity
@@ -373,6 +374,7 @@
   id: HLFillHeadOfSecurityHardsuit
   table: !type:AllSelector
     children:
+    - id: WeaponEnergyGunMultiphase
     - id: ClothingMaskGasSwat
     - id: ClothingOuterHardsuitSecurityRed
     - id: ClothingShoesBootsMagSecurityFilled
