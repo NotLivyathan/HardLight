@@ -15,8 +15,8 @@
   tier: 3
   cost: 20000
   recipeUnlocks:
-#  - ShieldControlComputerCircuitboard
-#  - MachineShieldMS225Circuitboard
+  - ShieldControlComputerCircuitboard
+  - MachineShieldMS225Circuitboard
   - GunneryControlComputerCircuitboard
   - MachineGCSLowCircuitboard
   - MachineGCSMediumCircuitboard
