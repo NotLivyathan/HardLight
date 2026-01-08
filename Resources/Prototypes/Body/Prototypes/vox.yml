@@ -8,8 +8,8 @@
       connections:
       - torso
       organs:
-        brain: OrganHumanBrain
-        eyes: OrganHumanEyes
+        brain: OrganVoxBrain # DeltaV
+        eyes: OrganVoxEyes
         cybernetic_anchor: OrganCrescentDummy
     torso:
       part: TorsoVox
@@ -20,11 +20,11 @@
       - left leg
       - head # Shitmed
       organs:
-        heart: OrganHumanHeart
+        heart: OrganVoxHeart
         lungs: OrganVoxLungs
-        stomach: OrganHumanStomach
-        liver: OrganHumanLiver
-        kidneys: OrganHumanKidneys
+        stomach: OrganVoxStomach
+        liver: OrganVoxLiver
+        kidneys: OrganVoxKidneys
         dermis: OrganCrescentDummy
     right arm:
       part: RightArmVox

@@ -536,6 +536,15 @@
   - type: SpaceGarbage
   - type: StaticPrice
     price: 1
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 10
+        reagents:
+        - ReagentId: ToxinTrash
+          Quantity: 5
+  - type: Food
+    requiresSpecialDigestion: true
 
 - type: entity
   categories: [ HideSpawnMenu ]
@@ -697,10 +706,10 @@
   - type: SolutionContainerManager
     solutions:
       food:
-        maxVol: 45
+        maxVol: 25
         reagents:
         - ReagentId: Fiber
-          Quantity: 40
+          Quantity: 20
   - type: Tag
     tags:
     - ClothMade
