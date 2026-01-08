@@ -44,12 +44,32 @@
       "directions": 4
     },
     {
-      "name": "tail",
-      "directions": 4
-    },
-    {
-      "name": "tail_stenciled",
-      "directions": 4
-    }
-  ]
-}
+        "name": "tail",
+        "directions": 4
+      },
+      {
+        "name": "tail_full",
+        "directions": 4
+      },
+      {
+        "name": "tail_short",
+        "directions": 4
+      },
+      {
+        "name": "tail_big",
+        "directions": 4
+      },
+      {
+        "name": "tail_spikes",
+        "directions": 4
+      },
+      {
+        "name": "tail_docked",
+        "directions": 4
+      },
+      {
+        "name": "tail_split",
+        "directions": 4
+      }
+    ]
+  }
