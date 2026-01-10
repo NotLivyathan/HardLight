@@ -266,3 +266,72 @@
   parent: [BaseContractorPDA, MusicianPDA]
   id: ContractorMusicianPDA
   suffix: Contractor
+
+
+### Interdyne PDAs
+- type: entity
+  parent: BasePDA
+  id: InterdynePDA
+  name: interdyne doctor PDA
+  description: A medical PDA issued to Interdyne personnel. Smells like medical malpractice.
+  components:
+  - type: Pda
+    id: InterdyneIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-interdyne
+  - type: Sprite
+    sprite: _HL/Objects/Devices/interdyne_pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: "pda-interdyne"
+    - state: "light-overlay"
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: "id-overlay"
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Icon
+    sprite: _HL/Objects/Devices/interdyne_pda.rsi
+    state: pda-interdyne
+  - type: PdaBorderColor
+    borderColor: "#4C4C4C"
+    accentVColor: "#CC70B5"
+
+- type: entity
+  parent: BasePDA
+  id: InterdyneHeadPDA
+  name: interdyne head PDA
+  description: A medical PDA issued to Interdyne head personnel. Smells like orchestrating medical malpractice.
+  components:
+  - type: Pda
+    id: InterdyneHeadIDCard
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-interdynehead
+  - type: Sprite
+    sprite: _HL/Objects/Devices/interdyne_pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: "pda-interdynehead"
+    - state: "light-overlay"
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: "id-overlay"
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Icon
+    sprite: _HL/Objects/Devices/interdyne_pda.rsi
+    state: pda-interdynehead
+  - type: PdaBorderColor
+    borderColor: "#A59DA5"
+    accentVColor: "#CC70B5"
+

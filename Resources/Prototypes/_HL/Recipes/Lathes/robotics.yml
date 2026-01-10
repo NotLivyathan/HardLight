@@ -19,3 +19,8 @@
   parent: BaseGoldBorgModuleRecipe
   id: BorgModuleadvancedmeasures
   result: BorgModuleadvancedmeasures
+
+- type: latheRecipe
+  parent: BaseBorgModuleRecipe
+  id: BorgModuleStorage
+  result: BorgModuleStorage

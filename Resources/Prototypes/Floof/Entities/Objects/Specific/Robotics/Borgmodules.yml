@@ -57,7 +57,6 @@
     moduleId: Investigation
     items:
     - ForensicScanner
-    - DetectivePDA
     - SecurityWhistle
 
 - type: entity

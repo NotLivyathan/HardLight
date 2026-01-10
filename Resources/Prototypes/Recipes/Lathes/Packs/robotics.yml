@@ -36,7 +36,7 @@
   id: BorgModulesDynamic
   recipes:
   - BorgModuleAdvancedSurgery
-  #Hardlight change start
+  # Hardlight change start
   - BorgModuleClowning
   - BorgModuleMusique
   - BorgModuleTreatment
@@ -108,6 +108,14 @@
   - HeadBorgService
   - TorsoBorgService
 
+- type: latheRecipePack # HardLight: Added a recipe pack for security quadborg limbs
+  id: SecBorgLimbsStatic
+  recipes:
+  - LeftLegBorgSecurity
+  - RightLegBorgSecurity
+  - HeadBorgSecurity
+  - TorsoBorgSecurity
+  - Quadborgendoskeleton
 
 ## Dynamic
 
@@ -132,6 +140,7 @@
   - BorgModuleAdvancedMining # Frontier
   - BorgModuleChef # Frontier
   - BorgModuleRCD # Frontier
+  - BorgModuleStorage # HardLight
 
 - type: latheRecipePack
   id: MechParts

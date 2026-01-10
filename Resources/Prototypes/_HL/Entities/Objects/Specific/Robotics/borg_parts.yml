@@ -1,0 +1,56 @@
+# Security Borg parts
+
+- type: entity
+  id: LeftLegBorgSecurity
+  parent: BaseBorgLegLeft
+  components:
+  - type: Sprite
+    state: borg_l_leg
+  - type: Icon
+    state: borg_l_leg
+  - type: Tag
+    tags:
+    - Trash
+    - BorgLeg
+    - BorgSecurityLLeg
+
+- type: entity
+  id: RightLegBorgSecurity
+  parent: BaseBorgLegRight
+  components:
+  - type: Sprite
+    state: borg_r_leg
+  - type: Icon
+    state: borg_r_leg
+  - type: Tag
+    tags:
+    - Trash
+    - BorgLeg
+    - BorgSecurityRLeg
+
+- type: entity
+  id: HeadBorgSecurity
+  parent: BaseBorgHead
+  components:
+  - type: Sprite
+    state: borg_head
+  - type: Icon
+    state: borg_head
+  - type: Tag
+    tags:
+    - Trash
+    - BorgHead
+    - BorgSecurityHead
+
+- type: entity
+  id: TorsoBorgSecurity
+  parent: BaseBorgTorso
+  components:
+  - type: Sprite
+    state: borg_chest
+  - type: Icon
+    state: borg_chest
+  - type: Tag
+    tags:
+    - Trash
+    - BorgSecurityTorso

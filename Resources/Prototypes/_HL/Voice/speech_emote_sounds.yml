@@ -96,7 +96,7 @@
     Scream:
       path: /Audio/_Starlight/Effects/avali_scream.ogg
     Laugh:
-      collection: ResomiLaugh
+      path: /Audio/_Starlight/Voice/Avali/avali_laugh.ogg
     Bark: # HardLight - JuiceThatMakesYouBark
       collection: VulpkaninBarks
     Hiss:
@@ -147,7 +147,7 @@
     DefaultDeathgasp:
       collection: MaleDeathGasp
     Crying:
-      collection: MaleCry
+      path: /Audio/_Starlight/Voice/Avali/avali_cry.ogg
 
 - type: emoteSounds
   parent: UnisexAvali
@@ -176,7 +176,7 @@
     DefaultDeathgasp:
       collection: FemaleDeathGasp
     Crying:
-      collection: FemaleCry
+      path: /Audio/_Starlight/Voice/Avali/avali_cry.ogg
 
 - type: emoteSounds
   id: UnisexShadekin

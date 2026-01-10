@@ -35,25 +35,31 @@
     position: Stand
     buckleOffset: "0,-0.2"
     buckleSelfDoafterTime: 4.5 # people attempting to buckle to the borg will have a doafter
+  - type: LockingWhitelist
+    blacklist:
+      components:
+      - RoboticsConsole
   - type: Sanitized
   - type: Hands
   # - type: Cuffable # Removed due to not having a cuffed sprite, throwing errors.
   - type: ComplexInteraction
   #- type: IdExaminable #HL. These have borg hands and ID slots again!
+  #- type: ContainerContainer
+  #  containers:
+  #    borg_brain: !type:ContainerSlot { }
+  #    cell_slot: !type:ContainerSlot { }
+  #    borg_module: !type:Container { }
+  #    part-container: !type:Container
   - type: IntrinsicRadioTransmitter
     channels:
-    - Security
     - Binary
     - Common
-    - Science
   - type: ActiveRadio
     channels:
-    - Security
     - Binary
     - Common
-    - Science
   - type: BorgChassis
-    maxModules: 4
+    maxModules: 5
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -73,8 +79,11 @@
   - type: Speech
     speechVerb: Robotic
   - type: LayingDown
+  - type: CumProducer
+    maxVol: 250
+    reVol: 50
   - type: AccessReader
-    access: [["Security"], ["Armory"], ["Command"]]
+    access: [["Security"], ["Command"], ["Research"], ["Mercenary"]]
   - type: SiliconLawProvider
     laws: Qborg
   - type: LeashAnchor # Floofstation
@@ -117,18 +126,16 @@
         state: quadsprite
   - type: IntrinsicRadioTransmitter
     channels:
-    - Security
     - Binary
     - Common
-    - Science
+    - Security
   - type: ActiveRadio
     channels:
-    - Security
     - Binary
     - Common
-    - Science
+    - Security
   - type: BorgChassis
-    maxModules: 4
+    maxModules: 5
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -139,7 +146,7 @@
     hasMindState: quadspritel
     noMindState: quadspriter
   - type: AccessReader
-    access: [["Security"], ["Armory"], ["Command"]]
+    access: [["Security"], ["Command"]]
   - type: SiliconLawProvider
     laws: Qborg
   - type: FlashImmunity
@@ -205,7 +212,7 @@
     - SyndicateAgent #HL
     - NuclearOperative #HL
   - type: AccessReader
-    access: [["NuclearOperative"], ["SyndicateAgent"], ["Mercenary"]]
+    access: [["NuclearOperative"], ["SyndicateAgent"]]
   - type: BorgTransponder
     sprite:
       sprite: Floof/Mobs/Silicon/quad.rsi
@@ -280,7 +287,7 @@
     tags: #HL
     - CentralCommand #HL
   - type: AccessReader
-    access: [["Security"], ["Armory"], ["Command"], ["CentralCommand"]]
+    access: [["CentralCommand"]]
   - type: SpriteMovement
     movementLayers:
       movement:
@@ -327,15 +334,13 @@
     - Supply
     - Binary
     - Common
-    - Science
   - type: ActiveRadio
     channels:
     - Supply
     - Binary
     - Common
-    - Science
   - type: BorgChassis
-    maxModules: 6
+    maxModules: 7
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -346,7 +351,7 @@
     hasMindState: quadspritesalvl
     noMindState: quadspritesalvr
   - type: AccessReader
-    access: [["Cargo"], ["Salvage"], ["Command"], ["Research"], ["Maintenance"]]
+    access: [["Command"], ["Research"]]
   - type: SiliconLawProvider
     laws: Corporate
   - type: SpriteStateToggle
@@ -386,15 +391,13 @@
     - Service
     - Binary
     - Common
-    - Science
   - type: ActiveRadio
     channels:
     - Service
     - Binary
     - Common
-    - Science
   - type: BorgChassis
-    maxModules: 7
+    maxModules: 8
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -406,7 +409,7 @@
     hasMindState: quadspriteservl
     noMindState: quadspriteservr
   - type: AccessReader
-    access: [["Cargo"], ["Service"], ["Command"], ["Research"], ["Maintenance"]]
+    access: [["Command"], ["Research"]]
   - type: SiliconLawProvider
     laws: StationEfficiency
   - type: SpriteStateToggle
@@ -415,7 +418,6 @@
     stateOn: quadspriteservballz
     movementStateOff: quadspriteserv_moving
     movementStateOn: quadspriteserv_movingballz
-
 
 - type: entity
   id: BorgChassisQuadEngineer
@@ -444,20 +446,16 @@
         state: engieborg
   - type: IntrinsicRadioTransmitter
     channels:
-    - Service
     - Binary
     - Common
-    - Science
     - Engineering
   - type: ActiveRadio
     channels:
-    - Service
     - Binary
     - Common
-    - Science
     - Engineering
   - type: BorgChassis
-    maxModules: 7
+    maxModules: 8
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -468,9 +466,13 @@
     hasMindState: engieborgl
     noMindState: engieborgr
   - type: AccessReader
-    access: [["Cargo"], ["Service"], ["Command"], ["Research"], ["Maintenance"], ["Engineering"]]
+    access: [["Command"], ["Research"]]
   - type: SiliconLawProvider
     laws: StationEfficiency
+  - type: ShowHealthBars
+    damageContainers:
+    - Inorganic
+    - Silicon
   - type: SpriteStateToggle
     spriteLayer: movement
     stateOff: engieborg
@@ -509,15 +511,13 @@
     - Medical
     - Binary
     - Common
-    - Science
   - type: ActiveRadio
     channels:
     - Medical
     - Binary
     - Common
-    - Science
   - type: BorgChassis
-    maxModules: 6
+    maxModules: 7
     moduleWhitelist:
       tags:
       - BorgModuleGeneric
@@ -528,10 +528,14 @@
     hasMindState: quadspritemedl
     noMindState: quadspritemedr
   - type: AccessReader
-    access: [["Medical"], ["Salvage"], ["Command"], ["Research"], ["Maintenance"]]
+    access: [["Command"], ["Research"]]
   - type: SiliconLawProvider
     laws: Medical
   - type: SolutionScanner
+  - type: FabricateActions
+    actions:
+    - ActionFabricateLollipop
+    - ActionFabricateGumball
   - type: SpriteStateToggle
     spriteLayer: movement
     stateOff: quadspritemed
@@ -615,7 +619,7 @@
     hasMindState: quadspritel
     noMindState: quadspriter
   - type: AccessReader
-    access: [["Medical"], ["Salvage"], ["Service"], ["Security"], ["Command"], ["Research"], ["Mercenary"]]
+    access: [["CentralCommand"]]
   - type: SiliconLawProvider
     laws: Qborg
   - type: SpriteStateToggle
@@ -684,7 +688,7 @@
     hasMindState: quadspritel
     noMindState: quadspriter
   - type: AccessReader
-    access: [["Medical"], ["Salvage"], ["Service"], ["Security"], ["Command"], ["Research"], ["Mercenary"]]
+    access: [["CentralCommand"]]
   - type: SiliconLawProvider
     laws: Qborg
   # Note: No toggle added here; no provided Chip ballz states.
@@ -703,6 +707,16 @@
     sprite:
       sprite: Floof/Mobs/Silicon/quad.rsi
       state: XenoQuad
+  - type: IntrinsicRadioTransmitter # can only use binary and xenoborg channel
+    channels:
+    - Xenoborg
+    - Binary
+  - type: ActiveRadio # but can hear the mothership channel
+    channels:
+    - Mothership
+    - Xenoborg
+    - Binary
+    - Common
   - type: BorgChassis
     maxModules: 10
     hasMindState: XenoQuad_e

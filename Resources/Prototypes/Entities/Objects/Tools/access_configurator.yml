@@ -52,6 +52,8 @@
       - Service
       - StationTrafficController # Frontier
       - Theatre
+      - Interdyne
+      - InterdyneHead
       privilegedIdSlot:
         name: id-card-console-privileged-id
         ejectSound: /Audio/Machines/id_swipe.ogg

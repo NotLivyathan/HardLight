@@ -153,10 +153,6 @@
     examineWhileLocked: false
     keysExtractionMethod: Cutting
     keysUnlocked: false
-  - type: ContainerFill #Hardlight change
-    containers:
-      key_slots:
-      - EncryptionKeyCommon
   - type: OfferItem # HL
   - type: ActiveRadio
   - type: IntrinsicRadioReceiver

@@ -7,3 +7,25 @@
     Plasteel: 500
     Gold: 50
     Plasma: 500
+
+# Security Borg limbs
+
+- type: latheRecipe
+  parent: BaseBorgLimbRecipe
+  id: LeftLegBorgSecurity
+  result: LeftLegBorgSecurity
+
+- type: latheRecipe
+  parent: BaseBorgLimbRecipe
+  id: RightLegBorgSecurity
+  result: RightLegBorgSecurity
+
+- type: latheRecipe
+  parent: BaseBorgLimbRecipe
+  id: HeadBorgSecurity
+  result: HeadBorgSecurity
+
+- type: latheRecipe
+  parent: BaseBorgLimbRecipe
+  id: TorsoBorgSecurity
+  result: TorsoBorgSecurity

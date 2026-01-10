@@ -1,0 +1,12 @@
+- type: Tag
+  id: BorgSecurityLLeg
+
+- type: Tag
+  id: BorgSecurityRLeg
+
+- type: Tag
+  id: BorgSecurityHead
+
+- type: Tag
+  id: BorgSecurityTorso
+

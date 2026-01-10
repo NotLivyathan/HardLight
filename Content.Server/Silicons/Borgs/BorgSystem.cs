@@ -5,6 +5,7 @@ using Content.Server.DeviceNetwork.Systems;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.Hands.Systems;
 using Content.Server.PowerCell;
+using Content.Server.Radio.Components;
 using Content.Shared.UserInterface;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
@@ -22,6 +23,7 @@ using Content.Shared.Movement.Systems;
 using Content.Shared.Pointing;
 using Content.Shared.PowerCell;
 using Content.Shared.PowerCell.Components;
+using Content.Shared.Radio.Components;
 using Content.Shared.Roles;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
@@ -104,10 +106,11 @@ public sealed partial class BorgSystem : SharedBorgSystem
         var used = args.Used;
         TryComp<BorgBrainComponent>(used, out var brain);
         TryComp<BorgModuleComponent>(used, out var module);
+        TryComp<EncryptionKeyComponent>(used, out var key); // Starlight
 
         if (TryComp<WiresPanelComponent>(uid, out var panel) && !panel.Open)
         {
-            if (brain != null || module != null)
+            if (brain != null || module != null || key != null) // Starlight: added key check
             {
                 Popup.PopupEntity(Loc.GetString("borg-panel-not-open"), uid, args.User);
             }
@@ -142,7 +145,39 @@ public sealed partial class BorgSystem : SharedBorgSystem
             args.Handled = true;
             UpdateUI(uid, component);
         }
+        // Starlight, encryption keys.
+        if (key != null)
+        {
+            AddRadioChannels((uid, component),used);
+            _adminLog.Add(LogType.Action, LogImpact.Low,
+                $"{ToPrettyString(args.User):player} added encryption key {ToPrettyString(used)} to borg {ToPrettyString(uid)}");
+            args.Handled = true;
+        }
+        // End Starlight
     }
+    // Starlight, this allows people to use an encryption key on a borg to add channels to them.
+    public void AddRadioChannels(Entity<BorgChassisComponent> ent, EntityUid args)
+    {
+        if (TryComp<EncryptionKeyComponent>(args, out var key))
+        {
+
+            if (TryComp(ent, out ActiveRadioComponent? activeRadio))
+            {
+                foreach (var channel in key.Channels)
+                {
+                    activeRadio.Channels.Add(channel);
+                }
+            }
+            if (TryComp(ent, out IntrinsicRadioTransmitterComponent? transmitter))
+            {
+                foreach (var channel in key.Channels)
+                {
+                    transmitter.Channels.Add(channel);
+                }
+            }
+        }
+    }
+    // end Starlight
 
     // todo: consider transferring over the ghost role? managing that might suck.
     protected override void OnInserted(EntityUid uid, BorgChassisComponent component, EntInsertedIntoContainerMessage args)

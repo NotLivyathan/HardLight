@@ -37,6 +37,32 @@
         whitelist:
           tags:
           - BorgGenericTorso
+# HardLight start
+      borg_l_secarm+o:
+        whitelist:
+          tags:
+          - BorgSecurityLLeg
+      borg_r_secarm+o:
+        whitelist:
+          tags:
+          - BorgSecurityRLeg
+      borg_l_secleg+o:
+        whitelist:
+          tags:
+          - BorgSecurityLLeg
+      borg_r_secleg+o:
+        whitelist:
+          tags:
+          - BorgSecurityRLeg
+      borg_sechead+o:
+        whitelist:
+          tags:
+          - BorgSecurityHead
+      borg_secchest+o:
+        whitelist:
+          tags:
+          - BorgSecurityTorso
+# HardLight end
       borg_l_engiarm+o:
         whitelist:
           tags:
@@ -143,6 +169,13 @@
       - BorgGenericRLeg
       - BorgGenericHead
       - BorgGenericTorso
+      quadsec: # HardLight: Added security quadborg
+      - BorgSecurityLLeg
+      - BorgSecurityRLeg
+      - BorgSecurityLLeg
+      - BorgSecurityRLeg
+      - BorgSecurityHead
+      - BorgSecurityTorso
       quadengi:
       - BorgEngineerLArm
       - BorgEngineerRArm
