@@ -1,15 +1,12 @@
 - type: Tag
   id: BorgSecurityLLeg
-  name: "Borg Security Left Leg"
 
 - type: Tag
   id: BorgSecurityRLeg
-  name: "Borg Security Right Leg"
 
 - type: Tag
   id: BorgSecurityHead
-  name: "Borg Security Head"
 
 - type: Tag
   id: BorgSecurityTorso
-  name: "Borg Security Torso"
+
