@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 Jen Pollock <jen@jenpollock.ca>
+// SPDX-FileCopyrightText: 2025 Terkala <appleorange64@gmail.com>
+// SPDX-FileCopyrightText: 2025 Tyranex <bobthezombie4@gmail.com>
+//
 using System.Linq;
 using Content.Server.Antag.Components;
 using Content.Server.Chat.Managers;
@@ -13,6 +17,7 @@ using Content.Server.Roles;
 using Content.Server.Roles.Jobs;
 using Content.Server.Shuttles.Components;
 using Content.Server.Station.Events;
+using Content.Server._EinsteinEngines.Silicon.IPC;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Antag;
 using Content.Shared.Clothing;
@@ -51,6 +56,8 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly InternalEncryptionKeySpawner _internalEncryption = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     // arbitrary random number to give late joining some mild interest.
     public const float LateJoinRandomChance = 0.5f;
@@ -477,6 +484,10 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
             gear.Add(def.StartingGear.Value);
 
         _loadout.Equip(player, gear, def.RoleLoadout);
+
+        // Give IPCs the encryption keys from their headset (e.g., syndicate comms for nukeops)
+        if (def.StartingGear is not null && _prototypeManager.TryIndex(def.StartingGear.Value, out var startingGearProto))
+            _internalEncryption.TryInsertEncryptionKey(player, startingGearProto, EntityManager);
 
         if (session != null)
         {

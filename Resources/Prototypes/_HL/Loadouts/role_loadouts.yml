@@ -20,3 +20,33 @@
   - StationRepBackpackItems
   - ContractorHandItems
   - NFSpeciesSpecific
+
+# Civillian
+- type: roleLoadout
+  id: JobServiceQuadBorg
+  nameDataset: NFNamesBorg # Frontier: use NF variant
+  canCustomizeName: true
+
+# Cargo
+- type: roleLoadout
+  id: JobSalvageQuadBorg
+  nameDataset: NFNamesBorg # Frontier: use NF variant
+  canCustomizeName: true
+
+# Engineering
+- type: roleLoadout
+  id: JobEngineeringQuadBorg
+  nameDataset: NFNamesBorg # Frontier: use NF variant
+  canCustomizeName: true
+
+# Security
+- type: roleLoadout
+  id: JobSecurityQuadBorg
+  nameDataset: NFNamesBorg # Frontier: use NF variant
+  canCustomizeName: true
+
+# Medical
+- type: roleLoadout
+  id: JobMedicalQuadBorg
+  nameDataset: NFNamesBorg # Frontier: use NF variant
+  canCustomizeName: true

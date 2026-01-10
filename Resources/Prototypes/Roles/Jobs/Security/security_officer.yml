@@ -29,7 +29,6 @@
 - type: startingGear
   id: SecurityOfficerGear
   equipment:
-    id: SecurityPDA
 #    eyes: ClothingEyesGlassesSecurity # HL - Add departmental NF-style loadouts
     ears: ClothingHeadsetSecurity
     pocket1: NFWeaponPistolMk58 # Frontier: use NF variant

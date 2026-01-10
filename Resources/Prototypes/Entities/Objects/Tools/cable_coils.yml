@@ -29,19 +29,6 @@
   - type: PhysicalComposition
     materialComposition:
       Steel: 15
-  # EE Change Start
-  #Same as Ointment but divided by 5 and 3 because StackPrice needs to be 1 - Estacao Pirata IPCs
-  #1 Ointment = -50 damage of those types
-  #1 Cable ~= -50 (-49.8) damage of those types
-  - type: Healing
-    delay: 0.6
-    damageContainers:
-    - Silicon
-    damage:
-      types: # these are all split across multiple types
-        Heat: -1.66
-        Shock: -1.66
-  # EE Change End
   # FIXME: Used isnt actually implemented so its still unlimited.
   # Uncomment this when its implemented, and make sure it handles StackComponent right
   #- type: Hemostat # Shitmed
@@ -94,6 +81,17 @@
           Quantity: 2
         - ReagentId: Carbon #steel-reinforced
           Quantity: 1
+  # EE Change Start
+  - type: Healing
+    delay: 1
+    damageContainers:
+    - Silicon
+    damage:
+      types: # HardLight: Made HV heal a little more than MV at an even slower rate.
+        Heat: -5.44
+        Shock: -5.44
+        Cold: -5.44
+  # EE Change End
 
 - type: entity
   parent: CableHVStack
@@ -159,6 +157,17 @@
           Quantity: 3
         - ReagentId: Copper
           Quantity: 2
+  # EE Change Start
+  - type: Healing
+    delay: 0.8
+    damageContainers:
+    - Silicon
+    damage:
+      types: # HardLight: Made MV heal a little more than LV at a slightly slower rate.
+        Heat: -4.33
+        Shock: -4.33
+        Cold: -4.33
+  # EE Change End
 
 - type: entity
   parent: CableMVStack
@@ -223,6 +232,17 @@
           Quantity: 3
         - ReagentId: Copper
           Quantity: 2
+  # EE Change Start
+  - type: Healing
+    delay: 0.6
+    damageContainers:
+    - Silicon
+    damage:
+      types: # HardLight: Increased to -3.22 (from -1.66) to match Delta-V
+        Heat: -3.22
+        Shock: -3.22
+        Cold: -3.22
+  # EE Change End
 
 - type: entity
   parent: CableApcStack

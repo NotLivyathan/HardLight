@@ -206,6 +206,33 @@
       - tool: Screwing
         doAfter: 0.5
 
+    - to: Quadsec
+      steps:
+      - assemblyId: quadsec
+        guideString: borg-construction-guide-string
+
+      - material: Cable
+        amount: 1
+        doAfter: 1
+        store: part-container
+
+      - component: Flash
+        name: construction-graph-component-flash
+        store: part-container
+        icon:
+          sprite: Objects/Weapons/Melee/flash.rsi
+          state: flash
+
+      - component: Flash
+        name: construction-graph-component-second-flash
+        store: part-container
+        icon:
+          sprite: Objects/Weapons/Melee/flash.rsi
+          state: flash
+
+      - tool: Screwing
+        doAfter: 0.5
+
     - to: Quadsalv
       steps:
       - assemblyId: quadsalv
@@ -316,6 +343,9 @@
 
   - node: Quadborg
     entity: BorgChassisQuad
+
+  - node: Quadsec
+    entity: BorgChassisQuadSec
 
   - node: Quadengi
     entity: BorgChassisQuadEngineer

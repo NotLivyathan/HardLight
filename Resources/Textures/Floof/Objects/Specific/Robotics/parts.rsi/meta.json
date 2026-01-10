@@ -26,6 +26,24 @@
       "name": "borg_head+o"
     },
 	{
+      "name": "borg_l_secarm+o"
+    },
+    {
+      "name": "borg_r_secarm+o"
+    },
+    {
+      "name": "borg_l_secleg+o"
+    },
+    {
+      "name": "borg_r_secleg+o"
+    },
+    {
+      "name": "borg_secchest+o"
+    },
+    {
+      "name": "borg_sechead+o"
+    },
+	{
       "name": "borg_l_engiarm+o"
     },
     {

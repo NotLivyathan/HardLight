@@ -688,6 +688,7 @@
     - SecurityPracticeStatic
     - CivilianAmmoRecipePack
     - SecurityWeaponsStatic
+    - SecBorgLimbsStatic # HardLight addition
     dynamicPacks:
     - SalvageSecurityBoards
     - SalvageSecurityWeapons
