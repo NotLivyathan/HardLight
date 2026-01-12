@@ -1,6 +1,6 @@
 - type: entity
   name: NT-88 Peregrine
-  parent: [BaseC2ExpeditionContraband , BaseWeaponPowerCell, BaseGunWieldable]
+  parent: [BaseC3ExpeditionContraband, BaseWeaponPowerCell, BaseGunWieldable]
   id: WeaponRailgunPeregrine
   description: From NanoTrasen Skunkworks. Uses a specific proprietary cartridge, although it may be possible to jury-rig something workable...
   components:
@@ -24,7 +24,7 @@
     proto: RailgunLaser
     fireCost: 500
   - type: Gun
-    fireRate: 0.8
+    fireRate: 0.5
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
