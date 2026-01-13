@@ -30,6 +30,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       types:
         Heat: -15
@@ -87,6 +88,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       types:
         Heat: -20
@@ -135,6 +137,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       groups:
         Brute: -45 # was 5 for each, Buffed due to limb damage changes (Goobstation)
@@ -190,6 +193,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       groups:
         Brute: -60 # was 10 for each, now 20 for each type in the group, Buffed due to surgery changes (Goobstation)
@@ -236,6 +240,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       types:
         Bloodloss: -2.5 #lowers bloodloss damage, was .5 buffed to 5 due to Limb Damage Changes (Goobstation)
@@ -289,6 +294,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       groups:
         Brute: 5 # Tourniquets HURT!
@@ -327,6 +333,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       types:
         Slash: -15 # Was 5
@@ -391,6 +398,7 @@
   - type: Healing
     damageContainers:
     - Biological
+    - Synth # HardLight
     damage:
       groups: # these are all split across multiple types
         Brute: -150

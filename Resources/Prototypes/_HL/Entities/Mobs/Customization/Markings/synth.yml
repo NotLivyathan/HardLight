@@ -38,8 +38,28 @@
   sprites:
   - sprite: _HL/Mobs/Customization/Synth/eyes.rsi
     state: eyes_synth_glow
-    
-# alternate snout
+
+# head
+
+- type: marking
+  id: SynthSolarFans
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/head.rsi
+    state: synth_solar_fans
+
+# head lights
+
+- type: marking
+  id: SynthSolarFansLight
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/head.rsi
+    state: synth_solar_fans_light
 
 # antennae
 
@@ -91,8 +111,16 @@
   sprites:
   - sprite: _HL/Mobs/Customization/Synth/antennae.rsi
     state: synth_antenna_twin
+- type: marking
+  id: SynthAntennaSoftCurl
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/antennae.rsi
+    state: synth_antenna_soft_curl
 
-# antennae with lights
+# antennae lights
 
 - type: marking
   id: SynthAntennaSharpLight
@@ -118,7 +146,37 @@
   sprites:
   - sprite: _HL/Mobs/Customization/Synth/antennae.rsi
     state: synth_antenna_twin_light
+- type: marking
+  id: SynthAntennaSoftCurlLight
+  bodyPart: HeadTop
+  markingCategory: HeadTop
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/antennae.rsi
+    state: synth_antenna_soft_curl_light
 
 # chest
 
-# chest with lights
+# chest lights
+
+# wings
+
+- type: marking
+  id: SynthWings
+  bodyPart: Tail
+  markingCategory: Chest
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/wings.rsi
+    state: wings_synth
+
+# wing lights
+
+- type: marking
+  id: SynthWingsLight
+  bodyPart: Tail
+  markingCategory: Chest
+  speciesRestriction: [ Synth ]
+  sprites:
+  - sprite: _HL/Mobs/Customization/Synth/wings.rsi
+    state: wings_synth_light

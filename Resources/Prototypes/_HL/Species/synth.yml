@@ -58,7 +58,7 @@
       points: 3
       required: true
     Chest:
-      points: 1 # HL makes this 1
+      points: 2 # HL makes this 1
       required: false
     Legs:
       points: 8 # imp 2<8

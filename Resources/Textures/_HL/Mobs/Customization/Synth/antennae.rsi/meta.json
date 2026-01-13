@@ -31,6 +31,10 @@
             "name": "synth_antenna_thick",
             "directions": 4
         },
+		{
+            "name": "synth_antenna_soft_curl",
+            "directions": 4
+        },
         {
             "name": "synth_antenna_twin_light",
             "directions": 4
@@ -41,6 +45,10 @@
         },
         {
             "name": "synth_antenna_thick_light",
+            "directions": 4
+        },
+		{
+            "name": "synth_antenna_soft_curl_light",
             "directions": 4
         }
     ]
