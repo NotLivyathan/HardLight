@@ -101,6 +101,7 @@
   description: "A sensor pack designed to be installed in a Synth. This one contains audio sensors."
   components:
   - type: Sprite
+    sprite: _HL/Mobs/Species/Synth/organs.rsi
     state: ears
   - type: Ears
 
