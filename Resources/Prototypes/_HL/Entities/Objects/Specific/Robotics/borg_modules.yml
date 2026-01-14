@@ -9,13 +9,9 @@
     layers:
     - { sprite: Objects/Specific/Robotics/borgmodule.rsi, state: generic }
     - { sprite: _HL/Objects/Specific/Robotics/borgmodule.rsi, state: icon-storage }
-  # Frontier: ItemBorgModule replaced with droppable variants
-  - type: DroppableBorgModule
+  - type: ItemBorgModule
     moduleId: Storage
     items:
-    - id: NFClothingBackpack
-      whitelist:
-        components:
-        - Storage
+    - ClothingBackpackHolding
   - type: BorgModuleIcon
     icon: { sprite: _HL/Interface/Actions/actions_borg.rsi, state: storage-module }
