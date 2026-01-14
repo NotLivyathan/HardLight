@@ -8,7 +8,7 @@
       connections:
       - torso
       organs:
-        brain: OrganVoxBrain # DeltaV
+        brain: OrganVoxBrain
         eyes: OrganVoxEyes
         cybernetic_anchor: OrganCrescentDummy
     torso:

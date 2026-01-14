@@ -631,7 +631,6 @@
   - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
     state: snoth2
 
-
 - type: marking
   id: VoxLArmProsthetic
   bodyPart: LHand
