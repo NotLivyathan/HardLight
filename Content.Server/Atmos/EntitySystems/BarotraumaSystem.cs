@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.Components;
-using Content.Shared._Afterlight.Atmos;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
 using Content.Shared.Damage;
@@ -23,9 +22,6 @@ namespace Content.Server.Atmos.EntitySystems
 
         private const float UpdateTimer = 1f;
         private float _timer;
-
-        // Afterlight
-        [Dependency] private readonly SharedALBarotraumaSystem _alBarotrauma = default!;
 
         public override void Initialize()
         {
@@ -238,7 +234,7 @@ namespace Content.Server.Atmos.EntitySystems
                     _ => pressure
                 };
 
-                if (pressure <= Atmospherics.HazardLowPressure && _alBarotrauma.CanTakePressureDamage(uid)) // Afterlight
+                if (pressure <= Atmospherics.HazardLowPressure)
                 {
                     // Deal damage and ignore resistances. Resistance to pressure damage should be done via pressure protection gear.
                     _damageableSystem.TryChangeDamage(uid, barotrauma.Damage * Atmospherics.LowPressureDamage, true, false, canSever: false); // Shitmed Change
@@ -251,7 +247,7 @@ namespace Content.Server.Atmos.EntitySystems
 
                     _alertsSystem.ShowAlert(uid, barotrauma.LowPressureAlert, 2);
                 }
-                else if (pressure >= Atmospherics.HazardHighPressure && _alBarotrauma.CanTakePressureDamage(uid)) // Afterlight
+                else if (pressure >= Atmospherics.HazardHighPressure)
                 {
                     var damageScale = MathF.Min(((pressure / Atmospherics.HazardHighPressure) - 1) * Atmospherics.PressureDamageCoefficient, Atmospherics.MaxHighPressureDamage);
 

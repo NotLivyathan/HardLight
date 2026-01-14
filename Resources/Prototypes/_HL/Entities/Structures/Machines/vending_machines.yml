@@ -45,3 +45,30 @@
   - type: AccessReader
     access: [["Security"]]
   - type: ActivatableUIRequiresAccess
+
+- type: entity
+  parent: VendingMachine
+  id: passionDrobe
+  name: PassionDrobe
+  description: A vending machine for naughty toys.
+  components:
+  - type: VendingMachine
+    pack: passionDrobeInventory
+    offState: off
+    normalState: normal-unshaded
+  - type: SpeakOnUIClosed
+    pack: GenericVendGoodbyes
+  - type: Sprite
+    sprite: _HL/Structures/Machines/VendingMachines/passiondrobe.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: "panel"
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: PointLight
+    radius: 1.8
+    energy: 1.6
+    color: "#B63BB8"

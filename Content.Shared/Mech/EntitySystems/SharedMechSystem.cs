@@ -165,6 +165,7 @@ public abstract class SharedMechSystem : EntitySystem
         _actions.AddAction(pilot, ref component.MechCycleActionEntity, component.MechCycleAction, mech);
         _actions.AddAction(pilot, ref component.MechUiActionEntity, component.MechUiAction, mech);
         _actions.AddAction(pilot, ref component.MechEjectActionEntity, component.MechEjectAction, mech);
+        _actions.AddAction(pilot, ref component.ToggleActionEntity, component.ToggleAction, mech); //Goobstation Mech Lights toggle action
 
         RaiseEquipmentEquippedEvent((mech, component), pilot); // Frontier (note: must send pilot separately, not yet in their seat)
         _actions.AddAction(pilot, ref component.MechRadarUiActionEntity, component.MechRadarUiAction, mech);

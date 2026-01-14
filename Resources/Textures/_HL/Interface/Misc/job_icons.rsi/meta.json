@@ -30,6 +30,12 @@
         },
         {
             "name": "CartelLieutenant"
+        },
+        {
+            "name": "interdyne-doctor-icon"
+        },
+        {
+            "name": "interdyne-head-icon"
         }
     ]
 }

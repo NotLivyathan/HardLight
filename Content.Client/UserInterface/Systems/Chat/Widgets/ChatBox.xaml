@@ -11,11 +11,7 @@
                     StyleClasses="StyleNano.StyleClassChatPanel">
         <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalExpand="True">
             <OutputPanel Name="Contents" HorizontalExpand="True" VerticalExpand="True" Margin="8 8 8 4" ShowScrollDownButton="True" />
-            <BoxContainer Orientation="Horizontal">
-                <controls:ChatInputBox HorizontalExpand="True" Name="ChatInput" Access="Public" Margin="2"/>
-                <Button Name="RPButton" Access="Public" Text="{Loc al-interaction-rp}"
-                        StyleClasses="chatFilterOptionButton" HorizontalExpand="False" />
-            </BoxContainer>
+            <controls:ChatInputBox HorizontalExpand="True" Name="ChatInput" Access="Public" Margin="2"/>
         </BoxContainer>
     </PanelContainer>
 </widgets:ChatBox>

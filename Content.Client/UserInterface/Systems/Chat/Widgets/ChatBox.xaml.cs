@@ -1,5 +1,3 @@
-using System.Linq;
-using Content.Client._Afterlight.Subtle;
 using Content.Client.UserInterface.Systems.Chat.Controls;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
@@ -51,10 +49,6 @@ public partial class ChatBox : UIWidget
         _controller = UserInterfaceManager.GetUIController<ChatUIController>();
         _controller.MessageAdded += OnMessageAdded;
         _controller.RegisterChat(this);
-
-        // Afterlight start
-        RPButton.OnPressed += _ => _entManager.SystemOrNull<SubtleUISystem>()?.OpenWindow();
-        // Afterlight end
 
         // WD EDIT START
         _cfg = IoCManager.Resolve<IConfigurationManager>();

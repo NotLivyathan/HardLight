@@ -1,2 +1,2 @@
 reagent-name-amoxla = Amoxla
-reagent-desc-amoxla = A targeted Avali medicine for ammonia-based physiology.
+reagent-desc-amoxla = Ammonia-based chem that treats airloss and bloodloss in Avali, and acts like a somewhat strong poison in other species.

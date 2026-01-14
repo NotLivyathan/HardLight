@@ -1,10 +1,43 @@
 - type: reagent
+  id: InertNanites
+  name: reagent-name-inertnanites
+  group: Medicine
+  desc: reagent-desc-inertnanites
+  physicalDesc: reagent-physical-desc-shiny
+  flavor: metallic
+  color: "#79b5b4"
+  recognizable: true
+  worksOnTheDead: false
+  metabolisms:
+    Medicine:
+      metabolismRate: 0.3
+      effects:
+      - !type:AdjustReagent
+        conditions:
+        - !type:OrganType
+          type: Synth
+        reagent: Nanites
+        amount: 0.3
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Synth
+          shouldHave: false
+        damage:
+          types:
+            Poison: 0.2
+  footstepSound:
+    collection: FootstepBlood
+    params:
+      volume: 6
+
+- type: reagent
   id: Nanites
   name: reagent-name-nanites
   group: Medicine
   desc: reagent-desc-nanites
   physicalDesc: reagent-physical-desc-glowing
-  flavor: sweet
+  flavor: metallic
   color: "#8afffd"
   recognizable: true
   worksOnTheDead: true
@@ -17,10 +50,15 @@
         - !type:OrganType
           type: Synth
         damage:
-          groups:
-            Burn: -3
-            Toxin: -1
-            Brute: -3
+          types:
+            Blunt: -3
+            Slash: -3
+            Piercing: -3
+            Poison: -1
+            Heat: -3
+            Shock: -2
+            Cold: -3
+            Radiation: -1
       - !type:ModifyBleedAmount
         conditions:
         - !type:OrganType
@@ -37,8 +75,17 @@
           type: Synth
           shouldHave: false
         damage:
-          groups:
-            Brute: 2
+          types:
+            Slash: 3
+            Piercing: 3
+            Blunt: 1
+      - !type:Emote
+        conditions:
+        - !type:OrganType
+          type: Synth
+          shouldHave: false
+        emote: Scream
+        probability: 0.2
   footstepSound:
     collection: FootstepBlood
     params:

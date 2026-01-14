@@ -1,0 +1,104 @@
+# Cargo
+- type: loadout
+  id: CargoForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitCargo
+
+# Engineering
+- type: loadout
+  id: EngineeringForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitEngineer
+
+- type: loadout
+  id: AtmosTechnicianForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitAtmosTech
+
+# Medical
+- type: loadout
+  id: MedicalForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitMedic
+
+# Science
+- type: loadout
+  id: ScienceForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitScientist
+
+# Security
+- type: loadout
+  id: SecurityForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitHLSec
+
+# Service
+- type: loadout
+  id: BotanyForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitHydro
+
+- type: loadout
+  id: BoxerForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitBoxerRandom
+
+- type: loadout
+  id: ChaplainForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitChaplain
+
+- type: loadout
+  id: JanitorForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitJanitor
+
+- type: loadout
+  id: ServiceForcedClothingOuterEVASuit
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: NFOuterSuitRequired
+  price: 0
+  equipment:
+    outerClothing: ClothingOuterEVASuitServiceWorker

@@ -11,6 +11,8 @@
     state: full
   - type: Damageable
     damageModifierSet: Synth
+    damageContainer: Synth
+  - type: HLSynth
   - type: Thirst
   - type: DamageVisuals
     damageOverlayGroups:
@@ -18,6 +20,9 @@
         sprite: Mobs/Effects/brute_damage.rsi
         color: "#8afffd"
   - type: ZombieImmune
+  - type: Sanitized
+  - type: Puller
+    needsHands: false
   - type: HumanoidAppearance
     species: Synth
   - type: Body
@@ -82,16 +87,19 @@
       Unsexed: UnisexSilicon
   - type: BodyEmotes
     soundsId: ReptilianBodyEmotes
+  - type: WiresPanel
+    openingTool: Operating
+  - type: ContainerContainer
+    containers:
+      key_slots: !type:Container
   - type: EncryptionKeyHolder
-    keySlots: 10  # 4 to 10 to match other headsets from frontier   Hardlight change
-    showOnExamine: false
-    keysExtractionMethod: Operating
-  - type: ContainerFill #Hardlight change
+    keySlots: 10
+    examineWhileLocked: false
   - type: IntrinsicRadioReceiver
   - type: IntrinsicRadioTransmitter
   - type: ActiveRadio
   - type: Bloodstream
-    bloodReagent: Nanites
+    bloodReagent: InertNanites
     bloodRefreshAmount: 0.0
   - type: PassiveDamage
     allowedStates:
@@ -100,11 +108,29 @@
     - Dead
     damage:
       groups:
-        Brute: -1
-        Burn: -1
+        Brute: -3
+        Burn: -4
   - type: BlockInjection
     blockHypospray: true
     blockInjectOnProjectile: true
+  - type: Temperature
+    heatDamageThreshold: 475
+    coldDamageThreshold: 55
+    coldDamage:
+      types:
+        Cold: 0.1 #per second, scales with temperature & other constants
+    heatDamage:
+      types:
+        Heat: 1.5 #per second, scales with temperature & other constants
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.15 #per second, scales with pressure and other constants.
+  - type: TemperatureSpeed
+    thresholds:
+      100: 0.7
+      75: 0.4
+      55: 0.2
   - type: LayingDown
   - type: OfferItem # HL
 

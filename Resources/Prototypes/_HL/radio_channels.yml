@@ -4,6 +4,7 @@
   keycode: 'r'
   frequency: 1361
   color: "#7c00ee"
+  longRange: true
 
 - type: radioChannel
   id: Arcadia
@@ -11,6 +12,7 @@
   keycode: 'a'
   frequency: 1363
   color: "#9f2a2e"
+  longRange: true
 
 - type: radioChannel
   id: Nanotrasen
@@ -18,6 +20,7 @@
   keycode: 'o'
   frequency: 1365
   color: "#2d78c8"
+  longRange: true
 
 - type: radioChannel
   id: Wideband-A
@@ -53,3 +56,12 @@
   keycode: 'k'
   frequency: 1373
   color: "#a32984"
+  longRange: true
+
+- type: radioChannel
+  id: InterdynePharma
+  name: chat-radio-interdyne
+  keycode: '7'
+  frequency: 1373
+  color: "#EA7FC7"
+  longRange: true

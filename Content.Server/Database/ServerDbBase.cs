@@ -9,12 +9,9 @@ using System.Threading.Tasks;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Shared._Common.Consent; // Consent system
-using Content.Server.Humanoid.Markings.Extensions;
-using Content.Shared._Afterlight.Kinks;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Construction.Prototypes;
 using Content.Shared.Database;
-using Content.Shared.Database._Afterlight;
 using Content.Shared.Ghost.Roles;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
@@ -27,10 +24,11 @@ using Robust.Shared.Enums;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Content.Server.Humanoid.Markings.Extensions;
 
 namespace Content.Server.Database
 {
-    public abstract partial class ServerDbBase
+    public abstract class ServerDbBase
     {
         private readonly ISawmill _opsLog;
 
@@ -178,36 +176,10 @@ namespace Content.Server.Database
                 .Preference
                 .Include(p => p.Profiles)
                 .SingleAsync(p => p.UserId == userId.UserId);
-            prefs.AdminOOCNameColor = color.ToHex();
-
             prefs.AdminOOCColor = color.ToHex();
 
             await db.DbContext.SaveChangesAsync();
 
-        }
-
-        public async Task SaveAdminOOCNameColorAsync(NetUserId userId, Color color)
-        {
-            await using var db = await GetDb();
-            var prefs = await db.DbContext
-                .Preference
-                .SingleAsync(p => p.UserId == userId.UserId);
-            prefs.AdminOOCNameColor = color.ToHex();
-
-            await db.DbContext.SaveChangesAsync();
-        }
-
-        public async Task SaveConstructionFavoritesAsync(NetUserId userId, List<ProtoId<ConstructionPrototype>> constructionFavorites)
-        {
-            await using var db = await GetDb();
-            var prefs = await db.DbContext
-                .Preference
-                .SingleAsync(p => p.UserId == userId.UserId);
-
-            var jsonDoc = JsonDocument.Parse(JsonSerializer.Serialize(constructionFavorites.Select(x => x.Id).ToList()));
-            prefs.ConstructionFavorites = jsonDoc;
-
-            await db.DbContext.SaveChangesAsync();
         }
 
         private static async Task SetSelectedCharacterSlotAsync(NetUserId userId, int newSlot, ServerDbContext db)
@@ -2044,80 +2016,6 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({players[player]}, {id}
         #endregion
 
         public abstract Task SendNotification(DatabaseNotification notification);
-
-        // Afterlight
-        #region Afterlight
-
-        public async Task<List<ALKinks>> GetKinks(Guid player, CancellationToken cancel)
-        {
-            await using var db = await GetDb(cancel);
-            return await db.DbContext.Kinks.Where(k => k.PlayerId == player).ToListAsync(cancel);
-        }
-
-        public async Task SetKink(Guid player, EntProtoId<KinkDefinitionComponent> kinkId, KinkPreference preference, CancellationToken cancel)
-        {
-            await using var db = await GetDb(cancel);
-            var kink = await db.DbContext.Kinks.FirstOrDefaultAsync(k => k.PlayerId == player && k.KinkId == kinkId.Id, cancel);
-            kink ??= db.DbContext.Kinks.Add(new ALKinks
-            {
-                PlayerId = player,
-                KinkId = kinkId
-            }).Entity;
-
-            kink.Preference = preference;
-            await db.DbContext.SaveChangesAsync(cancel);
-        }
-
-        public async Task UpdateKinks(Guid player, Dictionary<EntProtoId<KinkDefinitionComponent>, KinkPreference> kinks, CancellationToken cancel)
-        {
-            await using var db = await GetDb(cancel);
-            foreach (var (kinkId, preference) in kinks)
-            {
-                var kink = await db.DbContext.Kinks.FirstOrDefaultAsync(k => k.PlayerId == player && k.KinkId == kinkId.Id, cancel);
-                kink ??= db.DbContext.Kinks.Add(new ALKinks
-                {
-                    PlayerId = player,
-                    KinkId = kinkId
-                }).Entity;
-
-                kink.Preference = preference;
-            }
-
-            await db.DbContext.SaveChangesAsync(cancel);
-        }
-
-        public async Task UpdateKinks(Guid player, IEnumerable<EntProtoId<KinkDefinitionComponent>> kinks, KinkPreference preference, CancellationToken cancel)
-        {
-            await using var db = await GetDb(cancel);
-            foreach (var kinkId in kinks)
-            {
-                var kink = await db.DbContext.Kinks.FirstOrDefaultAsync(k => k.PlayerId == player && k.KinkId == kinkId.Id, cancel);
-                kink ??= db.DbContext.Kinks.Add(new ALKinks
-                {
-                    PlayerId = player,
-                    KinkId = kinkId
-                }).Entity;
-
-                kink.Preference = preference;
-            }
-
-            await db.DbContext.SaveChangesAsync(cancel);
-        }
-
-        public async Task RemoveKinks(Guid player, EntProtoId<KinkDefinitionComponent> kinkId, CancellationToken cancel)
-        {
-            await using var db = await GetDb(cancel);
-            var kink = await db.DbContext.Kinks.FirstOrDefaultAsync(k => k.PlayerId == player && k.KinkId == kinkId.Id, cancel);
-            if (kink == null)
-                return;
-
-            db.DbContext.Kinks.Remove(kink);
-
-            await db.DbContext.SaveChangesAsync(cancel);
-        }
-
-        #endregion
-        // Afterlight
 
         // SQLite returns DateTime as Kind=Unspecified, Npgsql actually knows for sure it's Kind=Utc.
         // Normalize DateTimes here so they're always Utc. Thanks.

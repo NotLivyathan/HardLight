@@ -4,8 +4,8 @@ meta:
   engineVersion: 267.3.0
   forkId: ""
   forkVersion: ""
-  time: 01/06/2026 06:52:56
-  entityCount: 18815
+  time: 01/11/2026 00:56:51
+  entityCount: 18827
 maps:
 - 1
 grids:
@@ -769,11 +769,6 @@ entities:
             13405: -36,22
             13416: -36,16
         - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelCornerNe
-          decals:
-            14758: 17,-6
-        - node:
             color: '#EFB34196'
             id: BrickTileSteelCornerNe
           decals:
@@ -844,11 +839,6 @@ entities:
             6280: -26,-34
             6461: 3,21
         - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelCornerNw
-          decals:
-            14759: 15,-6
-        - node:
             color: '#EFB34196'
             id: BrickTileSteelCornerNw
           decals:
@@ -914,11 +904,6 @@ entities:
             4023: -10,24
             6462: 4,19
             13404: -36,18
-        - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelCornerSe
-          decals:
-            14761: 17,-9
         - node:
             color: '#EFB34196'
             id: BrickTileSteelCornerSe
@@ -988,11 +973,6 @@ entities:
           decals:
             4026: -11,24
             6459: 3,19
-        - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelCornerSw
-          decals:
-            14760: 15,-9
         - node:
             color: '#EFB34196'
             id: BrickTileSteelCornerSw
@@ -1313,12 +1293,6 @@ entities:
             13406: -36,21
             13407: -36,19
         - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelLineE
-          decals:
-            14755: 17,-7
-            14756: 17,-8
-        - node:
             color: '#EFB34196'
             id: BrickTileSteelLineE
           decals:
@@ -1462,7 +1436,6 @@ entities:
             4086: 26,-4
             12902: -35,-39
             13372: -41,24
-            14754: 16,-6
         - node:
             color: '#EFB34196'
             id: BrickTileSteelLineN
@@ -1591,11 +1564,6 @@ entities:
             13417: -42,14
             13418: -39,14
         - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelLineS
-          decals:
-            14757: 16,-9
-        - node:
             color: '#EFB34196'
             id: BrickTileSteelLineS
           decals:
@@ -1690,12 +1658,6 @@ entities:
             13402: -37,19
             13403: -37,18
         - node:
-            color: '#DE3A3A96'
-            id: BrickTileSteelLineW
-          decals:
-            14752: 15,-8
-            14753: 15,-7
-        - node:
             color: '#EFB34196'
             id: BrickTileSteelLineW
           decals:
@@ -1732,6 +1694,11 @@ entities:
             id: BrickTileWhiteCornerNe
           decals:
             15946: -37,-9
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteCornerNe
+          decals:
+            16107: 17,-6
         - node:
             color: '#408AA07F'
             id: BrickTileWhiteCornerNe
@@ -1792,6 +1759,11 @@ entities:
             16012: -37,-34
             16025: -23,-42
         - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteCornerNw
+          decals:
+            16108: 15,-6
+        - node:
             color: '#43990996'
             id: BrickTileWhiteCornerNw
           decals:
@@ -1840,6 +1812,11 @@ entities:
             16008: -34,-36
             16016: -34,-40
             16027: -18,-44
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteCornerSe
+          decals:
+            16112: 17,-9
         - node:
             color: '#43990996'
             id: BrickTileWhiteCornerSe
@@ -1892,6 +1869,11 @@ entities:
             16011: -37,-36
             16020: -38,-40
             16028: -23,-44
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteCornerSw
+          decals:
+            16114: 15,-9
         - node:
             color: '#43990996'
             id: BrickTileWhiteCornerSw
@@ -2092,6 +2074,12 @@ entities:
             color: '#408AA07F'
             id: BrickTileWhiteLineE
           decals:
+            16110: 17,-7
+            16111: 17,-8
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteLineE
+          decals:
             15496: -4,-21
             15497: -4,-22
             15498: -4,-23
@@ -2187,6 +2175,11 @@ entities:
             12813: 28,12
             12814: 28,14
             12815: 28,15
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteLineN
+          decals:
+            16109: 16,-6
         - node:
             color: '#408AA07F'
             id: BrickTileWhiteLineN
@@ -2293,6 +2286,11 @@ entities:
             color: '#408AA07F'
             id: BrickTileWhiteLineS
           decals:
+            16113: 16,-9
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteLineS
+          decals:
             15513: -4,-27
             15514: -3,-27
             15518: 0,-27
@@ -2388,6 +2386,12 @@ entities:
           decals:
             12811: 26,11
             12812: 27,11
+        - node:
+            color: '#408AA07F'
+            id: BrickTileWhiteLineW
+          decals:
+            16115: 15,-8
+            16116: 15,-7
         - node:
             color: '#408AA07F'
             id: BrickTileWhiteLineW
@@ -3841,9 +3845,6 @@ entities:
             14740: 20,-9
             14741: 21,-7
             14768: 16,-10
-            14769: 15,-8
-            14770: 16,-6
-            14771: 17,-7
             14792: 2,-35
             14793: 3,-34
             14794: 1,-34
@@ -4027,6 +4028,11 @@ entities:
             16100: -18,-43
             16101: -19,-43
             16102: -18,-44
+            16117: 16,-9
+            16118: 15,-8
+            16127: 16,-8
+            16128: -14,-13
+            16134: 2,-32
         - node:
             cleanable: True
             angle: 1.5707963267948966 rad
@@ -4905,10 +4911,7 @@ entities:
             14746: 17,-13
             14748: 19,-10
             14749: 18,-13
-            14772: 15,-9
-            14773: 17,-8
             14774: 18,-7
-            14775: 15,-6
             14796: 2,-34
             14797: 5,-34
             14844: 49,1
@@ -5009,6 +5012,7 @@ entities:
             16081: -21,-40
             16082: -22,-44
             16096: -19,-42
+            16119: 16,-7
         - node:
             cleanable: True
             angle: 1.5707963267948966 rad
@@ -5075,7 +5079,6 @@ entities:
             11464: -5,34
             11465: -3,33
             11466: -2,32
-            15417: -14,-13
             15431: 23,40
             15432: 24,39
         - node:
@@ -5548,8 +5551,6 @@ entities:
             14734: 20,-12
             14735: 17,-11
             14736: 18,-13
-            14777: 16,-9
-            14778: 17,-6
             14783: 14,14
             14798: 4,-34
             14799: 3,-35
@@ -5626,6 +5627,7 @@ entities:
             16090: -22,-42
             16093: -21,-44
             16097: -19,-44
+            16120: 17,-7
         - node:
             cleanable: True
             angle: 1.5707963267948966 rad
@@ -6211,7 +6213,6 @@ entities:
             14721: -11,-34
             14750: 17,-14
             14751: 21,-9
-            14779: 16,-8
             14857: 55,1
             14858: 58,1
             14859: 57,-2
@@ -6280,6 +6281,14 @@ entities:
             16087: -20,-40
             16091: -23,-43
             16098: -18,-42
+            16121: 17,-6
+            16122: 15,-6
+            16123: 15,-7
+            16124: 17,-9
+            16125: 15,-9
+            16126: 17,-8
+            16129: -14,-14
+            16130: -9,-17
         - node:
             cleanable: True
             angle: 1.5707963267948966 rad
@@ -6597,6 +6606,7 @@ entities:
             7338: -21,-29
             7457: -67,-30
             15055: -11,2
+            16105: -14,-13
         - node:
             color: '#D3D3D3FF'
             id: MiniTileSteelCornerSe
@@ -7281,12 +7291,16 @@ entities:
             15068: -10,-4
             15069: -10,-5
             15378: -14,-14
-            15379: -14,-13
         - node:
             color: '#367487FF'
             id: MiniTileWhiteInnerNe
           decals:
             15923: -6,25
+        - node:
+            color: '#4E5F72FF'
+            id: MiniTileWhiteInnerNe
+          decals:
+            16106: -14,-13
         - node:
             color: '#FFFFFFFF'
             id: MiniTileWhiteInnerNe
@@ -7528,8 +7542,12 @@ entities:
             id: WarnCornerNE
           decals:
             13393: -46,19
-            13733: 2,-32
             14892: 9,-21
+        - node:
+            color: '#FFFFFF7F'
+            id: WarnCornerNE
+          decals:
+            16133: 2,-32
         - node:
             color: '#D4D4D496'
             id: WarnCornerNW
@@ -16607,14 +16625,6 @@ entities:
     - type: Transform
       pos: -34.5,-22.5
       parent: 2
-- proto: AlwaysPoweredlightBlue
-  entities:
-  - uid: 16329
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -18.5,-13.5
-      parent: 2
 - proto: AmeController
   entities:
   - uid: 2508
@@ -22224,6 +22234,25 @@ entities:
     components:
     - type: Transform
       pos: -36.26771,-38.40656
+      parent: 2
+- proto: BoxFolderNfsdFormsBrown
+  entities:
+  - uid: 18818
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -6.619691,-32.087017
+      parent: 2
+  - uid: 18819
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 1.898441,-18.443241
+      parent: 2
+  - uid: 18820
+    components:
+    - type: Transform
+      pos: -2.8619757,-37.45634
       parent: 2
 - proto: BoxFolderRed
   entities:
@@ -50295,6 +50324,36 @@ entities:
     - type: Transform
       pos: 24.5,-22.5
       parent: 2
+  - uid: 18822
+    components:
+    - type: Transform
+      pos: 6.5,35.5
+      parent: 2
+  - uid: 18823
+    components:
+    - type: Transform
+      pos: 7.5,35.5
+      parent: 2
+  - uid: 18824
+    components:
+    - type: Transform
+      pos: 6.5,36.5
+      parent: 2
+  - uid: 18825
+    components:
+    - type: Transform
+      pos: 7.5,36.5
+      parent: 2
+  - uid: 18826
+    components:
+    - type: Transform
+      pos: 6.5,37.5
+      parent: 2
+  - uid: 18827
+    components:
+    - type: Transform
+      pos: 7.5,37.5
+      parent: 2
 - proto: CellRechargerCircuitboard
   entities:
   - uid: 8500
@@ -54414,6 +54473,13 @@ entities:
     components:
     - type: Transform
       pos: -29.5,-22.5
+      parent: 2
+- proto: CrateContrabandStorageSecure
+  entities:
+  - uid: 18817
+    components:
+    - type: Transform
+      pos: 2.5,-31.5
       parent: 2
 - proto: CrateEngineeringAMEJar
   entities:
@@ -61436,6 +61502,11 @@ entities:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -14.5,-8.5
+      parent: 2
+  - uid: 18816
+    components:
+    - type: Transform
+      pos: -17.5,-12.5
       parent: 2
 - proto: EmergencyRollerBed
   entities:
@@ -92198,6 +92269,13 @@ entities:
     - type: Transform
       pos: -33.679775,-20.57547
       parent: 2
+- proto: MaterialBananium
+  entities:
+  - uid: 16329
+    components:
+    - type: Transform
+      pos: -30.06236,22.542236
+      parent: 2
 - proto: MaterialCardboard10
   entities:
   - uid: 17953
@@ -93104,6 +93182,29 @@ entities:
     - type: Transform
       pos: 5.4112244,-27.511152
       parent: 2
+  - uid: 18821
+    components:
+    - type: MetaData
+      desc: A laminated note from a previous shift.
+      name: paper
+    - type: Transform
+      pos: 39.016743,-19.297487
+      parent: 2
+    - type: Paper
+      stampState: paper_stamp-ce
+      stampedBy:
+      - reapply: False
+        stampType: RubberStamp
+        stampedColor: '#C69B17FF'
+        stampedName: stamp-component-stamped-name-ce
+      content: >-
+        Hey uh, for future shifts, I just wanted to tell ya that these substations are prone to bein' a little shitty when no one's been maintainin' them after a crew change.
+
+        You might needa hard reset 'em by wrenchin' 'em up and then back down.
+
+
+        This one is [italic]REALLY[/italic] important if ya gonna do a telsa, so make sure to fix it before ya turn the damn thing on.
+      editingDisabled: True
 - proto: PaperBin10
   entities:
   - uid: 1872
@@ -95370,6 +95471,12 @@ entities:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: -45.5,20.5
+      parent: 2
+  - uid: 14395
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -18.5,-13.5
       parent: 2
   - uid: 17454
     components:
@@ -100561,13 +100668,6 @@ entities:
     components:
     - type: Transform
       pos: -12.272852,11.512635
-      parent: 2
-- proto: SheetPlasma
-  entities:
-  - uid: 14395
-    components:
-    - type: Transform
-      pos: -30.013832,22.60418
       parent: 2
 - proto: SheetPlasteel
   entities:

@@ -1,2 +1,3 @@
 reagent-physical-desc-abductor = abducted
-reagent-physical-desc-avali = ammoniacal
+
+reagent-physical-desc-avali = non-ferrous

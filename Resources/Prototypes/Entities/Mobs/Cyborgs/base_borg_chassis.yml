@@ -267,9 +267,9 @@
   #- type: MobCollision # AFTERLIGHT
   #- type: ALMobCollision # AFTERLIGHT
   #- type: ALPose # AFTERLIGHT
-  - type: ALMobInteractable # AFTERLIGHT
-  - type: CanBeVorePredator # AFTERLIGHT
-  - type: CanBeVorePrey # AFTERLIGHT
+  # - type: ALMobInteractable # AFTERLIGHT (disabled: component not present)
+  # - type: CanBeVorePredator # AFTERLIGHT (disabled: component not present)
+  # - type: CanBeVorePrey # AFTERLIGHT (disabled: component not present)
 
 - type: entity
   abstract: true

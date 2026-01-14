@@ -24,36 +24,49 @@
 
 - type: entity
   id: OrganSynthBrain
-  parent: BaseSynthOrgan
+  parent: BaseItem
   name: synth ccu
   description: "It's a Synth's brain. Now kindly put it back."
   components:
   - type: Sprite
+    sprite: _HL/Mobs/Species/Synth/organs.rsi
     state: brain
-  - type: Organ # Shitmed Change
-    slotId: brain # Shitmed Change
+  - type: Organ
+    slotId: brain
   - type: Input
     context: "ghost"
-  - type: Brain # Shitmed Change
-  - type: InputMover
+  - type: Brain
   - type: BlockMovement
   - type: Examiner
   - type: BorgBrain
+  - type: TypingIndicator
+    proto: robot
+  - type: Speech
+    speechSounds: Pai
+  - type: Alerts
+  - type: MobState
+    allowedStates:
+    - Alive
+    - Dead
+  - type: Appearance
   - type: Tag
+    tags:
+    - CannotSuicide
   - type: Item
     size: Small
     heldPrefix: brain
 
 - type: entity
   id: OrganSynthEyes
-  parent: BaseSynthOrgan
+  parent: BaseItem
   name: synth gimbal
   description: "A small mechanical gimbal featuring several multi-spectrum cameras. Maybe don't put it in anything other than a Synth."
   components:
-  - type: Organ # Shitmed Change
-    slotId: eyes # Shitmed Change
-  - type: Eyes # Shitmed Change
+  - type: Organ
+    slotId: eyes
+  - type: Eyes
   - type: Sprite
+    sprite: _HL/Mobs/Species/Synth/organs.rsi
     layers:
     - state: eyeball-l
     - state: eyeball-r
@@ -83,13 +96,14 @@
 
 - type: entity
   id: OrganSynthEars
-  parent: BaseSynthOrgan
+  parent: BaseItem
   name: synth audio pack
   description: "A sensor pack designed to be installed in a Synth. This one contains audio sensors."
   components:
   - type: Sprite
+    sprite: _HL/Mobs/Species/Synth/organs.rsi
     state: ears
-  - type: Ears # Shitmed Change
+  - type: Ears
 
 - type: entity
   id: OrganSynthLungs
@@ -97,8 +111,8 @@
   name: synth lungs
   description: "A pair of synthetic lungs. They're supposed to convert gases to nutriment... But they don't."
   components:
-  - type: Organ # Shitmed Change
-    slotId: lungs # Shitmed Change
+  - type: Organ
+    slotId: lungs
   - type: Sprite
     layers:
     - state: lung-l
@@ -130,14 +144,12 @@
   name: synth heart
   description: "A synthetic heart. It doesn't do anything interesting yet."
   components:
-  - type: Heart # Shitmed Change
-  - type: Organ # Shitmed Change
-    slotId: heart # Shitmed Change
+  - type: Heart
+  - type: Organ
+    slotId: heart
   - type: Sprite
     state: heart-on
   # The heart 'metabolizes' medicines and poisons that aren't filtered out by other organs.
-  # This is done because these chemicals need to have some effect even if they aren't being filtered out of your body.
-  # You're technically 'immune to poison' without a heart, but.. uhh, you'll have bigger problems on your hands.
   - type: Metabolizer
     maxReagents: 2
     metabolizerTypes: [ Synth ]
@@ -155,8 +167,8 @@
   name: synth stomach
   description: "A synthetic stomach. It can convert minerals to nutriment and nutriment to nanites."
   components:
-  - type: Organ # Shitmed Change
-    slotId: stomach # Shitmed Change
+  - type: Organ
+    slotId: stomach
   - type: Sprite
     state: stomach
   - type: SolutionContainerManager
@@ -185,15 +197,16 @@
   name: synth liver
   description: "A synthetic liver. It prevents poisoning from alcohol and can convert ethanol to nutriment."
   components:
-  - type: Liver # Shitmed Change
-  - type: Organ # Shitmed Change
-    slotId: liver # Shitmed Change
+  - type: Liver
+  - type: Organ
+    slotId: liver
   - type: Sprite
     state: liver
   - type: Item
     size: Small
     heldPrefix: liver
-  - type: Metabolizer # The liver metabolizes certain chemicals only, like alcohol.
+  # The liver metabolizes certain chemicals only, like alcohol.
+  - type: Metabolizer
     maxReagents: 1
     metabolizerTypes: [ Synth ]
     groups:
@@ -206,7 +219,7 @@
   name: synth kidneys
   description: "A pair of synthetic kidneys. They don't do anything interesting yet."
   components:
-  - type: Organ # Shitmed
+  - type: Organ
     slotId: kidneys
   - type: Sprite
     layers:

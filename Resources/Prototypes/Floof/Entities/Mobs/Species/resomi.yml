@@ -68,7 +68,7 @@
             sprite: Floof/Mobs/Species/Resomi/displacement.rsi
             state: inHand
     - type: Inventory
-      speciesId: resomi
+      speciesId: Resomi
       displacements:
         jumpsuit:
           sizeMaps:
@@ -86,6 +86,67 @@
               sprite: Floof/Mobs/Species/Resomi/displacement.rsi
               state: jumpsuit
         accessory2:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: jumpsuit
+        eyes:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: eyes
+        gloves:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: hands
+        head:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: head
+        back:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: back
+        ears:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: ears
+        shoes:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: feet
+        neck:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: neck
+        mask:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: mask
+        suitstorage:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: suitStorage
+        belt:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: belt
+      femaleDisplacements:
+        jumpsuit:
+          sizeMaps:
+            32:
+              sprite: Floof/Mobs/Species/Resomi/displacement.rsi
+              state: jumpsuit
+        outerClothing:
           sizeMaps:
             32:
               sprite: Floof/Mobs/Species/Resomi/displacement.rsi
@@ -182,7 +243,7 @@
           sprite: Floof/Mobs/Species/Resomi/displacement.rsi
           state: inHand
   - type: Inventory
-    speciesId: resomi
+    speciesId: Resomi
     displacements:
       jumpsuit:
         sizeMaps:

@@ -640,15 +640,7 @@ binds:
 - function: LookUp
   type: State
   key: Space
-  priority: -1 
 - function: OfferItem
   type: State
   key: F
 # endregion EE
-# Afterlight
-- function: ALOpenMobInteraction
-  type: State
-  key: MouseLeft
-  mod1: Shift
-  mod2: Control
-

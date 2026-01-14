@@ -2,6 +2,7 @@ using Content.Server.Administration.Logs;
 using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Medical.Components;
+using Content.Server.Mobs.Components; // HardLight
 using Content.Server.Popups;
 using Content.Server.Stack;
 using Content.Shared.Chemistry.EntitySystems;
@@ -86,8 +87,18 @@ public sealed class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0)
             _bloodstreamSystem.TryModifyBloodLevel(entity.Owner, healing.ModifyBloodLevel);
 
-        var healed = _damageable.TryChangeDamage(entity.Owner, healing.Damage, true, origin: args.User, canSever: false); // Shitmed Change
+        // HardLight Change start
+        // Determines if the entity is a Synth and scales damage recovery accordingly.
+        var damageToApply = healing.Damage;
+        if (TryComp<HLSynthComponent>(entity.Owner, out _))
+        {
+            damageToApply = ScaleDamageSpecifier(healing.Damage, 0.5f);
+        }
 
+        var healed = _damageable.TryChangeDamage(entity.Owner, damageToApply, true, origin: args.User, canSever: false); // Shitmed Change
+
+        // HardLight Change end
+        
         if (healed == null && healing.BloodlossModifier != 0)
             return;
 
@@ -141,6 +152,19 @@ public sealed class HealingSystem : EntitySystem
 
         return false;
     }
+
+    // HardLight Change Start
+    private DamageSpecifier ScaleDamageSpecifier(DamageSpecifier spec, float scale)
+    {
+        var scaled = new DamageSpecifier();
+        foreach (var kvp in spec.DamageDict)
+        {
+            scaled.DamageDict[kvp.Key] = kvp.Value * scale;
+        }
+        return scaled;
+    }
+
+    // HardLight Change End
 
     // Shitmed Change Start
     private bool IsPartDamaged(EntityUid user, EntityUid target)

@@ -14,6 +14,8 @@
     - type: Construction
       graph: GasTrinaryHighFlow
       node: filterHighFlow
+    - type: Flippable
+      mirrorEntity: GasFilterFlippedHighFlow
 
 - type: entity
   parent: GasFilterFlipped
@@ -31,6 +33,8 @@
     - type: Construction
       graph: GasTrinaryHighFlow
       node: filterflippedHighFlow
+    - type: Flippable
+      mirrorEntity: GasFilterHighFlow
 
 - type: entity
   parent: GasMixer
@@ -46,6 +50,8 @@
     - type: Construction
       graph: GasTrinaryHighFlow
       node: mixerHighFlow
+    - type: Flippable
+      mirrorEntity: GasMixerFlippedHighFlow
 
 - type: entity
   parent: GasMixerFlipped
@@ -61,6 +67,8 @@
     - type: Construction
       graph: GasTrinaryHighFlow
       node: mixerflippedHighFlow
+    - type: Flippable
+      mirrorEntity: GasMixerHighFlow
 
 - type: entity
   parent: PressureControlledValve

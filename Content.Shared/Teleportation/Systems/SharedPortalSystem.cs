@@ -88,6 +88,9 @@ public abstract class SharedPortalSystem : EntitySystem
 
     private void OnCollide(EntityUid uid, PortalComponent component, ref StartCollideEvent args)
     {
+        if (HasComp<PortalExemptComponent>(args.OtherEntity))
+            return;
+
         if (!ShouldCollide(args.OurFixtureId, args.OtherFixtureId, args.OurFixture, args.OtherFixture))
             return;
 

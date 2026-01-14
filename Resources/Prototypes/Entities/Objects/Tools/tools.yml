@@ -324,7 +324,7 @@
     sprite: _HL/Objects/Tools/syndie_drill.rsi
     state: drill_screw
   - type: Item
-    sprite: Objects/Tools/drill.rsi
+    sprite: _HL/Objects/Tools/syndie_drill.rsi
     inhandVisuals:
       left:
       - state: inhand-left
@@ -497,7 +497,7 @@
     maxCharges: 20
   - type: AutoRecharge
     rechargeDuration: 10
-    
+
 - type: entity
   id: RCDXeno
   parent: RCDRecharging

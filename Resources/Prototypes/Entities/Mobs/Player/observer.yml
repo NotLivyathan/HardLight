@@ -69,7 +69,6 @@
     radius: 6
     castShadows: false
     enabled: false
-  - type: ActiveInputMover # Afterlight
   # Frontier: changes to the prototype so it can access radars
   - type: UserInterface
     interfaces:

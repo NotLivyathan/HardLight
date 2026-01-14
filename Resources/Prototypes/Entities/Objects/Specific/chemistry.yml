@@ -487,11 +487,11 @@
   - type: SolutionContainerManager
     solutions:
       injector:
-        maxVol: 100
+        maxVol: 150
   - type: Injector
     delay: 2.5
     injectOnly: false
-    maxTransferAmount: 100
+    maxTransferAmount: 150
     minTransferAmount: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 2

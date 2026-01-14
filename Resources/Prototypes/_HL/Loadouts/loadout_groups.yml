@@ -667,3 +667,120 @@
 #  - PsychologistJumpskirt
 #  subgroups:
 #  - ContractorJumpsuit
+
+#Forced Loadouts
+
+# Cargo
+- type: loadoutGroup
+  id: CargoForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - CargoForcedClothingOuterEVASuit
+  fallbacks:
+  - CargoForcedClothingOuterEVASuit
+
+# Engineering
+- type: loadoutGroup
+  id: AtmosphericTechnicianForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - AtmosTechnicianForcedClothingOuterEVASuit
+  fallbacks:
+  - AtmosTechnicianForcedClothingOuterEVASuit
+
+- type: loadoutGroup
+  id: EngineerForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - EngineeringForcedClothingOuterEVASuit
+  fallbacks:
+  - EngineeringForcedClothingOuterEVASuit
+
+# Security
+- type: loadoutGroup
+  id: SecurityForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - SecurityForcedClothingOuterEVASuit
+  fallbacks:
+  - SecurityForcedClothingOuterEVASuit
+
+# Science
+- type: loadoutGroup
+  id: ScienceForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - ScienceForcedClothingOuterEVASuit
+  fallbacks:
+  - ScienceForcedClothingOuterEVASuit
+
+# Service
+- type: loadoutGroup
+  id: BotanistForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - BotanyForcedClothingOuterEVASuit
+  fallbacks:
+  - BotanyForcedClothingOuterEVASuit
+
+- type: loadoutGroup
+  id: BoxerForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - BoxerForcedClothingOuterEVASuit
+  fallbacks:
+  - BoxerForcedClothingOuterEVASuit
+
+- type: loadoutGroup
+  id: ChaplainForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - ChaplainForcedClothingOuterEVASuit
+  fallbacks:
+  - ChaplainForcedClothingOuterEVASuit
+
+- type: loadoutGroup
+  id: JanitorForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - JanitorForcedClothingOuterEVASuit
+  fallbacks:
+  - JanitorForcedClothingOuterEVASuit
+
+- type: loadoutGroup
+  id: ServiceForcedOuterClothing
+  name: loadout-group-contractor-outerclothing
+  minLimit: 1
+  maxLimit: 1
+  hidden: true
+  loadouts:
+  - ServiceForcedClothingOuterEVASuit
+  fallbacks:
+  - ServiceForcedClothingOuterEVASuit

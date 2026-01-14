@@ -1,0 +1,33 @@
+﻿- type: entity
+  name: interdyne hypospray
+  parent: [BaseItem, BaseC3SyndicateContraband] # Frontier: add BaseC3SyndicateContraband
+  description: Using reverse engineered designs from NT, Interdyne produced these in limited quantities for their doctors and heads of staff.
+  id: InterdyneHypo
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Specific/Interdyne/hypospray.rsi
+    layers:
+    - state: hypo
+      map: ["enum.SolutionContainerLayers.Base"]
+    - state: hypo_fill1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
+  - type: Item
+    sprite: _HL/Objects/Specific/Interdyne/hypospray.rsi
+  - type: SolutionContainerManager
+    solutions:
+      hypospray:
+        maxVol: 60
+  - type: RefillableSolution
+    solution: hypospray
+  - type: ExaminableSolution
+    solution: hypospray
+  - type: Hypospray
+    onlyAffectsMobs: false
+  - type: UseDelay
+    delay: 0.5
+  - type: Appearance
+  - type: SolutionContainerVisuals
+    maxFillLevels: 6
+    fillBaseName: hypo_fill
+    solutionName: hypospray

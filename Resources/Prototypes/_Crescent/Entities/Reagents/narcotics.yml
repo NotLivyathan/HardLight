@@ -197,16 +197,22 @@
             Slash: 3
             Piercing: 3
             Blunt: 1
-      - !type:HealthChange # HardLight: Makes mechanites lethal to Synths
+      - !type:HealthChange # HardLight: Makes mechanites extremely lethal to Synths
         conditions:
         - !type:OrganType
           type: Synth
         damage:
           types:
-            Slash: 5
-            Piercing: 5
-            Blunt: 3
-      - !type:AdjustReagent # HardLight: Makes mechanites remove nanites from the bloodstream
+            Slash: 4
+            Piercing: 4
+            Blunt: 2
+      - !type:Emote
+        conditions:
+        - !type:OrganType
+          type: Synth
+        emote: Scream
+        probability: 0.2
+      - !type:AdjustReagent # HardLight: Makes mechanites rapidly remove nanites from the bloodstream
         reagent: Nanites
         amount: -5
 

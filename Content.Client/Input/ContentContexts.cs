@@ -1,4 +1,3 @@
-using Content.Shared._Afterlight.Input;
 using Content.Shared.Input;
 using Robust.Shared.Input;
 
@@ -50,18 +49,12 @@ namespace Content.Client.Input
             // Not in engine so that the RCD can rotate objects
             common.AddFunction(EngineKeyFunctions.EditorRotateObject);
 
-            // Afterlight
-            common.AddFunction(ALKeyFunctions.ALOpenMobInteraction);
-            // Afterlight
-
             var human = contexts.GetContext("human");
             human.AddFunction(EngineKeyFunctions.MoveUp);
             human.AddFunction(EngineKeyFunctions.MoveDown);
             human.AddFunction(EngineKeyFunctions.MoveLeft);
             human.AddFunction(EngineKeyFunctions.MoveRight);
             human.AddFunction(EngineKeyFunctions.Walk);
-            // human.AddFunction(ContentKeyFunctions.Jump); // 🌟Starlight🌟 - Jump function doesn't exist
-            // human.AddFunction(ContentKeyFunctions.ToggleKnockdown); // ToggleKnockdown function doesn't exist
             human.AddFunction(ContentKeyFunctions.SwapHands);
             human.AddFunction(ContentKeyFunctions.SwapHandsPrevious); // Frontier
             human.AddFunction(ContentKeyFunctions.Drop);

@@ -239,10 +239,6 @@
   - type: SurgeryTarget # Shitmed Change
   - type: ModifyMarkings # Hardlight
   - type: ExaminableCharacter # WWDP
-  - type: ALMobInteractable # AFTERLIGHT
-  - type: CanBeVorePredator # AFTERLIGHT
-  - type: CanBeVorePrey # AFTERLIGHT
-  - type: ActiveInputMover # Afterlight
 
 - type: entity
   save: false

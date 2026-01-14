@@ -148,7 +148,7 @@ public sealed partial class MechComponent : Component
     [DataField]
     public EntProtoId MechCycleAction = "ActionMechCycleEquipment";
     [DataField]
-    public EntProtoId ToggleAction = "ActionToggleLight"; //Goobstation Mech Lights toggle action
+    public EntProtoId ToggleAction = "ActionToggleLight"; //Goobstation Mech Lights toggle action 
     [DataField]
     public EntProtoId MechUiAction = "ActionMechOpenUI";
     [DataField]

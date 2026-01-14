@@ -70,6 +70,13 @@
   name: Zealots Of Balaam
   color: "#BC7F58"
 
+
+- type: company
+  id: InterdynePharmaceuticals
+  form: Protagonist
+  name: Interdyne Pharmaceuticals
+  color: "#EA7FC7"
+
 # ====Rogue / Antag. Companies====
 - type: company
   id: TheViperGroup

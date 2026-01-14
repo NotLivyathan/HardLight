@@ -1,0 +1,126 @@
+#- type: entity
+#  id: BlueRainLizardInitialSegment
+#  name: Blue Rain Lizard Segment (Initial)
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: SegmentedEntitySegment 
+#    attachedto: BlueRainLizard
+#  - type: Sprite
+#    sprite: _HL/Lizard/lizard.rsi
+#    layers:
+#    - map: [ "enum.DamageStateVisualLayers.Base" ]
+#      state: segment
+#      # color: "#3363ac"
+#      # shader: unshaded
+#    scale: 0.6, 0.6
+#  - type: Physics
+#    bodyType: KinematicController
+#  - type: Fixtures
+#    fixtures:
+#      fix1:
+#        shape:
+#          !type:PhysShapeCircle
+#          radius: 0.25
+#        density: 20
+#        mask:
+#        - MobMask
+#        layer:
+#        - MobLayer
+#  - type: Transform
+#    anchored: false
+#  - type: RequireProjectileTarget
+#    active: True
+#
+#- type: entity
+#  id: BlueRainLizardSegment
+#  parent: BlueRainLizardInitialSegment
+#  name: Blue Rain Lizard Segment
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: SegmentedEntitySegment 
+#    attachedto: BlueRainLizardInitialSegment
+#  - type: Sprite
+#    sprite: _HL/Lizard/lizard.rsi
+#    layers:
+#    - map: [ "enum.DamageStateVisualLayers.Base" ]
+#      state: segment
+#      # color: "#3363ac"
+#      # shader: unshaded
+#    scale: 0.6, 0.6
+#  # - type: Fixtures
+#    # fixtures:
+#      # fix1:
+#        # shape:
+#          # !type:PhysShapeCircle
+#          # radius: 0.25
+#        # density: 20
+#        # mask:
+#        # - MobMask
+#        # layer:
+#        # - MobLayer
+#- type: entity
+#  id: BlueRainLizardtail
+#  name: Blue Rain Lizard tail
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: SegmentedEntitySegment 
+#    attachedto: BlueRainLizardSegment
+#  - type: Sprite
+#    sprite: _HL/Lizard/lizard.rsi
+#    layers:
+#    - map: [ "enum.DamageStateVisualLayers.Base" ]
+#      state: tip
+#      # color: "#3363ac"
+#      # shader: unshaded
+#    scale: 0.6, 0.6
+#    
+#- type: entity
+#  id: RedRainLizardInitialSegment
+#  name: Red Rain Lizard Segment (Initial)
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: Sprite
+#    sprite: _HL/Lizard/lizard.rsi
+#    layers:
+#    - map: [ "enum.DamageStateVisualLayers.Base" ]
+#      state: segment
+#      # color: "#d30f0f"
+#      # shader: unshaded
+#    scale: 1.2, 1.2
+#  # - type: Fixtures
+#    # fixtures:
+#      # fix1:
+#        # shape:
+#          # !type:PhysShapeCircle
+#          # radius: 0.35
+#        # density: 30
+#        # mask:
+#        # - MobMask
+#        # layer:
+#        # - MobLayer
+#
+#- type: entity
+#  id: RedRainLizardSegment
+#  name: Red Rain Lizard Segment
+#  categories: [ HideSpawnMenu ]
+#  components:
+#  - type: Sprite
+#    sprite: _HL/Lizard/lizard.rsi
+#    layers:
+#    - map: [ "enum.DamageStateVisualLayers.Base" ]
+#      state: segment
+#      # color: "#d30f0f"
+#      # shader: unshaded
+#    scale: 1.2, 1.2
+#  # - type: Fixtures
+#    # fixtures:
+#      # fix1:
+#        # shape:
+#          # !type:PhysShapeCircle
+#          # radius: 0.35
+#        # density: 30
+#        # mask:
+#        # - MobMask
+#        # layer:
+#        # - MobLayer
+#

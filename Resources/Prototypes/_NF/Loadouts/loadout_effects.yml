@@ -54,7 +54,7 @@
   - !type:SpeciesLoadoutEffect
     species:
     - Sheleg
-    - IPC
+#    - IPC #HL Change -- Commenting this out just makes it so IPCs aren't forced to spawn in with EVA suits, since they don't need them.
 
 - type: loadoutEffectGroup
   id: NFNotDocOrStc
