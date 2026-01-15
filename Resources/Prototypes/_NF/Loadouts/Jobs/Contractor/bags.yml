@@ -727,3 +727,12 @@
   price: 1250
   equipment:
     back: ClothingBackpackMessengerMime
+
+- type: loadout
+  id: ContractorClothingBackpackChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT2
+  price: 4000
+  equipment:
+    back: ClothingBackpackChameleonCiv

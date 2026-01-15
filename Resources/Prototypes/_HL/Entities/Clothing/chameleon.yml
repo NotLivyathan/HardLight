@@ -1,0 +1,81 @@
+- type: entity
+  parent: [ClothingBackpackChameleon, BaseCivilianContraband]
+  id: ClothingBackpackChameleonCiv
+  name: civilian chameleon backpack
+  description: A civilian variant of the chameleon backpack.
+
+- type: entity
+  parent: [ClothingBeltSecurityWebbing, BaseCivilianContraband]
+  id: ClothingBeltSecurityWebbingChameleon
+  name: Civilian chameleon Webbing
+  description: A Civilian variant of the chameleon Webbing.
+  components:
+    - type: ChameleonClothing
+      slot: [belt]
+      default: ClothingBeltBase
+    - type: UserInterface
+      interfaces:
+        enum.ChameleonUiKey.Key:
+          type: ChameleonBoundUserInterface
+
+- type: entity
+  parent: [ClothingHeadsetChameleon, BaseCivilianContraband]
+  id: ClothingHeadsetChameleonCiv
+  name: civilian chameleon headset
+  description: A civilian variant of the chameleon headset.
+
+- type: entity
+  parent: [ClothingEyesChameleon, BaseCivilianContraband]
+  id: ClothingEyesChameleonCiv
+  name: civilian chameleon glasses
+  description: A civilian variant of the chameleon glasses.
+
+- type: entity
+  parent: [ClothingHandsChameleon, BaseCivilianContraband]
+  id: ClothingHandsChameleonCiv
+  name: civilian chameleon gloves
+  description: A civilian variant of the chameleon gloves.
+
+- type: entity
+  parent: [ClothingHeadHatChameleon, BaseCivilianContraband]
+  id: ClothingHeadHatChameleonCiv
+  name: civilian chameleon hat
+  description: A civilian variant of the chameleon hat.
+
+- type: entity
+  parent: [ClothingMaskGasChameleon, BaseCivilianContraband]
+  id: ClothingMaskGasChameleonCiv
+  name: civilian chameleon gas mask
+  description: A civilian variant of the chameleon gas mask.
+
+- type: entity
+  parent: [ClothingNeckChameleon, BaseCivilianContraband]
+  id: ClothingNeckChameleonCiv
+  name: civilian chameleon scarf
+  description: A civilian variant of the chameleon scarf.
+
+- type: entity
+  parent: [ClothingOuterVestTank, BaseCivilianContraband]
+  id: ClothingOuterChameleonCiv
+  name: civilian chameleon vest
+  description: A civilian variant of the chameleon vest.
+  components:
+    - type: ChameleonClothing
+      slot: [outerClothing]
+      default: DummyOuterInvisible
+    - type: UserInterface
+      interfaces:
+        enum.ChameleonUiKey.Key:
+          type: ChameleonBoundUserInterface
+
+- type: entity
+  parent: [ClothingShoesChameleon, BaseCivilianContraband]
+  id: ClothingShoesChameleonCiv
+  name: civilian chameleon shoes
+  description: A civilian variant of the chameleon shoes.
+
+- type: entity
+  parent: [ClothingUniformJumpsuitChameleon, BaseCivilianContraband]
+  id: ClothingUniformJumpsuitChameleonCiv
+  name: civilian chameleon jumpsuit
+  description: A civilian variant of the chameleon jumpsuit.

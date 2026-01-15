@@ -668,7 +668,7 @@
   price: 7500
   equipment:
     shoes: ClothingShoesClownLarge
-    
+
 - type: loadout
   id: ContractorClothingShoesBling
   effects:
@@ -680,3 +680,15 @@
   price: 7500
   equipment:
     shoes: ClothingShoesBling
+
+- type: loadout
+  id: ContractorClothingShoesChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT3
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: ShoesCapableNF
+  price: 4000
+  equipment:
+    shoes: ClothingShoesChameleonCiv

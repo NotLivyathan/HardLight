@@ -61,14 +61,14 @@ namespace Content.Server.Forensics
 
         private SoundSpecifier _confirmSound = new SoundPathSpecifier("/Audio/Effects/Cargo/ping.ogg");
 
-        private const int ActiveUnusedDeadDropSpesoReward = 20000;
-        private const float ActiveUnusedDeadDropFUCReward = 2.0f;
-        private const int ActiveUsedDeadDropSpesoReward = 10000;
-        private const float ActiveUsedDeadDropFUCReward = 1.0f;
-        private const int InactiveUsedDeadDropSpesoReward = 5000;
-        private const float InactiveUsedDeadDropFUCReward = 0.5f;
-        private const int DropPodSpesoReward = 10000;
-        private const float DropPodFUCReward = 1.0f;
+        private const int ActiveUnusedDeadDropSpesoReward = 50000;
+        private const float ActiveUnusedDeadDropFUCReward = 5.0f;
+        private const int ActiveUsedDeadDropSpesoReward = 20000;
+        private const float ActiveUsedDeadDropFUCReward = 2.0f;
+        private const int InactiveUsedDeadDropSpesoReward = 10000;
+        private const float InactiveUsedDeadDropFUCReward = 1.0f;
+        private const int DropPodSpesoReward = 20000;
+        private const float DropPodFUCReward = 2.0f;
         // End Frontier: payout constants
 
         private static readonly ProtoId<TagPrototype> DNASolutionScannableTag = "DNASolutionScannable";

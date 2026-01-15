@@ -969,9 +969,9 @@
   - type: StationEvent
     weight: 8 # Fairly common.
     duration: 35
-    earliestStart: 30
-    minimumPlayers: 10 # Floof - we ball
-    reoccurrenceDelay: 50
+    earliestStart: 15
+    minimumPlayers: 2 # HL
+    reoccurrenceDelay: 20
   - type: RandomFaxRule
     minFaxes: 1
     maxFaxes: 2

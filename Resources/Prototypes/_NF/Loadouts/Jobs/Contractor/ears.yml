@@ -87,3 +87,9 @@
   price: 250
   equipment:
     ears: ClothingHeadsetAltScienceCommon
+
+- type: loadout
+  id: ContractorClothingHeadsetChameleonCiv
+  price: 4000
+  equipment:
+    ears: ClothingHeadsetChameleonCiv

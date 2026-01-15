@@ -522,3 +522,12 @@
   price: 7500
   equipment:
     neck: ClothingNeckBling
+
+- type: loadout
+  id: ContractorClothingNeckChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT3
+  price: 2500
+  equipment:
+    neck: ClothingNeckChameleonCiv

@@ -875,3 +875,17 @@
   price: 5000
   equipment:
     head: ClothingHeadHatTophat
+
+- type: loadout
+  id: ContractorClothingHeadHatChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT3
+  hideEffects:
+  - !type:GroupLoadoutEffect
+    proto: NFHeadwearCapable
+  - !type:GroupLoadoutEffect # HL - Station roles do not get wrong-departmental clothes
+    proto: HLNotStation
+  price: 4000
+  equipment:
+    head: ClothingHeadHatChameleonCiv

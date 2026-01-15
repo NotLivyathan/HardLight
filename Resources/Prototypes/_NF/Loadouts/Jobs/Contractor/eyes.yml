@@ -133,3 +133,14 @@
   equipment:
     eyes: ClothingEyesEyepatchHudMedical
 
+- type: loadout
+  id: ContractorClothingEyesChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT2
+  hideEffects:
+  - !type:GroupLoadoutEffect # HL - Station roles do not get wrong-departmental clothes
+    proto: HLNotStation
+  price: 4000
+  equipment:
+    eyes: ClothingEyesChameleonCiv

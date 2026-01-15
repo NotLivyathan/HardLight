@@ -79,3 +79,7 @@
             MailCarrier: [ 1, 1 ]
             Prisoner: [ 0, 0 ]
             ForensicMantis: [ 1, 1 ]
+        - type: StationDeadDrop
+          maxDeadDrops: 6 # small station
+        - type: StationDeadDropReporting
+          messageSet: Nfsd

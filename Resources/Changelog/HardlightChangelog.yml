@@ -419,3 +419,27 @@ Entries:
         purposes 
   id: 40
   time: '2026-01-14T00:31:10.0000000+00:00'
+- author: Warcrazed
+  changes:
+    - type: Fix
+      message: Fixed Deaddrop system to properly work
+  id: 41
+  time: '2026-01-15T00:40:01.0000000+00:00'
+- author: Warcrazed
+  changes:
+    - type: Add
+      message: Ported time transfer window.
+  id: 42
+  time: '2026-01-15T04:23:28.0000000+00:00'
+- author: Warcrazed
+  changes:
+    - type: Add
+      message: Added admin spawn chronolegionnares.
+  id: 43
+  time: '2026-01-15T04:23:42.0000000+00:00'
+- author: Warcrazed
+  changes:
+    - type: Add
+      message: Added Civilian Chameleon Clothes.
+  id: 44
+  time: '2026-01-15T05:09:48.0000000+00:00'

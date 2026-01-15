@@ -219,3 +219,12 @@
   price: 2000
   equipment:
     gloves: ClothingHandsGlovesColorWhite
+
+- type: loadout
+  id: ContractorClothingHandsChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT3
+  price: 4000
+  equipment:
+    gloves: ClothingHandsChameleonCiv

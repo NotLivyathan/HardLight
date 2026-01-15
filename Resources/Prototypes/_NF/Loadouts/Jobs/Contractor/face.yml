@@ -134,3 +134,13 @@
   storage:
     back:
     - ClothingMaskClownBald
+
+- type: loadout
+  id: ContractorClothingMaskGasChameleonCiv
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: ContractorT2
+  price: 4000
+  storage:
+    back:
+    - ClothingMaskGasChameleonCiv

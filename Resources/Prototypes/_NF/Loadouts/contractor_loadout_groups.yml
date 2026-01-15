@@ -2,6 +2,7 @@
   id: ContractorJumpsuit
   name: loadout-group-contractor-jumpsuit
   loadouts:
+  - ContractorClothingUniformJumpsuitChameleonCiv
   - ContractorClothingUniformJumpsuitColorGrey
   - ContractorClothingUniformJumpskirtColorGrey
   - ContractorClothingUniformJumpsuitMilitaryContractor
@@ -211,7 +212,7 @@
   - ContractorClothingUniformJumpskirtYellowTurtleneckDress
   - ContractorClothingUniformJumpskirtYellowOldDress
 #_CS Start
-  - LoadoutCoolCoyoteClothesGearHarness 
+  - LoadoutCoolCoyoteClothesGearHarness
 #_CS End
   fallbacks:
   - ContractorClothingUniformJumpsuitColorGrey
@@ -221,6 +222,7 @@
   id: ContractorBackpack
   name: loadout-group-contractor-backpack
   loadouts:
+  - ContractorClothingBackpackChameleonCiv
   - ContractorClothingBackpack
   - ContractorClothingBackpackDuffel
   - ContractorClothingBackpackSatchel
@@ -309,6 +311,7 @@
   name: loadout-group-contractor-outerclothing
   minLimit: 0
   loadouts:
+  - ContractorClothingOuterChameleonCiv
   - ContractorClothingOuterHardsuitBasic
   - ContractorClothingOuterHardsuitVoidParamed
   - ContractorClothingOuterHoodieGrey
@@ -401,6 +404,7 @@
   name: loadout-group-contractor-belt
   minLimit: 0
   loadouts:
+  - ContractorClothingBeltSecurityWebbingChameleon
   - ContractorClothingBeltPlant
   - ContractorClothingBeltPlantFilled
   - ContractorClothingBeltChef
@@ -436,8 +440,9 @@
   id: ContractorShoes
   name: loadout-group-contractor-shoes
   loadouts:
+  - ContractorClothingShoesChameleonCiv
   - ContractorClothingShoesColorBlack
-  - ContractorClothingShoesClothwrap 
+  - ContractorClothingShoesClothwrap
   - ContractorClothingShoesClothwrapTransparent # HL - Add invisible shoes to generic loadouts
   - ContractorClothingShoesTourist
   - ContractorClothingShoesBootsSalvage
@@ -503,6 +508,7 @@
   name: loadout-group-contractor-head
   minLimit: 0
   loadouts:
+  - ContractorClothingHeadHatChameleonCiv
   - ContractorClothingHeadBandBlack
   - ContractorClothingHeadBandBlue
   - ContractorClothingHeadBandGreen
@@ -597,6 +603,7 @@
   - ContractorClothingHeadsetAltEngineeringCommon
   - ContractorClothingHeadsetAltMedicalCommon
   - ContractorClothingHeadsetAltScienceCommon
+  - ContractorClothingHeadsetChameleonCiv
   fallbacks:
   - ContractorClothingHeadsetGreyCommon
 
@@ -605,6 +612,7 @@
   name: loadout-group-contractor-gloves
   minLimit: 0
   loadouts:
+  - ContractorClothingHandsChameleonCiv
   - ContractorClothingHandsGlovesColorYellow
   - ContractorClothingHandsGlovesLeather
   - ContractorClothingHandsGlovesFingerless
@@ -635,6 +643,7 @@
   name: loadout-group-contractor-neck
   minLimit: 0
   loadouts:
+  - ContractorClothingNeckChameleonCiv
   - ContractorClothingNeckScarfStripedBlack
   - ContractorClothingNeckScarfStripedBlue
   - ContractorClothingNeckScarfStripedBrown
@@ -759,6 +768,7 @@
   name: loadout-group-contractor-glasses
   minLimit: 0
   loadouts:
+  - ContractorClothingEyesChameleonCiv
   - ContractorClothingEyesGlasses
   - ContractorClothingEyesGlassesCheapSunglasses
   - ContractorClothingEyesBlindfold
@@ -878,6 +888,7 @@
   id: ContractorFace
   name: loadout-group-contractor-face
   loadouts:
+  - ContractorClothingMaskGasChameleonCiv
   - ContractorClothingMaskBreath
   - ContractorClothingMaskBreathMedical
   - ContractorClothingMaskSterile
