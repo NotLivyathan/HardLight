@@ -632,6 +632,46 @@
     state: snoth2
 
 - type: marking
+  id: VoxCocktail
+  bodyPart: Tail
+  markingCategory: Tail
+  speciesRestriction: [ Vox ]
+  forcedColoring: false
+  followSkinColor: false
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+    state: voxcocktail1
+  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+    state: voxcocktail2
+  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+    state: voxcocktail3
+  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+    state: voxcocktail4
+
+# HardLight: Doesn't appear to work properly and I don't care enough to fix it.
+#- type: marking
+#  id: VoxTailBalled
+#  bodyPart: Tail
+#  markingCategory: Tail
+#  speciesRestriction: [ Vox ]
+#  forcedColoring: true
+#  followSkinColor: true
+#  sprites:
+#  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+#    state: voxtailballed
+
+- type: marking
+  id: VoxTailStripes
+  bodyPart: Chest
+  markingCategory: Overlay
+  speciesRestriction: [ Vox ]
+  forcedColoring: false
+  followSkinColor: false
+  sprites:
+  - sprite: _Impstation/Mobs/Customization/markingsbundle1.rsi
+    state: voxtailstripes
+
+- type: marking
   id: VoxLArmProsthetic
   bodyPart: LHand
   markingCategory: Arms

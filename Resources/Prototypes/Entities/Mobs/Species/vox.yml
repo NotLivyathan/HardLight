@@ -122,6 +122,7 @@
           32:
             sprite: Mobs/Species/Vox/displacement.rsi
             state: hair
+  - type: Wagging
   - type: Inventory
     speciesId: vox
     displacements:
