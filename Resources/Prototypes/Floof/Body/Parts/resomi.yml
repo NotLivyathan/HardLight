@@ -1,17 +1,105 @@
+# HardLight Change start
+- type: entity
+  abstract: true
+  parent: BasePart
+  id: PartResomi
+  name: resomi body part
+  components:
+  - type: Sprite
+    sprite: Floof/Mobs/Species/Resomi/parts.rsi
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 1.5
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 1.5
+      - ReagentId: AmmoniaBlood
+        Quantity: 5
+  - type: Destructible # HardLight: Resomi parts now turn into fried chicken when ashed.
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Slash
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Heat
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawnInContainer: true
+        spawn:
+          FoodMeatChickenFriedMystery:
+            min: 1
+            max: 1
+      - !type:BurnBodyBehavior { }
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MeatLaserImpact
+# HardLight Change end
+
 - type: entity
   id: TorsoResomi
   name: "resomi torso"
-  parent: TorsoHuman
+  parent: [ PartResomi, BaseTorso ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
     state: "torso_m"
-
+  # HardLight Change start
+  - type: Extractable
+    juiceSolution:
+      reagents:
+      - ReagentId: Fat
+        Quantity: 5
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 5
+      - ReagentId: AmmoniaBlood
+        Quantity: 10
+  - type: Destructible # HardLight: Resomi parts now turn into fried chicken when ashed.
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Slash
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Heat
+        damage: 400
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawnInContainer: true
+        spawn:
+          FoodMeatChickenFriedMystery:
+            min: 1
+            max: 3
+      - !type:BurnBodyBehavior { }
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MeatLaserImpact
+  # HardLight Change end
 
 - type: entity
   id: HeadResomi
   name: "resomi head"
-  parent: HeadHuman
+  parent: [ PartResomi, BaseHead ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -20,7 +108,7 @@
 - type: entity
   id: LeftArmResomi
   name: "left resomi arm"
-  parent: LeftArmHuman
+  parent: [ PartResomi, BaseLeftArm ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -29,7 +117,7 @@
 - type: entity
   id: RightArmResomi
   name: "right resomi arm"
-  parent: RightArmHuman
+  parent: [ PartResomi, BaseRightArm ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -38,7 +126,7 @@
 - type: entity
   id: LeftHandResomi
   name: "left resomi hand"
-  parent: LeftHandHuman
+  parent: [ PartResomi, BaseLeftHand ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -47,7 +135,7 @@
 - type: entity
   id: RightHandResomi
   name: "right resomi hand"
-  parent: RightHandHuman
+  parent: [ PartResomi, BaseRightHand ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -56,7 +144,7 @@
 - type: entity
   id: LeftLegResomi
   name: "left resomi leg"
-  parent: LeftLegHuman
+  parent: [ PartResomi, BaseLeftLeg ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -65,7 +153,7 @@
 - type: entity
   id: RightLegResomi
   name: "right resomi leg"
-  parent: RightLegHuman
+  parent: [ PartResomi, BaseRightLeg ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -74,7 +162,7 @@
 - type: entity
   id: LeftFootResomi
   name: "left resomi foot"
-  parent: LeftFootHuman
+  parent: [ PartResomi, BaseLeftFoot ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi
@@ -83,7 +171,7 @@
 - type: entity
   id: RightFootResomi
   name: "right resomi foot"
-  parent: RightFootHuman
+  parent: [ PartResomi, BaseRightFoot ] # HardLight
   components:
   - type: Sprite
     sprite: Floof/Mobs/Species/Resomi/parts.rsi

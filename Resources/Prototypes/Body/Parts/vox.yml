@@ -24,6 +24,8 @@
       reagents:
       - ReagentId: Fat
         Quantity: 3
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 3
       - ReagentId: Blood
         Quantity: 10
 # Shitmed Change Start
@@ -54,8 +56,8 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawnInContainer: true
-        spawn:
-          Ash:
+        spawn: # Vox parts now turn into fried chicken when ashed.
+          FoodMeatChickenFriedMystery: # HardLight: Renamed from -Vox to -Mystery.
             min: 1
             max: 1
       - !type:BurnBodyBehavior { }
@@ -79,7 +81,9 @@
       juiceSolution:
         reagents:
         - ReagentId: Fat
-          Quantity: 3
+          Quantity: 5 # HardLight: Increased from 3 to 5
+        - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+          Quantity: 5
         - ReagentId: Blood
           Quantity: 10
     # Shitmed Change Start
@@ -111,10 +115,10 @@
         behaviors:
         - !type:SpawnEntitiesBehavior
           spawnInContainer: true
-          spawn:
-            Ash:
-              min: 1
-              max: 1
+          spawn: # Vox parts now turn into fried chicken when ashed.
+            FoodMeatChickenFriedMystery: # HardLight: Renamed from -Vox to -Mystery.
+              min: 2
+              max: 3
         - !type:BurnBodyBehavior { }
         - !type:PlaySoundBehavior
           sound:
@@ -145,9 +149,11 @@
       juiceSolution:
         reagents:
         - ReagentId: Fat
-          Quantity: 5
+          Quantity: 4 # HardLight: Reduced from 5 to 4
+        - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+          Quantity: 4
         - ReagentId: Blood
-          Quantity: 10
+          Quantity: 8 # HardLight: Reduced from 10 to 8
 
 - type: entity
   id: LeftArmVox

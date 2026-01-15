@@ -212,6 +212,29 @@
       bloodReagent: AmmoniaBlood
     - type: Damageable # Goobstation - resomi damage modifiers
       damageModifierSet: Resomi
+    - type: Destructible # HardLight: Resomi now turn into fried chicken when ashed.
+      thresholds:
+      - trigger:
+          !type:DamageTypeTrigger
+          damageType: Blunt
+          damage: 400
+        behaviors:
+        - !type:GibBehavior { }
+      - trigger: # Frontier - Removed round remover
+          !type:DamageTypeTrigger
+          damageType: Heat
+          damage: 1500
+        behaviors:
+        - !type:SpawnEntitiesBehavior
+          spawnInContainer: true
+          spawn:
+            FoodMeatChickenFriedMystery:
+              min: 2
+              max: 4
+        - !type:BurnBodyBehavior { }
+        - !type:PlaySoundBehavior
+          sound:
+            collection: MeatLaserImpact
     - type: Temperature
       coldDamageThreshold: 195.4 # Goobstation - freezing point of ammonia is -77.75°C
       heatDamageThreshold: 320.15 # Goobstation - space chickens can't tolerate reasonable temperatures, but requiring them to stay icy would be cringe, so instead make their heat damage threshold dangerously close to standard atmos, at 47°C

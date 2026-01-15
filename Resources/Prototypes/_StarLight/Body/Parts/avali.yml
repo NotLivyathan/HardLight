@@ -13,8 +13,39 @@
       reagents:
       - ReagentId: Fat
         Quantity: 1.5
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 1.5
       - ReagentId: AmmoniaBlood
         Quantity: 5
+  - type: Destructible # HardLight: Avali parts now turn into fried chicken when ashed.
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Slash
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Heat
+        damage: 250 # HardLight: Reduced from 300 to 250 for consistency with Vox parts.
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawnInContainer: true
+        spawn:
+          FoodMeatChickenFriedMystery:
+            min: 1
+            max: 1
+      - !type:BurnBodyBehavior { }
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MeatLaserImpact
 
 - type: entity
   parent: [ PartAvali, BaseTorso ]
@@ -28,8 +59,39 @@
       reagents:
       - ReagentId: Fat
         Quantity: 5
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 5
       - ReagentId: AmmoniaBlood
         Quantity: 10
+  - type: Destructible # HardLight: Avali parts now turn into fried chicken when ashed.
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Slash
+        damage: 400
+      behaviors:
+      - !type:GibPartBehavior { }
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Heat
+        damage: 400
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawnInContainer: true
+        spawn:
+          FoodMeatChickenFriedMystery:
+            min: 1
+            max: 3
+      - !type:BurnBodyBehavior { }
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MeatLaserImpact
 
 - type: entity
   parent: [ PartAvali, BaseHead ]
@@ -42,9 +104,11 @@
     juiceSolution:
       reagents:
       - ReagentId: Fat
-        Quantity: 5
+        Quantity: 2 # HardLight: Reduced from 5 to 2
+      - ReagentId: UncookedAnimalProteins # HardLight: Added for consistency with the fried chicken bit.
+        Quantity: 2
       - ReagentId: AmmoniaBlood
-        Quantity: 10
+        Quantity: 5 # HardLight: Reduced from 10 to 5
 
 - type: entity
   parent: [ PartAvali, BaseLeftArm ]
