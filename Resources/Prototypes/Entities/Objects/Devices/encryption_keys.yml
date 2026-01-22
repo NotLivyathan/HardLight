@@ -55,8 +55,8 @@
   components:
   - type: EncryptionKey
     channels:
-    - ColComm # HardLight
-    defaultChannel: ColComm # HardLight
+    - ColCom # HardLight
+    defaultChannel: ColCom # HardLight
   - type: Sprite
     layers:
     - state: crypt_blue

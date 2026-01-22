@@ -104,7 +104,7 @@
   # HardLight start: Replaced starting encryption keys with intrinsic radio channels.
   - type: ActiveRadio
     intrinsicChannels:
-    - ColComm
+    - ColCom
     - Command
     - ColSec
     - Security

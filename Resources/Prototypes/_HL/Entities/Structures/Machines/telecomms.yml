@@ -31,7 +31,7 @@
 - type: entity
   parent: TelecomServer
   id: TelecomServerFilledColComm
-  suffix: ColComm
+  suffix: ColCom
   components:
   - type: ContainerFill
     containers:

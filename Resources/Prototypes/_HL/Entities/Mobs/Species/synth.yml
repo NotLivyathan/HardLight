@@ -16,6 +16,10 @@
   - type: Tag
     tags:
     - Synth
+    - CanPilot
+    - FootstepSound
+    - DoorBumpOpener
+    - AnomalyHost
   - type: Thirst
   - type: DamageVisuals
     damageOverlayGroups:
