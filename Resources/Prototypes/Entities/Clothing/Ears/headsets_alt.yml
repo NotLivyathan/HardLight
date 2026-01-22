@@ -20,7 +20,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/cargo.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetCentCom] # HardLight: Parented to base headset.
@@ -32,7 +32,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/centcom.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetCommand] # HardLight: Parented to base headset.
@@ -44,7 +44,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/command.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetCE] # HardLight: Parented to base headset.
@@ -56,7 +56,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/engineering.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetCMO] # HardLight: Parented to base headset.
@@ -68,7 +68,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/medical.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
   - type: StealTarget
     stealGroup: ClothingHeadsetAltMedical
 
@@ -96,7 +96,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/security.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetRD] # HardLight: Parented to base headset.
@@ -108,7 +108,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/science.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetAlt, BaseC3SyndicateContraband, ContrabandClothing] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband, added ContrabandClothing as parent
@@ -129,7 +129,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/syndicate.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetFreelance] # HardLight: Parented to base headset.
@@ -141,7 +141,7 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/freelance.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 
 - type: entity
   parent: [ClothingHeadsetWizard] # HardLight: Parented to base headset.
@@ -153,5 +153,5 @@
     state: icon_alt
   - type: Clothing
     sprite: Clothing/Ears/Headsets/wizard.rsi
-    state: alt-equipped-EARS
+    equippedState: alt-equipped-EARS
 

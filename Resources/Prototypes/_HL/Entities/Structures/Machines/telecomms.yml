@@ -36,7 +36,7 @@
   - type: ContainerFill
     containers:
       key_slots:
-      - EncryptionKeyColCom
+      - EncryptionKeyColComm
 
 - type: entity
   parent: TelecomServer

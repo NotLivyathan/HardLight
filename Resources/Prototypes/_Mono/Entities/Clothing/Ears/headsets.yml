@@ -56,7 +56,7 @@
     state: icon_alt # HardLight
   - type: Clothing
     sprite: Clothing/Ears/Headsets/security.rsi
-    state: alt-equipped-EARS # HardLight
+    equippedState: alt-equipped-EARS # HardLight
   - type: ContainerFill
   # HardLight start: Replaced starting encryption keys with intrinsic radio channels.
   - type: ActiveRadio
