@@ -41,6 +41,17 @@ public sealed class RadioImplantSystem : EntitySystem
                 ent.Comp.TransmitterAddedChannels.Add(channel);
         }
 
+        if (TryComp<EncryptionKeyHolderComponent>(args.Implanted.Value, out var keyHolder))
+        {
+            foreach (var channel in ent.Comp.RadioChannels)
+            {
+                if (keyHolder.IntrinsicChannels.Add(channel))
+                    ent.Comp.HolderAddedChannels.Add(channel);
+            }
+
+            RaiseLocalEvent(args.Implanted.Value, new EncryptionChannelsChangedEvent(keyHolder));
+        }
+
         SyncActiveRadioChannels(args.Implanted.Value, activeRadio);
         SyncTransmitterChannels(args.Implanted.Value, intrinsicRadioTransmitter);
     }
@@ -86,6 +97,17 @@ public sealed class RadioImplantSystem : EntitySystem
             && !HasComp<ActiveRadioComponent>(args.Container.Owner))
         {
             RemCompDeferred<IntrinsicRadioReceiverComponent>(args.Container.Owner);
+        }
+
+        if (TryComp<EncryptionKeyHolderComponent>(args.Container.Owner, out var keyHolder))
+        {
+            foreach (var channel in ent.Comp.HolderAddedChannels)
+            {
+                keyHolder.IntrinsicChannels.Remove(channel);
+            }
+            ent.Comp.HolderAddedChannels.Clear();
+
+            RaiseLocalEvent(args.Container.Owner, new EncryptionChannelsChangedEvent(keyHolder));
         }
     }
 
