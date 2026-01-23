@@ -3,3 +3,5 @@
   name: Urist McSynth
   parent: BaseMobSynth
   id: MobSynth
+  components:
+  - type: PotentialPsionic #Nyano - Summary: makes potentially psionic.
