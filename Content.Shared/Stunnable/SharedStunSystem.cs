@@ -134,7 +134,7 @@ public abstract class SharedStunSystem : EntitySystem
             return;
 
         TryStun(args.OtherEntity, ent.Comp.Duration, true, status);
-        TryKnockdown(args.OtherEntity, ent.Comp.Duration, true, status);
+        TryKnockdown(args.OtherEntity, ent.Comp.Duration, true, force: true, status);
     }
 
     private void OnKnockInit(EntityUid uid, KnockedDownComponent component, ComponentInit args)
@@ -210,7 +210,7 @@ public abstract class SharedStunSystem : EntitySystem
     /// <summary>
     ///     Knocks down the entity, making it fall to the ground.
     /// </summary>
-    public bool TryKnockdown(EntityUid uid, TimeSpan time, bool refresh,
+    public bool TryKnockdown(EntityUid uid, TimeSpan time, bool refresh, bool force = false,
         StatusEffectsComponent? status = null)
     {
         if (time <= TimeSpan.Zero)
@@ -237,7 +237,7 @@ public abstract class SharedStunSystem : EntitySystem
         if (!Resolve(uid, ref status, false))
             return false;
 
-        return TryKnockdown(uid, time, refresh, status) && TryStun(uid, time, refresh, status);
+        return TryKnockdown(uid, time, refresh, force: true, status) && TryStun(uid, time, refresh, status);
     }
 
     /// <summary>

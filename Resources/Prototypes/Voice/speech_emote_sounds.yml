@@ -564,6 +564,111 @@
     Ping:
       collection: XenoborgPing
 
+# Vulp Sounds
+- type: emoteSounds
+  id: MaleVulpkanin
+  params:
+    variation: 0.125
+  sounds:
+    Laugh:
+      collection: MaleLaugh
+    Sneeze:
+      collection: MaleSneezes
+    Cough:
+      collection: MaleCoughs
+    Whistle:
+      collection: Whistles
+    Sigh:
+      collection: MaleSigh
+    Scream:
+      collection: VulpkaninScreams
+    Growl:
+      collection: Growl # Starlight
+    Snarl:
+      collection: VulpkaninSnarls
+    Bark:
+      collection: Bark # Starlight
+    Whine:
+      collection: Whine # Starlight
+    Crying:
+      collection: MaleCry
+    Howl:
+      path: /Audio/_Starlight/Effects/howl.ogg # Starlight
+    Yip:
+      path: /Audio/_Starlight/Effects/yip.ogg # Starlight
+    # Starlight start
+    Yawn:
+      collection: MaleYawn
+    Snore:
+      collection: Snores
+    Weh:
+      collection: Weh
+    Hew:
+      collection: Hew
+    Honk:
+      collection: BikeHorn
+    Gasp:
+      collection: MaleGasp
+    DefaultDeathgasp:
+      collection: MaleDeathGasp
+    # Starlight end
+    Yap: # Floof
+      collection: VulpkaninYaps
+    Gekker: # Floof
+      collection: VulpkaninGekkers
+
+- type: emoteSounds
+  id: FemaleVulpkanin
+  params:
+    variation: 0.125
+  sounds:
+    Laugh:
+      collection: FemaleLaugh
+    Sneeze:
+      collection: FemaleSneezes
+    Cough:
+      collection: FemaleCoughs
+    Whistle:
+      collection: Whistles
+    Sigh:
+      collection: FemaleSigh
+    Scream:
+      collection: VulpkaninScreams
+    Growl:
+      collection: Growl # Starlight
+    Snarl:
+      collection: VulpkaninSnarls
+    Bark:
+      collection: Bark # Starlight
+    Whine:
+      collection: Whine # Starlight
+    Crying:
+      collection: FemaleCry
+    Howl:
+      path: /Audio/_Starlight/Effects/howl.ogg # Starlight
+    Yip:
+      path: /Audio/_Starlight/Effects/yip.ogg # Starlight
+    # Startlight start
+    Yawn:
+      collection: FemaleYawn
+    Snore:
+      collection: Snores
+    Weh:
+      collection: Weh
+    Hew:
+      collection: Hew
+    Honk:
+      collection: BikeHorn
+    Gasp:
+      collection: FemaleGasp
+    DefaultDeathgasp:
+      collection: FemaleDeathGasp
+    # Starlight end
+    Yap: # Floof
+      collection: VulpkaninYaps
+    Gekker: # Floof
+      collection: VulpkaninGekkers
+
 # body emotes
 - type: emoteSounds
   id: GeneralBodyEmotes

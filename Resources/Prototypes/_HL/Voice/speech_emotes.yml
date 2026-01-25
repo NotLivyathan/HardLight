@@ -1,22 +1,4 @@
 - type: emote
-  id: Growl
-  name: chat-emote-name-growl
-  category: Vocal
-  icon: { sprite: _RMC14/Actions/xeno_emotes.rsi, state: growl }
-  whitelist:
-    components:
-    - Vocal
-  blacklist:
-    components:
-    - BorgChassis
-  chatMessages: ["chat-emote-msg-growl"]
-  chatTriggers:
-  - growl
-  - growls
-  - growling
-  - growled
-
-- type: emote
   id: Yip
   name: chat-emote-name-yip
   category: Vocal
