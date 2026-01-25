@@ -41,8 +41,8 @@
   suffix: Build-A-Buddy
 #  categories: [ HideSpawnMenu ]
 
-- type: entity
-  id: NFMobVulpkaninBuddy
-  parent: [MobVulpkanin, NFBuddyBase]
-  suffix: Build-A-Buddy
-#  categories: [ HideSpawnMenu ]
+#- type: entity
+#  id: NFMobVulpkaninBuddy
+#  parent: [MobVulpkanin, NFBuddyBase]
+#  suffix: Build-A-Buddy
+##  categories: [ HideSpawnMenu ]

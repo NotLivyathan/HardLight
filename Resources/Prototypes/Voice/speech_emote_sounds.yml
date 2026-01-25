@@ -589,7 +589,7 @@
     Bark:
       collection: Bark # Starlight
     Whine:
-      collection: Whine # Starlight
+      collection: VulpkaninWhines
     Crying:
       collection: MaleCry
     Howl:
@@ -611,6 +611,8 @@
       collection: MaleGasp
     DefaultDeathgasp:
       collection: MaleDeathGasp
+    Awoo:
+      path: /Audio/_Starlight/Effects/howl.ogg # Starlight
     # Starlight end
     Yap: # Floof
       collection: VulpkaninYaps
@@ -641,7 +643,7 @@
     Bark:
       collection: Bark # Starlight
     Whine:
-      collection: Whine # Starlight
+      collection: VulpkaninWhines
     Crying:
       collection: FemaleCry
     Howl:

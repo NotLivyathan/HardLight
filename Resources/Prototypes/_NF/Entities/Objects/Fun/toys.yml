@@ -402,16 +402,16 @@
   components:
   - type: EmitSoundOnUse
     sound:
-      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/Voice/Vulpkanin/dog_bark1.ogg
   - type: EmitSoundOnLand
     sound:
-      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/Voice/Vulpkanin/dog_bark1.ogg
   - type: EmitSoundOnActivate
     sound:
-      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/Voice/Vulpkanin/dog_bark1.ogg
   - type: MeleeWeapon
     soundHit:
-      path: /Audio/_DV/Voice/Vulpkanin/dog_bark1.ogg
+      path: /Audio/Voice/Vulpkanin/dog_bark1.ogg
 
 - type: entity
   parent: BasePlushieVulp
