@@ -119,8 +119,8 @@
       visible: false
   - type: HumanoidAppearance
     species: Vulpkanin
-    undergarmentTop: UndergarmentTopTanktopVulpkanin
-    undergarmentBottom: UndergarmentBottomBoxersVulpkanin
+    undergarmentTop: UndergarmentTopTanktop
+    undergarmentBottom: UndergarmentBottomBoxers
     hideLayersOnEquip:
     - Snout
     #- SnoutCover # HardLight
@@ -210,6 +210,16 @@
     speciesId: vulpkanin
     # Starlight start
     displacements:
+      head:
+        sizeMaps:
+          32:
+            sprite: _Starlight/Mobs/Species/Vulpkanin/displacement.rsi
+            state: head
+      outerClothing:
+        sizeMaps:
+          32:
+            sprite: _Starlight/Mobs/Species/Vulpkanin/displacement.rsi
+            state: outerClothing
       jumpsuit:
         sizeMaps:
           32:
