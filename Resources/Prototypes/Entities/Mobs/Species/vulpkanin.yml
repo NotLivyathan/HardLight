@@ -119,8 +119,8 @@
       visible: false
   - type: HumanoidAppearance
     species: Vulpkanin
-    undergarmentTop: UndergarmentTopTanktopVulpkanin
-    undergarmentBottom: UndergarmentBottomBoxersVulpkanin
+    undergarmentTop: UndergarmentTopTanktop
+    undergarmentBottom: UndergarmentBottomBoxers
     hideLayersOnEquip:
     - Snout
     #- SnoutCover # HardLight

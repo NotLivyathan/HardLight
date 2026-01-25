@@ -19,3 +19,12 @@ marking-UndergarmentBottomSatinVox = Satin
 marking-UndergarmentBottomBoxersReptilian = Boxers
 marking-UndergarmentBottomBriefsReptilian = Briefs
 marking-UndergarmentBottomSatinReptilian = Satin
+
+marking-UndergarmentTopTanktopVulpkanin = Tanktop
+marking-UndergarmentTopBinderVulpkanin = Binder
+marking-UndergarmentTopBraVulpkanin = Classic Bra
+marking-UndergarmentTopSportsbraVulpkanin = Sports Bra
+
+marking-UndergarmentBottomBoxersVulpkanin = Boxers
+marking-UndergarmentBottomBriefsVulpkanin = Briefs
+marking-UndergarmentBottomSatinVulpkanin = Satin

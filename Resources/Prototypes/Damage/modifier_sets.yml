@@ -320,6 +320,13 @@
   coefficients:
     Holy: 2
 
+# Vulps get more heat damage because fur
+- type: damageModifierSet
+  id: Vulpkanin
+  coefficients:
+    Heat: 1.15
+    Cold: 0.85
+
 # Shitmed modification: Change this if you want to alter how damage types affect part severing/integrity.
 - type: damageModifierSet
   id: PartDamage
@@ -340,7 +347,7 @@
     Cold: 0.5
     Heat: 0.0
     Shock: 0.5
-    
+
 - type: damageModifierSet
   id: Cryoresistant
   coefficients:
@@ -355,7 +362,7 @@
   id: Snakeeater
   coefficients:
     Poison: -0.5
-    
+
 - type: damageModifierSet
   id: DermalArmor
   coefficients:

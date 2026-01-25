@@ -294,9 +294,9 @@
     Hew:
       collection: Hew
     Gasp:
-      collection: VoxGasp # DeltaV - Combined upstream and our sounds
+      path: /Audio/Effects/Gasp/vox_gasp.ogg
     DefaultDeathgasp:
-      collection: VoxDeathgasp # DeltaV - Combined upstream and our sounds
+      path: /Audio/Effects/Gasp/vox_DeathGasp.ogg
     # Begin Impstation Additions
     Chitter:
       collection: VoxChitter # DeltaV - Combined upstream and impstation sounds
