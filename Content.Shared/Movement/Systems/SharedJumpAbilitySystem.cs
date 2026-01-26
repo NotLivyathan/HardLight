@@ -7,7 +7,7 @@ using Content.Shared.Standing;
 using Content.Shared.Stunnable;
 using Content.Shared.Throwing;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.Map.Components;
+using Robust.Shared.Map.Components; // HardLight
 using Robust.Shared.Physics.Events;
 
 namespace Content.Shared.Movement.Systems;
@@ -53,6 +53,8 @@ public sealed partial class SharedJumpAbilitySystem : EntitySystem
 
     private void OnLeaperCollide(Entity<ActiveLeaperComponent> entity, ref StartCollideEvent args)
     {
+
+        // HardLight start: Ignore map/grid collisions
         if (!TryComp<ThrownItemComponent>(entity.Owner, out var thrown) || thrown.Landed)
         {
             RemCompDeferred<ActiveLeaperComponent>(entity);
@@ -61,6 +63,7 @@ public sealed partial class SharedJumpAbilitySystem : EntitySystem
 
         if (HasComp<MapGridComponent>(args.OtherEntity) || HasComp<MapComponent>(args.OtherEntity))
             return;
+        // HardLight end
 
         _stun.TryKnockdown(entity.Owner, entity.Comp.KnockdownDuration, true);
         RemCompDeferred<ActiveLeaperComponent>(entity);
@@ -93,16 +96,19 @@ public sealed partial class SharedJumpAbilitySystem : EntitySystem
 
         _audio.PlayPredicted(entity.Comp.JumpSound, args.Performer, args.Performer);
 
-        if (entity.Comp.CanCollide && HasComp<ThrownItemComponent>(args.Performer))
+        if (entity.Comp.CanCollide && HasComp<ThrownItemComponent>(args.Performer)) // HardLight: Added HasComp check
         {
             EnsureComp<ActiveLeaperComponent>(entity, out var leaperComp);
             leaperComp.KnockdownDuration = entity.Comp.CollideKnockdown;
             Dirty(entity.Owner, leaperComp);
         }
+
+        // HardLight start: Remove ActiveLeaperComponent if CanCollide is false
         else
         {
             RemCompDeferred<ActiveLeaperComponent>(entity);
         }
+        // HardLight end
 
         args.Handled = true;
     }
