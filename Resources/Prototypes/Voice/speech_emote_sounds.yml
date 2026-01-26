@@ -618,6 +618,8 @@
       collection: VulpkaninYaps
     Gekker: # Floof
       collection: VulpkaninGekkers
+    Pout: # HardLight
+        collection: Whine # Starlight
 
 - type: emoteSounds
   id: FemaleVulpkanin
@@ -670,6 +672,8 @@
       collection: VulpkaninYaps
     Gekker: # Floof
       collection: VulpkaninGekkers
+    Pout: # HardLight
+        collection: Whine # Starlight
 
 # body emotes
 - type: emoteSounds

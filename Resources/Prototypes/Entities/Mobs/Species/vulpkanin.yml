@@ -5,8 +5,8 @@
   id: BaseMobVulpkanin
   name: Urist McBark
   components:
-  #- type: Hunger # Starlight: Temp Vulpkanin revert
-  #- type: Thirst # Starlight: Temp Vulpkanin revert
+  - type: Hunger
+  - type: Thirst
   # HardLight start: Removed for now, will re-add later.
   #- type: MessyDrinker
   #  spillChance: 0.05 # 🌟Starlight🌟 26% chance to spill per 30u of liquid
@@ -19,7 +19,7 @@
   - type: Speech
     speechSounds: Vulpkanin
     speechVerb: Vulpkanin
-    allowedEmotes: [ 'Bark', 'Snarl', 'Whine', 'Howl', 'Growl', 'Yip', 'Awoo', 'Yap', 'Gekker' ] # Starlight: Yip, DV: Awoo, Yap, Gekker
+    allowedEmotes: [ 'Bark', 'Snarl', 'Whine', 'Pout', 'Howl', 'Growl', 'Yip', 'Awoo', 'Yap', 'Gekker' ] # Starlight: Yip, DV: Awoo, Yap, Gekker, HardLight: Pout
   - type: Vocal
     sounds:
       Male: MaleVulpkanin
@@ -64,59 +64,6 @@
         pitch: 1.33
         volume: -5
         variation: 0.05
-  - type: Sprite # Drawlayers. Top to bottom in order I believe.
-    netsync: false
-    layers:
-    - map: [ "enum.HumanoidVisualLayers.Chest" ]
-    - map: [ "enum.HumanoidVisualLayers.Head" ]
-    - map: [ "enum.HumanoidVisualLayers.Snout" ]
-    - map: [ "enum.HumanoidVisualLayers.Eyes" ]
-    - map: [ "enum.HumanoidVisualLayers.RArm" ]
-    - map: [ "enum.HumanoidVisualLayers.LArm" ]
-    - map: [ "enum.HumanoidVisualLayers.RLeg" ]
-    - map: [ "enum.HumanoidVisualLayers.LLeg" ]
-    # DV(?) start
-    - map: [ "enum.HumanoidVisualLayers.Genital" ]
-    - map: [ "enum.HumanoidVisualLayers.Breasts" ] # HL: Add breasts layer
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentTop" ]
-    - map: [ "enum.HumanoidVisualLayers.Penis" ]
-    - map: [ "enum.HumanoidVisualLayers.UndergarmentBottom" ]
-    - map: [ "accessory1" ]
-    - map: [ "accessory2" ]
-    # DV(?) end
-    - map: [ "jumpsuit" ]
-    - map: [ "enum.HumanoidVisualLayers.LFoot" ] # Starlight: Layering fix
-    - map: [ "enum.HumanoidVisualLayers.RFoot" ] # Starlight: Layering fix
-    - map: [ "enum.HumanoidVisualLayers.LHand" ]
-    - map: [ "enum.HumanoidVisualLayers.RHand" ]
-    - map: [ "gloves" ]
-    - map: [ "shoes" ] # Starlight start: Layering fix
-    - map: [ "ears" ]
-    - map: [ "eyes" ]
-    - map: [ "outerClothing" ]
-    - map: [ "belt" ]
-    - map: [ "id" ]
-    - map: [ "back" ]
-    - map: [ "neck" ] # Starlight end: Layering fix
-    #- map: [ "enum.HumanoidVisualLayers.SnoutCover" ] # HardLight
-    - map: [ "enum.HumanoidVisualLayers.FacialHair" ]
-    - map: [ "enum.HumanoidVisualLayers.Hair" ]
-    - map: [ "enum.HumanoidVisualLayers.HeadSide" ]
-    - map: [ "enum.HumanoidVisualLayers.HeadTop" ]
-    - map: [ "enum.HumanoidVisualLayers.Tail" ]
-    - map: [ "mask" ]
-    - map: [ "head" ]
-    - map: [ "pocket1" ]
-    - map: [ "pocket2" ]
-    - map: [ "enum.HumanoidVisualLayers.Handcuffs" ] # Starlight start: Layering fix
-      color: "#ffffff"
-      sprite: Objects/Misc/handcuffs.rsi
-      state: body-overlay-2
-      visible: false # Starlight end: Layering fix
-    - map: [ "clownedon" ]
-      sprite: "Effects/creampie.rsi"
-      state: "creampie_vulpkanin"
-      visible: false
   - type: HumanoidAppearance
     species: Vulpkanin
     undergarmentTop: UndergarmentTopTanktop
@@ -126,7 +73,7 @@
     #- SnoutCover # HardLight
     - HeadTop
     - HeadSide
-    #- FacialHair # HardLight
+    - FacialHair
     - Hair
     # HL start: Hide genital markings on equip
     - Genital
@@ -167,22 +114,6 @@
             state: shoes
   # Starlight end
   # Starlight start: Temp Vulpkanin revert
-  - type: Hunger # on 1.5x more
-    thresholds:
-      Overfed: 250
-      Okay: 200
-      Peckish: 150
-      Starving: 100
-      Dead: 0
-    baseDecayRate: 0.018
-  - type: Thirst # on 1.5x more
-    thresholds:
-      OverHydrated: 650
-      Okay: 500
-      Thirsty: 350
-      Parched: 200
-      Dead: 0
-    baseDecayRate: 0.125
   - type: Temperature # Ported over from CD. Afterall, it does make sense that something with fur can handle more cold/less heat. Basegame Moths, apparently, have similar resistances.
     heatDamageThreshold: 325
     coldDamageThreshold: 230
@@ -198,6 +129,11 @@
     targetZoom: "1.125, 1.125"
     maxZoom: "1.125, 1.125"
   # Starlight end
+  - type: InteractionPopup # DV
+    successChance: 1
+    interactSuccessString: pat-success-generic
+    interactSuccessSound: /Audio/Effects/thudswoosh.ogg
+    messagePerceivedByOthers: pat-success-generic-others
 
 - type: entity
   parent: MobHumanDummy # HardLight: Removed redundant brackets and changed from BaseSpeciesDummy to MobHummanDummy.
