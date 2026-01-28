@@ -103,10 +103,9 @@ public sealed partial class SleepingSystem : EntitySystem
         {
             // Expiring status effects would remove the components needed for sleeping
             _statusEffectsSystem.TryRemoveStatusEffect(ent.Owner, "Stun");
-            _statusEffectsSystem.TryRemoveStatusEffect(ent.Owner, "KnockedDown");
 
             EnsureComp<StunnedComponent>(ent);
-            
+
             // The entity will not fall over  if they are buckled. I think this could be written better.
             if (!EntityManager.TryGetComponent(ent, out BuckleComponent? buckleComp) || !buckleComp.Buckled)
             {
