@@ -108,7 +108,6 @@
   - type: Bloodstream
     bloodReagent: InertNanites
     bloodRefreshAmount: 0.0
-    updateInterval: 1
   - type: HLBloodLevelPassiveDamage
     allowedStates:
     - Alive
