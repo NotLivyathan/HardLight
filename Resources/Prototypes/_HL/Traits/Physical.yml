@@ -13,6 +13,12 @@
   description: Innoculated-text
   category: Physical
   cost: 5
+  speciesBlacklist:
+  - IPC
+  - Synth
+  blacklist:
+    components:
+    - BorgChassis
   components:
   - type: ZombieImmune
 
@@ -125,6 +131,12 @@
   description: natural-regeneration-text
   category: Physical
   cost: 6
+  speciesBlacklist:
+  - IPC
+  - Synth
+  blacklist:
+    components:
+    - BorgChassis
   mutuallyExclusiveTraits:
   - PlateletFactories
   - Hemophilia
@@ -146,6 +158,12 @@
   description: unnatural-regeneration-text
   category: Physical
   cost: 8
+  speciesBlacklist:
+  - IPC
+  - Synth
+  blacklist:
+    components:
+    - BorgChassis
   mutuallyExclusiveTraits:
   - PlateletFactories
   - NaturalRegen
