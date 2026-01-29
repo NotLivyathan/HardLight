@@ -188,7 +188,7 @@ namespace Content.Client.HealthAnalyzer.UI
             // Alerts
 
             var unborgable = _unborgable.IsUnborgable(_target.Value); // DeltaV
-            var showAlerts = msg.Unrevivable == true || msg.Bleeding == true || unborgable;
+            var showAlerts = msg.Unrevivable == true || msg.Bleeding == true || unborgable || msg.Uncloneable == true; // DeltaV: Unborgable/Redshirt/Uncloneable
 
             AlertsDivider.Visible = showAlerts;
             AlertsContainer.Visible = showAlerts;
@@ -216,6 +216,14 @@ namespace Content.Client.HealthAnalyzer.UI
                 AlertsContainer.AddChild(new RichTextLabel
                 {
                     Text = Loc.GetString("health-analyzer-window-entity-unborgable-text"),
+                    Margin = new Thickness(0, 4),
+                    MaxWidth = 300
+                });
+
+            if (msg.Uncloneable == true) // DeltaV - Uncloneable
+                AlertsContainer.AddChild(new RichTextLabel
+                {
+                    Text = Loc.GetString("health-analyzer-window-entity-uncloneable-text"),
                     Margin = new Thickness(0, 4),
                     MaxWidth = 300
                 });
