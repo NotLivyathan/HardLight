@@ -160,11 +160,18 @@ namespace Content.Client.HealthAnalyzer.UI
                 : Loc.GetString("health-analyzer-window-entity-unknown-text"));
             NameLabel.SetMessage(name);
 
-            SpeciesLabel.Text =
-                _entityManager.TryGetComponent<HumanoidAppearanceComponent>(_target.Value,
-                    out var humanoidAppearanceComponent)
-                    ? Loc.GetString(_prototypes.Index<SpeciesPrototype>(humanoidAppearanceComponent.Species).Name)
-                    : Loc.GetString("health-analyzer-window-entity-unknown-species-text");
+            // HardLight start: Add a check for Synths/IPCs to not show Uncloneable alert.
+            var hasHumanoidAppearance = _entityManager.TryGetComponent<HumanoidAppearanceComponent>(_target.Value,
+                out var humanoidAppearanceComponent);
+
+            SpeciesLabel.Text = hasHumanoidAppearance
+                ? Loc.GetString(_prototypes.Index<SpeciesPrototype>(humanoidAppearanceComponent!.Species).Name)
+                : Loc.GetString("health-analyzer-window-entity-unknown-species-text");
+
+            var isSynth = hasHumanoidAppearance && humanoidAppearanceComponent!.Species == "Synth";
+            var isIpc = hasHumanoidAppearance && humanoidAppearanceComponent!.Species == "IPC";
+            var showUncloneableAlert = msg.Uncloneable == true && !isSynth && !isIpc;
+            // HardLight end
 
             // Basic Diagnostic
 
@@ -188,7 +195,7 @@ namespace Content.Client.HealthAnalyzer.UI
             // Alerts
 
             var unborgable = _unborgable.IsUnborgable(_target.Value); // DeltaV
-            var showAlerts = msg.Unrevivable == true || msg.Bleeding == true || unborgable || msg.Uncloneable == true; // DeltaV: Unborgable/Redshirt/Uncloneable
+            var showAlerts = msg.Unrevivable == true || msg.Bleeding == true || unborgable || showUncloneableAlert; // DeltaV: Unborgable/Uncloneable, HardLight: msg.Uncloneable == true<showUncloneableAlert
 
             AlertsDivider.Visible = showAlerts;
             AlertsContainer.Visible = showAlerts;
@@ -220,7 +227,7 @@ namespace Content.Client.HealthAnalyzer.UI
                     MaxWidth = 300
                 });
 
-            if (msg.Uncloneable == true) // DeltaV - Uncloneable
+            if (showUncloneableAlert) // DeltaV, HardLight: msg.Uncloneable == true<showUncloneableAlert
                 AlertsContainer.AddChild(new RichTextLabel
                 {
                     Text = Loc.GetString("health-analyzer-window-entity-uncloneable-text"),

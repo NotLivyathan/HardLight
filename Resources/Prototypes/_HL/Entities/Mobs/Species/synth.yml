@@ -21,6 +21,7 @@
         color: "#8afffd"
   - type: ZombieImmune
   - type: Sanitized
+  - type: Uncloneable
   - type: Puller
     needsHands: false
   - type: HumanoidAppearance
