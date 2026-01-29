@@ -24,7 +24,6 @@
   cost: -4
   speciesBlacklist:
   - IPC
-  - Shadekin
   - Synth
   blacklist:
     components:
