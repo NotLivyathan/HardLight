@@ -18,7 +18,9 @@ using Content.Shared.Throwing;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 
 namespace Content.Shared.Stunnable;
@@ -38,6 +40,7 @@ public abstract partial class SharedStunSystem : EntitySystem
     [Dependency] private readonly StatusEffectsSystem _statusEffect = default!;
     [Dependency] private readonly SharedLayingDownSystem _layingDown = default!; // EE
     [Dependency] private readonly SharedContainerSystem _container = default!; // EE
+    [Dependency] private readonly SharedBroadphaseSystem _broadphase = default!;
 
     public override void Initialize()
     {
@@ -251,11 +254,11 @@ public abstract partial class SharedStunSystem : EntitySystem
             walkSpeedMod = Math.Clamp(walkSpeedMod, 0f, 1f);
             sprintSpeedMod = Math.Clamp(sprintSpeedMod, 0f, 1f);
 
-            slowed.WalkSpeedModifier *= walkSpeedMod;
-            slowed.SprintSpeedModifier *= sprintSpeedMod;
+            //slowed.WalkSpeedModifier *= walkSpeedMod;
+            //slowed.SprintSpeedModifier *= sprintSpeedMod;
 
-            slowed.WalkSpeedModifier *= walkSpeedMultiplier;
-            slowed.SprintSpeedModifier *= runSpeedMultiplier;
+            //slowed.WalkSpeedModifier *= walkSpeedMultiplier;
+            //slowed.SprintSpeedModifier *= runSpeedMultiplier;
 
             _movementSpeedModifier.RefreshMovementSpeedModifiers(uid);
 

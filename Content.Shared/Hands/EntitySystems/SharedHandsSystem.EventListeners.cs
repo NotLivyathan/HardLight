@@ -21,7 +21,7 @@ public abstract partial class SharedHandsSystem
         if (!HasComp<KnockedDownComponent>(ent))
             return;
 
-        var hands = GetEmptyHandCount(ent.Owner);
+        var hands = CountFreeHands(ent.Owner);
 
         if (hands == 0)
             return;
