@@ -60,7 +60,7 @@ public sealed class EmitsSoundOnMoveSystem : EntitySystem
         if (xform.GridUid == null)
             return;
 
-        if (component.RequiresGravity && _gravity.IsWeightless(uid, physics, xform))
+        if (component.RequiresGravity && _gravity.IsWeightless(uid)) // HardLight: Merged with upstream
             return;
 
         var parent = xform.ParentUid;
