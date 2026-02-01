@@ -3,9 +3,9 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.Components;
 using Content.Server.Stunnable;
-using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
 using Content.Server.Damage.Components;
+using Content.Server._NF.Atmos.Components; // Frontier
 using Content.Shared.ActionBlocker;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
@@ -26,12 +26,12 @@ using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.FixedPoint;
 using Content.Shared.Hands;
+using Content.Shared.Temperature.Components;
 using Robust.Server.Audio;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
-using Content.Server._NF.Atmos.Components; // Frontier
 
 namespace Content.Server.Atmos.EntitySystems
 {
@@ -136,7 +136,7 @@ namespace Content.Server.Atmos.EntitySystems
 
             var otherEnt = args.OtherEntity;
 
-            if (!EntityManager.TryGetComponent(otherEnt, out FlammableComponent? flammable))
+            if (!TryComp(otherEnt, out FlammableComponent? flammable))
                 return;
 
             //Only ignite when the colliding fixture is projectile or ignition.
@@ -242,16 +242,20 @@ namespace Content.Server.Atmos.EntitySystems
                 mass2 = otherPhys.Mass;
             }
 
-	    // Funky segment cherry-picked from funky-station commit af29cf8ea631c3d9a39c6602ec3d667312c630e7 by Drywink, MIT licensed
-	    // Begin Funky
-            var totalMass = mass1 + mass2;
-            var totalHeat = (flammable.FireStacks * mass1) + (otherFlammable.FireStacks * mass2);
+            // when the thing on fire is more massive than the other, the following happens:
+            // - the thing on fire loses a small number of firestacks
+            // - the other thing gains a large number of firestacks
+            // so a person on fire engulfs a mouse, but an engulfed mouse barely does anything to a person
+            var total = mass1 + mass2;
+            var avg = (flammable.FireStacks + otherFlammable.FireStacks) / total;
 
-            var desiredFireStacks = totalHeat / totalMass;
-
-            SetFireStacks(uid, desiredFireStacks, flammable, ignite: true);
-            SetFireStacks(otherUid, desiredFireStacks, otherFlammable, ignite: true);
-	    // End Funky
+            // swap the entity losing stacks depending on whichever has the most firestack kilos
+            var (src, dest) = flammable.FireStacks * mass1 > otherFlammable.FireStacks * mass2
+                ? (-1f, 1f)
+                : (1f, -1f);
+            // bring each entity to the same firestack mass, firestacks being scaled by the other's mass
+            AdjustFireStacks(uid, src * avg * mass2, flammable, ignite: true);
+            AdjustFireStacks(otherUid, dest * avg * mass1, otherFlammable, ignite: true);
         }
 
         private void OnIsHot(EntityUid uid, FlammableComponent flammable, IsHotEvent args)
@@ -295,7 +299,7 @@ namespace Content.Server.Atmos.EntitySystems
             // This is intended so that matches & candles can re-use code for un-shaded layers on in-hand sprites.
             // However, this could cause conflicts if something is ACTUALLY both a toggleable light and flammable.
             // if that ever happens, then fire visuals will need to implement their own in-hand sprite management.
-            _appearance.SetData(uid, ToggleableLightVisuals.Enabled, flammable.OnFire, appearance);
+            _appearance.SetData(uid, ToggleableVisuals.Enabled, flammable.OnFire, appearance);
         }
 
         public void AdjustFireStacks(EntityUid uid, float relativeFireStacks, FlammableComponent? flammable = null, bool ignite = false)
@@ -407,7 +411,7 @@ namespace Content.Server.Atmos.EntitySystems
             flammable.Resisting = true;
 
             _popup.PopupEntity(Loc.GetString("flammable-component-resist-message"), uid, uid);
-            _stunSystem.TryParalyze(uid, TimeSpan.FromSeconds(2f), true);
+            _stunSystem.TryUpdateParalyzeDuration(uid, TimeSpan.FromSeconds(2f));
 
             // TODO FLAMMABLE: Make this not use TimerComponent...
             uid.SpawnTimer(2000, () =>

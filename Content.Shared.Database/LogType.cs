@@ -81,9 +81,9 @@ public enum LogType
     ChemicalReaction = 17,
 
     /// <summary>
-    /// Reagent effects related interactions.
+    /// EntityEffect related interactions.
     /// </summary>
-    ReagentEffect = 18,
+    EntityEffect = 18,
 
     /// <summary>
     /// Canister valve was opened or closed.
@@ -510,6 +510,6 @@ public enum LogType
     ShuttleInfoChanged = 208,
     #endregion Frontier Values
     // End Frontier
-    BagOfHolding = 420, //Nyano - Summary: adds bag of holding. 
+    BagOfHolding = 420, //Nyano - Summary: adds bag of holding.
     Psionics = 421, //Nyano - Summary: ads psionic as a log type.
 }

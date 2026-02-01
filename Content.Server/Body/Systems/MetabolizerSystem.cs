@@ -1,12 +1,19 @@
 using Content.Server.Body.Components;
-using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Administration.Logs;
+using Content.Server._Funkystation.Genetics.Mutations.Components; // Funkystation - Genetics
+using Content.Shared.Body.Events;
 using Content.Shared.Body.Organ;
+using Content.Shared.Body.Prototypes;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;
-using Content.Shared.Database;
+using Content.Shared.EntityConditions;
+using Content.Shared.EntityConditions.Conditions;
+using Content.Shared.EntityConditions.Conditions.Body;
 using Content.Shared.EntityEffects;
+using Content.Shared.EntityEffects.Effects.Body;
+using Content.Shared.EntityEffects.Effects.Solution;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
@@ -14,97 +21,82 @@ using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
-using Content.Server._Funkystation.Genetics.Mutations.Components;
 
-namespace Content.Server.Body.Systems
+namespace Content.Server.Body.Systems;
+
+/// <inheritdoc/>
+public sealed class MetabolizerSystem : SharedMetabolizerSystem
 {
-    public sealed class MetabolizerSystem : EntitySystem
+    [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
+    [Dependency] private readonly SharedEntityConditionsSystem _entityConditions = default!;
+    [Dependency] private readonly SharedEntityEffectsSystem _entityEffects = default!;
+    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
+
+    private EntityQuery<OrganComponent> _organQuery;
+    private EntityQuery<SolutionContainerManagerComponent> _solutionQuery;
+    private static readonly ProtoId<MetabolismGroupPrototype> Gas = "Gas";
+
+    public override void Initialize()
     {
-        [Dependency] private readonly IGameTiming _gameTiming = default!;
-        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-        [Dependency] private readonly IRobustRandom _random = default!;
-        [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
-        [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
-        [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
+        base.Initialize();
 
-        private EntityQuery<OrganComponent> _organQuery;
-        private EntityQuery<SolutionContainerManagerComponent> _solutionQuery;
+        _organQuery = GetEntityQuery<OrganComponent>();
+        _solutionQuery = GetEntityQuery<SolutionContainerManagerComponent>();
 
-        public override void Initialize()
+        SubscribeLocalEvent<MetabolizerComponent, ComponentInit>(OnMetabolizerInit);
+        SubscribeLocalEvent<MetabolizerComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<MetabolizerComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
+    }
+
+    private void OnMapInit(Entity<MetabolizerComponent> ent, ref MapInitEvent args)
+    {
+        ent.Comp.NextUpdate = _gameTiming.CurTime + ent.Comp.AdjustedUpdateInterval;
+    }
+
+    private void OnMetabolizerInit(Entity<MetabolizerComponent> entity, ref ComponentInit args)
+    {
+        if (!entity.Comp.SolutionOnBody)
         {
-            base.Initialize();
+            _solutionContainerSystem.EnsureSolution(entity.Owner, entity.Comp.SolutionName, out _);
+        }
+        else if (_organQuery.CompOrNull(entity)?.Body is { } body)
+        {
+            _solutionContainerSystem.EnsureSolution(body, entity.Comp.SolutionName, out _);
+        }
+    }
 
-            _organQuery = GetEntityQuery<OrganComponent>();
-            _solutionQuery = GetEntityQuery<SolutionContainerManagerComponent>();
+    private void OnApplyMetabolicMultiplier(Entity<MetabolizerComponent> ent, ref ApplyMetabolicMultiplierEvent args)
+    {
+        ent.Comp.UpdateIntervalMultiplier = args.Multiplier;
+    }
 
-            SubscribeLocalEvent<MetabolizerComponent, ComponentInit>(OnMetabolizerInit);
-            SubscribeLocalEvent<MetabolizerComponent, MapInitEvent>(OnMapInit);
-            SubscribeLocalEvent<MetabolizerComponent, EntityUnpausedEvent>(OnUnpaused);
-            SubscribeLocalEvent<MetabolizerComponent, ApplyMetabolicMultiplierEvent>(OnApplyMetabolicMultiplier);
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        var metabolizers = new ValueList<(EntityUid Uid, MetabolizerComponent Component)>(Count<MetabolizerComponent>());
+        var query = EntityQueryEnumerator<MetabolizerComponent>();
+
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            metabolizers.Add((uid, comp));
         }
 
-        private void OnMapInit(Entity<MetabolizerComponent> ent, ref MapInitEvent args)
+        foreach (var (uid, metab) in metabolizers)
         {
-            ent.Comp.NextUpdate = _gameTiming.CurTime + ent.Comp.UpdateInterval;
+            // Only update as frequently as it should
+            if (_gameTiming.CurTime < metab.NextUpdate)
+                continue;
+
+            metab.NextUpdate += metab.AdjustedUpdateInterval;
+            TryMetabolize((uid, metab));
         }
+    }
 
-        private void OnUnpaused(Entity<MetabolizerComponent> ent, ref EntityUnpausedEvent args)
-        {
-            ent.Comp.NextUpdate += args.PausedTime;
-        }
-
-        private void OnMetabolizerInit(Entity<MetabolizerComponent> entity, ref ComponentInit args)
-        {
-            if (!entity.Comp.SolutionOnBody)
-            {
-                _solutionContainerSystem.EnsureSolution(entity.Owner, entity.Comp.SolutionName, out _);
-            }
-            else if (_organQuery.CompOrNull(entity)?.Body is { } body)
-            {
-                _solutionContainerSystem.EnsureSolution(body, entity.Comp.SolutionName, out _);
-            }
-        }
-
-        private void OnApplyMetabolicMultiplier(
-            Entity<MetabolizerComponent> ent,
-            ref ApplyMetabolicMultiplierEvent args)
-        {
-            // TODO REFACTOR THIS
-            // This will slowly drift over time due to floating point errors.
-            // Instead, raise an event with the base rates and allow modifiers to get applied to it.
-            if (args.Apply)
-            {
-                ent.Comp.UpdateInterval *= args.Multiplier;
-                return;
-            }
-
-            ent.Comp.UpdateInterval /= args.Multiplier;
-        }
-
-        public override void Update(float frameTime)
-        {
-            base.Update(frameTime);
-
-            var metabolizers = new ValueList<(EntityUid Uid, MetabolizerComponent Component)>(Count<MetabolizerComponent>());
-            var query = EntityQueryEnumerator<MetabolizerComponent>();
-
-            while (query.MoveNext(out var uid, out var comp))
-            {
-                metabolizers.Add((uid, comp));
-            }
-
-            foreach (var (uid, metab) in metabolizers)
-            {
-                // Only update as frequently as it should
-                if (_gameTiming.CurTime < metab.NextUpdate)
-                    continue;
-
-                metab.NextUpdate += metab.UpdateInterval;
-                TryMetabolize((uid, metab));
-            }
-        }
-
-        private void TryMetabolize(Entity<MetabolizerComponent, OrganComponent?, SolutionContainerManagerComponent?> ent)
+    private void TryMetabolize(Entity<MetabolizerComponent, OrganComponent?, SolutionContainerManagerComponent?> ent)
         {
             _organQuery.Resolve(ent, ref ent.Comp2, logMissing: false);
 
@@ -188,6 +180,7 @@ namespace Content.Server.Body.Systems
                 if (ent.Comp1.MetabolismGroups is null)
                     continue;
 
+                // TODO: Kill MetabolismGroups!
                 foreach (var group in ent.Comp1.MetabolismGroups)
                 {
                     if (!proto.Metabolisms.TryGetValue(group.Id, out var entry))
@@ -198,12 +191,17 @@ namespace Content.Server.Body.Systems
                     // Remove $rate, as long as there's enough reagent there to actually remove that much
                     mostToRemove = FixedPoint2.Clamp(rate, 0, quantity);
 
+                    var scale = (float) mostToRemove;
+
                     // Frontier: skip applying effects in metabolism
                     if (group.SkipEffects)
                         continue;
                     // End Frontier
 
-                    float scale = (float) mostToRemove / (float) rate;
+                    // TODO: This is a very stupid workaround to lungs heavily relying on scale = reagent quantity. Needs lung and metabolism refactors to remove.
+                    // TODO: Lungs just need to have their scale be equal to the mols consumed, scale needs to be not hardcoded either and configurable per metabolizer...
+                    if (group.Id != Gas)
+                        scale /= (float) entry.MetabolismRate;
 
                     // if it's possible for them to be dead, and they are,
                     // then we shouldn't process any effects, but should probably
@@ -215,27 +213,36 @@ namespace Content.Server.Body.Systems
                     }
 
                     var actualEntity = ent.Comp2?.Body ?? solutionEntityUid.Value;
-                    var args = new EntityEffectReagentArgs(actualEntity, EntityManager, ent, solution, mostToRemove, proto, null, scale);
 
                     // do all effects, if conditions apply
                     foreach (var effect in entry.Effects)
                     {
-                        if (!effect.ShouldApply(args, _random))
+                        if (scale < effect.MinScale)
                             continue;
 
-                        if (effect.ShouldLog)
-                        {
-                            _adminLogger.Add(
-                                LogType.ReagentEffect,
-                                effect.LogImpact,
-                                $"Metabolism effect {effect.GetType().Name:effect}"
-                                + $" of reagent {proto.LocalizedName:reagent}"
-                                + $" applied on entity {actualEntity:entity}"
-                                + $" at {Transform(actualEntity).Coordinates:coordinates}"
-                            );
-                        }
+                        // See if conditions apply
+                        if (effect.Conditions != null && !CanMetabolizeEffect(actualEntity, ent, soln.Value, effect.Conditions))
+                            continue;
 
-                        effect.Effect(args);
+                        ApplyEffect(effect);
+
+                    }
+
+                    // TODO: We should have to do this with metabolism. ReagentEffect struct needs refactoring and so does metabolism!
+                    void ApplyEffect(EntityEffect effect)
+                    {
+                        switch (effect)
+                        {
+                            case ModifyLungGas:
+                                _entityEffects.ApplyEffect(ent, effect, scale);
+                                break;
+                            case AdjustReagent:
+                                _entityEffects.ApplyEffect(soln.Value, effect, scale);
+                                break;
+                            default:
+                                _entityEffects.ApplyEffect(actualEntity, effect, scale);
+                                break;
+                        }
                     }
                 }
 
@@ -252,30 +259,41 @@ namespace Content.Server.Body.Systems
 
             _solutionContainerSystem.UpdateChemicals(soln.Value);
         }
-    }
-
-    // TODO REFACTOR THIS
-    // This will cause rates to slowly drift over time due to floating point errors.
-    // Instead, the system that raised this should trigger an update and subscribe to get-modifier events.
-    [ByRefEvent]
-    public readonly record struct ApplyMetabolicMultiplierEvent(
-        EntityUid Uid,
-        float Multiplier,
-        bool Apply)
-    {
-        /// <summary>
-        /// The entity whose metabolism is being modified.
-        /// </summary>
-        public readonly EntityUid Uid = Uid;
 
         /// <summary>
-        /// What the metabolism's update rate will be multiplied by.
+        /// Public API to check if a certain metabolism effect can be applied to an entity.
+        /// TODO: With metabolism refactor make this logic smarter and unhardcode the old hardcoding entity effects used to have for metabolism!
         /// </summary>
-        public readonly float Multiplier = Multiplier;
+        /// <param name="body">The body metabolizing the effects</param>
+        /// <param name="organ">The organ doing the metabolizing</param>
+        /// <param name="solution">The solution we are metabolizing from</param>
+        /// <param name="conditions">The conditions that need to be met to metabolize</param>
+        /// <returns>True if we can metabolize! False if we cannot!</returns>
+        public bool CanMetabolizeEffect(EntityUid body, EntityUid organ, Entity<SolutionComponent> solution, EntityCondition[] conditions)
+        {
+            foreach (var condition in conditions)
+            {
+                switch (condition)
+                {
+                    // Need specific handling of specific conditions since Metabolism is funny like that.
+                    // TODO: MetabolizerTypes should be handled well before this stage by metabolism itself.
+                    case MetabolizerTypeCondition:
+                        if (_entityConditions.TryCondition(organ, condition))
+                            continue;
+                        break;
+                    case ReagentCondition:
+                        if (_entityConditions.TryCondition(solution, condition))
+                            continue;
+                        break;
+                    default:
+                        if (_entityConditions.TryCondition(body, condition))
+                            continue;
+                        break;
+                }
 
-        /// <summary>
-        /// If true, apply the multiplier. If false, revert it.
-        /// </summary>
-        public readonly bool Apply = Apply;
-    }
+                return false;
+            }
+
+            return true;
+        }
 }

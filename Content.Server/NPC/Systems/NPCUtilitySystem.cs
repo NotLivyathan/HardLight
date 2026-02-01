@@ -36,6 +36,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using System.Linq;
+using Content.Shared.Temperature.Components;
 using Content.Shared.StatusEffect; // Frontier
 
 namespace Content.Server.NPC.Systems;
@@ -400,6 +401,13 @@ public sealed class NPCUtilitySystem : EntitySystem
                         return 1f;
 
                     return 0f;
+                }
+            case TargetLowTempCon con:
+                {
+                    if (!TryComp<TemperatureComponent>(targetUid, out var temperature))
+                        return 0f;
+
+                    return temperature.CurrentTemperature <= con.MinTemp ? 1f : 0f;
                 }
             // Frontier: stun conditions
             case TargetIsNotStunnedCon:
