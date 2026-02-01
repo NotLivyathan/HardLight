@@ -11,24 +11,24 @@
     Food:
       effects:
       - !type:SatiateHunger
-      - !type:HealthChange # HardLight: Makes nutriment remove toxins from the bloodstream for Synths
+      - !type:HealthChange # HardLight: Make nutriment remove toxins from the bloodstream for Synths
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         damage:
           types:
             Bloodloss: -0.25
             Poison: -0.5
             Radiation: -0.5
-      - !type:ModifyBleedAmount
+      - !type:ModifyBleed
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         amount: -0.075
-      - !type:ModifyBloodLevel # HardLight: Makes nutriment restore blood level for Synths
+      - !type:ModifyBloodLevel # HardLight: Make nutriment restore blood level for Synths
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         amount: 1.25
   plantMetabolism:
   - !type:PlantAdjustNutrition
@@ -55,13 +55,13 @@
             Brute: -0.5
             Burn: -0.5
       # Helps you stop bleeding to an extent.
-      - !type:ModifyBleedAmount
+      - !type:ModifyBleed
         amount: -0.25
       - !type:SatiateHunger #Numbers are balanced with this in mind + it helps limit how much healing you can get from food
-      - !type:AdjustReagent # HardLight: Allows Synths to convert vitamin to nutriment
+      - !type:AdjustReagent # HardLight: Allow Synths to convert vitamin to nutriment
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         reagent: Nutriment
         amount: 0.57
   # Lets plants benefit too
@@ -91,10 +91,10 @@
       - !type:ModifyBloodLevel
         amount: 1 # weaker than iron but pretty good all things considered
       - !type:SatiateHunger
-      - !type:AdjustReagent # HardLight: Allows Synths to convert protein to nutriment
+      - !type:AdjustReagent # HardLight: Allow Synths to convert protein to nutriment
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         reagent: Nutriment
         amount: 0.53
   pricePerUnit: 3
@@ -113,14 +113,14 @@
       effects:
       - !type:SatiateHunger
         conditions:
-        - !type:ReagentThreshold #Only satiates when eaten with nutriment
+        - !type:ReagentCondition #Only satiates when eaten with nutriment
           reagent: Nutriment
           min: 0.1
         factor: 1
-      - !type:AdjustReagent # HardLight: Allows Synths to convert sugar to nutriment
+      - !type:AdjustReagent # HardLight: Allow Synths to convert sugar to nutriment
         conditions:
-        - !type:OrganType
-          type: Synth
+        - !type:MetabolizerTypeCondition
+          type: [ Synth ]
         reagent: Nutriment
         amount: 0.51
   plantMetabolism:

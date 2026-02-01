@@ -63,9 +63,9 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
+          inverted: true
         damage:
           types:
             Poison: 0.1
@@ -73,9 +73,8 @@
       effects:
       - !type:ModifyBloodLevel
         conditions:
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
         amount: 0.4
 
 - type: reagent
@@ -154,17 +153,15 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
         damage:
           types:
             Poison: 0.1
-      - !type:HealthChange
+      - !type:HealthChange # Starlight
         conditions:
-        - !type:OrganType
-          type: Avali
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Avali ]
         damage:
           types:
             Poison: 2
@@ -172,11 +169,11 @@
       effects:
       - !type:ModifyBloodLevel
         conditions:
-        - !type:OrganType
-          type: Arachnid
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [ Arachnid ]
+          inverted: true
         amount: 0.4
-  
+
 - type: reagent
   id: Lithium
   name: reagent-name-lithium
@@ -236,61 +233,54 @@
   meltingPoint: 65.5
   boilingPoint: 759.0
   # Frontier: Sheleg
-  metabolisms: 
+  metabolisms:
     Food:
       effects:
       - !type:AdjustTemperature
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         - !type:Temperature
           max: 293.15
         amount: 100000 # thermal energy, not temperature!
       - !type:AdjustTemperature
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         - !type:Temperature
           min: 293.15
         amount: -10000
       - !type:ChemVomit
         probability: 0.15
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         - !type:ReagentThreshold
           min: 30
       - !type:PopupMessage
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         type: Local
         visualType: Large
         messages: [ "generic-reagent-effect-burning-insides" ]
         probability: 0.33
       - !type:Emote
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         emote: Scream
         probability: 0.2
       - !type:GenericStatusEffect
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
         key: Stutter
         component: StutteringAccent
       - !type:Jitter
         conditions:
-        - !type:OrganType
-          type: Sheleg
-          shouldHave: true
+        - !type:MetabolizerTypeCondition
+          type: [ Sheleg ]
   # End Frontier: Sheleg
 
 - type: reagent
