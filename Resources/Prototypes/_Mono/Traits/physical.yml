@@ -109,7 +109,6 @@
   ##- Felinid
   components:
   - type: Thieving
-    stealthy: true
     timeMultiplier: 0.67
     identifyHidden: true
 
