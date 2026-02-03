@@ -321,6 +321,20 @@
 #  traitGear: SpaceCash10000
 
 - type: trait
+  id: Thieving
+  name: trait-thieving-name
+  description: trait-thieving-desc
+  category: Physical
+  cost: 5
+  speciesBlacklist:
+  - Felinid
+  components:
+  - type: Thieving
+    stealthy: true
+    timeMultiplier: 0.67
+    identifyHidden: true
+    
+- type: trait
   id: TemperatureTolerance
   name: trait-temperature-tolerance-name
   description: trait-temperature-tolerance-desc
