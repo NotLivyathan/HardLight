@@ -34,3 +34,6 @@ hl-trait-egglayer-desc = You produce and lay eggs (10 cum per egg)
 
 hl-trait-egglayer-infertile-name = Egg Layer (very infertile)
 hl-trait-egglayer-infertile-desc = You produce eggs very slowly and seldomly (50 cum per egg)
+
+trait-perceptive-name = Perceptive
+trait-perceptive-desc = You are unusually adept at identifying pocketed items, and are the first one to know if it's a rock or not.

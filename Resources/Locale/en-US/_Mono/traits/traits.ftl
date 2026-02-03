@@ -31,9 +31,6 @@ trait-will-to-die-desc = You have an unusually weak "will to live", and will suc
 trait-psionically-gifted-name = Psionically Gifted
 trait-psionically-gifted-desc = You have always been a psychic, as long as you can remember.
 
-trait-thieving-name = Thieving
-trait-thieving-desc = You are deft with your hands, and talented at convincing people of their belongings. You can identify pocketed items, steal them quieter, and steal ~33% faster.
-
 trait-bionic-legs-name = Bionic Legs
 trait-bionic-legs-desc = One or more of your limbs have been replaced with an expensive, state of the art bionic. It could be either one made of highly realistic synthflesh,
      or a more obvious metal limb. This limb provides enhanced speed to it's user, allowing you to run away from situations faster or get to a place faster.

@@ -180,4 +180,11 @@
         Burn: -0.4
         Airloss: -1
 
-
+- type: trait
+  id: Perceptive
+  name: trait-perceptive-name
+  description: trait-perceptive-desc
+  category: Physical
+  cost: 2
+  components:
+  - type: IdentifyHiddenStrip

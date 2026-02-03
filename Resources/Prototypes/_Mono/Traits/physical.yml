@@ -100,20 +100,6 @@
   - type: WillToDie
 
 - type: trait
-  id: Thieving
-  name: trait-thieving-name
-  description: trait-thieving-desc
-  category: Physical
-  cost: 5
-  ##speciesBlacklist:
-  ##- Felinid
-  components:
-  - type: Thieving
-    stealthy: true
-    timeMultiplier: 0.67
-    identifyHidden: true
-
-- type: trait
   id: BionicLegs
   name: trait-bionic-legs-name
   description: trait-bionic-legs-desc
