@@ -692,6 +692,9 @@ public abstract class SharedStrippableSystem : EntitySystem
 
         if (HasComp<BypassInteractionChecksComponent>(viewer.Value))
             return false;
+            
+        if (TryComp<ThievingComponent>(viewer.Value, out var thief) && thief.IdentifyHidden) // Mono
+            return false
 
         if (HasComp<IdentifyHiddenStripComponent>(viewer.Value)) // HardLight
             return false;
