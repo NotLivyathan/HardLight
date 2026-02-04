@@ -110,7 +110,7 @@
     Potassium:
       amount: 1
   effects:
-    - !type:ExplosionReactionEffect
+    - !type:ExplosionEffect
       explosionType: Default
       maxIntensity: 100
       intensityPerUnit: 0.5 # 50+50 reagent for maximum explosion
@@ -199,8 +199,8 @@
     Aluminium:
       amount: 1
   effects:
-    - !type:EmpReactionEffect
-      rangePerUnit: 0.2
+    - !type:Emp
+      rangeModifier: 0.2
       maxRange: 6
       energyConsumption: 675000 # Frontier: 12.5kJ<675kJ
       duration: 15
@@ -217,7 +217,7 @@
     Sulfur:
       amount: 1
   effects:
-    - !type:FlashReactionEffect
+    - !type:Flash
 
 - type: reaction
   id: TableSalt
@@ -515,4 +515,3 @@
       amount: 1
   products:
     Tazinide: 1
-
