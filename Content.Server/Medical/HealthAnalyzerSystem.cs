@@ -1,5 +1,4 @@
 using Content.Server._NF.Traits.Assorted; // Frontier
-using Content.Server.Body.Components;
 using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Shared._Shitmed.Targeting;
@@ -19,7 +18,7 @@ using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.Temperature.Components;
-using Content.Shared.Traits.Assorted;
+using Content.Shared.Body.Components;
 using Content.Shared._DV.Traits.Assorted; // DeltaV
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
@@ -40,6 +39,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
 
     public override void Initialize()
@@ -89,13 +89,14 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             component.NextUpdate = _timing.CurTime + component.UpdateInterval;
 
             //Get distance between health analyzer and the scanned entity
+            //null is infinite range
             var patientCoordinates = Transform(patient).Coordinates;
-            /* if (!_transformSystem.InRange(patientCoordinates, transform.Coordinates, component.MaxScanRange))
+            if (component.MaxScanRange != null && !_transformSystem.InRange(patientCoordinates, transform.Coordinates, component.MaxScanRange.Value))
             {
                 //Range too far, disable updates
                 StopAnalyzingEntity((uid, component), patient);
                 continue;
-            } */
+            }
 
             UpdateScannedUser(uid, patient, true, component.CurrentBodyPart); // Shitmed Change
         }
@@ -276,6 +277,9 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         if (attemptDefib.Cancelled && !attemptAnalyze.Cancelled)
             unrevivable = true;
         //HL END
+
+        if (TryComp<UnrevivableComponent>(target, out var unrevivableComp) && unrevivableComp.Analyzable)
+            unrevivable = true;
 
         if (HasComp<UncloneableComponent>(target)) // DeltaV: Uncloneable
             uncloneable = true;

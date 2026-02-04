@@ -1,12 +1,11 @@
 using System.Numerics;
-using Content.Server.Body.Components;
-using Content.Server.Construction;
 using Content.Server.Botany.Components;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Materials;
 using Content.Server.Power.Components;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Audio;
+using Content.Shared.Body.Components;
 using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Climbing.Events;
@@ -28,11 +27,9 @@ using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Throwing;
 using Robust.Server.Player;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.Contraband; // Frontier
 
@@ -57,7 +54,8 @@ namespace Content.Server.Medical.BiomassReclaimer
         [Dependency] private readonly SharedMindSystem _minds = default!;
         [Dependency] private readonly InventorySystem _inventory = default!;
 
-        public static readonly ProtoId<MaterialPrototype> BiomassPrototype = new("Biomass");
+        [ValidatePrototypeId<MaterialPrototype>]
+        public const string BiomassPrototype = "Biomass";
 
         public override void Update(float frameTime)
         {
@@ -108,8 +106,6 @@ namespace Content.Server.Medical.BiomassReclaimer
             SubscribeLocalEvent<ActiveBiomassReclaimerComponent, UnanchorAttemptEvent>(OnUnanchorAttempt);
             SubscribeLocalEvent<BiomassReclaimerComponent, AfterInteractUsingEvent>(OnAfterInteractUsing);
             SubscribeLocalEvent<BiomassReclaimerComponent, ClimbedOnEvent>(OnClimbedOn);
-            SubscribeLocalEvent<BiomassReclaimerComponent, RefreshPartsEvent>(OnRefreshParts);
-            SubscribeLocalEvent<BiomassReclaimerComponent, UpgradeExamineEvent>(OnUpgradeExamine);
             SubscribeLocalEvent<BiomassReclaimerComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<BiomassReclaimerComponent, SuicideByEnvironmentEvent>(OnSuicideByEnvironment);
             SubscribeLocalEvent<BiomassReclaimerComponent, ReclaimerDoAfterEvent>(OnDoAfter);
@@ -191,26 +187,6 @@ namespace Content.Server.Medical.BiomassReclaimer
             StartProcessing(args.Climber, reclaimer);
         }
 
-        private void OnRefreshParts(EntityUid uid, BiomassReclaimerComponent component, RefreshPartsEvent args)
-        {
-            var laserRating = args.PartRatings[component.MachinePartProcessingSpeed];
-            var manipRating = args.PartRatings[component.MachinePartYieldAmount];
-
-            // Processing time slopes downwards with part rating.
-            component.ProcessingTimePerUnitMass =
-                component.BaseProcessingTimePerUnitMass / MathF.Pow(component.PartRatingSpeedMultiplier, laserRating - 1);
-
-            // Yield slopes upwards with part rating.
-            component.YieldPerUnitMass =
-                component.BaseYieldPerUnitMass * MathF.Pow(component.PartRatingYieldAmountMultiplier, manipRating - 1);
-        }
-
-        private void OnUpgradeExamine(EntityUid uid, BiomassReclaimerComponent component, UpgradeExamineEvent args)
-        {
-            args.AddPercentageUpgrade("biomass-reclaimer-component-upgrade-speed", component.BaseProcessingTimePerUnitMass / component.ProcessingTimePerUnitMass);
-            args.AddPercentageUpgrade("biomass-reclaimer-component-upgrade-biomass-yield", component.YieldPerUnitMass / component.BaseYieldPerUnitMass);
-        }
-
         private void OnDoAfter(Entity<BiomassReclaimerComponent> reclaimer, ref ReclaimerDoAfterEvent args)
         {
             if (args.Handled || args.Cancelled)
@@ -252,7 +228,7 @@ namespace Content.Server.Medical.BiomassReclaimer
             var inventory = _inventory.GetHandOrInventoryEntities(toProcess);
             foreach (var item in inventory)
             {
-                if (!HasComp<ContrabandComponent>(item)) // Frontier - delete contraband
+                if (!HasComp<ContrabandComponent>(item)) // Frontier: Delete contraband upon being reclaimed, // HardLight: Maybe to prevent stripping exped enemies?
                 {
                     _transform.DropNextTo(item, ent.Owner);
                 }

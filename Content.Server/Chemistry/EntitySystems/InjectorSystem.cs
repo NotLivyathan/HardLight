@@ -1,13 +1,10 @@
-using Content.Server.Abilities.Chitinid;
-using Content.Server.Body.Components;
+using Content.Server.Abilities.Chitinid; // I assume this came from DeltaV
 using Content.Server.Body.Systems;
-using Content.Server.Chat.Managers;
-using Content.Shared.Chat;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Body.Components;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
@@ -17,10 +14,8 @@ using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Stacks;
 using Content.Shared.Nutrition.EntitySystems;
-using Content.Shared._DV.Chemistry.Components;
+using Content.Shared._DV.Chemistry.Components; // DeltaV
 using System.Linq; // Frontier
-using Robust.Server.Player;
-
 
 namespace Content.Server.Chemistry.EntitySystems;
 
@@ -267,7 +262,7 @@ public sealed class InjectorSystem : SharedInjectorSystem
         // Move units from attackSolution to targetSolution
         var removedSolution = SolutionContainers.SplitSolution(target.Comp.ChemicalSolution.Value, realTransferAmount);
 
-        _blood.TryAddToChemicals(target, removedSolution, target.Comp);
+        _blood.TryAddToChemicals(target.AsNullable(), removedSolution);
 
         _reactiveSystem.DoEntityReaction(target, removedSolution, ReactionMethod.Injection);
 

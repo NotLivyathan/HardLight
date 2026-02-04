@@ -1,9 +1,9 @@
-using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.DoAfter;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Forensics.Components;
 using Content.Server.Popups;
+using Content.Shared.Body.Events;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Popups;
 using Content.Shared.Chemistry.Components;
@@ -19,6 +19,7 @@ using Content.Shared.Weapons.Melee.Events;
 using Robust.Shared.Random;
 using Content.Shared.Verbs;
 using Robust.Shared.Utility;
+using Content.Shared.Hands.Components;
 
 namespace Content.Server.Forensics
 {
@@ -32,8 +33,7 @@ namespace Content.Server.Forensics
 
         public override void Initialize()
         {
-            SubscribeLocalEvent<FingerprintComponent, ContactInteractionEvent>(OnInteract);
-            SubscribeLocalEvent<FiberComponent, MapInitEvent>(OnFiberInit, after: [typeof(BloodstreamSystem)]); // DeltaV #1455 - unique glove fibers
+            SubscribeLocalEvent<HandsComponent, ContactInteractionEvent>(OnInteract);
             SubscribeLocalEvent<FingerprintComponent, MapInitEvent>(OnFingerprintInit, after: new[] { typeof(BloodstreamSystem) });
             // The solution entities are spawned on MapInit as well, so we have to wait for that to be able to set the DNA in the bloodstream correctly without ResolveSolution failing
             SubscribeLocalEvent<DnaComponent, MapInitEvent>(OnDNAInit, after: new[] { typeof(BloodstreamSystem) });
@@ -61,17 +61,10 @@ namespace Content.Server.Forensics
             }
         }
 
-        private void OnInteract(EntityUid uid, FingerprintComponent component, ContactInteractionEvent args)
+        private void OnInteract(EntityUid uid, HandsComponent component, ContactInteractionEvent args)
         {
             ApplyEvidence(uid, args.Other);
         }
-
-        // DeltaV #1455 - unique glove fibers
-        private void OnFiberInit(EntityUid uid, FiberComponent component, MapInitEvent args)
-        {
-            component.Fiberprint = GenerateFingerprint(length: 7);
-        }
-        // End of DeltaV code
 
         private void OnFingerprintInit(Entity<FingerprintComponent> ent, ref MapInitEvent args)
         {
@@ -277,9 +270,9 @@ namespace Content.Server.Forensics
                 targetComp.Residues.Add(string.IsNullOrEmpty(residue.ResidueColor) ? Loc.GetString("forensic-residue", ("adjective", residue.ResidueAdjective)) : Loc.GetString("forensic-residue-colored", ("color", residue.ResidueColor), ("adjective", residue.ResidueAdjective)));
         }
 
-        public string GenerateFingerprint(int length = 16) // DeltaV #1455 - allow changing the length of the fingerprint hash
+        public string GenerateFingerprint()
         {
-            var fingerprint = new byte[length]; // DeltaV #1455 - allow changing the length of the fingerprint hash
+            var fingerprint = new byte[16];
             _random.NextBytes(fingerprint);
             return Convert.ToHexString(fingerprint);
         }
@@ -305,18 +298,8 @@ namespace Content.Server.Forensics
             var component = EnsureComp<ForensicsComponent>(target);
             if (_inventory.TryGetSlotEntity(user, "gloves", out var gloves))
             {
-                // DeltaV #1455 - unique glove fibers
                 if (TryComp<FiberComponent>(gloves, out var fiber) && !string.IsNullOrEmpty(fiber.FiberMaterial))
-                {
-                    var fiberLocale = string.IsNullOrEmpty(fiber.FiberColor)
-                        ? Loc.GetString("forensic-fibers", ("material", fiber.FiberMaterial))
-                        : Loc.GetString("forensic-fibers-colored", ("color", fiber.FiberColor), ("material", fiber.FiberMaterial));
-                    component.Fibers.Add(fiberLocale + " ; " + fiber.Fiberprint);
-                }
-                // End of DeltaV code
-
-                if (HasComp<FingerprintMaskComponent>(gloves))
-                    return;
+                    component.Fibers.Add(string.IsNullOrEmpty(fiber.FiberColor) ? Loc.GetString("forensic-fibers", ("material", fiber.FiberMaterial)) : Loc.GetString("forensic-fibers-colored", ("color", fiber.FiberColor), ("material", fiber.FiberMaterial)));
             }
 
             if (TryComp<FingerprintComponent>(user, out var fingerprint) && CanAccessFingerprint(user, out _))
