@@ -9,6 +9,7 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Enums;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -19,6 +20,10 @@ namespace Content.Server.GameTicking
     public sealed partial class GameTicker
     {
         [Dependency] private readonly IPlayerManager _playerManager = default!;
+
+        private readonly Dictionary<NetUserId, System.Threading.CancellationTokenSource> _pendingMindWipes = new();
+
+        private static readonly TimeSpan MindWipeDelay = TimeSpan.FromMinutes(30);
 
         private void InitializePlayer()
         {
@@ -43,6 +48,8 @@ namespace Content.Server.GameTicking
             {
                 case SessionStatus.Connected:
                 {
+                    CancelPendingMindWipe(session.UserId);
+
                     AddPlayerToDb(args.Session.UserId.UserId);
 
                     // Always make sure the client has player data.
@@ -56,7 +63,7 @@ namespace Content.Server.GameTicking
 
                     // Make the player actually join the game.
                     // timer time must be > tick length
-                    Timer.Spawn(0, () => _playerManager.JoinGame(args.Session));
+                    global::Robust.Shared.Timing.Timer.Spawn(0, () => _playerManager.JoinGame(args.Session));
 
                     var record = await _db.GetPlayerRecordByUserId(args.Session.UserId);
                     var firstConnection = record != null &&
@@ -84,6 +91,8 @@ namespace Content.Server.GameTicking
 
                 case SessionStatus.InGame:
                 {
+                    CancelPendingMindWipe(session.UserId);
+
                     _userDb.ClientConnected(session);
 
                     if (mind == null)
@@ -130,7 +139,10 @@ namespace Content.Server.GameTicking
                         _pvsOverride.RemoveSessionOverride(mindId.Value, session);
                     }
 
-                     _userDb.ClientDisconnected(session);
+                    if (mindId != null)
+                        ScheduleMindWipe(session.UserId, mindId.Value);
+
+                    _userDb.ClientDisconnected(session);
                     break;
                 }
             }
@@ -175,6 +187,44 @@ namespace Content.Server.GameTicking
                 {
                     await _db.AddRoundPlayers(RoundId, id);
                 }
+            }
+        }
+
+        private void ScheduleMindWipe(NetUserId userId, EntityUid mindId)
+        {
+            CancelPendingMindWipe(userId);
+
+            var cts = new System.Threading.CancellationTokenSource();
+            _pendingMindWipes[userId] = cts;
+
+            global::Robust.Shared.Timing.Timer.Spawn(MindWipeDelay, () =>
+            {
+                if (cts.IsCancellationRequested)
+                    return;
+
+                if (!_playerManager.TryGetSessionById(userId, out var session) ||
+                    session.State.Status != SessionStatus.Disconnected)
+                {
+                    CancelPendingMindWipe(userId);
+                    return;
+                }
+
+                if (_mind.TryGetMind(userId, out var currentMindId, out var currentMind) && currentMindId == mindId)
+                {
+                    _mind.WipeMind(currentMindId.Value, currentMind);
+                }
+
+                CancelPendingMindWipe(userId);
+            }, cts.Token);
+        }
+
+        private void CancelPendingMindWipe(NetUserId userId)
+        {
+            if (_pendingMindWipes.TryGetValue(userId, out var cts))
+            {
+                cts.Cancel();
+                cts.Dispose();
+                _pendingMindWipes.Remove(userId);
             }
         }
 

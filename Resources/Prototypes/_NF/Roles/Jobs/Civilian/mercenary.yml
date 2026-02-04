@@ -3,9 +3,6 @@
   name: job-name-mercenary
   description: job-description-mercenary
   playTimeTracker: JobMercenary
-  requirements:
-    - !type:OverallPlaytimeRequirement
-      time: 108000
   startingGear: MercenaryGear
   icon: "JobIconMercenary"
   supervisors: job-supervisors-hire
@@ -27,9 +24,6 @@
   name: job-name-mercenary-interview
   description: job-mercenary-pilot
   playTimeTracker: JobMercenaryInterview
-  requirements:
-    - !type:OverallPlaytimeRequirement
-      time: 108000
   setPreference: false
   startingGear: MercenaryHologramGear
   icon: "JobIconMercenary"

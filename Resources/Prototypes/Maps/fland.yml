@@ -65,9 +65,9 @@
             #silicon (6)
             StationAi: [ 1, 1 ]
             Borg: [ 5, 5 ]
-            Contractor: [ -1, -1 ]
-            Pilot: [ 5, 5 ]
-            Mercenary: [ 5, 5 ]
+            #Contractor: [ -1, -1 ]
+            #Pilot: [ 5, 5 ]
+            Mercenary: [ 0, 40 ]
             MedicalQuadBorg: [ 3, 3 ]
             ServiceQuadBorg: [ 3, 3 ]
             SalvageQuadBorg: [ 3, 3 ]
@@ -78,6 +78,6 @@
             Prisoner: [ 3, 3 ]
             ForensicMantis: [ 1, 1 ]
         - type: StationDeadDrop
-          maxDeadDrops: 10 # large station
+          maxDeadDrops: 2 # large station
         - type: StationDeadDropReporting
           messageSet: Nfsd

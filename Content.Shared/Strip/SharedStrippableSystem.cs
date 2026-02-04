@@ -217,7 +217,7 @@ public abstract class SharedStrippableSystem : EntitySystem
 
         var doAfterArgs = new DoAfterArgs(EntityManager, user, time, new StrippableDoAfterEvent(true, true, slot), user, target, held)
         {
-            Hidden = stealth,
+            //Hidden = stealth,
             AttemptFrequency = AttemptFrequency.EveryTick,
             BreakOnDamage = true,
             BreakOnMove = true,
@@ -320,7 +320,7 @@ public abstract class SharedStrippableSystem : EntitySystem
 
         var doAfterArgs = new DoAfterArgs(EntityManager, user, time, new StrippableDoAfterEvent(false, true, slot), user, target, item)
         {
-            Hidden = stealth,
+            //Hidden = stealth,
             AttemptFrequency = AttemptFrequency.EveryTick,
             BreakOnDamage = true,
             BreakOnMove = true,
@@ -424,7 +424,7 @@ public abstract class SharedStrippableSystem : EntitySystem
 
         var doAfterArgs = new DoAfterArgs(EntityManager, user, time, new StrippableDoAfterEvent(true, false, handName), user, target, held)
         {
-            Hidden = stealth,
+            //Hidden = stealth,
             AttemptFrequency = AttemptFrequency.EveryTick,
             BreakOnDamage = true,
             BreakOnMove = true,
@@ -534,7 +534,7 @@ public abstract class SharedStrippableSystem : EntitySystem
 
         var doAfterArgs = new DoAfterArgs(EntityManager, user, time, new StrippableDoAfterEvent(false, false, handName), user, target, item)
         {
-            Hidden = stealth,
+            //Hidden = stealth,
             AttemptFrequency = AttemptFrequency.EveryTick,
             BreakOnDamage = true,
             BreakOnMove = true,

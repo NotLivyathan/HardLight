@@ -382,6 +382,11 @@ public sealed partial class SalvageSystem
         _salvageQueue.EnqueueJob(job);
     }
 
+    public void SpawnMissionFromDisk(SalvageMissionParams missionParams, EntityUid shuttleGrid, EntityUid consoleUid, EntityUid coordinatesDisk)
+    {
+        SpawnMission(missionParams, shuttleGrid, consoleUid, coordinatesDisk);
+    }
+
     private void OnStructureExamine(EntityUid uid, SalvageStructureComponent component, ExaminedEvent args)
     {
         args.PushMarkup(Loc.GetString("salvage-expedition-structure-examine"));

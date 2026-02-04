@@ -92,3 +92,6 @@
             Lawyer: [ 2, 2 ] #FloofStation
             # MISSING JOB PROTOTYPE
             #Prosecutor: [ 1, 1 ] #FloofStation
+            #Contractor: [ -1, -1 ]
+            #Pilot: [ 5, 5 ]
+            Mercenary: [ 0, 40 ]

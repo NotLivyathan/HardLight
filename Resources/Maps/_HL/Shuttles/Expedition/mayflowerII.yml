@@ -3129,7 +3129,7 @@ entities:
     - type: Transform
       pos: -0.5,5.5
       parent: 1
-- proto: ComputerTabletopSalvageExpedition
+- proto: ComputerTabletopBroken
   entities:
   - uid: 421
     components:

@@ -236,11 +236,15 @@
   id: DragonSpawn
   components:
   - type: StationEvent
-    weight: 6.5
+    weight: 6
     earliestStart: 40
-    reoccurrenceDelay: 200
+    reoccurrenceDelay: 400
     minimumPlayers: 15
     duration: null
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: SpaceSpawnRule
     spawnDistance: 0
   - type: AntagSpawner # Frontier
@@ -265,11 +269,15 @@
   id: RainbowDragonSpawn
   components:
   - type: StationEvent
-    weight: 6.5
+    weight: 5
     earliestStart: 40
-    reoccurrenceDelay: 200
+    reoccurrenceDelay: 400
     minimumPlayers: 15
     duration: null
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: SpaceSpawnRule
     spawnDistance: 0
   - type: AntagSpawner # Frontier
@@ -294,11 +302,15 @@
   id: MagicDragonSpawn
   components:
   - type: StationEvent
-    weight: 6.5
+    weight: 5
     earliestStart: 40
-    reoccurrenceDelay: 200
+    reoccurrenceDelay: 400
     minimumPlayers: 15
     duration: null
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: SpaceSpawnRule
     spawnDistance: 0
   - type: AntagSpawner # Frontier
@@ -323,11 +335,15 @@
   id: HoloDragonSpawn
   components:
   - type: StationEvent
-    weight: 6.5
+    weight: 3
     earliestStart: 40
-    reoccurrenceDelay: 200
+    reoccurrenceDelay: 400
     minimumPlayers: 15
     duration: null
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: SpaceSpawnRule
     spawnDistance: 0
   - type: AntagSpawner # Frontier
@@ -357,6 +373,10 @@
     earliestStart: 30
     reoccurrenceDelay: 200
     minimumPlayers: 10
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: SpaceSpawnRule
   - type: AntagLoadProfileRule
   - type: AntagObjectives
@@ -407,6 +427,8 @@
     earliestStart: 20
     reoccurrenceDelay: 200
     minimumPlayers: 10
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: ParadoxCloneRule
     objectiveBlacklist:
       tags:
@@ -593,6 +615,8 @@
     weight: 5
     duration: 60
     reoccurrenceDelay: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobAdultSlimesBlueAngry
@@ -615,6 +639,8 @@
     weight: 5
     duration: 60
     reoccurrenceDelay: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobPurpleSnake
@@ -637,6 +663,8 @@
     weight: 5
     duration: 60
     reoccurrenceDelay: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobGiantSpiderAngry
@@ -655,6 +683,10 @@
     weight: 1.5
     duration: 60
     reoccurrenceDelay: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: VentCrittersRule
     entries:
     - id: MobClownSpider
@@ -670,6 +702,10 @@
     weight: 1 # Zombies was happening basically every single survival round, so now it's super rare
     duration: 1
     maxOccurrences: 1
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: ZombieRule
   - type: AntagSelection
     definitions:
@@ -706,6 +742,8 @@
     reoccurrenceDelay: 200
     requiredJobs:
       HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: RuleGrids
   - type: LoadMapRule
     gridPath: /Maps/Shuttles/ShuttleEvent/striker.yml
@@ -747,6 +785,8 @@
       path: /Audio/Announcements/intercept.ogg
     duration: null # the rule has to last the whole round not 1 second
     occursDuringRoundEnd: false
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: AlertLevelInterceptionRule
   - type: AntagSelection
     definitions:
@@ -1592,6 +1632,8 @@
     minimumPlayers: 30
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobArgocyteSlurva
@@ -1652,6 +1694,8 @@
     minimumPlayers: 30
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobCarp
@@ -1681,6 +1725,8 @@
     minimumPlayers: 30
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: MobBearSpace
@@ -1706,6 +1752,9 @@
     minimumPlayers: 40
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+      Warden: 1
   - type: VentCrittersRule
     entries:
     - id: ReagentSlimeBeer
@@ -1783,6 +1832,10 @@
     minimumPlayers: 30
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: VentCrittersRule
     entries:
     - id: XenoEggSpawner
@@ -1848,6 +1901,10 @@
     minimumPlayers: 30
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+      SecurityOfficer: 1
+      Warden: 1
   - type: VentCrittersRule
     entries:
     - id: MobRogueSiliconScrap
@@ -1903,36 +1960,38 @@
     minimumPlayers: 10
     weight: 6 # Really weak compared to other critters
     duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
   - type: VentCrittersRule
     entries:
     - id: BlueRainLizard
-      prob: 0.01
-    - id: HostileBlueRainLizard
-      prob: 0.009
-    - id: GreenRainLizard
-      prob: 0.01
-    - id: HostileGreenRainLizard
-      prob: 0.009
-    - id: PinkRainLizard
-      prob: 0.01
-    - id: HostilePinkRainLizard
-      prob: 0.009
-    - id: WhiteRainLizard
-      prob: 0.009
-    - id: HostileWhiteRainLizard
-      prob: 0.008
-    - id: CyanRainLizard
-      prob: 0.009
-    - id: HostileCyanRainLizard
-      prob: 0.008
-    - id: RedRainLizard
-      prob: 0.006
-    - id: HostileRedRainLizard
-      prob: 0.005
-    - id: TrainRainLizard
-      prob: 0.003
-    - id: HostileTrainRainLizard
       prob: 0.001
+    - id: HostileBlueRainLizard
+      prob: 0.0009
+    - id: GreenRainLizard
+      prob: 0.001
+    - id: HostileGreenRainLizard
+      prob: 0.0009
+    - id: PinkRainLizard
+      prob: 0.001
+    - id: HostilePinkRainLizard
+      prob: 0.0009
+    - id: WhiteRainLizard
+      prob: 0.0009
+    - id: HostileWhiteRainLizard
+      prob: 0.0008
+    - id: CyanRainLizard
+      prob: 0.0009
+    - id: HostileCyanRainLizard
+      prob: 0.0008
+    - id: RedRainLizard
+      prob: 0.0006
+    - id: HostileRedRainLizard
+      prob: 0.0005
+    - id: TrainRainLizard
+      prob: 0.0003
+    - id: HostileTrainRainLizard
+      prob: 0.0001
 
 - type: entity
   id: WawaVents
@@ -1952,3 +2011,18 @@
     entries:
     - id: MobEmotionalSupportScurret
       prob: 0.05
+
+# Dynamic Job Allocation Rule
+# Adjusts Mercenary job slot based on player count
+# Runs at round start and every 10 minutes
+- type: entity
+  id: DynamicJobAllocation
+  parent: BaseGameRule
+  components:
+  - type: GameRule # Changed to game rule so its treated as a persistent game rule instead of event
+    minPlayers: 0
+  - type: DynamicJobAllocationRule
+    checkInterval: 600  # Check every 10 minutes (600 seconds)
+    mercenaryJob: Mercenary  # Job ID, since we're just using 1 now
+    mercenaryPercentage: 0.5  # 20% --- Did you want me to set it to 20%? Right now its running at 50% of players
+    mercenaryCap: 40  # Maximum slots

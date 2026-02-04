@@ -101,4 +101,10 @@ public sealed class HLCCVars
     /// </summary>
     public static readonly CVarDef<bool> MechGunOutsideMech =
         CVarDef.Create("mech.gun_outside_mech", false, CVar.SERVERONLY, desc: "If true, allows mech weapons to be used outside of mechs.");
+	
+    /// <summary>
+    /// Starlight: Sends afk players to cryo.
+    /// </summary>
+    public static readonly CVarDef<bool> CryoTeleportation =
+        CVarDef.Create("game.cryo_teleportation", true, CVar.SERVERONLY);
 }

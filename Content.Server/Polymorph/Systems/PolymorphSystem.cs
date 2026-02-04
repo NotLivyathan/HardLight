@@ -216,6 +216,16 @@ public sealed partial class PolymorphSystem : EntitySystem
         var polymorphedComp = _compFact.GetComponent<PolymorphedEntityComponent>();
         polymorphedComp.Parent = uid;
         polymorphedComp.Configuration = configuration;
+		// //#region Starlight
+        // if (HasComp<UncryoableComponent>(uid))
+        // {
+            // polymorphedComp.HadUncryoable = true;
+        // }
+        // else
+        // {
+            // EnsureComp<UncryoableComponent>(uid);
+        // }
+        // //#endregion Starlight
         AddComp(child, polymorphedComp);
 
         var childXform = Transform(child);
@@ -347,6 +357,13 @@ public sealed partial class PolymorphSystem : EntitySystem
 
         if (_mindSystem.TryGetMind(uid, out var mindId, out var mind))
             _mindSystem.TransferTo(mindId, parent, mind: mind);
+
+        // //#region Starlight
+        // if (!component.HadUncryoable)
+        // {
+            // RemComp<UncryoableComponent>(parent);
+        // }
+        // //#endregion Starlight
 
         if (TryComp<PolymorphableComponent>(parent, out var polymorphableComponent))
             polymorphableComponent.LastPolymorphEnd = _gameTiming.CurTime;

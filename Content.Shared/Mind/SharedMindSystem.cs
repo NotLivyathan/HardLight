@@ -16,6 +16,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
+using Robust.Shared.Enums;
 
 namespace Content.Shared.Mind;
 
@@ -40,7 +41,7 @@ public abstract partial class SharedMindSystem : EntitySystem
         SubscribeLocalEvent<MindContainerComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<MindContainerComponent, SuicideEvent>(OnSuicide);
         SubscribeLocalEvent<VisitingMindComponent, EntityTerminatingEvent>(OnVisitingTerminating);
-        /* SubscribeLocalEvent<RoundRestartCleanupEvent>(OnReset); */
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnReset);
         SubscribeLocalEvent<MindComponent, ComponentStartup>(OnMindStartup);
         SubscribeLocalEvent<MindComponent, EntityRenamedEvent>(OnRenamed);
 
@@ -76,26 +77,34 @@ public abstract partial class SharedMindSystem : EntitySystem
         component.UserId = null;
     }
 
-/*     private void OnReset(RoundRestartCleanupEvent ev)
+    private void OnReset(RoundRestartCleanupEvent ev)
     {
-        WipeAllMinds();
+        foreach (var mindId in UserMinds.Values.ToArray())
+        {
+            if (!TryComp(mindId, out MindComponent? mind))
+                continue;
+
+            if (IsMindActive(mind))
+                continue;
+
+            WipeMind(mindId, mind);
+        }
     }
- */
+
+    private bool IsMindActive(MindComponent mind)
+    {
+        if (mind.UserId == null)
+            return false;
+
+        return _playerManager.TryGetSessionById(mind.UserId.Value, out var session)
+               && session.State.Status == SessionStatus.InGame;
+    }
     public virtual void WipeAllMinds()
     {
         Log.Info($"Wiping all minds");
         foreach (var mind in UserMinds.Values.ToArray())
         {
             WipeMind(mind);
-        }
-
-        if (UserMinds.Count == 0)
-            return;
-
-        foreach (var mind in UserMinds.Values)
-        {
-            if (Exists(mind))
-                Log.Error($"Failed to wipe mind: {ToPrettyString(mind)}");
         }
 
         UserMinds.Clear();
@@ -315,6 +324,28 @@ public abstract partial class SharedMindSystem : EntitySystem
 
         TransferTo(mindId.Value, null, createGhost:false, mind: mind);
         SetUserId(mindId.Value, null, mind: mind);
+
+        if (mind.Objectives.Count > 0)
+        {
+            for (var i = mind.Objectives.Count - 1; i >= 0; i--)
+            {
+                TryRemoveObjective(mindId.Value, mind, i);
+            }
+        }
+
+        if (mind.MindRoles.Count > 0)
+        {
+            foreach (var roleEnt in mind.MindRoles.ToArray())
+            {
+                if (Exists(roleEnt))
+                    QueueDel(roleEnt);
+            }
+
+            mind.MindRoles.Clear();
+        }
+
+        Dirty(mindId.Value, mind);
+        QueueDel(mindId.Value);
     }
 
     /// <summary>

@@ -27,6 +27,7 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
         _window.RequestStationFTL += OnFTLStationRequest;
         _window.DockRequest += OnDockRequest;
         _window.UndockRequest += OnUndockRequest;
+        _window.ActivateExpeditionDisk += OnActivateExpeditionDisk;
         NfOpen(); // Frontier
     }
 
@@ -72,6 +73,11 @@ public sealed partial class ShuttleConsoleBoundUserInterface : BoundUserInterfac
             Coordinates = obj,
             Angle = angle,
         });
+    }
+
+    private void OnActivateExpeditionDisk()
+    {
+        SendMessage(new ShuttleConsoleExpeditionDiskActivateMessage());
     }
 
     protected override void Dispose(bool disposing)

@@ -285,3 +285,8 @@
   components:
   - type: StationBusDepot
 
+- type: entity
+  id: BaseStationCryoTeleportation
+  abstract: true
+  components:
+  - type: StationCryoTeleportation

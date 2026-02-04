@@ -21,13 +21,6 @@
   disabled: true
 
 - type: company
-  id: USSP
-  form: Antagonist
-  name: USSP
-  color: "#B01340"
-  disabled: true
-
-- type: company
   id: TSFHighComm
   form: Protagonist
   name: Winter Solstice
@@ -45,44 +38,117 @@
   - SuperJoelDood
 # DO NOT TOUCH
 
+# ==== Canon Companies =====
+- type: company
+  id: NanoTrasen
+  form: Protagonist
+  name: NanoTrasen
+  color: "#334E6D" # navy blue
+  disabled: true # locked for now, private admin company
+  
+- type: company
+  id: Interdyne
+  form: Protagonist
+  name: Interdyne Pharmaceuticals
+  color: "#EA7FC7" # pink
+  
+- type: company
+  id: TigerCo
+  form: Protagonist
+  name: Tiger Cooperative
+  color: "#FFA500" # neon orange
+  
+- type: company
+  id: DonkCo
+  form: Protagonist
+  name: Donk Co
+  color: "#ffc0cb" # pink
+  
+- type: company
+  id: WaffleCorp
+  form: Protagonist
+  name: Waffle Corp
+  color: "#EADDCA" # brown
+  
+
 # ====TSF / Protag. Companies====
 - type: company
   id: DarkMatterEnterprises
   form: Protagonist
   name: Dark Matter Enterprises
-  color: "#BF00B9"
+  color: "#BF00B9" # purple
 
 - type: company
   id: AetherionDynamics
   form: Protagonist
   name: Aetherion Dynamics
-  color: "#7E72B2"
+  color: "#7E72B2" # navy purple
 
 - type: company
   id: SouthernPeakMercenaries
   form: Protagonist
   name: The Southern Peaks
-  color: "#020624"
+  color: "#020624" # dark blue
 
 - type: company
   id: ZealotsOfBalaam
   form: Protagonist
   name: Zealots Of Balaam
-  color: "#BC7F58"
-
+  color: "#BC7F58" # light orange
 
 - type: company
-  id: InterdynePharmaceuticals
+  id: NTV
   form: Protagonist
-  name: Interdyne Pharmaceuticals
-  color: "#EA7FC7"
+  name: Black Crown Heavy Industries
+  color: "#40826D" # teal
+  disabled: true
+  logins:
+  - Goldenglow
+  - Tzula
+  - Shada
+  - synergyjohn
+  - Maribo
+  - Asky
+  - RoxyRiumi
+  - Hadoje
+  - Virryi
+
+- type: company
+  id: Sequioa
+  form: Protagonist
+  name: Sequioa Pharmaceuticals
+  color: "#D2B48C" # tan
+  disabled: true
+  logins:
+  - Suraru
+  - BagOBricks
+  - cmdrseliuu
+
+- type: company
+  id: HSC
+  form: Protagonist
+  name: The Hypatia Supply Coalition
+  color: "#54F72C" # neon green
+
+- type: company
+  id: LTUS
+  form: Protagonist
+  name: The Lotus Eaters
+  color: "#c96dbf" # purple
+
+- type: company
+  id: DMNO
+  form: Protagonist
+  name: Dominos Robotics
+  color: "#9900ff" # neon purple
 
 # ====Rogue / Antag. Companies====
 - type: company
   id: TheViperGroup
   form: Antagonist
-  name: The Viper Group
-  color: "#D82918"
+  name: The Viper PMC
+  color: "#D82918" # red orange
+  disabled: false # if we have a list of logins, shouldn't this be locked?
   logins:
   - Schizm1253
   - Archylle
@@ -98,3 +164,29 @@
   - SwadianSupremacy
   - Traildog
 
+- type: company
+  id: USSP
+  form: Antagonist
+  name: Union of Soviet Socialist Planets
+  color: "#B01340" # velvet
+  disabled: false # I think this should be public since plenty of players RP part of them anyways
+  
+- type: company
+  id: SELF
+  form: Antagonist
+  name: Sentient Engine Liberation Front
+  color: "#2e0f43" # very dark purple
+  disabled: true # locked for now, until we get admin approval
+  
+- type: company
+  id: ARC
+  form: Antagonist
+  name: Animal Rights Consortium
+  color: "#65BEDB" # sky blue
+  
+- type: company
+  id: Gorlex
+  form: Antagonist
+  name: Gorlex Marauders
+  color: "#880808" # blood red
+  disabled: true # locked because literally nukies

@@ -21,6 +21,8 @@ public sealed partial class NavScreen : BoxContainer
     private EntityUid? _consoleEntity; // Entity of controlling console
     private EntityUid? _shuttleEntity;
 
+    public event Action? ActivateExpeditionDisk;
+
     public NavScreen()
     {
         RobustXamlLoader.Load(this);
@@ -35,6 +37,8 @@ public sealed partial class NavScreen : BoxContainer
 
         DockToggle.OnToggled += OnDockTogglePressed;
         DockToggle.Pressed = NavRadar.ShowDocks;
+
+        ExpeditionDiskActivate.OnPressed += _ => ActivateExpeditionDisk?.Invoke();
 
         NfInitialize(); // Frontier Initialization for the NavScreen
     }
@@ -110,10 +114,36 @@ public sealed partial class NavScreen : BoxContainer
         args.Button.Pressed = NavRadar.ShowDocks;
     }
 
-    public void UpdateState(NavInterfaceState scc)
+    public void UpdateState(NavInterfaceState scc, ExpeditionDiskInterfaceState expeditionDiskState)
     {
         NavRadar.UpdateState(scc);
+        UpdateExpeditionDisk(expeditionDiskState);
         NfUpdateState(); // Frontier Update State
+    }
+
+    private void UpdateExpeditionDisk(ExpeditionDiskInterfaceState state)
+    {
+        if (!state.HasDisk)
+        {
+            ExpeditionDiskDetails.Text = Loc.GetString("shuttle-console-expedition-disk-none");
+            ExpeditionDiskActivate.Disabled = true;
+            return;
+        }
+
+        var details = Loc.GetString("shuttle-console-expedition-disk-details",
+            ("planet", state.PlanetType),
+            ("difficulty", state.Difficulty),
+            ("objective", state.Objective));
+
+        if (state.OnCooldown)
+        {
+            var cooldown = Loc.GetString("shuttle-console-expedition-disk-cooldown",
+                ("time", state.CooldownRemaining.ToString("hh\\:mm\\:ss")));
+            details = $"{details}\n{cooldown}";
+        }
+
+        ExpeditionDiskDetails.Text = details;
+        ExpeditionDiskActivate.Disabled = !state.CanActivate;
     }
 
     public void SetMatrix(EntityCoordinates? coordinates, Angle? angle)

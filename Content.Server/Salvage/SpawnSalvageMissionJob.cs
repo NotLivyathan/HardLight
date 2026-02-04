@@ -193,7 +193,7 @@ public sealed class SpawnSalvageMissionJob : Job<bool>
     // Previously this required a coordinates disk and was beacon-limited which prevented ad-hoc rescue / support.
     var destComp = _entManager.AddComponent<FTLDestinationComponent>(mapUid);
     destComp.BeaconsOnly = false; // Allow direct FTL targeting anywhere on the expedition map.
-    destComp.RequireCoordinateDisk = false; // No coordinate disk required; open access.
+    destComp.RequireCoordinateDisk = CoordinatesDisk.HasValue; // Disk missions require a coordinates disk.
     destComp.Enabled = true; // Keep enabled for entire expedition so multiple ships can jump in.
         _metaData.SetEntityName(
             mapUid,

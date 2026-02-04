@@ -69,9 +69,12 @@
             SalvageSpecialist: [ 2, 3 ]
             CargoTechnician: [ 2, 4 ]
           #civilian
-            Passenger: [ -1, -1 ]
+            #Passenger: [ -1, -1 ]
           # Justice added by FloofStation
             #ChiefJustice: [ 1, 1 ] #FloofStation - MISSING JOB PROTOTYPE
             #Clerk: [ 1, 1 ] #FloofStation - MISSING JOB PROTOTYPE
             Lawyer: [ 2, 2 ] #FloofStation
             #Prosecutor: [ 1, 1 ] #FloofStation - MISSING JOB PROTOTYPE
+            #Contractor: [ -1, -1 ]
+            #Pilot: [ 5, 5 ]
+            Mercenary: [ 0, 40 ]

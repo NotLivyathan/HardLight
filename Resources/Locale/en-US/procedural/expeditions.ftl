@@ -39,6 +39,20 @@ salvage-expedition-announcement-dungeon = Dungeon is located {$direction}.
 salvage-expedition-completed = Expedition is completed.
 salvage-expedition-reward-description = Mission completion reward
 
+expedition-disk-printer-title = Expedition disk printer
+expedition-disk-printer-select = Select a difficulty to print a disk:
+expedition-disk-printer-print = Print {$number}: {$difficulty} (cost: {$cost})
+expedition-disk-printer-printed = Expedition disk printed.
+expedition-disk-printer-invalid = Invalid expedition difficulty selection.
+expedition-disk-printer-no-bank = You need a bank account to print an expedition disk.
+expedition-disk-printer-insufficient-funds = You need {$cost} to print this expedition disk.
+
+expedition-disk-primed = Expedition disk primed. Insert into a shuttle console to FTL.
+expedition-disk-no-grid = You must be on a shuttle grid to prime this disk.
+expedition-disk-details =  {$planet}{$difficulty}{$objective}
+expedition-disk-cooldown = [color=orange]Cooldown[/color]: {$time}
+expedition-disk-ready = [color=green]Cooldown[/color]: Ready
+
 # Salvage biome mod
 salvage-biome-mod-caves = Caves
 salvage-biome-mod-grasslands = Grasslands

@@ -17,3 +17,11 @@
       types:
         Slash: 1
   - type: ShuttleDestinationCoordinates
+
+- type: entity
+  name: expedition coordinates disk
+  parent: CoordinatesDisk
+  id: ExpeditionCoordinatesDisk
+  description: A disk containing coordinates for a classified expedition. Fits inside shuttle consoles.
+  components:
+  - type: ExpeditionDisk

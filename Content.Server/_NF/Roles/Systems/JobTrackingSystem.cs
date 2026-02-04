@@ -128,13 +128,17 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
 
             if (!job.Active
                 || job.Job != jobProtoId
-                || xform.MapID != _gameTicker.DefaultMap // Skip if they're in cryo or on expedition
-                || !_player.TryGetSessionByEntity(uid, out var session)
-                || session.State.Status != SessionStatus.InGame)
+                || xform.MapID != _gameTicker.DefaultMap) // Skip if they're in cryo or on expedition
                 continue;
 
-            if (!includeAfk && _afk.IsAfk(session))
-                continue;
+            if (_player.TryGetSessionByEntity(uid, out var session))
+            {
+                if (session.State.Status != SessionStatus.InGame)
+                    continue;
+
+                if (!includeAfk && _afk.IsAfk(session))
+                    continue;
+            }
 
             activeJobCount++;
         }

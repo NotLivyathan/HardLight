@@ -105,6 +105,7 @@
         type: SurgeryBui
   - type: Vore 
   - type: Xeno
+    allowPlantWeeds: false
   - type: XenoAIAutoEvolve
 
 - type: entity
@@ -440,6 +441,8 @@
   description: A dangerous shark from the blackness of endless space, who loves to drink blood.
   categories: [ HideSpawnMenu ] # Frontier
   components:
+  - type: TimedDespawn
+    lifetime: 1200
   - type: Sprite
     sprite: Mobs/Aliens/Carps/sharkminnow.rsi
     layers:

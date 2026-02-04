@@ -7,7 +7,7 @@
   components:
   - type: DragonRift
     spawnPrototype: MobFry
-    spawnCooldown: 15
+    spawnCooldown: 30
   - type: Transform
     anchored: true
   - type: Physics
@@ -56,7 +56,7 @@
   components:
   - type: DragonRift
     spawnPrototype: MobHoloFry
-    spawnCooldown: 15
+    spawnCooldown: 30
     
 - type: entity
   id: RainbowCarpRift
@@ -66,7 +66,7 @@
   components:
   - type: DragonRift
     spawnPrototype: MobRainbowFry
-    spawnCooldown: 15
+    spawnCooldown: 30
 
 - type: entity
   id: MagiCarpRift
@@ -76,4 +76,4 @@
   components:
   - type: DragonRift
     spawnPrototype: MobMagicFry
-    spawnCooldown: 15
+    spawnCooldown: 30

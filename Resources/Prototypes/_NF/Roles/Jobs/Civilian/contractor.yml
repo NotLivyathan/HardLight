@@ -4,6 +4,7 @@
   description: job-description-contractor
   playTimeTracker: JobPassenger
   icon: "JobIconContractor"
+  setPreference: false
   supervisors: job-supervisors-hire
   displayWeight: 40 # Top
   access:

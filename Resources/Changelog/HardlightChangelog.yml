@@ -754,3 +754,165 @@ Entries:
       message: More Silica fixes
   id: 79
   time: '2026-01-25T22:28:45.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Fix
+      message: 'Fixed produce stacks not functioning properly in relation to machines. '
+  id: 80
+  time: '2026-01-28T04:43:46.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Add
+      message: Added a new area to Eaglerock with a reporter!
+    - type: Tweak
+      message: Eaglerock now has infinite contractor slots
+  id: 81
+  time: '2026-01-28T04:44:12.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Add
+      message: Added the ability to opt out of paradox clone targetting.
+  id: 82
+  time: '2026-01-28T04:44:52.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        Inert Nanites and active Nanites are now able to be created through
+        electrolysis.
+    - type: Add
+      message: Reagents within a cryostasis beaker now react through electrolysis.
+    - type: Tweak
+      message: >-
+        Synths now metabolize all reagents at 75% efficiency when dead, except
+        Nanites, which remain at 100% efficiency.
+  id: 83
+  time: '2026-01-28T04:46:13.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Tweak
+      message: Tweaked Station Payroll amount.
+    - type: Tweak
+      message: Doubled station terminal payouts.
+    - type: Tweak
+      message: Doubled Gas deposit size.
+  id: 84
+  time: '2026-01-30T17:10:02.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Add
+      message: Added AAC tablet!
+  id: 85
+  time: '2026-01-30T17:10:26.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: Added Unborgable and Uncloneable traits from DeltaV.
+    - type: Remove
+      message: >-
+        Blacklisted Synths, IPC, and Cyborgs from several traits that didn't
+        make sense for them to have access to, including: Inoculated,
+        Unnatural/Natural Regeneration, Synthetic, Unrevivable (IPC), and Horny
+        (Synths).
+    - type: Remove
+      message: Cyborgs can no longer benefit from Unnatural Regeneration.
+    - type: Remove
+      message: Synths and IPC can no longer be cloned.
+  id: 86
+  time: '2026-01-30T17:11:20.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Fix
+      message: >-
+        Fixed audio lingering from energy melee weapons when no longer
+        activated.
+  id: 87
+  time: '2026-01-30T17:11:38.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added Expedition printer and disks
+    - type: Tweak
+      message: Changed roles so there is only one spacer role listed "freelancer"
+    - type: Remove
+      message: 'removed the contractor and pilot roles from station selection. '
+  id: 88
+  time: '2026-01-31T00:29:27.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Tweak
+      message: >-
+        Stacked produce now splits itself when being inserted into a microwave,
+        electric range, or food-o-mat.
+    - type: Fix
+      message: You can cook food again.
+  id: 89
+  time: '2026-01-31T00:33:21.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Tweak
+      message: Eaglerock cargo can now sell exped disks
+  id: 90
+  time: '2026-01-31T02:16:11.0000000+00:00'
+- author: rtasva
+  changes:
+    - type: Add
+      message: added exped disk printer to every map
+  id: 91
+  time: '2026-01-31T03:17:31.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Tweak
+      message: >-
+        Plant Analyzer now automatically refreshes if left open so you can watch
+        mutations in real-time.
+    - type: Tweak
+      message: >-
+        Plant Analyzer window now remains open even if you switch hands or put
+        it away.
+    - type: Fix
+      message: >-
+        Plant Analyzer UI now works properly when scanning an item without the
+        window already open.
+  id: 92
+  time: '2026-01-31T06:03:20.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Fix
+      message: Fixed multiple bugs with shadekin.
+  id: 93
+  time: '2026-02-02T17:26:45.0000000+00:00'
+- author: Suraru
+  changes:
+    - type: Fix
+      message: Fixed steel stairs being unbuildable
+    - type: Fix
+      message: Fixed poster node mismatch
+    - type: Fix
+      message: Fixed automatic spacer role allocation
+  id: 94
+  time: '2026-02-03T19:31:57.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Fix
+      message: Fixed turrets ignoring shielded entities
+  id: 95
+  time: '2026-02-03T19:33:43.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Add
+      message: Added Early launch back!
+  id: 96
+  time: '2026-02-03T19:35:32.0000000+00:00'
+- author: Suraru
+  changes:
+    - type: Add
+      message: >-
+        Added a ton of player companies, canon companies, a couple antag
+        companies, and made USSP public
+  id: 97
+  time: '2026-02-03T19:43:39.0000000+00:00'
+- author: Sully669
+  changes: []
+  id: 98
+  time: '2026-02-03T19:47:18.0000000+00:00'

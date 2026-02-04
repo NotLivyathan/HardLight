@@ -55,6 +55,11 @@ shuttle-console-view = View
 shuttle-console-undock = Undock
 shuttle-console-dock = Dock
 shuttle-console-docks-label = Docks
+shuttle-console-expedition-disk-label = Expedition
+shuttle-console-expedition-disk-none = No Disk
+shuttle-console-expedition-disk-details = {$planet}{$difficulty}{$objective}
+shuttle-console-expedition-disk-cooldown = Cooldown: {$time}
+shuttle-console-expedition-disk-activate = Jump to expedition
 
 shuttle-console-undock-fail = Undocking failed
 shuttle-console-dock-fail = Docking failed
