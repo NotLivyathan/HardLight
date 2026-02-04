@@ -1,5 +1,4 @@
 using Content.Server.Administration.Logs;
-using Content.Server.Body.Systems;
 using Content.Server.Construction;
 using Content.Server.Explosion.EntitySystems;
 using Content.Server.DeviceLinking.Systems;
@@ -7,10 +6,7 @@ using Content.Server.Hands.Systems;
 using Content.Server.Kitchen.Components;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
-using Content.Server.Temperature.Components;
 using Content.Server.Temperature.Systems;
-using Content.Shared.Body.Components;
-using Content.Shared.Body.Part;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reaction;
@@ -40,16 +36,14 @@ using Robust.Shared.Timing;
 using Content.Shared.Stacks;
 using Content.Server.Construction.Components;
 using Content.Shared.Chat;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Temperature.Components;
-using Robust.Shared.Utility;
 using Content.Shared._NF.Kitchen.Components; // Frontier
 
 namespace Content.Server.Kitchen.EntitySystems
 {
     public sealed partial class MicrowaveSystem : EntitySystem // Frontier: add partial
     {
-        [Dependency] private readonly BodySystem _bodySystem = default!;
         [Dependency] private readonly DeviceLinkSystem _deviceLink = default!;
         [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
         [Dependency] private readonly PowerReceiverSystem _power = default!;
@@ -72,7 +66,7 @@ namespace Content.Server.Kitchen.EntitySystems
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
         [Dependency] private readonly SharedSuicideSystem _suicide = default!;
 
-        private static readonly EntProtoId MalfunctionSpark = new("Spark");
+        private static readonly EntProtoId MalfunctionSpark = "Spark";
 
         private static readonly ProtoId<TagPrototype> MetalTag = "Metal";
         private static readonly ProtoId<TagPrototype> PlasticTag = "Plastic";
@@ -91,7 +85,6 @@ namespace Content.Server.Kitchen.EntitySystems
             SubscribeLocalEvent<MicrowaveComponent, BreakageEventArgs>(OnBreak);
             SubscribeLocalEvent<MicrowaveComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<MicrowaveComponent, AnchorStateChangedEvent>(OnAnchorChanged);
-
             SubscribeLocalEvent<MicrowaveComponent, SuicideByEnvironmentEvent>(OnSuicideByEnvironment);
 
             SubscribeLocalEvent<MicrowaveComponent, SignalReceivedEvent>(OnSignalReceived);
@@ -144,7 +137,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void OnActiveMicrowaveRemove(Entity<ActiveMicrowaveComponent> ent, ref EntRemovedFromContainerMessage args)
         {
-            EntityManager.RemoveComponentDeferred<ActivelyMicrowavedComponent>(args.Entity);
+            RemCompDeferred<ActivelyMicrowavedComponent>(args.Entity);
         }
 
         // Stop items from transforming through constructiongraphs while being microwaved.
@@ -215,8 +208,7 @@ namespace Content.Server.Kitchen.EntitySystems
             var totalReagentsToRemove = new Dictionary<string, FixedPoint2>(recipe.IngredientsReagents);
 
             // this is spaghetti ngl
-            // iterate over a snapshot to avoid modifying the collection while iterating
-            foreach (var item in component.Storage.ContainedEntities.ToArray())
+            foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
             {
                 // use the same reagents as when we selected the recipe
                 if (!_solutionContainer.TryGetDrainableSolution(item, out var solutionEntity, out var solution))
@@ -248,13 +240,12 @@ namespace Content.Server.Kitchen.EntitySystems
             {
                 for (var i = 0; i < recipeSolid.Value; i++)
                 {
-                    // iterate over a snapshot to avoid modifying the collection while iterating
-                    foreach (var item in component.Storage.ContainedEntities.ToArray())
+                    foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
                     {
                         string? itemID = null;
-                        StackComponent? stackComp = null;
+                        StackComponent? stackComp = null; // HardLight
 
-                        // If an entity has a stack component, prefer the entity prototype when the
+                        // HardLight: If an entity has a stack component, prefer the entity prototype when the
                         // stack spawns itself; otherwise use the stack prototype's spawn.
                         if (TryComp<StackComponent>(item, out var sc))
                         {
@@ -290,11 +281,12 @@ namespace Content.Server.Kitchen.EntitySystems
 
                         if (stackComp is not null)
                         {
-                            _stack.Use(item, 1, stackComp);
-                            if (_stack.GetCount(item) <= 0)
+                            _stack.Use(item, 1, stackComp); // HardLight
+                            if (_stack.GetCount(item) <= 0) // HardLight
                             {
                                 _container.Remove(item, component.Storage);
                             }
+                            _stack.ReduceCount((item, stackComp), 1);
                             break;
                         }
                         else
@@ -342,26 +334,9 @@ namespace Content.Server.Kitchen.EntitySystems
             _suicide.ApplyLethalDamage((args.Victim, damageableComponent), "Heat");
 
             var victim = args.Victim;
-            var headCount = 0;
 
-            if (TryComp<BodyComponent>(victim, out var body))
-            {
-                var headSlots = _bodySystem.GetBodyChildrenOfType(victim, BodyPartType.Head, body);
-
-                foreach (var part in headSlots)
-                {
-                    _container.Insert(part.Id, ent.Comp.Storage);
-                    headCount++;
-                }
-            }
-
-            var othersMessage = headCount > 1
-                ? Loc.GetString("microwave-component-suicide-multi-head-others-message", ("victim", victim))
-                : Loc.GetString("microwave-component-suicide-others-message", ("victim", victim));
-
-            var selfMessage = headCount > 1
-                ? Loc.GetString("microwave-component-suicide-multi-head-message")
-                : Loc.GetString("microwave-component-suicide-message");
+            var othersMessage = Loc.GetString("microwave-component-suicide-others-message", ("victim", victim));
+            var selfMessage = Loc.GetString("microwave-component-suicide-message");
 
             _popupSystem.PopupEntity(othersMessage, victim, Filter.PvsExcept(victim), true);
             _popupSystem.PopupEntity(selfMessage, victim, victim);
@@ -638,6 +613,7 @@ namespace Content.Server.Kitchen.EntitySystems
                 string? solidID = null;
                 int amountToAdd = 1;
 
+                // HardLight start
                 // If a microwave recipe uses a stacked item, prefer the entity prototype when the
                 // stack is marked to spawn itself (StackSpawnSelf). Otherwise fall back to the
                 // stack prototype's configured spawn entity.
@@ -655,12 +631,13 @@ namespace Content.Server.Kitchen.EntitySystems
                     {
                         solidID = _prototype.Index<StackPrototype>(stackComp.StackTypeId).Spawn;
                     }
+                // HardLight end
 
                     amountToAdd = stackComp.Count;
                 }
                 else
                 {
-                    var metaData = MetaData(item); //this simply begs for cooking refactor
+                    var metaData = MetaData(item); //this simply begs for cooking refactor x2
                     if (metaData.EntityPrototype is not null)
                         solidID = metaData.EntityPrototype.ID;
                 }
