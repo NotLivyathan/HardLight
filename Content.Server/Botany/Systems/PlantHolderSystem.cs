@@ -1,9 +1,8 @@
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Botany.Components;
 using Content.Server.Hands.Systems;
-using Content.Server.Kitchen.Components;
 using Content.Server.Popups;
-using Content.Server.Stack;
+using Content.Shared.Administration.Logs;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Atmos;
 using Content.Shared.Botany;
@@ -17,7 +16,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Content.Shared.Random;
-using Content.Shared.Stacks;
 using Content.Shared.Tag;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
@@ -25,12 +23,18 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
-using Content.Shared.Administration.Logs;
+using Content.Shared.Chemistry.Reaction;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Database;
+using Content.Shared.EntityEffects;
+using Content.Shared.Kitchen.Components;
 using Content.Shared.Labels.Components;
 using Content.Shared._NF.BindToStation; // Frontier
 using Content.Server.Station.Systems; // Frontier
+
+// HardLight
+using Content.Server.Stack;
+using Content.Shared.Stacks;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared;
@@ -54,14 +58,16 @@ public sealed class PlantHolderSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
+    [Dependency] private readonly SharedEntityEffectsSystem _entityEffects = default!;
     [Dependency] private readonly StationSystem _station = default!; // Frontier
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly StackSystem _stack = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!; // HardLight
+    [Dependency] private readonly IConfigurationManager _cfg = default!; // HardLight
+    [Dependency] private readonly StackSystem _stack = default!; // HardLight
 
 
     public const float HydroponicsSpeedMultiplier = 1f;
     public const float HydroponicsConsumptionMultiplier = 2f;
+    public readonly FixedPoint2 PlantMetabolismRate = FixedPoint2.New(1);
 
     private static readonly ProtoId<TagPrototype> HoeTag = "Hoe";
     private static readonly ProtoId<TagPrototype> PlantSampleTakerTag = "PlantSampleTaker";
@@ -85,7 +91,7 @@ public sealed class PlantHolderSystem : EntitySystem
             if (plantHolder.NextUpdate > _gameTiming.CurTime)
                 continue;
 
-            if (!HasPlayerInRange(uid))
+            if (!HasPlayerInRange(uid)) // HardLight: Only update if a player is nearby
             {
                 plantHolder.NextUpdate = _gameTiming.CurTime + plantHolder.UpdateDelay;
                 continue;
@@ -97,7 +103,7 @@ public sealed class PlantHolderSystem : EntitySystem
         }
     }
 
-    private bool HasPlayerInRange(EntityUid uid)
+    private bool HasPlayerInRange(EntityUid uid) // HardLight: Only update if a player is nearby
     {
         var range = _cfg.GetCVar(CVars.NetMaxUpdateRange);
         var coords = Transform(uid).Coordinates;
@@ -209,7 +215,7 @@ public sealed class PlantHolderSystem : EntitySystem
         {
             if (component.Seed == null)
             {
-                // Check if this seed was extracted and if so, verify ownership
+                // HardLight start: Check if this seed was extracted and if so, verify ownership
                 if (TryComp(args.Used, out ExtractedSeedOwnerComponent? ownerComp))
                 {
                     // Compare the player's NetUserId from their ActorComponent with the stored owner
@@ -220,6 +226,7 @@ public sealed class PlantHolderSystem : EntitySystem
                         return;
                     }
                 }
+                // HardLight end
 
                 // Frontier
                 if (TryComp<BindToStationComponent>(entity.Owner, out var bindToStation)
@@ -256,6 +263,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 }
                 component.LastCycle = _gameTiming.CurTime;
 
+                // HardLight start: Consume one seed from stack or delete if only one
                 if (TryComp<StackComponent>(args.Used, out var stack) && stack.Count > 1)
                 {
                     _stack.SetCount(args.Used, stack.Count - 1, stack);
@@ -269,6 +277,7 @@ public sealed class PlantHolderSystem : EntitySystem
 
                     QueueDel(args.Used);
                 }
+                // HardLight end
 
                 CheckLevelSanity(uid, component);
                 UpdateSprite(uid, component);
@@ -293,7 +302,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 _popup.PopupCursor(Loc.GetString("plant-holder-component-remove-weeds-message",
                     ("name", Comp<MetaDataComponent>(uid).EntityName)), args.User, PopupType.Medium);
                 _popup.PopupEntity(Loc.GetString("plant-holder-component-remove-weeds-others-message",
-                    ("otherName", Comp<MetaDataComponent>(args.User).EntityName)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true);
+                    ("otherName", Comp<MetaDataComponent>(args.User).EntityName)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true); // HardLight: Filter.PvsExcept<Robust.Shared.Player.Filter.PvsExcept
                 component.WeedLevel = 0;
                 UpdateSprite(uid, component);
             }
@@ -313,7 +322,7 @@ public sealed class PlantHolderSystem : EntitySystem
                 _popup.PopupCursor(Loc.GetString("plant-holder-component-remove-plant-message",
                     ("name", Comp<MetaDataComponent>(uid).EntityName)), args.User, PopupType.Medium);
                 _popup.PopupEntity(Loc.GetString("plant-holder-component-remove-plant-others-message",
-                    ("name", Comp<MetaDataComponent>(args.User).EntityName)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true);
+                    ("name", Comp<MetaDataComponent>(args.User).EntityName)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true); // HardLight: Filter.PvsExcept<Robust.Shared.Player.Filter.PvsExcept
                 RemovePlant(uid, component);
             }
             else
@@ -406,7 +415,7 @@ public sealed class PlantHolderSystem : EntitySystem
             _popup.PopupEntity(Loc.GetString("plant-holder-component-compost-others-message",
                 ("user", Identity.Entity(args.User, EntityManager)),
                 ("usingItem", args.Used),
-                ("owner", uid)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true);
+                ("owner", uid)), uid, Robust.Shared.Player.Filter.PvsExcept(args.User), true); // HardLight: Filter.PvsExcept<Robust.Shared.Player.Filter.PvsExcept
 
             if (_solutionContainerSystem.TryGetSolution(args.Used, produce.SolutionName, out var soln2, out var solution2))
             {
@@ -954,12 +963,18 @@ public sealed class PlantHolderSystem : EntitySystem
 
         if (solution.Volume > 0 && component.MutationLevel < 25)
         {
-            var amt = FixedPoint2.New(1);
-            foreach (var entry in _solutionContainerSystem.RemoveEachReagent(component.SoilSolution.Value, amt))
+            // Don't apply any effects to a non-unique seed ever! Remove this when botany code is sane...
+            EnsureUniqueSeed(uid, component);
+            foreach (var entry in solution.Contents)
             {
+                if (entry.Quantity < PlantMetabolismRate)
+                    continue;
+
                 var reagentProto = _prototype.Index<ReagentPrototype>(entry.Reagent.Prototype);
-                reagentProto.ReactionPlant(uid, entry, solution);
+                _entityEffects.ApplyEffects(uid, reagentProto.PlantMetabolisms.ToArray(), entry.Quantity);
             }
+
+            _solutionContainerSystem.RemoveEachReagent(component.SoilSolution.Value, PlantMetabolismRate);
         }
 
         CheckLevelSanity(uid, component);
