@@ -205,7 +205,7 @@
           type: [ Dwarf, Synth ] # HardLight: Add Synths
           inverted: true
       - !type:Drunk
-        boozePower: 2
+        boozePower: 20
       - !type:AdjustReagent # HardLight: Allow Synths to convert ethanol to nutriment
         conditions:
         - !type:MetabolizerTypeCondition

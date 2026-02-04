@@ -17,6 +17,7 @@ using Content.Shared.EntityEffects.Effects.Solution;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Random.Helpers;
 using Content.Server.Mobs.Components; // HardLight
 using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
@@ -230,6 +231,9 @@ public sealed class MetabolizerSystem : SharedMetabolizerSystem
                     {
                         if (scale < effect.MinScale)
                             continue;
+
+                    if (effect.Probability < 1.0f && !_random.Prob(effect.Probability))
+                        continue;
 
                         // See if conditions apply
                         if (effect.Conditions != null && !CanMetabolizeEffect(actualEntity, ent, soln.Value, effect.Conditions))
