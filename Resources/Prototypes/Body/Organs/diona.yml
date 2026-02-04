@@ -80,16 +80,7 @@
   - type: Metabolizer
     maxReagents: 6
     metabolizerTypes: [ Plant ]
-    removeEmpty: true
-    groups:
-    - id: Food
-    - id: Drink
-    - id: Medicine
-    - id: Cryogenic
-    - id: Poison
-    - id: Narcotic
-    - id: Alcohol
-      rateModifier: 0.1
+    stages: [ Digestion, Bloodstream, Metabolites ]
   - type: Item
     size: Small
     heldPrefix: stomach

@@ -1,5 +1,5 @@
 ﻿using Content.Shared.Anomaly.Effects;
-using Content.Shared.Body.Prototypes;
+using Content.Shared.Humanoid.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;

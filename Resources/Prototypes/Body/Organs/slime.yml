@@ -22,17 +22,8 @@
   - type: Brain
   - type: Metabolizer
     maxReagents: 6
-    metabolizerTypes: [ Slime, Animal, Goblin, Moth ]
-    removeEmpty: true
-    groups:
-    - id: Food
-    - id: Drink
-    - id: Medicine
-    - id: Cryogenic # Frontier
-    - id: Poison
-    - id: Narcotic
-    - id: Alcohol
-      rateModifier: 0.25
+    metabolizerTypes: [ Slime, Animal, Goblin, Moth ] # HardLight: I guess they just really like eating everything.
+    stages: [ Digestion, Bloodstream, Metabolites ]
   - type: SolutionContainerManager
     solutions:
       stomach:
