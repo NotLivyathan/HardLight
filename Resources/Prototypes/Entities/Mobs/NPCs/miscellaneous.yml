@@ -106,7 +106,7 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         damage:
           groups:
             Brute: -0.25
@@ -114,28 +114,28 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         damage:
           groups:
-            Brute: -0.5
-            Burn: -0.5
+            Brute: -0.25
+            Burn: -0.25
     - reagents: [ RobustHarvest ]
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         damage:
           groups:
-            Brute: -2
-            Burn: -2
+            Brute: -1
+            Burn: -1
     - reagents: [ WeedKiller, PlantBGone ]
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true
         damage:
           types:
-            Heat: 2
+            Heat: 1
   - type: ReplacementAccent
     accent: tomatoKiller
   - type: Item
@@ -157,7 +157,10 @@
       - map: [ "enum.DamageStateVisualLayers.Base" ]
         state: alive
   - type: Bloodstream
-    bloodReagent: JuiceTomato
+    bloodReagents:
+      reagents:
+      - ReagentId: JuiceTomato
+        Quantity: 1
     bloodMaxVolume: 50
     chemicalMaxVolume: 30
   - type: DamageStateVisuals
@@ -243,7 +246,7 @@
   parent: MobLaserRaptor
   description: What has science Wrought?!
   components:
-    - type: LayingDown
+    - type: Crawler
     - type: IdExaminable
     - type: InventorySlots
     - type: Stripping
@@ -313,7 +316,7 @@
           Base: DrDino2
         Dead:
           Base: DrDino_dead
-          
+
 - type: entity
   name: Doctor Dinosaur
   id: MobDrdino3
@@ -370,7 +373,7 @@
           Base: DrDino5
         Dead:
           Base: DrDino_dead
-          
+
 - type: entity
   name: Doctor Dinosaur
   id: MobDrdino6
@@ -388,8 +391,8 @@
         Alive:
           Base: DrDino6
         Dead:
-          Base: DrDino_dead 
-          
+          Base: DrDino_dead
+
 - type: entity
   name: Doctor Dinosaur
   id: MobDrdino7
@@ -407,8 +410,8 @@
         Alive:
           Base: DrDino7
         Dead:
-          Base: DrDino_dead          
-          
+          Base: DrDino_dead
+
 - type: entity
   name: Doctor Dinosaur
   id: MobDrdino8
