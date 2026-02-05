@@ -1,0 +1,9 @@
+#- type: latheRecipePack
+#  id: EyeImplantNightVision
+#  recipes:
+#  - EyeImplantNightVision
+#
+#- type: latheRecipePack
+#  id: EyeImplantThermalVision
+#  recipes:
+#  - EyeImplantThermalVision # HardLight: EyeImplantThermal<EyeImplantThermalVision

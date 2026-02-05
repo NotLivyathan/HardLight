@@ -1,0 +1,29 @@
+# Tier 3
+
+#- type: technology
+#  id: CyberEyeNightVision
+#  name: research-technology-nightvision-eyes
+#  icon:
+#    sprite: _Starlight/Objects/Specific/Medical/implants.rsi
+#    state: eyes_night
+#  discipline: Biochemical
+#  tier: 3
+#  cost: 7680
+#  recipeUnlocks:
+#    - EyeImplantNightVision
+#  technologyPrerequisites:
+#  - CyberImplantsTech
+#
+#- type: technology
+#  id: CyberEyeThermalVision
+#  name: research-technology-thermalvision-eyes
+#  icon:
+#    sprite: _Starlight/Objects/Specific/Medical/implants.rsi
+#    state: eyes_thermal
+#  discipline: Biochemical
+#  tier: 3
+#  cost: 9320
+#  recipeUnlocks:
+#    - EyeImplantThermalVision # HardLight: EyeImplantThermal<EyeImplantThermalVision
+#  technologyPrerequisites:
+#  - CyberEyeNightVision
