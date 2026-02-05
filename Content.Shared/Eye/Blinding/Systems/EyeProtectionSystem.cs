@@ -19,19 +19,7 @@ namespace Content.Shared.Eye.Blinding.Systems
 
             SubscribeLocalEvent<EyeProtectionComponent, GetEyeProtectionEvent>(OnGetProtection);
             SubscribeLocalEvent<EyeProtectionComponent, InventoryRelayedEvent<GetEyeProtectionEvent>>(OnGetRelayedProtection);
-
-            //🌟Starlight🌟 start
-            SubscribeLocalEvent<NightVisionComponent, GetEyeProtectionEvent>(OnGetProtection);
-            SubscribeLocalEvent<ThermalVisionComponent, GetEyeProtectionEvent>(OnGetProtection);
-            //🌟Starlight🌟 end
         }
-
-        //🌟Starlight🌟 start
-        private void OnGetProtection(Entity<NightVisionComponent> ent, ref GetEyeProtectionEvent args)
-            => args.Protection -= TimeSpan.FromSeconds(9);  //We'll need to put this constant somewhere in the prototypes...later...
-        private void OnGetProtection(Entity<ThermalVisionComponent> ent, ref GetEyeProtectionEvent args)
-            => args.Protection -= TimeSpan.FromSeconds(12);
-        //🌟Starlight🌟 end
 
         private void OnGetRelayedProtection(EntityUid uid, EyeProtectionComponent component,
             InventoryRelayedEvent<GetEyeProtectionEvent> args)

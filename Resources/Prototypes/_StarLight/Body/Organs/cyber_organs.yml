@@ -9,7 +9,7 @@
     layers: # HardLight
     - state: eyes_night
   - type: Organ # HardLight: FunctionalOrgan<Organ
-    comps:
+    onAdd: # Shitmed
     - type: NightVision
   # HardLight: Not something we have
   #- type: OrganVisualization
@@ -27,7 +27,7 @@
     layers: # HardLight
     - state: eyes_thermal
   - type: Organ # HardLight: FunctionalOrgan<Organ
-    comps:
+    onAdd: # Shitmed
     - type: ThermalVision
   # HardLight: Not something we have
   #- type: OrganVisualization

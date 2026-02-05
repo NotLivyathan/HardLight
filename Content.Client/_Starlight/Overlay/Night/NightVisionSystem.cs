@@ -33,8 +33,6 @@ public sealed class NightVisionSystem : EntitySystem
     {
         if (_effect == null)
             AddNightVision(ent.Owner);
-        else if (HasComp<EyeProtectionComponent>(ent.Owner))
-            RemoveNightVision();
     }
 
     private void OnPlayerDetached(Entity<NightVisionComponent> ent, ref LocalPlayerDetachedEvent args)
@@ -48,8 +46,6 @@ public sealed class NightVisionSystem : EntitySystem
 
         if (_effect == null)
             AddNightVision(ent.Owner);
-        else if (HasComp<EyeProtectionComponent>(ent.Owner))
-            RemoveNightVision();
     }
 
     private void OnVisionShutdown(Entity<NightVisionComponent> ent, ref ComponentShutdown args)
@@ -60,8 +56,6 @@ public sealed class NightVisionSystem : EntitySystem
 
     private void AddNightVision(EntityUid uid)
     {
-        if (HasComp<EyeProtectionComponent>(uid)) return;
-
         _overlayMan.AddOverlay(_overlay);
         _effect = SpawnAttachedTo(_effectPrototype, Transform(uid).Coordinates);
         _xformSys.SetParent(_effect.Value, uid);
