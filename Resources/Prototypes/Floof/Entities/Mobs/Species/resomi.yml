@@ -6,7 +6,7 @@
   abstract: true
   components:
     - type: JumpAbility
-      action: ActionResomiinGravityJump
+      action: ActionResomiGravityJump
       canCollide: true
       jumpDistance: 3.5
       jumpSound:
