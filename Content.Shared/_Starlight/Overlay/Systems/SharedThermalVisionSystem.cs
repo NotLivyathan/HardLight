@@ -2,6 +2,7 @@
 using Content.Shared.Actions;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.EntitySystems;
+using Content.Shared._Starlight.Overlay;
 using Robust.Shared.Prototypes;
 using static Content.Shared.Weapons.Ranged.Systems.SharedGunSystem;
 
@@ -17,21 +18,28 @@ public abstract class SharedThermalVisionSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<ThermalVisionComponent, ComponentInit>(OnVisionInit);
+        SubscribeLocalEvent<ThermalVisionComponent, MapInitEvent>(OnVisionInit);
         SubscribeLocalEvent<ThermalVisionComponent, ComponentShutdown>(OnVisionShutdown);
         SubscribeLocalEvent<ThermalVisionComponent, ToggleThermalVisionEvent>(OnToggleThermalVision);
     }
-    private void OnVisionInit(Entity<ThermalVisionComponent> ent, ref ComponentInit args) 
-        => _actionsSystem.AddAction(ent.Owner, ref ent.Comp.ActionEntity, Action);
 
-    private void OnVisionShutdown(Entity<ThermalVisionComponent> ent, ref ComponentShutdown args) 
-        => _actionsSystem.RemoveAction(ent.Comp.ActionEntity);
+    private void OnVisionInit(Entity<ThermalVisionComponent> ent, ref MapInitEvent args)
+    {
+        _actionsSystem.AddAction(ent.Owner, ref ent.Comp.ActionEntity, Action);
+    }
+
+    private void OnVisionShutdown(Entity<ThermalVisionComponent> ent, ref ComponentShutdown args)
+    {
+        _actionsSystem.RemoveAction(ent.Comp.ActionEntity);
+        //force turn off
+        ToggleOff(ent);
+    }
 
     private void OnToggleThermalVision(Entity<ThermalVisionComponent> ent, ref ToggleThermalVisionEvent args)
     {
         if(args.Handled || IsPredict()) return;
         args.Handled = true;
-        
+
         ent.Comp.Active = !ent.Comp.Active;
 
         if(ent.Comp.Active)
@@ -41,11 +49,10 @@ public abstract class SharedThermalVisionSystem : EntitySystem
     }
     protected virtual void ToggleOn(Entity<ThermalVisionComponent> ent)
     {
-        
+
     }
     protected virtual void ToggleOff(Entity<ThermalVisionComponent> ent)
     {
 
     }
 }
-

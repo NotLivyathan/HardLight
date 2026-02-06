@@ -1,10 +1,11 @@
+using Content.Shared.Clothing.Components;
 using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Flash.Components;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Robust.Shared.Player;
 
-namespace Content.Client._Starlight.Overlay;
+namespace Content.Shared._Starlight.Overlay;
 
 public sealed class FlashImmunitySystem : EntitySystem
 {
@@ -17,7 +18,7 @@ public sealed class FlashImmunitySystem : EntitySystem
         SubscribeLocalEvent<FlashImmunityComponent, GotUnequippedEvent>(OnFlashImmunityUnEquipped);
 
         SubscribeLocalEvent<FlashImmunityComponent, ComponentStartup>(OnFlashImmunityChanged);
-        SubscribeLocalEvent<FlashImmunityComponent, ComponentShutdown>(OnFlashImmunityChanged);
+        SubscribeLocalEvent<FlashImmunityComponent, ComponentRemove>(OnFlashImmunityChanged);
 
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnPlayerAttached);
 
@@ -30,39 +31,53 @@ public sealed class FlashImmunitySystem : EntitySystem
 
     private void OnPlayerAttached(LocalPlayerAttachedEvent args)
     {
-        FlashImmunityChangedEvent flashImmunityChangedEvent = new(args.Entity, CheckForFlashImmunity(args.Entity));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(args.Entity, HasFlashImmunityVisionBlockers(args.Entity));
         RaiseLocalEvent(args.Entity, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityChanged(EntityUid uid, FlashImmunityComponent component, EntityEventArgs args)
     {
-        FlashImmunityChangedEvent flashImmunityChangedEvent = new(uid, CheckForFlashImmunity(uid));
+        uid = GetPossibleWearer(uid);
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(uid));
         RaiseLocalEvent(uid, flashImmunityChangedEvent);
     }
 
     private void OnVisionChanged(EntityUid uid, Component component, EntityEventArgs args)
     {
-        FlashImmunityChangedEvent flashImmunityChangedEvent = new(uid, CheckForFlashImmunity(uid));
+        uid = GetPossibleWearer(uid);
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(uid));
         RaiseLocalEvent(uid, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityEquipped(EntityUid uid, FlashImmunityComponent component, GotEquippedEvent args)
     {
-        FlashImmunityChangedEvent flashImmunityChangedEvent = new(uid, CheckForFlashImmunity(args.Equipee));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(args.Equipee));
         RaiseLocalEvent(args.Equipee, flashImmunityChangedEvent);
     }
 
     private void OnFlashImmunityUnEquipped(EntityUid uid, FlashImmunityComponent component, GotUnequippedEvent args)
     {
-        FlashImmunityChangedEvent flashImmunityChangedEvent = new(uid, CheckForFlashImmunity(args.Equipee));
+        FlashImmunityCheckEvent flashImmunityChangedEvent = new(uid, HasFlashImmunityVisionBlockers(args.Equipee));
         RaiseLocalEvent(args.Equipee, flashImmunityChangedEvent);
     }
 
-    private bool CheckForFlashImmunity(EntityUid uid)
+    private EntityUid GetPossibleWearer(EntityUid uid)
+    {
+        if (TryComp<ClothingComponent>(uid, out var clothingComponent))
+        {
+            //we want to get the wearer of the clothing, not the clothing itself
+            return IoCManager.Resolve<IEntityManager>().GetComponentOrNull<TransformComponent>(clothingComponent.Owner)?.ParentUid ?? uid;
+        }
+
+        return uid;
+    }
+
+    public bool HasFlashImmunityVisionBlockers(EntityUid uid)
     {
         if (EntityManager.TryGetComponent(uid, out FlashImmunityComponent? flashImmunityComponent))
         {
-            return true;
+            if (flashImmunityComponent.BlocksSpecialVision)
+                return true;
         }
 
         if (TryComp<InventoryComponent>(uid, out var inventoryComp))
@@ -73,7 +88,8 @@ public sealed class FlashImmunitySystem : EntitySystem
             {
                 if (slot.ContainedEntity != null && EntityManager.TryGetComponent(slot.ContainedEntity, out FlashImmunityComponent? wornFlashImmunityComponent))
                 {
-                    return true;
+                    if (wornFlashImmunityComponent.BlocksSpecialVision)
+                        return true;
                 }
             }
         }
