@@ -1,18 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
-using Content.Server._NF.Shuttles.Components; // Frontier: FTL knockdown immunity
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
 using Content.Server.Station.Events;
-using Content.Shared.Body.Components;
-using Content.Shared.Buckle.Components;
+using Content.Shared.Body;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
-using Content.Shared.Ghost;
-using Content.Shared.Maps;
 using Content.Shared.Parallax;
-using Content.Shared.SegmentedEntity;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
 using Content.Shared.StatusEffect;
@@ -29,6 +24,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
 using FTLMapComponent = Content.Shared.Shuttles.Components.FTLMapComponent;
+using Content.Server._NF.Shuttles.Components; // Frontier: FTL knockdown immunity
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -99,16 +95,14 @@ public sealed partial class ShuttleSystem
         SubscribeLocalEvent<FTLComponent, ComponentShutdown>(OnFtlShutdown);
 
         _bodyQuery = GetEntityQuery<BodyComponent>();
-        _buckleQuery = GetEntityQuery<BuckleComponent>();
         _immuneQuery = GetEntityQuery<FTLSmashImmuneComponent>();
-        _physicsQuery = GetEntityQuery<PhysicsComponent>();
         _statusQuery = GetEntityQuery<StatusEffectsComponent>();
-        _xformQuery = GetEntityQuery<TransformComponent>();
 
         _cfg.OnValueChanged(CCVars.FTLStartupTime, time => DefaultStartupTime = time, true);
         _cfg.OnValueChanged(CCVars.FTLTravelTime, time => DefaultTravelTime = time, true);
         _cfg.OnValueChanged(CCVars.FTLArrivalTime, time => DefaultArrivalTime = time, true);
-        _cfg.OnValueChanged(CCVars.FTLCooldown, time => _ftlCooldown = time, true);
+        _cfg.OnValueChanged(CCVars.FTLCooldown, time => FTLCooldown = TimeSpan.FromSeconds(time), true);
+        _cfg.OnValueChanged(CCVars.ArrivalsFTLCooldown, time => ArrivalsFTLCooldown = TimeSpan.FromSeconds(time), true);
         _cfg.OnValueChanged(CCVars.FTLMassLimit, time => FTLMassLimit = time, true);
         _cfg.OnValueChanged(CCVars.HyperspaceKnockdownTime, time => _hyperspaceKnockdownTime = TimeSpan.FromSeconds(time), true);
     }
@@ -568,9 +562,12 @@ public sealed partial class ShuttleSystem
         }
 
         comp.State = FTLState.Cooldown;
-        comp.StateTime = StartEndTime.FromCurTime(_gameTiming, _ftlCooldown);
+        var cooldown = entity.Comp2.FTLCooldownOverride ?? (HasComp<ArrivalsShuttleComponent>(uid)
+                ? ArrivalsFTLCooldown
+                : FTLCooldown);
+        comp.StateTime = StartEndTime.FromCurTime(_gameTiming, cooldown);
         _console.RefreshShuttleConsoles(uid);
-        _mapManager.SetMapPaused(mapId, false);
+        _mapSystem.SetPaused(mapId, false);
         Smimsh(uid, xform: xform);
 
         var ftlEvent = new FTLCompletedEvent(uid, _mapSystem.GetMap(mapId));
@@ -597,9 +594,6 @@ public sealed partial class ShuttleSystem
 
             switch (comp.State)
             {
-                // Available state is a dummy state for presentation, no action needed
-                case FTLState.Available:
-                    break;
                 // Startup time has elapsed and in hyperspace.
                 case FTLState.Starting:
                     UpdateFTLStarting(entity);
@@ -649,7 +643,7 @@ public sealed partial class ShuttleSystem
                     continue;
 
                 if (!HasComp<FTLKnockdownImmuneComponent>(child)) // Frontier: FTL knockdown immunity
-                    _stuns.TryParalyze(child, _hyperspaceKnockdownTime, true, status);
+                    _stuns.TryUpdateParalyzeDuration(child, _hyperspaceKnockdownTime);
 
                 // If the guy we knocked down is on a spaced tile, throw them too
                 if (grid != null)
@@ -689,9 +683,7 @@ public sealed partial class ShuttleSystem
         var childEnumerator = xform.ChildEnumerator;
         while (childEnumerator.MoveNext(out var child))
         {
-            if (!_buckleQuery.TryGetComponent(child, out var buckle) || buckle.Buckled
-            || HasComp<SegmentedEntityComponent>(child)
-            || HasComp<SegmentedEntitySegmentComponent>(child))
+            if (!_buckleQuery.TryGetComponent(child, out var buckle) || buckle.Buckled)
                 continue;
 
             toKnock.Add(child);
@@ -711,7 +703,7 @@ public sealed partial class ShuttleSystem
         // only toss if its on lattice/space
         var tile = _mapSystem.GetTileRef(shuttleEntity, shuttleGrid, childXform.Coordinates);
 
-        if (!tile.IsSpace(_tileDefManager))
+        if (!_turf.IsSpace(tile))
             return;
 
         var throwDirection = childXform.LocalPosition - shuttleBody.LocalCenter;
@@ -775,37 +767,12 @@ public sealed partial class ShuttleSystem
     /// </summary>
     public void FTLDock(Entity<TransformComponent> shuttle, DockingConfig config)
     {
-        // Place shuttle near the target using the config's suggested coordinates and rotation.
-        // Then snap-translate the shuttle so the first dock pair aligns exactly, avoiding spatial offsets.
+        // Set position
         var mapCoordinates = _transform.ToMapCoordinates(config.Coordinates);
         var mapUid = _mapSystem.GetMap(mapCoordinates.MapId);
-        var targetWorldAngle = _transform.GetWorldRotation(config.Coordinates.EntityId);
-        var finalRotation = config.Angle + targetWorldAngle;
-        _transform.SetCoordinates(shuttle.Owner, shuttle.Comp, new EntityCoordinates(mapUid, mapCoordinates.Position), rotation: finalRotation);
+        _transform.SetCoordinates(shuttle.Owner, shuttle.Comp, new EntityCoordinates(mapUid, mapCoordinates.Position), rotation: config.Angle + _transform.GetWorldRotation(config.Coordinates.EntityId));
 
-        // If we have at least one dock pair, compute the precise translation required to align ports.
-        if (config.Docks.Count > 0)
-        {
-            var (dockAUid, dockBUid, _, _) = config.Docks[0];
-
-            if (_xformQuery.TryGetComponent(dockAUid, out var dockAXform) &&
-                _xformQuery.TryGetComponent(dockBUid, out var dockBXform))
-            {
-                // Compute each dock port’s world position using a half-tile forward offset along its local forward.
-                // This mirrors DockingSystem.Dock’s anchor calculation: LocalPosition + LocalRotation.ToWorldVec() / 2f
-                var aWorldPos = _transform.GetWorldPosition(dockAXform) + dockAXform.WorldRotation.ToWorldVec() / 2f;
-                var bWorldPos = _transform.GetWorldPosition(dockBXform) + dockBXform.WorldRotation.ToWorldVec() / 2f;
-
-                var delta = bWorldPos - aWorldPos;
-
-                // Translate the entire shuttle grid by delta so the first pair coincides exactly.
-                // Important: only adjust position (not rotation) to avoid drifting post-dock.
-                var shuttleXform = shuttle.Comp;
-                shuttleXform.WorldPosition += delta;
-            }
-        }
-
-        // Now create weld joints between all matched docks.
+        // Connect everything
         foreach (var (dockAUid, dockBUid, dockA, dockB) in config.Docks)
         {
             _dockSystem.Dock((dockAUid, dockA), (dockBUid, dockB));
@@ -839,7 +806,7 @@ public sealed partial class ShuttleSystem
 
         // We essentially expand the Box2 of the target area until nothing else is added then we know it's valid.
         // Can't just get an AABB of every grid as we may spawn very far away.
-        //var nearbyGrids = new HashSet<EntityUid>(); // Frontier
+        //var nearbyGrids = new HashSet<EntityUid>(); // Frontier, // HardLight: I wish I knew why this is commented out.
         var shuttleAABB = Comp<MapGridComponent>(shuttleUid).LocalAABB;
 
         // Start with small point.
@@ -1119,7 +1086,7 @@ public sealed partial class ShuttleSystem
                 {
                     _logger.Add(LogType.Gib, LogImpact.Extreme, $"{ToPrettyString(ent):player} got gibbed by the shuttle" +
                                                                 $" {ToPrettyString(uid)} arriving from FTL at {xform.Coordinates:coordinates}");
-                    var gibs = _bobby.GibBody(ent, body: mob);
+                    var gibs = _gibbing.Gib(ent);
                     _immuneEnts.UnionWith(gibs);
                     continue;
                 }

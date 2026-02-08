@@ -49,7 +49,7 @@
         scaling: true
         conditions:
         - !type:MetabolizerTypeCondition
-          type: [ Human, Animal, Rat, Plant, Sheleg, Thaven ] # Frontier: Sheleg, # Imp: Thaven
+          type: [ Human, Animal, Rat, Plant, Arachnid, Moth, Sheleg, Thaven ] # Frontier: Sheleg, # Imp: Thaven
       # Convert Oxygen into CO2.
       - !type:ModifyLungGas
         scaling: true

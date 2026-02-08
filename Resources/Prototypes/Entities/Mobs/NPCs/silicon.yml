@@ -78,8 +78,6 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-  - type: Body
-    prototype: Bot
   - type: GuideHelp
     guides:
     - Robotics

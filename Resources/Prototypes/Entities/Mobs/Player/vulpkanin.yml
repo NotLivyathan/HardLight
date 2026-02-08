@@ -1,7 +1,0 @@
-- type: entity
-  save: false
-  name: Urist McBark
-  parent: BaseMobVulpkanin
-  id: MobVulpkanin
-  components:
-    - type: PotentialPsionic #Nyano - Summary: makes potentially psionic.
