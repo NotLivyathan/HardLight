@@ -3,12 +3,15 @@
   name: reagent-name-bleach
   desc: reagent-desc-bleach
   physicalDesc: reagent-physical-desc-strong-smelling
+  allowedJobs:
+  - Janitor
+  - Chemist
   flavor: bitter
   color: "#a1000b"
   boilingPoint: 111.0
   meltingPoint: -5.0
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -53,25 +56,14 @@
   recognizable: true
   boilingPoint: 100.0
   meltingPoint: 60.0
+  slipData:
+    requiredSlipSpeed: 3.5
+  friction: 0.3 # Slightly less friction than water, but not as bad as space lube
   metabolisms:
-    Food:
+    Digestion:
       effects:
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight: Prevents Synths vomiting
-          type: [ Synth ]
-          inverted: true
-        - !type:ReagentCondition
-          reagent: SoapReagent
-          min: 6
-        probability: 0.20
-    Drink:
-      effects:
-      - !type:Vomit
-        conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: SoapReagent
           min: 6
@@ -81,6 +73,7 @@
   id: SpaceLube
   name: reagent-name-space-lube
   desc: reagent-desc-space-lube
+  evaporationSpeed: 0.1
   slipData:
     requiredSlipSpeed: 1
     superSlippery: true
@@ -110,17 +103,17 @@
     Acidic:
       methods: [ Touch ]
       effects:
-      # pva glue? no, antibiotic glue for sealing wounds
+      # PVA glue? No, antibiotic glue for sealing wounds
       - !type:ModifyBleed
         amount: -1.5
   metabolisms:
-    Narcotic:
+    Bloodstream:
       effects:
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSeeingRainbow
         time: 5
         type: Add
-    Drink:
+    Digestion:
       effects:
       - !type:GenericStatusEffect
         key: Muted

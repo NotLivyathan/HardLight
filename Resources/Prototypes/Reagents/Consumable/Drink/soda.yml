@@ -14,13 +14,13 @@
   metamorphicFillBaseName: fill-
   metamorphicChangeColor: false
   metabolisms:
-    Drink:
+    Digestion:
       effects:
       - !type:SatiateThirst
         factor: 2
-      - !type:GenericStatusEffect
-        key: Drowsiness
-        time: 1.0
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectDrowsiness
+        time: 1
         type: Remove
 
 - type: reagent
@@ -38,7 +38,7 @@
   metamorphicFillBaseName: fill-
   metamorphicChangeColor: false
   metabolisms:
-    Drink:
+    Digestion:
       effects:
       - !type:SatiateThirst
         factor: 4
@@ -76,17 +76,16 @@
   flavor: energydrink
   color: "#ffffbf"
   metabolisms:
-    Drink:
+    Digestion:
+      metabolites:
+        Theobromine: 0.2
       effects:
       - !type:SatiateThirst
         factor: 2
-      - !type:GenericStatusEffect
-        key: Drowsiness
-        time: 2.0
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectDrowsiness
+        time: 2
         type: Remove
-      - !type:AdjustReagent
-        reagent: Theobromine
-        amount: 0.1
   fizziness: 0.4
 
 - type: reagent
@@ -114,27 +113,28 @@
   metamorphicFillBaseName: fill-
   metamorphicChangeColor: true
   fizziness: 0
-  # Floof region
+  # Floof start, # HardLight: I think Floof did this to emulate brain freezing? I just thought that was kinda cool.
   metabolisms:
-    Drink:
+    Digestion: # HardLight: Merged with upstream; Drink<Digestion
       effects:
       - !type:SatiateThirst
         factor: 1.5
       - !type:HealthChange
-        scaleByQuantity: true
+        scaling: true # HardLight: Merged with upstream; scaleByQuantity<scaling
         ignoreResistances: false
         damage:
           types:
             Cold: 0.1
         conditions:
-        - !type:ReagentThreshold
+        - !type:ReagentCondition # HardLight: Merged with upstream; ReagentThreshold<ReagentCondition
+          reagent: IceCream # HardLight
           min: 20
       - !type:AdjustTemperature
         conditions:
-        - !type:Temperature
+        - !type:TemperatureCondition # HardLight: Merged with upstream; Temperature<TemperatureCondition
           min: 298.15 # Floof
         amount: -1000
-  # Floof region end
+  # Floof end
 
 - type: reagent
   id: LemonLime
@@ -225,7 +225,7 @@
   metamorphicFillBaseName: fill-
   metamorphicChangeColor: false
   metabolisms:
-    Drink:
+    Digestion:
       effects:
       - !type:SatiateThirst
         factor: 4
@@ -284,19 +284,16 @@
   metamorphicFillBaseName: fill-
   metamorphicChangeColor: false
   metabolisms:
-    Drink:
+    Digestion:
+      metabolites:
+        Theobromine: 0.2
       effects:
       - !type:SatiateThirst
         factor: 2
-      - !type:AdjustReagent
-        reagent: Theobromine
-        amount: 0.1
-    Poison:
-      effects:
       - !type:HealthChange
         conditions:
         - !type:MetabolizerTypeCondition
-          type: [ Slime ]
+          type: [Slime]
           inverted: true
         damage:
           types:

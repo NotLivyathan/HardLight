@@ -6,14 +6,14 @@
   flavor: bitter
   color: "#cf3600"
   physicalDesc: reagent-physical-desc-opaque
-  #contrabandSeverity: Minor
+  contrabandSeverity: Minor
   plantMetabolism:
   - !type:PlantAdjustToxins
     amount: 10
   - !type:PlantAdjustHealth
     amount: -5
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -28,15 +28,15 @@
   flavor: bitter
   color: "#e2a38c"
   physicalDesc: reagent-physical-desc-exotic-smelling
-  #allowedDepartments:
-  #- Medical
+  allowedDepartments:
+  - Medical
   plantMetabolism:
   - !type:PlantAdjustToxins
     amount: 10
   - !type:PlantAdjustHealth
     amount: -5
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -56,12 +56,10 @@
   flavor: bitter
   color: "#000067"
   physicalDesc: reagent-physical-desc-nondescript
-  #allowedDepartments:
-  #- Medical
-  #allowedJobs:
-  #- Zookeeper
+  allowedDepartments:
+  - Medical
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:Emote
         emote: Yawn
@@ -92,7 +90,7 @@
   color: "#acc91a"
   physicalDesc: reagent-physical-desc-putrid
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
         - !type:HealthChange
           damage:
@@ -100,9 +98,6 @@
               Poison: 2
         - !type:Vomit
           conditions:
-          - !type:MetabolizerTypeCondition # HardLight
-            type: [ Synth ]
-            inverted: true
           - !type:ReagentCondition
             reagent: GastroToxin
             min: 2
@@ -118,7 +113,7 @@
   recognizable: true
   physicalDesc: reagent-physical-desc-fuzzy
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -131,7 +126,7 @@
   group: Toxins
   desc: reagent-desc-polytrinic-acid
   physicalDesc: reagent-physical-desc-strong-smelling
-  #contrabandSeverity: Major
+  contrabandSeverity: Major
   flavor: acid
   color: "#a1000b"
   boilingPoint: 78.2 # This isn't a real chemical...
@@ -148,7 +143,6 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -157,7 +151,7 @@
         emote: Scream
         probability: 0.3
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate : 3.00 # High damage, high metabolism rate. You need a lot of units to crit. Simulates acid burning through you fast.
       effects:
       - !type:HealthChange
@@ -182,12 +176,11 @@
   color: "#48b3b8"
   physicalDesc: reagent-physical-desc-ferrous
   metabolisms:
-    Drink:
+    Bloodstream:
       effects:
       - !type:SatiateThirst
         factor: -1.5
       - !type:HealthChange
-        scaling: true
         ignoreResistances: true
         damage:
           types:
@@ -200,7 +193,7 @@
   group: Toxins
   desc: reagent-desc-fluorosulfuric-acid
   physicalDesc: reagent-physical-desc-strong-smelling
-  #contrabandSeverity: Minor
+  contrabandSeverity: Minor
   flavor: acid
   color: "#5050ff"
   boilingPoint: 165
@@ -210,7 +203,6 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -219,7 +211,7 @@
         emote: Scream
         probability: 0.2
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 3.00 # High damage, high metabolism rate. You need a lot of units to crit. Simulates acid burning through you fast.
       effects:
       - !type:HealthChange
@@ -241,8 +233,8 @@
   group: Toxins
   desc: reagent-desc-sulfuric-acid
   physicalDesc: reagent-physical-desc-oily
-  #allowedJobs:
-  #- Chemist
+  allowedJobs:
+  - Chemist
   flavor: acid
   color: "#BF8C00"
   recognizable: true
@@ -260,7 +252,6 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         ignoreResistances: false
         damage:
           types:
@@ -269,7 +260,7 @@
         emote: Scream
         probability: 0.1
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 3.00 # Okay damage, high metabolism rate. You need a lot of units to crit. Simulates acid burning through you fast.
       effects:
       - !type:HealthChange
@@ -291,24 +282,24 @@
   group: Toxins
   desc: reagent-desc-unstable-mutagen
   physicalDesc: reagent-physical-desc-glowing
-  #allowedJobs:
-  #- Chemist
-  #- Botanist
+  allowedJobs:
+  - Chemist
+  - Botanist
   flavor: bitter
   color: "#00ff5f"
-  boilingPoint: 340282300000000000000000000000000000000 # Ethidium bromide, which doesn't boil.
+  boilingPoint: 340282300 # Ethidium bromide, which doesn't boil.
   meltingPoint: 261.0
   plantMetabolism:
   - !type:PlantAdjustMutationLevel
     amount: 1
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
           types:
             Radiation: 3
-      - !type:ChemRerollPsionic # Nyano did this, I think.
+      - !type:ChemRerollPsionic # HardLight: Nyano did this, I think.
         bonusMultiplier: 5
       - !type:RandomMutation # Funkystation - genetics
         probability: .02 # Kept low as rad damage already causes mutations. May need to be removed.
@@ -321,10 +312,10 @@
   group: Toxins
   desc: reagent-desc-heartbreaker-toxin
   physicalDesc: reagent-physical-desc-strong-smelling
-  #contrabandSeverity: Major
+  contrabandSeverity: Major
   color: "#5f959c"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -340,10 +331,10 @@
   group: Toxins
   desc: reagent-desc-lexorin
   physicalDesc: reagent-physical-desc-pungent
-  #contrabandSeverity: Syndicate
+  contrabandSeverity: Syndicate
   color: "#6b0007"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -362,17 +353,17 @@
   - !type:PlantAdjustToxins
     amount: 10
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSeeingRainbow
         type: Add
         time: 10
   # TODO: PROPER hallucinations
-      - !type:ChemRemovePsionic #Nyano - Summary: removes psionics from the user at 20u.
+      - !type:ChemRemovePsionic #Nyano: Removes psionics from the user at 20u.
         conditions:
-        - !type:ReagentCondition # HardLight: Merge with upstream
-          reagent: MindbreakerToxin
+        - !type:ReagentCondition # HardLight: Merge with upstream; ReagentThreshold<ReagentCondition
+          reagent: MindbreakerToxin # HardLight
           min: 20
 
 - type: reagent
@@ -383,14 +374,14 @@
   physicalDesc: reagent-physical-desc-abrasive
   color: "#FA6464"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         probability: 0.1
         damage:
           groups:
             Brute: 2
-      # todo: cough, sneeze
+      # TODO: cough, sneeze
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -426,8 +417,8 @@
   meltingPoint: 351
   boilingPoint: 554 # I'm not a chemist, but it boils at 295, lower than melting point, idk how it works so I gave it higher value
   metabolisms:
-    Poison:
-      metabolismRate: 0.04 # DeltaV: Slowed to allow coffee/etc to build up theobromine, # HardLight: Originally 0.05
+    Bloodstream:
+      metabolismRate: 0.05
       effects:
       - !type:HealthChange
         conditions:
@@ -435,14 +426,14 @@
           type: [ Animal ] # Applying damage to the mobs with lower metabolism capabilities
         damage:
           types:
-            Poison: 0.3 # DeltaV: Slightly reduced to account for slowed metabolism rate, # HardLight: Originally 0.4
+            Poison: 0.3 # DeltaV: Slightly reduced to account for slowed metabolism rate, # HardLight: Was 0.4
       - !type:Vomit
-        probability: 0.1 # Scaled for time, not metabolismrate, # DeltaV - Increased from 0.04 so you vomit more when there is a lot of it
+        probability: 0.01 # DeltaV: Slowed to allow coffee/etc to build up theobromine, # HardLight: Was 0.05
         conditions:
           - !type:MetabolizerTypeCondition
             type: [ Animal ]
-          - !type:ReagentCondition # DeltaV: Readded this. No longer causes vomitting at the lightest whiff of coffee
-            reagent: Theobromine
+          - !type:ReagentCondition # DeltaV: Readded this. No longer causes vomitting at the lightest whiff of coffee, # HardLight: Merged with upstream; ReagentThreshold<ReagentCondition
+            reagent: Theobromine # HardLight
             min: 0.5
 
 - type: reagent
@@ -451,10 +442,10 @@
   group: Toxins
   desc: reagent-desc-amatoxin
   physicalDesc: reagent-physical-desc-nondescript
-  #contrabandSeverity: Major
+  contrabandSeverity: Major
   color: "#D6CE7B"
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 0.2
       effects:
       - !type:HealthChange
@@ -471,7 +462,7 @@
   flavor: bitter
   color: "#000000"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
         - !type:HealthChange
           damage:
@@ -484,12 +475,12 @@
   group: Toxins
   desc: reagent-desc-romerol
   physicalDesc: reagent-physical-desc-necrotic
-  #contrabandSeverity: Syndicate
+  contrabandSeverity: Syndicate
   flavor: bitter
   color: "#7e916e"
   worksOnTheDead: true
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
         - !type:CauseZombieInfection
           conditions:
@@ -506,7 +497,7 @@
   flavor: bitter
   color: "#FFFFE5"
   metabolisms:
-    Food:
+    Digestion:
       effects:
       - !type:PopupMessage
         conditions:
@@ -521,16 +512,23 @@
         probability: 0.1
         conditions:
         - !type:MetabolizerTypeCondition
-          type: [ Animal, Vox, Synth ] # HardLight: Synth
+          type: [ Animal, Vox, Plant, Synth ] # HardLight: Synth
           inverted: true
       - !type:HealthChange
         conditions:
         - !type:MetabolizerTypeCondition
-          type: [ Animal, Vox, Synth ] # HardLight: Synth
+          type: [ Animal, Vox, Plant, Synth ] # HardLight: Synth
           inverted: true
         damage:
           types:
             Poison: 1
+      - !type:HealthChange
+        conditions:
+        - !type:MetabolizerTypeCondition
+          type: [ Plant ]
+        damage:
+          types:
+            Poison: 0.25
       - !type:AdjustReagent
         conditions:
         - !type:MetabolizerTypeCondition
@@ -553,7 +551,7 @@
   flavor: bitter
   color: "#F2E9D2"
   metabolisms:
-    Poison:
+    Digestion:
       metabolismRate: 0.05
       effects:
       - !type:HealthChange
@@ -573,14 +571,12 @@
   group: Narcotics
   desc: reagent-desc-pax
   physicalDesc: reagent-physical-desc-soothing
-  #allowedDepartments:
-  #- Security
-  #- Medical
-  #allowedJobs:
-  #- Zookeeper
+  allowedDepartments:
+  - Security
+  - Medical
   color: "#AAAAAA"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:GenericStatusEffect
         key: Pacified
@@ -596,7 +592,7 @@
   flavor: bitter
   color: "#F2E9D2"
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 0.05
       effects:
       - !type:Emote
@@ -623,10 +619,10 @@
   group: Toxins
   desc: reagent-desc-lead
   physicalDesc: reagent-physical-desc-metallic
-  #contrabandSeverity: Major
+  contrabandSeverity: Major
   color: "#5C6274"
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 0.03 # Effectively once every 30 seconds.
       effects:
       - !type:HealthChange
@@ -640,10 +636,10 @@
   group: Toxins
   desc: reagent-desc-bungotoxin
   physicalDesc: reagent-physical-desc-nondescript
-  #contrabandSeverity: Major
+  contrabandSeverity: Major
   color: "#EBFF8E"
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 0.2
       effects:
       - !type:HealthChange
@@ -657,11 +653,16 @@
   group: Toxins
   desc: reagent-desc-vestine
   physicalDesc: reagent-physical-desc-shiny
-  #contrabandSeverity: Syndicate
+  contrabandSeverity: Syndicate
   flavor: medicine
   color: "#435166"
+  plantMetabolism:
+  - !type:PlantMutateChemicals
+    randomPickBotanyReagent: EvilRandomFillSolution
+  - !type:PlantAdjustToxins
+    amount: 10
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:Jitter
         conditions:
@@ -682,14 +683,16 @@
   group: Toxins
   desc: reagent-desc-tazinide
   physicalDesc: reagent-physical-desc-metallic
-  #contrabandSeverity: Syndicate
+  contrabandSeverity: Syndicate
   flavor: shocking
   color: "#FDD023"
   metabolisms:
-    Poison:
+    Bloodstream:
+      metabolismRate: 2.0
       effects:
       - !type:Electrocute
-        probability: 0.8
+        electrocuteTime: 1
+        probability: 0.5
 
 - type: reagent
   id: Lipolicide
@@ -697,12 +700,12 @@
   group: Toxins
   desc: reagent-desc-lipolicide
   physicalDesc: reagent-physical-desc-strong-smelling
-  #allowedDepartments:
-  #- Medical
-  flavor: mothballs #why does weightloss juice taste like mothballs
+  allowedDepartments:
+  - Medical
+  flavor: mothballs # Why does weightloss juice taste like mothballs
   color: "#F0FFF0"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -714,8 +717,8 @@
       - !type:SatiateHunger
         factor: -6
 
-# inspired by the spider neurotoxin GsMtx-4
-# poisons non-spiders and slows you down at high doses
+# Inspired by the spider neurotoxin GsMtx-4
+# Poisons non-spiders and slows you down at high doses
 - type: reagent
   id: Mechanotoxin
   name: reagent-name-mechanotoxin
@@ -725,7 +728,7 @@
   color: "#00b408"
   physicalDesc: reagent-physical-desc-nondescript
   metabolisms:
-    Poison:
+    Bloodstream:
       metabolismRate: 0.2 # Slower metabolism so it can build up over time for slowdown
       effects:
       - !type:HealthChange
@@ -765,10 +768,29 @@
   flavor: trashy
   physicalDesc: reagent-physical-desc-nondescript
   metabolisms:
-    Food:
+    Digestion:
       effects:
       - !type:SatiateHunger
         factor: 1
         conditions:
         - !type:MetabolizerTypeCondition
           type: [ Vox ]
+
+- type: reagent
+  id: Hemorrhinol
+  name: reagent-name-hemorrhinol
+  group: Toxins
+  desc: reagent-desc-hemorrhinol
+  physicalDesc: reagent-physical-desc-thin
+  contrabandSeverity: Major
+  flavor: sharp
+  color: "#96424f"
+  metabolisms:
+    Bloodstream:
+      effects:
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectHemorrhage
+        time: 21 # 7 bleed ticks; you bleed every 3 seconds by default.
+        type: Update
+      - !type:ModifyBleed
+        amount: 0.5

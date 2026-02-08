@@ -1,6 +1,6 @@
 # End points - the eventual goal is that almost all foods and drinks metabolize into either these, or reagents that build up (e.g. theobromine, caffeine,... )
 - type: reagent
-  id: Nutriment #Anything that isn't better suited to vitamin, protein, or sugar. we aren't doing a super in-depth simulator.
+  id: Nutriment # Anything that isn't better suited to vitamin, protein, or sugar. we aren't doing a super in-depth simulator.
   name: reagent-name-nutriment
   group: Foods
   desc: reagent-desc-nutriment
@@ -8,10 +8,10 @@
   flavor: nutriment
   color: "#24591F"
   metabolisms:
-    Food:
+    Metabolites:
       effects:
       - !type:SatiateHunger
-      - !type:HealthChange # HardLight: Make nutriment remove toxins from the bloodstream for Synths
+      - !type:HealthChange # HardLight: Nutriment removes toxins from the bloodstream for Synths.
         conditions:
         - !type:MetabolizerTypeCondition
           type: [ Synth ]
@@ -25,7 +25,7 @@
         - !type:MetabolizerTypeCondition
           type: [ Synth ]
         amount: -0.075
-      - !type:ModifyBloodLevel # HardLight: Make nutriment restore blood level for Synths
+      - !type:ModifyBloodLevel # HardLight: Nutriment also restores blood level for Synths.
         conditions:
         - !type:MetabolizerTypeCondition
           type: [ Synth ]
@@ -38,7 +38,7 @@
   pricePerUnit: 2
 
 - type: reagent
-  id: Vitamin #Anything "healthy"
+  id: Vitamin # Anything "healthy"
   name: reagent-name-vitamin
   group: Foods
   desc: reagent-desc-vitamin
@@ -46,7 +46,7 @@
   flavor: vitamin
   color: "#D3D3D3"
   metabolisms:
-    Food: #This makes it not compete with medicines, a large bonus for something that can heal
+    Metabolites: # This makes it not compete with medicines, a large bonus for something that can heal
       effects:
       - !type:HealthChange
         probability: 0.5
@@ -57,13 +57,7 @@
       # Helps you stop bleeding to an extent.
       - !type:ModifyBleed
         amount: -0.25
-      - !type:SatiateHunger #Numbers are balanced with this in mind + it helps limit how much healing you can get from food
-      - !type:AdjustReagent # HardLight: Allow Synths to convert vitamin to nutriment
-        conditions:
-        - !type:MetabolizerTypeCondition
-          type: [ Synth ]
-        reagent: Nutriment
-        amount: 0.57
+      - !type:SatiateHunger # Numbers are balanced with this in mind + it helps limit how much healing you can get from food
   # Lets plants benefit too
   plantMetabolism:
   - !type:PlantAdjustNutrition
@@ -73,7 +67,7 @@
   pricePerUnit: 2.5
 
 - type: reagent
-  id: Protein #Meat and beans
+  id: Protein # Meat and beans
   name: reagent-name-protein
   group: Foods
   desc: reagent-desc-protein
@@ -81,7 +75,7 @@
   flavor: protein
   color: "#FFFFE5"
   metabolisms:
-    Food:
+    Metabolites:
       effects:
       - !type:HealthChange
         probability: 0.5
@@ -89,18 +83,12 @@
           groups:
             Brute: -0.4
       - !type:ModifyBloodLevel
-        amount: 1 # weaker than iron but pretty good all things considered
+        amount: 1 # Weaker than iron but pretty good all things considered
       - !type:SatiateHunger
-      - !type:AdjustReagent # HardLight: Allow Synths to convert protein to nutriment
-        conditions:
-        - !type:MetabolizerTypeCondition
-          type: [ Synth ]
-        reagent: Nutriment
-        amount: 0.53
   pricePerUnit: 3
 
 - type: reagent
-  id: Sugar #Candy and grains
+  id: Sugar # Candy and grains
   name: reagent-name-sugar
   group: Foods
   desc: reagent-desc-sugar
@@ -109,20 +97,14 @@
   color: white
   meltingPoint: 146.0
   metabolisms:
-    Food:
+    Metabolites:
       effects:
       - !type:SatiateHunger
         conditions:
-        - !type:ReagentCondition #Only satiates when eaten with nutriment
+        - !type:ReagentCondition # Only satiates when eaten with nutriment
           reagent: Nutriment
           min: 0.1
         factor: 1
-      - !type:AdjustReagent # HardLight: Allow Synths to convert sugar to nutriment
-        conditions:
-        - !type:MetabolizerTypeCondition
-          type: [ Synth ]
-        reagent: Nutriment
-        amount: 0.51
   plantMetabolism:
   - !type:PlantAdjustNutrition
     amount: 0.1
@@ -138,7 +120,7 @@
   metamorphicChangeColor: false
 
 - type: reagent
-  id: PumpkinFlesh #Just so pumpkins spill orange stuff when smashed
+  id: PumpkinFlesh # Just so pumpkins spill orange stuff when smashed
   parent: Nutriment
   name: reagent-name-pumpkin-flesh
   desc: reagent-desc-pumpkin-flesh

@@ -7,19 +7,19 @@
   flavor: medicine
   color: "#081a80"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:GenericStatusEffect
-        key: PsionicallyInsulated #Nyano - Summary: makes the user psionically insulated from effects.
-        component: PsionicInsulation #Nyano - Summary: see above.
+        key: PsionicallyInsulated # Nyano: Makes the user psionically insulated from effects.
+        component: PsionicInsulation # Nyano
         type: Add
       - !type:GenericStatusEffect
         key: Stutter
         component: ScrambledAccent
         type: Add
       - !type:GenericStatusEffect
-        key: PsionicsDisabled #Nyano - Summary: disables psinoics from being used by the wearer.
-        component: PsionicsDisabled #Nyano - Summary: see above.
+        key: PsionicsDisabled # Nyano: Disables psionics from being used by the wearer.
+        component: PsionicsDisabled # Nyano
         type: Add
       - !type:ModifyStatusEffect
         effectProto: StatusEffectSlurred
@@ -34,13 +34,12 @@
   flavor: medicine
   color: "#3a1d8a"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
           types:
-            Poison: -1.5 # Was 1, Slight Buff as it should heal for half the amount as Dip or Stelli(GoobStation)
-      - !type:HealthChange
+            Poison: -1.5 # Goob: Was 1; slight buff as it should heal for half the amount as dip or stelli
         conditions:
         - !type:ReagentCondition
           reagent: Dylovene
@@ -67,9 +66,6 @@
         probability: 0.2
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Dylovene
           min: 20
@@ -96,7 +92,7 @@
   flavor: medicine
   color: "#64ffe6"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:AdjustReagent
         conditions:
@@ -124,7 +120,7 @@
   flavor: medicine
   color: "#2d5708"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:ModifyStatusEffect
         effectProto: StatusEffectDrunk
@@ -144,7 +140,7 @@
   flavor: medicine
   color: "#bd5902"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -162,12 +158,12 @@
   flavor: medicine
   color: "#ffaa00"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:EvenHealthChange
         damage:
           groups:
-            Brute: -2.5 # Was 2, Buffed due to limb damage changes(GoobStation)
+            Brute: -2.5 # Goob: Was 2; buffed due to limb damage changes
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -179,9 +175,6 @@
             Poison: 1.5
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Bicaridine
           min: 30
@@ -214,15 +207,16 @@
         - !type:HealthChange
           conditions:
           - !type:TemperatureCondition
-            # this is a little arbitrary but they gotta be pretty cold
+            # This is a little arbitrary but they gotta be pretty cold
             max: 213.0
           damage:
-          # todo scale with temp like SS13
+          # TODO: Scale with temp like SS13
             groups:
               Airloss: -10 # Frontier: -6<-10
-              # Brute: -4 # Frontier
-              # Burn: -6 # Frontier
-              # Toxin: -4 # Frontier
+              # Frontier
+              # Brute: -4
+              # Burn: -6
+              # Toxin: -4
 
 - type: reagent
   id: Doxarubixadone
@@ -242,9 +236,9 @@
             max: 213.0
           damage:
             types:
-             Cellular: -4 # Frontier: -2<-4
+              Cellular: -4 # Frontier: -2<-4
             groups: # Frontier
-                Brute: 1 # Frontier
+              Brute: 1
 
 - type: reagent
   id: Dermaline
@@ -255,14 +249,14 @@
   flavor: medicine
   color: "#215263"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
           types:
             Heat: -2
             Shock: -2
-            Cold: -2 # Was 1.5, Buffed due to limb damage changes(GoobStation)
+            Cold: -2 # Goob: Was 1.5; buffed due to limb damage changes
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -289,7 +283,7 @@
   flavor: medicine
   color: "#0041a8"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -323,7 +317,7 @@
           type: [ Avali ]
         damage:
           types:
-            Poison: 1.5 # Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead (Lethal Dose: 20u)
+            Poison: 1.5 # Starlight: Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead (Lethal Dose: 20u)
             Asphyxiation: 1
             Bloodloss: 1
 
@@ -336,7 +330,7 @@
   flavor: medicine
   color: "#4da0bd"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -369,11 +363,11 @@
           type: [ Avali ]
         damage:
           types:
-            Poison: 2.5 # Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead. Dex+ is worse. (Lethal Dose: 15u)
+            Poison: 2.5 # Starlight: Avali blood is ammonia based, so chems made to treat normal bloodloss poison them instead. Dex+ is worse. (Lethal Dose: 15u)
             Asphyxiation: 1.5
             Bloodloss: 1
 
-# this ones a doozy
+# This one's a doozy
 - type: reagent
   id: Epinephrine
   name: reagent-name-epinephrine
@@ -383,7 +377,7 @@
   flavor: medicine
   color: "#d2fffa"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:AdjustReagent
         conditions:
@@ -394,7 +388,7 @@
         amount: -5
       - !type:HealthChange
         conditions:
-          # they gotta be in crit first
+          # They gotta be in crit first
         - !type:MobStateCondition
           mobstate: Critical
         - !type:ReagentCondition
@@ -406,7 +400,7 @@
             Poison: -0.5
           groups:
             Brute: -0.5
-            Burn: -1 # Was .5, Buffed due to limb damage changes(GoobStation)
+            Burn: -1 # Goob: Was 0.5; buffed due to limb damage changes
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -444,7 +438,7 @@
       - !type:GenericStatusEffect
         key: Adrenaline # Guess what epinephrine is...
         component: IgnoreSlowOnDamage
-        time: 5 # lingers less than hivemind reagent to give it a niche
+        time: 5 # Lingers less than hivemind reagent to give it a niche
 
 - type: reagent
   id: Hyronalin
@@ -455,17 +449,13 @@
   flavor: medicine
   color: "#4cb580"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
           types:
             Radiation: -1
       - !type:Vomit
-        conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         probability: 0.02
       - !type:HealthChange
         conditions:
@@ -490,13 +480,10 @@
   flavor: medicine
   color: "#422912"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Ipecac
           min: 4
@@ -511,12 +498,12 @@
   flavor: medicine
   color: "#731024"
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.1 # Smaller doses stabilize critical people for longer. Gives it a specific usecase as to not be entirely outclassed by dex+
       effects:
       - !type:HealthChange
         conditions:
-          # they gotta be in crit first
+          # They gotta be in crit first
         - !type:MobStateCondition
           mobstate: Critical
         damage:
@@ -534,14 +521,14 @@
   flavor: medicine
   color: "#bf3d19"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
           types:
             Heat: -0.5
             Shock: -0.5
-            Cold: -0.5 # Was .33, Buffed due to limb damage changes(GoobStation)
+            Cold: -0.5 # Goob: Was 0.33; buffed due to limb damage changes
       - !type:SatiateThirst
         factor: -10
         conditions:
@@ -569,7 +556,7 @@
   flavor: medicine
   color: "#ff7db5"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -579,7 +566,7 @@
         conditions:
         - !type:TemperatureCondition
           max: 293.15
-        amount: 100000 # thermal energy, not temperature!
+        amount: 100000 # Thermal energy, not temperature!
       - !type:AdjustTemperature
         conditions:
         - !type:TemperatureCondition
@@ -603,7 +590,7 @@
   flavor: medicine
   color: "#ff867d"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         probability: 0.3
@@ -621,9 +608,6 @@
       - !type:Vomit
         probability: 0.15
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Barozine
           min: 30
@@ -660,7 +644,7 @@
         reagent: Phalanximine
         min: 4
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.1
       effects:
       - !type:HealthChange
@@ -695,7 +679,7 @@
   flavor: violets
   color: "#9423FF"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -723,7 +707,7 @@
   flavor: medicine
   color: "#86caf7"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
         - !type:CureZombieInfection
           conditions:
@@ -740,7 +724,7 @@
   flavor: medicine
   color: "#1274b5"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
         - !type:CureZombieInfection
           innoculate: true
@@ -758,7 +742,7 @@
   flavor: medicine
   color: "#FFE774"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:ModifyBleed
         amount: -0.5
@@ -772,7 +756,7 @@
   flavor: salty
   color: "#0064C8"
   metabolisms:
-    Drink:
+    Bloodstream:
       effects:
         - !type:SatiateThirst
           conditions: # DeltaV: Nerf of saline for Feroxi
@@ -791,10 +775,7 @@
            type: [ Synth ]
            inverted: true
           amount: 6
-    # Startlight start
-    Medicine:
-      metabolismRate: 0.5
-      effects:
+        # Startlight start
         - !type:ModifyBloodLevel
           conditions:
           - !type:MetabolizerTypeCondition
@@ -815,7 +796,7 @@
               Poison: 12 # This is on par with giving someone the wrong blood-type (very lethal) / (Lethal Dose: 10u, VERY FAST ACTING)
               Caustic: 2 # Split to prevent 15u RRing someone, as caustic can be healed with topicals.
               Slash: 1 # Allows it to heal bleeding.
-    # Starlight end
+        # Starlight end
 
 - type: reagent
   id: Siderlac
@@ -826,7 +807,7 @@
   flavor: medicine
   color: "#f4dab8"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -842,7 +823,7 @@
   flavor: medicine
   color: "#2b2f77"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -870,7 +851,7 @@
   flavor: medicine
   color: "#d49a2f"
   metabolisms:
-    Poison:
+    Bloodstream:
       effects:
       - !type:HealthChange
         damage:
@@ -897,7 +878,7 @@
   flavor: medicine
   color: "#ba7d7d"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       # Medium-large quantities can hurt you instead,
       # but still technically stop your bleeding.
@@ -921,7 +902,7 @@
   flavor: medicine
   color: "#00e5ff"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -932,7 +913,7 @@
             Brute: -1
           types:
             Poison: -0.5 # Should be about what it was when it healed the toxin group
-            # Goob start: Was .33, Buffed due to limb damage changes(GoobStation)
+            # Goob start: Was 0.33; buffed due to limb damage changes
             Heat: -0.5
             Shock: -0.5
             Cold: -0.5
@@ -947,9 +928,9 @@
   flavor: medicine
   color: "#2690b5"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
-      # what the hell, this isn't satiating at all!!
+      # What the hell, this isn't satiating at all!!
       - !type:SatiateHunger
         factor: -1
 
@@ -963,16 +944,17 @@
   flavor: medicine
   color: "#fcf7f9"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:EvenHealthChange
         damage:
           groups:
-            # Goob start: Was 2, Buffed due to limb damage changes(GoobStation)
+            # Goob start: Was 2; buffed due to limb damage changes
             Burn: -3
             Toxin: -3
             Airloss: -3
             Brute: -3
+            # Goob end
 
 - type: reagent
   id: Ultravasculine
@@ -983,7 +965,7 @@
   flavor: medicine
   color: "#520e30"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:EvenHealthChange
         conditions:
@@ -1033,7 +1015,7 @@
   flavor: medicine
   color: "#404040"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:EyeDamage
     Sheleg: # Frontier, # HardLight: What does this even do??
@@ -1049,7 +1031,7 @@
   flavor: magical
   color: "#b50ee8"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:MakeSentient
         conditions:
@@ -1066,7 +1048,7 @@
   flavor: medicine
   color: "#d5d5e4"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:Jitter
       - !type:GenericStatusEffect
@@ -1096,7 +1078,7 @@
   flavor: medicine
   color: "#b0abaa"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:ModifyStatusEffect
         effectProto: StatusEffectDrowsiness
@@ -1122,7 +1104,7 @@
   flavor: sweet
   color: "#e0a5b9"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       metabolismRate: 0.25
       effects:
@@ -1154,18 +1136,12 @@
         probability: 0.2
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Sigynate
           min: 30
         probability: 0.02
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Arithrazine
           min: 1
@@ -1189,7 +1165,7 @@
   flavor: syrupy
   color: "#283332"
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.25
       effects:
       - !type:HealthChange
@@ -1215,7 +1191,7 @@
   flavor: fizzy
   color: "#b9bf93"
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.25
       effects:
       - !type:HealthChange
@@ -1241,7 +1217,7 @@
   flavor: sour
   color: "#ff3636"
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.25
       effects:
       - !type:HealthChange
@@ -1268,11 +1244,11 @@
   flavor: holy
   color: "#91C3F7"
   metabolisms:
-    Drink:
+    Digestion:
       effects:
       - !type:SatiateThirst
         factor: 3
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -1314,14 +1290,14 @@
   flavor: syrupy
   color: "#aa4308"
   metabolisms:
-    Medicine:
-      metabolismRate: 0.1 # slow metabolism to not be a godly combat med, its for treating burn victims efficiently
+    Bloodstream:
+      metabolismRate: 0.1 # Slow metabolism to not be a godly combat med, its for treating burn victims efficiently
       effects:
       - !type:HealthChange
         damage:
           types:
             Heat: -1
-      # od causes massive bleeding
+      # OD causes massive bleeding
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -1333,9 +1309,6 @@
             Piercing: 0.5
       - !type:Vomit
         conditions:
-        - !type:MetabolizerTypeCondition # HardLight
-          type: [ Synth ]
-          inverted: true
         - !type:ReagentCondition
           reagent: Pyrazine
           min: 15
@@ -1357,10 +1330,10 @@
   flavor: metallic
   color: "#8147ff"
   metabolisms:
-    Medicine:
+    Bloodstream:
       metabolismRate: 0.25
       effects:
-      # heals shocks and removes shock chems
+      # Heals shocks and removes shock chems
       - !type:HealthChange
         damage:
           types:
@@ -1371,10 +1344,10 @@
       - !type:AdjustReagent
         reagent:  Tazinide
         amount: -2
-      # makes you a little chilly when not oding
+      # Makes you a little chilly
       - !type:AdjustTemperature
         amount: -2500
-      # od makes you freeze to death
+      # OD makes you freeze to death
       - !type:HealthChange
         conditions:
         - !type:ReagentCondition
@@ -1471,7 +1444,7 @@
             # Frontier end
 
 - type: reagent
-  id : Mannitol # currently this is just a way to create psicodine
+  id : Mannitol # Currently this is just a way to create psicodine
   name: reagent-name-mannitol
   group: Medicine
   desc: reagent-desc-mannitol
@@ -1479,7 +1452,7 @@
   flavor: sweet
   color: "#A0A0A0"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:PopupMessage
         conditions:
@@ -1500,7 +1473,7 @@
   flavor: bitter
   color: "#07E79E"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:HealthChange
         conditions:
@@ -1526,7 +1499,7 @@
         effectProto: StatusEffectDrunk
         time: 6.0
         type: Remove
-      - !type:PopupMessage # we dont have sanity/mood so this will have to do
+      - !type:PopupMessage # We dont have sanity/mood so this will have to do
         type: Local
         visualType: Medium
         messages:
@@ -1549,7 +1522,7 @@
   flavor: medicine
   color: "#baa15d"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:GenericStatusEffect
         key: RadiationProtection
@@ -1574,7 +1547,7 @@
   flavor: medicine
   color: "#27870a"
   metabolisms:
-    Medicine:
+    Bloodstream:
       effects:
       - !type:Emote
         emote: Yawn
@@ -1616,3 +1589,27 @@
       - !type:AdjustReagent
         reagent: MindbreakerToxin
         amount: -3.0
+
+#- type: reagent
+#  id: Warfarin
+#  name: reagent-name-warfarin
+#  group: Medicine
+#  desc: reagent-desc-warfarin
+#  physicalDesc: reagent-physical-desc-thin
+#  allowedDepartments:
+#  - Medical
+#  flavor: medicine
+#  color: "#d0e21b"
+#  metabolisms:
+#    Bloodstream:
+#      effects: # One day this could be useful for treating blood clots, if we get those
+#      - !type:ModifyStatusEffect
+#        effectProto: StatusEffectAnticoagulant
+#        time: 30 # 10 bleed ticks, you bleed every 3 seconds by default.
+#        type: Update
+#      - !type:ModifyBleed
+#        conditions:
+#        - !type:ReagentCondition
+#          reagent: Warfarin
+#          min: 15
+#        amount: 0.25
