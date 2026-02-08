@@ -7,7 +7,10 @@
   abstract: true
   components:
   - type: Bloodstream
-    bloodMaxVolume: 650
+    bloodReferenceSolution:
+      reagents:
+      - ReagentId: Blood
+        Quantity: 650
   - type: GhostRole
     allowMovement: true
     allowSpeech: true
@@ -45,7 +48,6 @@
     baseWeightlessModifier: 1.5
   - type: Sprite
     sprite: Mobs/Aliens/Carps/dragon.rsi
-    noRot: true
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
       state: alive
@@ -53,6 +55,10 @@
       state: alive-unshaded
       shader: unshaded
   - type: Appearance
+  - type: Crawler # HardLight: I mean, why not?
+  - type: RotationVisuals # HardLight
+    defaultRotation: 90
+    horizontalRotation: 90
   - type: DamageStateVisuals
     states:
       Alive:
@@ -115,10 +121,7 @@
     solutionOnBody: false
     updateInterval: 0.25
     metabolizerTypes: [ Dragon ]
-    groups:
-    - id: Medicine
-    - id: Cryogenic # Frontier
-    - id: Poison
+    stages: [ Digestion, Bloodstream ]
   - type: Butcherable
     spawned:
     - id: FoodMeatDragon
@@ -179,7 +182,7 @@
     available:
     - enum.DamageStateVisualLayers.Base:
         alive: Rainbow
-        
+
 - type: entity
   parent: ColoredDragon
   id: MobDragon
@@ -213,7 +216,6 @@
     gunProto: DragonsBreathGun
   - type: Sprite
     sprite: Mobs/Aliens/Carps/holodragon.rsi
-    noRot: true
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
       state: alive
@@ -251,7 +253,6 @@
     gunProto: DragonsBreathGun
   - type: Sprite
     sprite: Mobs/Aliens/Carps/dragon.rsi
-    noRot: true
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
       state: alive
@@ -280,7 +281,6 @@
     gunProto: DragonsBreathGun
   - type: Sprite
     sprite: Mobs/Aliens/Carps/magidragon.rsi
-    noRot: true
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
       state: alive

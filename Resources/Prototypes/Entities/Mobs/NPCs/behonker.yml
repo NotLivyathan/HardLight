@@ -19,14 +19,13 @@
     - type: HTN
       rootTask:
         task: SimpleRangedHostileCompound
-    - type: HitscanBatteryAmmoProvider
-      proto: NFRedMediumLaser # Frontier: RedLaser<NFRedMediumLaser
+    - type: BatteryAmmoProvider
+      proto: RedLaserNFRedMediumLaser # Frontier: RedLaser<NFRedMediumLaser
       fireCost: 62.5
-    - type: Battery
+    - type: PredictedBattery
       maxCharge: 1000
       startingCharge: 1000
-    - type: BatterySelfRecharger
-      autoRecharge: true
+    - type: PredictedBatterySelfRecharger
       autoRechargeRate: 40
     - type: Gun
       fireRate: 0.75
@@ -91,7 +90,9 @@
       solutionOnBody: false
       updateInterval: 0.25
       metabolizerTypes: [ Dragon ]
-      stages: [ Digestion, Bloodstream ]
+      groups:
+        - id: Medicine
+        - id: Poison
     - type: Butcherable
       spawned:
         - id: MaterialBananium1
@@ -113,10 +114,10 @@
     - type: Input
       context: "human"
     - type: Bloodstream
-      bloodReagents:
+      bloodReferenceSolution:
         reagents:
         - ReagentId: Laughter
-          Quantity: 1
+          Quantity: 300
 
 - type: entity
   name: behonker

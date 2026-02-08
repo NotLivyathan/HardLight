@@ -398,7 +398,7 @@
   products:
     DriestMartini: 2
 
-# Frontier: use our own eggnog recipe
+# Frontier start: Use our own eggnog recipe
 # - type: reaction
 #   id: Eggnog
 #   requiredMixerCategories:
@@ -412,7 +412,7 @@
 #       amount: 5
 #   products:
 #     Eggnog: 10
-# End Frontier
+# Frontier end
 
 - type: reaction
   id: ElectricShark
@@ -984,6 +984,8 @@
 
 - type: reaction
   id: RedMead
+  requiredMixerCategories:
+  - Stir
   reactants:
     Mead:
       amount: 1

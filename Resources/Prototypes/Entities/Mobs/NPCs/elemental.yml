@@ -1,43 +1,19 @@
 - type: entity
   abstract: true
+  parent: [BaseMob, MobCombat]
   id: MobElementalBase
   components:
-  - type: LagCompensation
   - type: Reactive
     groups:
       Acidic: [Touch]
-  - type: Clickable
   - type: Damageable
     damageContainer: Inorganic
-  - type: InteractionOutline
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeCircle
-          radius: 0.35
-        density: 50
-        mask:
-        - MobMask
-        layer:
-        - MobLayer
   - type: MovementSpeedModifier
     baseWalkSpeed : 2
     baseSprintSpeed : 3
-  - type: Sprite
-    noRot: true
-    drawdepth: Mobs
-  - type: NpcFactionMember
-    factions:
-    - SimpleNeutral
   - type: MovedByPressure
-  - type: Physics
-    bodyType: KinematicController # Same for all inheritors
   - type: StatusEffects
     allowed:
-    - Stun
-    - SlowedDown
-    - Stutter
     - Electrocution
   - type: Pullable
   - type: Tag
@@ -57,21 +33,13 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 100
-      behaviors:
-      - !type:TriggerBehavior
-    - trigger:
-        !type:DamageTrigger
         damage: 120
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-  - type: Input
-    context: "human"
-  - type: InputMover
-  - type: MobMover
   - type: ZombieImmune
-  - type: Dispellable
+  - type: ProtectedFromStepTriggers
+  - type: StunVisuals
 
 - type: entity
   abstract: true
@@ -91,23 +59,15 @@
       path: /Audio/Weapons/Xeno/alien_claw_flesh3.ogg
     damage:
       types:
-        Blunt: 5
+        Blunt: 6
   - type: MovementSpeedModifier
     baseWalkSpeed : 2
-    baseSprintSpeed : 2.25
+    baseSprintSpeed : 2.5
   - type: NpcFactionMember
     factions:
       - SimpleHostile
   - type: Damageable
     damageContainer: StructuralInorganic
-  - type: Psionic
-    removable: false
-    roller: false
-    assayFeedback:
-      - orecrab-feedback
-  - type: InnatePsionicPowers
-    powersToAdd:
-      - TelepathyPower
 
 - type: entity
   parent: MobOreCrab
@@ -236,6 +196,62 @@
 
 - type: entity
   parent: MobOreCrab
+  id: MobBananiumCrab
+  description: An ore crab made from bananium.
+  suffix: Bananium
+  components:
+  - type: Sprite
+    state: bananium_crab
+  - type: FactionException
+  - type: NPCRetaliation
+    attackMemoryLength: 10
+  - type: NpcFactionMember
+    factions:
+      - SimpleNeutral
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 30
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          BananiumOre1:
+            min: 1
+            max: 3
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: Slippery
+    slipData:
+      launchForwardsMultiplier: 2
+  - type: StepTrigger
+    intersectRatio: 0.2
+  - type: Fixtures
+    fixtures:
+      slips:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        hard: false
+        layer:
+          - SlipLayer
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.35
+        density: 20
+        mask:
+        - MobMask
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 3
+
+- type: entity
+  parent: MobOreCrab
   id: MobSilverCrab
   description: An ore crab made from silver.
   suffix: Silver
@@ -333,14 +349,12 @@
     speedModifierThresholds:
       50: 0.4
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Water
-        Quantity: 1
-    chemicalMaxVolume: 100
+        Quantity: 100
   - type: StatusEffects
     allowed:
-    - SlowedDown
     - Electrocution
   - type: MeleeWeapon
     soundHit:
@@ -353,7 +367,6 @@
     solution: bloodstream
     transferAmount: 5
   - type: DamageStateVisuals
-    rotate: true
     states:
       Alive:
         Base: alive
@@ -364,6 +377,7 @@
       - FootstepSound
       - CannotSuicide
       - DoorBumpOpener
+      - StunImmune
   - type: NoSlip
   - type: ZombieImmune
   - type: ExaminableSolution
@@ -372,14 +386,6 @@
     solution: bloodstream
   - type: DrainableSolution
     solution: bloodstream
-  - type: Psionic
-    removable: false
-    roller: false
-    assayFeedback:
-      - reagent-slime-feedback
-  - type: InnatePsionicPowers
-    powersToAdd:
-      - TelepathyPower
 
 - type: entity
   name: Reagent Slime Spawner
@@ -414,10 +420,10 @@
   suffix: Beer
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Beer
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#cfa85f"
   - type: Sprite
@@ -434,10 +440,10 @@
   suffix: Pax
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Pax
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#AAAAAA"
   - type: Sprite
@@ -457,10 +463,10 @@
   suffix: Nocturine
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Nocturine
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#128e80"
   - type: Sprite
@@ -480,10 +486,10 @@
   suffix: THC
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: THC
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#808080"
   - type: Sprite
@@ -500,10 +506,10 @@
   suffix: Bicaridine
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Bicaridine
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#ffaa00"
   - type: Sprite
@@ -520,10 +526,10 @@
   suffix: Toxin
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Toxin
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#cf3600"
   - type: Sprite
@@ -540,10 +546,10 @@
   suffix: Napalm
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Napalm
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#FA00AF"
   - type: Sprite
@@ -560,10 +566,10 @@
   suffix: Omnizine
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Omnizine
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#fcf7f9"
   - type: Sprite
@@ -580,10 +586,10 @@
   suffix: Mute Toxin
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: MuteToxin
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#0f0f0f"
   - type: Sprite
@@ -600,10 +606,10 @@
   suffix: Norepinephric Acid
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: NorepinephricAcid
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#96a8b5"
   - type: Sprite
@@ -620,10 +626,10 @@
   suffix: Ephedrine
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: Ephedrine
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#D2FFFA"
   - type: Sprite
@@ -640,10 +646,10 @@
   suffix: Robust Harvest
   components:
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: RobustHarvest
-        Quantity: 1
+        Quantity: 100
   - type: PointLight
     color: "#3e901c"
   - type: Sprite

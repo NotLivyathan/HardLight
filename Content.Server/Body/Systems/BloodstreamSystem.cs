@@ -25,21 +25,17 @@ public sealed class BloodstreamSystem : SharedBloodstreamSystem
                 out var bloodSolution) ||
             !SolutionContainer.EnsureSolution(entity.Owner,
                 entity.Comp.BloodTemporarySolutionName,
-                out var tempSolution) ||
-            !SolutionContainer.EnsureSolution(entity.Owner,
-                entity.Comp.MetabolitesSolutionName,
-                out var metabolitesSolution))
+                out var tempSolution))
             return;
 
         bloodSolution.MaxVolume = entity.Comp.BloodReferenceSolution.Volume * entity.Comp.MaxVolumeModifier;
-        metabolitesSolution.MaxVolume = bloodSolution.MaxVolume;
         tempSolution.MaxVolume = entity.Comp.BleedPuddleThreshold * 4; // give some leeway, for chemstream as well
-        entity.Comp.BloodReferenceSolution.SetReagentData(GetEntityBloodData((entity, entity.Comp)));
 
         // Fill blood solution with BLOOD
         // The DNA string might not be initialized yet, but the reagent data gets updated in the GenerateDnaEvent subscription
         var solution = entity.Comp.BloodReferenceSolution.Clone();
         solution.ScaleTo(entity.Comp.BloodReferenceSolution.Volume - bloodSolution.Volume);
+        solution.SetReagentData(GetEntityBloodData(entity.Owner));
         bloodSolution.AddSolution(solution, PrototypeManager);
     }
 
@@ -48,14 +44,11 @@ public sealed class BloodstreamSystem : SharedBloodstreamSystem
     {
         if (SolutionContainer.ResolveSolution(entity.Owner, entity.Comp.BloodSolutionName, ref entity.Comp.BloodSolution, out var bloodSolution))
         {
-            var data = NewEntityBloodData(entity);
-            entity.Comp.BloodReferenceSolution.SetReagentData(data);
-
             foreach (var reagent in bloodSolution.Contents)
             {
                 List<ReagentData> reagentData = reagent.Reagent.EnsureReagentData();
                 reagentData.RemoveAll(x => x is DnaData);
-                reagentData.AddRange(data);
+                reagentData.AddRange(GetEntityBloodData(entity.Owner));
             }
         }
         else

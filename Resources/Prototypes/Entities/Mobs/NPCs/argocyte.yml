@@ -11,18 +11,17 @@
     - Xeno
   - type: HTN
     rootTask:
-      task: SimpleHostileCompound #todo custom argocyte AI
+      task: SimpleHostileCompound # TODO: Custom argocyte AI
   - type: Sprite
     sprite: Mobs/Aliens/Argocyte/argocyte_common.rsi
   - type: SolutionContainerManager
   - type: ReplacementAccent
     accent: xeno
   - type: Bloodstream
-    bloodReagents:
+    bloodReferenceSolution:
       reagents:
       - ReagentId: FerrochromicAcid
-        Quantity: 1
-    bloodMaxVolume: 75 #we don't want the map to become pools of blood
+        Quantity: 75 # We don't want the map to become pools of blood
     bloodlossDamage:
       types:
         Bloodloss:

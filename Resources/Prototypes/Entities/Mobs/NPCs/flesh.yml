@@ -42,12 +42,16 @@
       75: Dead
   - type: Stamina
     critThreshold: 50
+    animationThreshold: 25
   - type: Butcherable
     spawned:
     - id: FoodMeat
       amount: 1
   - type: Bloodstream
-    bloodMaxVolume: 100
+    bloodReferenceSolution:
+      reagents:
+      - ReagentId: Blood
+        Quantity: 100
   - type: CombatMode
   - type: MeleeWeapon
     soundHit:
@@ -59,16 +63,10 @@
         Slash: 6
   - type: ReplacementAccent
     accent: genericAggressive
-  - type: Psionic
-    removable: false
-    roller: false
-    assayFeedback:
-      - flesh-golem-feedback
 
 - type: entity
   parent: BaseMobFlesh
   id: MobFleshJared
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -94,7 +92,6 @@
 - type: entity
   parent: BaseMobFlesh
   id: MobFleshGolem
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -124,7 +121,6 @@
 - type: entity
   parent: BaseMobFlesh
   id: MobFleshClamp
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -149,7 +145,6 @@
 - type: entity
   parent: BaseMobFlesh
   id: MobFleshLover
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -210,7 +205,7 @@
         Blunt: 10
 
 - type: entity
-  parent: [ NFMobRestrictions, SimpleSpaceMobBase, MobCombat ] # Frontier: add NFMobRestrictions
+  parent: [ SimpleSpaceMobBase, MobCombat ]
   id: BaseMobFleshSalvage #This one is immune to space!
   name: aberrant flesh
   suffix: "Salvage Ruleset"
@@ -249,12 +244,16 @@
       75: Dead
   - type: Stamina
     critThreshold: 50
+    animationThreshold: 25
   - type: Butcherable
     spawned:
     - id: FoodMeat
       amount: 1
   - type: Bloodstream
-    bloodMaxVolume: 100
+    bloodReferenceSolution:
+      reagents:
+      - ReagentId: Blood
+        Quantity: 100
   - type: CombatMode
   - type: MeleeWeapon
     soundHit:
@@ -266,11 +265,11 @@
         Slash: 6
   - type: ReplacementAccent
     accent: genericAggressive
+  - type: NFSalvageMobRestrictions # Frontier: SalvageMobRestrictions<NFSalvageMobRestrictions
 
 - type: entity
   parent: BaseMobFleshSalvage
   id: MobFleshJaredSalvage
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -296,7 +295,6 @@
 - type: entity
   parent: BaseMobFleshSalvage
   id: MobFleshGolemSalvage
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -326,7 +324,6 @@
 - type: entity
   parent: BaseMobFleshSalvage
   id: MobFleshClampSalvage
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:
@@ -351,7 +348,6 @@
 - type: entity
   parent: BaseMobFleshSalvage
   id: MobFleshLoverSalvage
-  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: Sprite
     layers:

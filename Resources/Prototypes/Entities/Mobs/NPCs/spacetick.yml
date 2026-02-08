@@ -2,8 +2,7 @@
   name: space tick
   id: MobTick
   parent: SimpleSpaceMobBase
-  description: It's a space tick, watch out for its nasty bite. ColComm reports that 90 percent of cargo leg amputations are due to space tick bites.
-#  categories: [ HideSpawnMenu ] # Frontier
+  description: It's a space tick, watch out for its nasty bite. CentComm reports that 90 percent of cargo leg amputations are due to space tick bites.
   components:
   - type: InputMover
   - type: MobMover
@@ -42,9 +41,19 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      15: Dead
+      5: Dead
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTypeTrigger
+        damageType: Blunt
+        damage: 30
+      behaviors:
+      - !type:GibBehavior
+        recursive: false
   - type: Stamina
     critThreshold: 15
+    animationThreshold: 5
   - type: MovementAlwaysTouching
   - type: DamageStateVisuals
     states:
@@ -57,7 +66,10 @@
     - id: FoodMeatXeno
       amount: 1
   - type: Bloodstream
-    bloodMaxVolume: 50
+    bloodReferenceSolution:
+      reagents:
+      - ReagentId: Blood
+        Quantity: 50
   - type: CombatMode
   - type: MeleeWeapon
     soundHit:
@@ -85,6 +97,5 @@
   id: MobTickSalvage
   parent: MobTick
   suffix: "Salvage Ruleset"
-#  categories: [ HideSpawnMenu ] # Frontier
   components:
   - type: NFSalvageMobRestrictions # Frontier: SalvageMobRestrictions<NFSalvageMobRestrictions
