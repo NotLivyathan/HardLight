@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Content.Server.Administration.Managers;
 using Content.Server.Power.Components;
-using Content.Server.Emp; // Frontier: Upstream - #28984
 using Content.Shared.Administration;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
@@ -10,14 +9,12 @@ using Content.Shared.Power.EntitySystems;
 using Content.Shared.Verbs;
 using Robust.Shared.GameStates;
 using Robust.Shared.Utility;
-using Content.Shared.Emp; // Frontier: Upstream - #28984
 
 namespace Content.Server.Power.EntitySystems
 {
     public sealed class PowerReceiverSystem : SharedPowerReceiverSystem
     {
         [Dependency] private readonly IAdminManager _adminManager = default!;
-
         private EntityQuery<ApcPowerReceiverComponent> _recQuery;
         private EntityQuery<ApcPowerProviderComponent> _provQuery;
 
@@ -37,9 +34,6 @@ namespace Content.Server.Power.EntitySystems
             SubscribeLocalEvent<PowerSwitchComponent, GetVerbsEvent<AlternativeVerb>>(AddSwitchPowerVerb);
 
             SubscribeLocalEvent<ApcPowerReceiverComponent, ComponentGetState>(OnGetState);
-
-            SubscribeLocalEvent<ApcPowerReceiverComponent, EmpPulseEvent>(OnEmpPulse); // Frontier: Upstream - #28984
-            SubscribeLocalEvent<ApcPowerReceiverComponent, EmpDisabledRemoved>(OnEmpEnd); // Frontier: Upstream - #28984
 
             _recQuery = GetEntityQuery<ApcPowerReceiverComponent>();
             _provQuery = GetEntityQuery<ApcPowerProviderComponent>();
@@ -131,7 +125,7 @@ namespace Content.Server.Power.EntitySystems
             {
                 Act = () =>
                 {
-                    TogglePower(uid, user: args.User); // Frontier: Upstream - #28984 (TogglePower<TryTogglePower)
+                    TogglePower(uid, user: args.User);
                 },
                 Icon = new SpriteSpecifier.Texture(new ("/Textures/Interface/VerbIcons/Spare/poweronoff.svg.192dpi.png")),
                 Text = Loc.GetString("power-switch-component-toggle-verb"),
@@ -167,7 +161,7 @@ namespace Content.Server.Power.EntitySystems
             return !_recQuery.Resolve(uid, ref receiver, false) || receiver.Powered;
         }
 
-        public override void SetLoad(SharedApcPowerReceiverComponent comp, float load) // Goobstation - override shared method
+        public override void SetLoad(SharedApcPowerReceiverComponent comp, float load) // Goobstation: Override shared method
         {
             ((ApcPowerReceiverComponent) comp).Load = load; // Goobstation
         }
@@ -183,25 +177,5 @@ namespace Content.Server.Power.EntitySystems
             component = receiver;
             return true;
         }
-
-        // Frontier: upstream (#28984) - MIT
-        private void OnEmpPulse(EntityUid uid, ApcPowerReceiverComponent component, ref EmpPulseEvent args)
-        {
-            if (!component.PowerDisabled)
-            {
-                args.Affected = true;
-                args.Disabled = true;
-                TogglePower(uid, false);
-            }
-        }
-
-        private void OnEmpEnd(EntityUid uid, ApcPowerReceiverComponent component, ref EmpDisabledRemoved args)
-        {
-            if (component.PowerDisabled)
-            {
-                TogglePower(uid, false);
-            }
-        }
-        // End Frontier: upstream (#28984) - MIT
     }
 }

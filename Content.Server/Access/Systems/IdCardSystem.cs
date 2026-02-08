@@ -1,13 +1,14 @@
 using System.Linq;
 using Content.Server.Administration.Logs;
-using Content.Shared.Chat; // For InGameICChatType
 using Content.Server.Chat.Systems;
 using Content.Server.Kitchen.Components;
 using Content.Server.Popups;
 using Content.Shared.Access;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
+using Content.Shared.Chat;
 using Content.Shared.Database;
+using Content.Shared.Kitchen;
 using Content.Shared.Popups;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -20,6 +21,7 @@ public sealed class IdCardSystem : SharedIdCardSystem
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly MicrowaveSystem _microwave = default!;
 
@@ -40,28 +42,21 @@ public sealed class IdCardSystem : SharedIdCardSystem
             float randomPick = _random.NextFloat();
 
             // if really unlucky, burn card
-            if (args.BeingHeated && randomPick <= 0.15f) // Frontier: if not being heated, don't destroy the ID
+            if (randomPick <= 0.15f)
             {
                 TryComp(uid, out TransformComponent? transformComponent);
                 if (transformComponent != null)
                 {
                     _popupSystem.PopupCoordinates(Loc.GetString("id-card-component-microwave-burnt", ("id", uid)),
                      transformComponent.Coordinates, PopupType.Medium);
-                    EntityManager.SpawnEntity("FoodBadRecipe",
+                    Spawn("FoodBadRecipe",
                         transformComponent.Coordinates);
                 }
-                /* _adminLogger.Add(LogType.Action, LogImpact.Medium,
-                    $"{ToPrettyString(args.Microwave)} burnt {ToPrettyString(uid):entity}"); */
-                EntityManager.QueueDeleteEntity(uid);
+                //_adminLogger.Add(LogType.Action, LogImpact.Medium,
+                //    $"{ToPrettyString(args.Microwave)} burnt {ToPrettyString(uid):entity}");
+                QueueDel(uid);
                 return;
             }
-
-            // Frontier: ID accesses only change with radiation
-            if (!args.BeingIrradiated)
-            {
-                return;
-            }
-            // End Frontier
 
             //Explode if the microwave can't handle it
             if (!micro.CanMicrowaveIdsSafely)
@@ -78,8 +73,8 @@ public sealed class IdCardSystem : SharedIdCardSystem
                 access.Tags.Clear();
                 Dirty(uid, access);
 
-                /* _adminLogger.Add(LogType.Action, LogImpact.Medium,
-                    $"{ToPrettyString(args.Microwave)} cleared access on {ToPrettyString(uid):entity}"); */
+                //_adminLogger.Add(LogType.Action, LogImpact.Medium,
+                //    $"{ToPrettyString(args.Microwave)} cleared access on {ToPrettyString(uid):entity}");
             }
             else
             {
@@ -97,8 +92,8 @@ public sealed class IdCardSystem : SharedIdCardSystem
             access.Tags.Add(random.ID);
             Dirty(uid, access);
 
-            /* _adminLogger.Add(LogType.Action, LogImpact.High,
-                    $"{ToPrettyString(args.Microwave)} added {random.ID} access to {ToPrettyString(uid):entity}"); */
+            //_adminLogger.Add(LogType.Action, LogImpact.High,
+            //        $"{ToPrettyString(args.Microwave)} added {random.ID} access to {ToPrettyString(uid):entity}");
 
         }
     }
