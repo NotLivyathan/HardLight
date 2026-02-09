@@ -670,7 +670,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         if (!root.TryGet("entities", out SequenceDataNode? protoSeq) || protoSeq == null)
             return;
 
-        var filteredTypes = new HashSet<string>
+        var filteredTypes = new HashSet<string> // HardLight: Components you want removed from entities on save and restored on load go here.
         {
             "Joint",
             "StationMember",
@@ -685,11 +685,21 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "UserInterface", // Contains invalid EntityUid references
             "Docking", // Contains invalid EntityUid references to docked entities
             "ActionGrant", // Contains invalid EntityUid references to granted actions
+            "Mind", // Contains player state that can't be serialized and isn't relevant to ship blueprints
+            "MindContainer", // Contains player state that can't be serialized and isn't relevant to ship blueprints
+            "VendingMachine", // Vending machines restock on ship load, sometimes infinitely; this should prevent that behavior
+        };
+
+        var fillComponentTypes = new HashSet<string>(StringComparer.Ordinal) // HardLight: Components you want permanently removed from entities go here.
+        {
             "StorageFill", // Remove refill-on-spawn behavior on ship save only
             "ContainerFill", // Remove refill-on-spawn behavior on ship save only
             "EntityTableContainerFill", // Remove refill-on-spawn behavior on ship save only
-            "Mind", // Contains player state that can't be serialized and isn't relevant to ship blueprints
-            "MindContainer", // Contains player state that can't be serialized and isn't relevant to ship blueprints
+        };
+
+        var fillComponentWhitelistPrototypes = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase) // HardLight: Entities you want to bypass the fill component removal for go here.
+        {
+            "AirAlarm",
         };
 
         /// <summary>
@@ -724,7 +734,6 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "GeneralStationRecordConsole",
             // Uplinks and bundled items
             "BaseMercenaryUplinkRadio",
-            "VendingMachineRobotics",
             "MachineFlatpacker",
             "ComputerContrabandPalletConsole",
             "ComputerContrabandPalletConsolePirate",
@@ -774,89 +783,27 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "DEBUGVendingMachineAmmoBoxes",
             "DEBUGVendingMachineMagazines",
             "DEBUGVendingMachineRangedWeapons",
-            "LessLethalVendingMachine",
-            "LessLethalVendingMachinePOI",
-            "NFVendingMachineCart",
-            "NFVendingMachineCartNfsd",
-            "NonLethalVendingMachine",
             "PsionicsRecordsComputerCircuitboard",
             "StationAiUploadComputer",
-            "VendingBarDrobe",
-            "VendingMachineAmmo",
             "VendingMachineAmmoPOI",
-            "VendingMachineArcadia",
-            "VendingMachineAstroVend",
             "VendingMachineAstroVendPOI",
-            "VendingMachineAtmosDrobe",
-            "VendingMachineAutoTuneVend",
-            "VendingMachineBooze",
             "VendingMachineBoozePOI",
-            "VendingMachineBoozeSyndicate",
-            "VendingMachineBountyVend",
             "VendingMachineBountyVendPOI",
-            "VendingMachineBountyVendPunk",
-            "VendingMachineBoxingDrobe",
-            "VendingMachineCargoDrobe",
-            "VendingMachineCart",
-            "VendingMachineCentDrobe",
-            "VendingMachineChang",
-            "VendingMachineChapel",
-            "VendingMachineChefDrobe",
-            "VendingMachineChefvend",
-            "VendingMachineChemDrobe",
-            "VendingMachineChemicals",
-            "VendingMachineChemicalsSyndicate",
-            "VendingMachineCigs",
             "VendingMachineCigsPOI",
-            "VendingMachineCiviMed",
-            "VendingMachineCiviMedPlus",
-            "VendingMachineClothing",
-            "VendingMachineClothingPunk",
-            "VendingMachineCoffee",
-            "VendingMachineCola",
-            "VendingMachineColaBlack",
-            "VendingMachineColaRed",
-            "VendingMachineCondim",
-            "VendingMachineCuddlyCritterVend",
-            "VendingMachineCuraDrobe",
-            "VendingMachineDetDrobe",
-            "VendingMachineDinnerware",
-            "VendingMachineDiscount",
-            "VendingMachineDonut",
-            "VendingMachineDrGibb",
-            "VendingMachineEngiDrobe",
-            "VendingMachineEngivend",
             "VendingMachineEngivendPOI",
             "VendingMachineExpeditionaryFlatpackVend",
             "VendingMachineFlatpackVend",
             "VendingMachineFuelVend",
-            "VendingMachineGames",
             "VendingMachineGamesPOI",
-            "VendingMachineGeneDrobe",
-            "VendingMachineHappyHonk",
-            "VendingMachineHydrobe",
-            "VendingMachineJaniDrobe",
-            "VendingMachineLawDrobe",
-            "VendingMachineMagivend",
-            "VendingMachineMailDrobe",
-            "VendingMachineMailVend",
-            "VendingMachineMedical",
-            "VendingMachineMediDrobe",
+            "LessLethalVendingMachinePOI",
             "VendingMachineMediDrobePOI",
             "VendingMachineMercVend",
-            "VendingMachineSyndieDrobe",
-            "VendingMachineTankDisserEngineering",
-            "VendingMachineTankDisserEVA",
-            "VendingMachineTankDisserEVAPOI",
-            "VendingMachineTheater",
-            "VendingMachineValetDrobe",
-            "VendingMachineVendomat",
+            "VendingMachinePickNPackPOI",
+            "VendingMachinePottedPlantVendPOI",
+            "VendingMachineSalvagePOI",
+            "VendingMachineSyndieContraband",
+            "VendingMachineTankDispenserEVAPOI",
             "VendingMachineVendomatPOI",
-            "VendingMachineViroDrobe",
-            "VendingMachineWallMedical",
-            "VendingMachineWinter",
-            "VendingMachineYarrrDrobe",
-            "VendingMachineYouTool",
             "VendingMachineYouToolPOI",
             "BaseMercenaryUplinkRadio",
             "BaseUplinkRadio",
@@ -895,11 +842,13 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 // Optional: Drop entities that are clearly unrelated by prototype id.
                 // Each proto group node contains a "proto" key with the prototype id string.
                 var hasProtoGroup = false;
+                var allowFillComponents = false; // HardLight
                 HashSet<string>? protoMissing = null;
                 if (protoMap.TryGet("proto", out ValueDataNode? protoIdNode) && protoIdNode != null)
                 {
                     hasProtoGroup = true;
                     var protoId = protoIdNode.Value;
+                    allowFillComponents = fillComponentWhitelistPrototypes.Contains(protoId); // HardLight
                     if (filteredPrototypes.Contains(protoId))
                     {
                         // Remove this entity entirely
@@ -908,18 +857,26 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                         continue;
                     }
 
-                    // HardLight: If a prototype contains components that are forced missing, track them so we can remove those components from all entities of that prototype below.
+                    // HardLight start: If this prototype is on the fill component whitelist, allow fill components to remain even if they are on the forced missing list.
+                    // This ensures critical entities like air alarms keep their fill components for proper functionality.
                     if (_prototypeManager.TryIndex<EntityPrototype>(protoId, out var proto))
                     {
-                        foreach (var name in forcedMissingComponents)
+                        if (!allowFillComponents && proto.Components.ContainsKey("Door"))
+                            allowFillComponents = true;
+
+                        if (!allowFillComponents) // If a prototype contains components that are forced missing, track them so we can remove those components from all entities of that prototype below.
                         {
-                            if (proto.Components.ContainsKey(name))
+                            foreach (var name in forcedMissingComponents)
                             {
-                                protoMissing ??= new HashSet<string>(StringComparer.Ordinal);
-                                protoMissing.Add(name);
+                                if (proto.Components.ContainsKey(name))
+                                {
+                                    protoMissing ??= new HashSet<string>(StringComparer.Ordinal);
+                                    protoMissing.Add(name);
+                                }
                             }
                         }
                     }
+                    // HardLight end
                 }
 
                 // Components cleanup
@@ -943,6 +900,26 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     }
                 }
 
+                // HardLight start: If this entity has a Door component, we should allow fill components to remain even if they are on the forced missing list,
+                // since many doors require a StorageFill or ContainerFill to function properly.
+                var hasDoorComponent = false;
+                foreach (var c in compsNotNull)
+                {
+                    if (c is MappingDataNode cm && cm.TryGet("type", out ValueDataNode? t) && t != null && t.Value == "Door")
+                    {
+                        hasDoorComponent = true;
+                        break;
+                    }
+                }
+
+                if (hasDoorComponent)
+                {
+                    allowFillComponents = true;
+                    // Door-based allow list should not mark fill components as missing.
+                    protoMissing = null;
+                }
+                // HardLight end
+
                 var newComps = new SequenceDataNode();
                 var removedFromPrototype = hasProtoGroup ? new HashSet<string>(StringComparer.Ordinal) : null; // HardLight: Track which components were removed due to prototype-level filtering so we can log them at the end.
                 foreach (var compNode in compsNotNull)
@@ -961,8 +938,17 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     // Filter out undesired component types entirely
                     if (filteredTypes.Contains(typeName))
                     {
-                        removedFromPrototype?.Add(typeName);
+                        // HardLight start: If this component is on a prototype with forced missing components, track it so we can remove those components from all entities of that prototype below.
+                        if (allowFillComponents && fillComponentTypes.Contains(typeName))
+                        {
+                            newComps.Add(compMap);
+                            continue;
+                        }
+
+                        if (forcedMissingComponents.Contains(typeName))
+                            removedFromPrototype?.Add(typeName);
                         continue;
+                        // HardLight end
                     }
 
                     // Transform: remove rotation on the grid root to match blueprint expectations
@@ -1135,6 +1121,12 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     {
                         foreach (var name in protoMissing)
                             mergedSet.Add(name);
+                    }
+
+                    if (allowFillComponents) // HardLight: If this entity is allowed to have fill components, make sure they aren't marked as missing even if the prototype has them forced missing.
+                    {
+                        foreach (var name in fillComponentTypes)
+                            mergedSet.Remove(name);
                     }
 
                     if (mergedSet.Count > 0)
