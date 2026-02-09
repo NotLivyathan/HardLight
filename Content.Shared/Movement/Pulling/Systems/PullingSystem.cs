@@ -168,10 +168,10 @@ public sealed class PullingSystem : EntitySystem
             return;
 
         // Goobstation - Grab Intent
-        foreach (var item in ent.Comp.GrabVirtualItems)
+        foreach (var item in pullerComp.GrabVirtualItems) // HardLight ent.Comp<pullComp
             QueueDel(item);
 
-        TryStopPull(ent.Comp.Pulling.Value, pulling, ent.Owner, true);
+        TryStopPull(pullerComp.Pulling.Value, pullableComp, uid, true); // HardLight ent.Comp<pullComp, pulling<pullableComp, ent.Owner<uid
         // Goobstation
     }
 

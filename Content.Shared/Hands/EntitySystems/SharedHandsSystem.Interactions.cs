@@ -120,12 +120,6 @@ public abstract partial class SharedHandsSystem : EntitySystem
         if (TryComp(session?.AttachedEntity, out HandsComponent? hands) && hands.ActiveHand != null)
         {
             // Goobstation start
-            if (_net.IsServer && HasComp<DeleteOnDropAttemptComponent>(hands.ActiveHandEntity))
-            {
-                QueueDel(hands.ActiveHandEntity.Value);
-                return false;
-            }
-
             if (session != null)
             {
                 var ent = session.AttachedEntity.Value;
