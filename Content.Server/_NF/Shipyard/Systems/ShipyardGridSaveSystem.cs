@@ -1072,16 +1072,23 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     // (This is handled by filteredTypes but adding explicit note)
 
                     // Solution: Force canReact to false to prevent reagent mixing on load
-                    // This is critical for ChemMaster buffers and other containers where reagents must remain separated (like cryostasis beakers)
+                    // Only apply to solutions named "buffer" which are ChemMaster buffers, instead of literally everything
                     if (typeName == "Solution")
                     {
                         // Check if this component has a solution field
                         if (compMap.TryGetValue("solution", out var solutionNode) &&
                             solutionNode is MappingDataNode solutionMap)
                         {
-                            // Always set canReact to false for saved solutions
-                            // This prevents reagents from mixing when the ship is loaded
-                            solutionMap["canReact"] = new ValueDataNode("false");
+                            // Only set canReact to false for ChemMaster buffers
+                            // Check if the solution name is "buffer"
+                            if (solutionMap.TryGetValue("name", out var nameNode) && 
+                                nameNode is ValueDataNode nameValue && 
+                                nameValue.Value == "buffer")
+                            {
+                                // This is a ChemMaster buffer - prevent mixing
+                                solutionMap["canReact"] = new ValueDataNode("false");
+                                Logger.Info("Set ChemMaster buffer to non-reactive");
+                            }
                         }
                     }
 
