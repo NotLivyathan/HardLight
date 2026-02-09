@@ -14,6 +14,7 @@
   - type: ContainerContainer
     containers:
       ItemCabinet: !type:ContainerSlot
+  - type: HLPersistOnShipSave # HardLight
   - type: Appearance
   # perfect for most things but you can always replace it
   - type: GenericVisualizer

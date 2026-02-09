@@ -46,6 +46,13 @@ public sealed class AmeControllerSystem : EntitySystem
     {
         _itemSlots.AddItemSlot(uid, SharedAmeControllerComponent.FuelSlotId, component.FuelSlot);
 
+        // HardLight start: Reset update timers so saved controllers don't stall after load.
+        var curTime = _gameTiming.CurTime;
+        component.LastUpdate = curTime;
+        component.NextUpdate = curTime;
+        component.NextUIUpdate = curTime;
+        // HardLight end
+
         UpdateUi(uid, component);
     }
 
