@@ -21,7 +21,6 @@
       - MagazineMagnum
       - CombatKnife
       - Truncheon
-      - BolaEnergy
       components:
       - FlashOnTrigger
       - SmokeOnTrigger
