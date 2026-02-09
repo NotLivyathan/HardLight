@@ -855,9 +855,6 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             return false;
         }
 
-        var comboEv = new ComboAttackPerformedEvent(user, target.Value, meleeUid, ComboAttackType.Disarm);
-        RaiseLocalEvent(user, comboEv); // HardLight: Keep an eye on this.
-
         if (MobState.IsIncapacitated(target.Value))
         {
             return false;
