@@ -35,6 +35,7 @@
     solution: beaker
   - type: ExaminableSolution
     solution: beaker
+    exactVolume: true
   - type: DrawableSolution
     solution: beaker
   - type: InjectableSolution
@@ -93,8 +94,8 @@
   - type: StaticPrice
     price: 30
   - type: DnaSubstanceTrace
-  - type: TrashOnSolutionEmpty # Frontier
-    solution: beaker # Frontier
+  - type: TrashOnSolutionEmpty # Frontier, # HardLight: I wish they provided literally any more information.
+    solution: beaker
 
 - type: entity
   parent: BaseItem
@@ -133,6 +134,7 @@
     solution: beaker
   - type: ExaminableSolution
     solution: beaker
+    exactVolume: true
   - type: DrawableSolution
     solution: beaker
   - type: InjectableSolution
@@ -168,9 +170,9 @@
     solution: beaker
   - type: StaticPrice
     price: 10
-  # - type: PhysicalComposition # Frontier
-    # materialComposition:
-      # Glass: 50
+  - type: PhysicalComposition
+    materialComposition:
+      Glass: 50
   - type: SolutionContainerVisuals
     maxFillLevels: 6
     fillBaseName: beaker
@@ -220,9 +222,9 @@
     fillBaseName: beakerlarge
     inHandsMaxFillLevels: 4
     inHandsFillBaseName: -fill-
-  # - type: PhysicalComposition # Frontier
-    # materialComposition: # Frontier
-      # Glass: 100 # Frontier
+  - type: PhysicalComposition
+    materialComposition:
+      Glass: 100
   - type: StaticPrice
     price: 20
 
@@ -264,13 +266,10 @@
     solutions:
       beaker:
         maxVol: 1000
-  - type: SolutionTransfer
-    maxTransferAmount: 1000
-    minTransferAmount: 5
 
 - type: entity
   name: dropper
-  parent: [BaseItem, RecyclableItemGlassTiny] # Frontier: added RecyclableItemGlassTiny
+  parent: BaseItem
   description: Used to transfer small amounts of chemical solution between containers.
   id: Dropper
   components:
@@ -289,12 +288,16 @@
     injectOnly: false
     ignoreMobs: true
     ignoreClosed: false
-    minTransferAmount: 1
-    maxTransferAmount: 5
-    transferAmount: 1
-    toggleState: 1 # draw
+    transferAmounts:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    currentTransferAmount: 1
   - type: ExaminableSolution
     solution: dropper
+    exactVolume: true
   - type: UserInterface
     interfaces:
       enum.TransferAmountUiKey.Key:
@@ -319,11 +322,10 @@
   - type: PhysicalComposition
 
 - type: entity
-  name: borgdropper
   parent: Dropper
-  categories: [ HideSpawnMenu ] # Hardlight change
-  description: Used to transfer small amounts of chemical solution between containers. Extended for use by medical borgs.
   id: BorgDropper
+  name: hydraulic pipette
+  description: State-of-the-art hydraulic dropper built for cyborgs. It features a higher capacity than hand-powered droppers, able to hold 15 units of liquid.
   components:
   - type: Sprite
     sprite: Objects/Specific/Chemistry/dropper.rsi
@@ -335,7 +337,7 @@
   - type: SolutionContainerManager
     solutions:
       injector:
-        maxVol: 10
+        maxVol: 15
   - type: Item
     sprite: Objects/Specific/Chemistry/dropper.rsi
 
@@ -368,6 +370,7 @@
     injectOnly: false
   - type: ExaminableSolution
     solution: injector
+    exactVolume: true
   - type: Spillable
     solution: injector
   - type: TrashOnSolutionEmpty
@@ -387,11 +390,11 @@
   id: Syringe
   components:
   - type: Injector
-    transferAmount: 15
-    toggleState: Draw
+    currentTransferAmount: 15
   - type: Tag
     tags:
     - Syringe
+    - Trash
 
 - type: entity
   name: mini syringe
@@ -406,28 +409,34 @@
         map: ["enum.SolutionContainerLayers.Fill"]
         visible: false
       - state: syringeproj
+  - type: SolutionContainerManager
+    solutions:
+      injector:
+        maxVol: 5
+  - type: Injector
+    transferAmounts:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    currentTransferAmount: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 3
     fillBaseName: minisyringe
     inHandsMaxFillLevels: 3
     inHandsFillBaseName: -fill-
   - type: EmbeddableProjectile
-    offset: "-0.1,0"
+    offset: "0,-0.1"
     minimumSpeed: 3
     removalTime: 0.25
     embedOnThrow: false
-  # DeltaV - Nerfs the max volume to 5 (was 15)
-  - type: SolutionContainerManager
-    solutions:
-      injector:
-        maxVol: 5
-  # End DeltaV
   - type: SolutionInjectWhileEmbedded
-    transferAmount: 0.5 # Frontier: 1 < 0.5
+    transferAmount: 1
     solution: injector
     updateInterval: 2
   - type: SolutionInjectOnEmbed
-    transferAmount: 0.5 # Frontier: 2 < 0.5
+    transferAmount: 1
     solution: injector
   - type: Fixtures
     fixtures:
@@ -456,12 +465,11 @@
   - type: Tag
     tags:
     - Syringe
+    - Trash
     - SyringeGunAmmo
-  - type: Injector # Frontier
-    maxTransferAmount: 5 # Frontier
-    transferAmount: 5 # Frontier
 
 - type: entity
+  abstract: true
   parent: BaseSyringe
   id: PrefilledSyringe
   components:
@@ -487,19 +495,17 @@
   - type: SolutionContainerManager
     solutions:
       injector:
-        maxVol: 150
+        maxVol: 100
   - type: Injector
     delay: 2.5
     injectOnly: false
-    maxTransferAmount: 150
-    minTransferAmount: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 2
     fillBaseName: syringe
   - type: Tag
     tags:
     - Syringe
-
+    - Trash
 
 - type: entity
   id: SyringeCryostasis
@@ -524,17 +530,18 @@
         canReact: false
   - type: Injector
     injectOnly: false
-    minTransferAmount: 5
-    maxTransferAmount: 10
-    transferAmount: 10
+    transferAmounts:
+    - 5
+    - 10
+    currentTransferAmount: 10
   - type: Tag
     tags:
     - Syringe
-
+    - Trash
 
 - type: entity
   name: pill
-  parent: [BaseItem, RecyclableItemNoMats] # Frontier: added RecyclableItemNoMats
+  parent: BaseItem
   id: Pill
   description: It's not a suppository.
   components:
@@ -545,12 +552,11 @@
     size: Tiny
     sprite: Objects/Specific/Chemistry/pills.rsi
   - type: Pill
-  - type: Food
+  - type: Edible
     delay: 0.6
     forceFeedDelay: 2
     transferAmount: null
-    eatMessage: food-swallow
-    useSound: /Audio/Items/pill.ogg
+    edible: Pill
   - type: BadFood
   - type: FlavorProfile
     ignoreReagents: []
@@ -585,7 +591,7 @@
 - type: entity
   name: pill canister
   id: PillCanister
-  parent: [BaseStorageItem, RecyclableItemPlasticTiny] # Frontier: added RecyclableItemPlasticTiny
+  parent: BaseStorageItem
   description: Holds up to 10 pills.
   components:
   - type: Item
