@@ -14,7 +14,9 @@ using Content.Shared.Inventory;
 using Content.Shared.Tag;
 using Content.Shared.Traits.Assorted;
 using Content.Shared.Weapons.Melee.Events;
+using Content.Shared.Movement.Systems;
 using Content.Shared.StatusEffect;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Examine;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
@@ -38,9 +40,12 @@ namespace Content.Server.Flash
         [Dependency] private readonly StunSystem _stun = default!;
         [Dependency] private readonly TagSystem _tag = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
-        [Dependency] private readonly StatusEffectsSystem _statusEffectsSystem = default!;
+        [Dependency] private readonly Content.Shared.StatusEffect.StatusEffectsSystem _statusEffectsSystem = default!;
+        [Dependency] private readonly Content.Shared.StatusEffectNew.StatusEffectsSystem _statusEffectsNew = default!;
+        [Dependency] private readonly MovementModStatusSystem _movementMod = default!;
 
         private static readonly ProtoId<TagPrototype> TrashTag = "Trash";
+        private static readonly EntProtoId FlashSlowdownStatusEffect = "FlashSlowdownStatusEffect";
 
         public override void Initialize()
         {
@@ -131,12 +136,14 @@ namespace Content.Server.Flash
 
             if (stunDuration != null)
             {
-                _stun.TryParalyze(target, stunDuration.Value, true);
+                _stun.TryKnockdown(target, stunDuration.Value, true);
+                _stun.TryUpdateStunDuration(target, stunDuration.Value);
             }
             else
             {
-                _stun.TrySlowdown(target, TimeSpan.FromSeconds(flashDuration / 1000f), true,
-                slowTo, slowTo);
+                var slowDuration = TimeSpan.FromSeconds(flashDuration / 1000f);
+                if (_statusEffectsNew.TryUpdateStatusEffectDuration(target, FlashSlowdownStatusEffect, out var status, slowDuration))
+                    _movementMod.TrySetMovementSpeedStatus(status.Value, slowTo, slowTo, target);
             }
 
             if (displayPopup && user != null && target != user && Exists(user.Value))

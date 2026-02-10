@@ -208,7 +208,7 @@ public sealed partial class NPCBlackboard : IEnumerable<KeyValuePair<string, obj
             {
                 if (!TryGetValue(Owner, out owner, entManager) ||
                     !entManager.TryGetComponent<HandsComponent>(owner, out var hands) ||
-                    handSys.GetActiveHand(owner) is null)
+                    handSys.GetActiveHand((owner, hands)) is null)
                 {
                     return false;
                 }
@@ -230,7 +230,7 @@ public sealed partial class NPCBlackboard : IEnumerable<KeyValuePair<string, obj
             {
                 if (!TryGetValue(Owner, out owner, entManager) ||
                     !entManager.TryGetComponent<HandsComponent>(owner, out var hands) ||
-                    hands.ActiveHand == null)
+                    hands.ActiveHandId == null)
                 {
                     return false;
                 }

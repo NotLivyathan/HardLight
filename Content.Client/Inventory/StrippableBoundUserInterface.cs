@@ -163,7 +163,7 @@ namespace Content.Client.Inventory
 
         private void AddHandButton(Entity<HandsComponent> ent, string handId, Hand hand)
         {
-            var button = new HandButton(handID, hand.Location);
+            var button = new HandButton(handId, hand.Location);
 
             button.Pressed += SlotPressed;
 

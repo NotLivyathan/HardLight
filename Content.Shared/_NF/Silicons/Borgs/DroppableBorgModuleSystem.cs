@@ -150,14 +150,14 @@ public sealed class DroppableBorgModuleSystem : EntitySystem
     /// </summary>
     private void AddItemAsHand(Entity<HandsComponent> chassis, EntityUid item, string handId)
     {
-        _hands.AddHand(chassis, handId, HandLocation.Middle, chassis.Comp);
-        var hand = chassis.Comp.Hands[handId];
-        _hands.DoPickup(chassis, hand, item, chassis.Comp);
-        if (hand.HeldEntity != item)
+        _hands.AddHand(chassis.AsNullable(), handId, HandLocation.Middle);
+        _hands.DoPickup(chassis, handId, item, chassis.Comp);
+        var held = _hands.GetHeldItem(chassis.AsNullable(), handId);
+        if (held != item)
         {
-            Log.Error($"Failed to pick up {ToPrettyString(item)} into hand {handId} of {ToPrettyString(chassis)}, it holds {ToPrettyString(hand.HeldEntity)}");
+            Log.Error($"Failed to pick up {ToPrettyString(item)} into hand {handId} of {ToPrettyString(chassis)}, it holds {ToPrettyString(held)}");
             // If we didn't pick up our expected item, delete the hand.  No free hands!
-            _hands.RemoveHand(chassis, handId, chassis.Comp);
+            _hands.RemoveHand(chassis.AsNullable(), handId);
         }
 
         _interaction.DoContactInteraction(chassis, item); // for potential forensics or other systems (why does hands system not do this)
@@ -170,16 +170,16 @@ public sealed class DroppableBorgModuleSystem : EntitySystem
     private bool DeleteHandAndStoreItem(Entity<HandsComponent> chassis, BaseContainer container, string handId)
     {
         var ret = true;
-        _hands.TryGetHand(chassis, handId, out var hand, chassis.Comp);
-        if (hand?.HeldEntity is { } item)
+        var item = _hands.GetHeldItem(chassis.AsNullable(), handId);
+        if (item is { } held)
         {
-            _placeholder.SetEnabled(item, false);
-            _container.Insert(item, container, force: true);
+            _placeholder.SetEnabled(held, false);
+            _container.Insert(held, container, force: true);
         }
         else
             ret = false;
 
-        _hands.RemoveHand(chassis, handId, chassis.Comp);
+        _hands.RemoveHand(chassis.AsNullable(), handId);
         return ret;
     }
 
@@ -189,14 +189,14 @@ public sealed class DroppableBorgModuleSystem : EntitySystem
     private bool DeleteHandAndHeldItem(Entity<HandsComponent> chassis, string handId)
     {
         bool ret = true;
-        _hands.TryGetHand(chassis, handId, out var hand, chassis.Comp);
+        var item = _hands.GetHeldItem(chassis.AsNullable(), handId);
 
-        if (hand?.HeldEntity is { } item)
-            QueueDel(item);
+        if (item is { } held)
+            QueueDel(held);
         else if (!TerminatingOrDeleted(chassis) && Transform(chassis).MapID != MapId.Nullspace) // don't care if its empty if the server is shutting down
             ret = false;
 
-        _hands.RemoveHand(chassis, handId, chassis.Comp);
+        _hands.RemoveHand(chassis.AsNullable(), handId);
         return ret;
     }
 }

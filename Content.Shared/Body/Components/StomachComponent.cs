@@ -1,13 +1,14 @@
-using Content.Server.Body.Systems;
-using Content.Server.Nutrition.EntitySystems;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reagent;
+using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Whitelist;
+using Robust.Shared.GameStates;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
-namespace Content.Server.Body.Components
+namespace Content.Shared.Body.Components
 {
-    [RegisterComponent, Access(typeof(StomachSystem), typeof(FoodSystem))]
+    [RegisterComponent, NetworkedComponent, Access(typeof(StomachSystem))]
     public sealed partial class StomachComponent : Component
     {
         /// <summary>
@@ -23,6 +24,18 @@ namespace Content.Server.Body.Components
         public TimeSpan UpdateInterval = TimeSpan.FromSeconds(1);
 
         /// <summary>
+        /// Multiplier applied to <see cref="UpdateInterval"/> for adjusting based on metabolic rate multiplier.
+        /// </summary>
+        [DataField]
+        public float UpdateIntervalMultiplier = 1f;
+
+        /// <summary>
+        /// Adjusted update interval based off of the multiplier value.
+        /// </summary>
+        [ViewVariables]
+        public TimeSpan AdjustedUpdateInterval => UpdateInterval * UpdateIntervalMultiplier;
+
+        /// <summary>
         ///     The solution inside of this stomach this transfers reagents to the body.
         /// </summary>
         [ViewVariables]
@@ -32,7 +45,7 @@ namespace Content.Server.Body.Components
         ///     What solution should this stomach push reagents into, on the body?
         /// </summary>
         [DataField]
-        public string BodySolutionName = BloodstreamComponent.DefaultChemicalsSolutionName;
+        public string BodySolutionName = BloodstreamComponent.DefaultBloodSolutionName;
 
         /// <summary>
         ///     Time between reagents being ingested and them being
@@ -75,11 +88,5 @@ namespace Content.Server.Body.Components
 
             public void Increment(TimeSpan delta) => Lifetime += delta;
         }
-
-        /// <summary>
-        ///     Frontier: If false, this entity can eat anything with FoodComponent.RequiresSpecialDigestion set to false.  If true, it can only eat items matching its specialDigestion criteria.
-        /// </summary>
-        [DataField]
-        public bool SpecialDigestibleOnly = false;
     }
 }

@@ -3,7 +3,7 @@
   - SimpleSpaceMobBase
   - FlyingMobBase
   id: MobDragonPet
-  name: Space Drake 
+  name: Space Drake
   description: Smaller species of Space dragon.
   components:
   - type: Body
@@ -26,7 +26,10 @@
       Starving: 10
       Dead: 0
     baseDecayRate: 0.00925925925926 # Guy needs to eat and drink
-  - type: LayingDown
+  - type: Crawler # HardLight
+  - type: RotationVisuals # HardLight
+    defaultRotation: 90
+    horizontalRotation: 90
   - type: Thirst
     thresholds:
       OverHydrated: 200

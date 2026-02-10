@@ -170,10 +170,15 @@ public sealed class DNASequenceInjectorSystem : EntitySystem
 
         var empty = Spawn("DNAInjectorEmpty", Transform(injector).Coordinates);
 
-        if (TryComp<HandsComponent>(user, out var hands) && hands.ActiveHandEntity == injector)
+        if (TryComp<HandsComponent>(user, out var hands)
+            && _hands.TryGetActiveItem((user, hands), out var activeHeld)
+            && activeHeld == injector)
         {
-            _hands.DoDrop(user, hands.ActiveHand!, false, hands);
-            _hands.DoPickup(user, hands.ActiveHand!, empty);
+            if (hands.ActiveHandId != null)
+            {
+                _hands.DoDrop((user, hands), hands.ActiveHandId, doDropInteraction: false);
+                _hands.DoPickup(user, hands.ActiveHandId, empty);
+            }
         }
 
         Del(injector);

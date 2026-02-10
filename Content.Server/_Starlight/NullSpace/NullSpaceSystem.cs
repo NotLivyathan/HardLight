@@ -146,7 +146,8 @@ public sealed class EtherealSystem : SharedEtherealSystem
                 continue;
 
             RemComp<NullSpaceComponent>(ent);
-            _stun.TryParalyze(ent, stunTime, true);
+            _stun.TryKnockdown(ent, stunTime, true);
+            _stun.TryUpdateStunDuration(ent, stunTime);
         }
 
         args.Handled = true;

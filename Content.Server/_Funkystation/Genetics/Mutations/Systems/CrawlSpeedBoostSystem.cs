@@ -2,7 +2,7 @@ using Content.Shared._Funkystation.Genetics.Mutations.Components;
 using Content.Shared._Funkystation.Genetics.Mutations.Systems;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Standing;
-using Content.Shared.Standing;
+using Content.Shared.Stunnable;
 
 namespace Content.Server._Funkystation.Genetics.Mutations.Systems;
 
@@ -24,12 +24,14 @@ public sealed class CrawlSpeedBoostSystem : SharedCrawlSpeedBoostSystem
 
     private void OnRefresh(EntityUid uid, CrawlSpeedBoostComponent comp, RefreshMovementSpeedModifiersEvent args)
     {
-        if (!TryComp<LayingDownComponent>(uid, out var laying) ||
+        if (!TryComp<CrawlerComponent>(uid, out var crawler) ||
             !TryComp<StandingStateComponent>(uid, out var standing) ||
-            standing.CurrentState != StandingState.Lying)
+            standing.Standing)
             return;
 
-        float original = laying.LyingSpeedModifier;
+        var original = crawler.SpeedModifier;
+        if (original <= 0f)
+            return;
         float boost = comp.TargetSpeedMult / original;
 
         args.ModifySpeed(boost, boost);

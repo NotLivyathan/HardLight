@@ -40,24 +40,28 @@ public sealed partial class AutomatedHand : AutomationSlot
 
     public override bool Insert(EntityUid item)
     {
-        return Hand is { } hand
+        return Hand is { }
             && base.Insert(item)
-            && _hands.TryPickup(Owner, item, hand);
+            && _hands.TryPickup(Owner, item, HandName);
     }
 
     public override bool CanInsert(EntityUid item)
     {
-        return Hand is { } hand
+        return Hand is { }
             && base.CanInsert(item)
-            && _hands.CanPickupToHand(Owner, item, hand);
+            && _hands.CanPickupToHand(Owner, item, HandName);
     }
 
     public override EntityUid? GetItem(EntityUid? filter)
     {
-        if (Hand?.HeldEntity is not { } item
-            || _filter.IsBlocked(filter, item))
+        if (Hand is null)
             return null;
 
-        return item;
+        var item = _hands.GetHeldItem(Owner, HandName);
+        if (item is not { } held
+            || _filter.IsBlocked(filter, held))
+            return null;
+
+        return held;
     }
 }

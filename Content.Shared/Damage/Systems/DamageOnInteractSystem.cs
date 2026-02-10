@@ -11,6 +11,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Timing;
 using Content.Shared._Shitmed.Targeting; // Shitmed Change
 using Content.Shared.Hands.Components; // Shitmed Change
+using Content.Shared.Hands.EntitySystems; // Shitmed Change
 
 namespace Content.Shared.Damage.Systems;
 
@@ -24,6 +25,7 @@ public sealed class DamageOnInteractSystem : EntitySystem
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!; // Shitmed Change
     //[Dependency] private readonly SharedStunSystem _stun = default!;
 
     public override void Initialize()
@@ -76,9 +78,9 @@ public sealed class DamageOnInteractSystem : EntitySystem
         // Shitmed Change Start
         TargetBodyPart? targetPart = null;
         var hands = CompOrNull<HandsComponent>(args.User);
-        if (hands is { ActiveHand: not null })
+        if (hands is { } && _hands.TryGetHand((args.User, hands), hands.ActiveHandId, out var activeHand))
         {
-            targetPart = hands.ActiveHand.Location switch
+            targetPart = activeHand.Value.Location switch
             {
                 HandLocation.Left => TargetBodyPart.LeftHand,
                 HandLocation.Right => TargetBodyPart.RightHand,

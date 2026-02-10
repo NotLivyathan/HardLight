@@ -1,5 +1,5 @@
 using Content.Client.Gameplay;
-using Content.Client.Hands.Systems;
+using ClientHandsSystem = Content.Client.Hands.Systems.HandsSystem;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Hands.Controls;
 using Content.Client.UserInterface.Systems.Hotbar.Widgets;
@@ -18,12 +18,12 @@ using Content.Shared._NF.Interaction.Components;
 
 namespace Content.Client.UserInterface.Systems.Hands;
 
-public sealed class HandsUIController : UIController, IOnStateEntered<GameplayState>, IOnSystemChanged<HandsSystem>
+public sealed class HandsUIController : UIController, IOnStateEntered<GameplayState>, IOnSystemChanged<ClientHandsSystem>
 {
     [Dependency] private readonly IEntityManager _entities = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
 
-    [UISystemDependency] private readonly HandsSystem _handsSystem = default!;
+    [UISystemDependency] private readonly ClientHandsSystem _handsSystem = default!;
     [UISystemDependency] private readonly UseDelaySystem _useDelay = default!;
 
     private readonly List<HandsContainer> _handsContainers = new();
@@ -44,7 +44,7 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
     private HotbarGui? HandsGui => UIManager.GetActiveUIWidgetOrNull<HotbarGui>();
 
-    public void OnSystemLoaded(HandsSystem system)
+    public void OnSystemLoaded(ClientHandsSystem system)
     {
         _handsSystem.OnPlayerAddHand += OnAddHand;
         _handsSystem.OnPlayerItemAdded += OnItemAdded;
@@ -52,12 +52,11 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         _handsSystem.OnPlayerSetActiveHand += SetActiveHand;
         _handsSystem.OnPlayerRemoveHand += OnRemoveHand;
         _handsSystem.OnPlayerHandsAdded += LoadPlayerHands;
-        _handsSystem.OnPlayerHandsRemoved += UnloadPlayerHands;
         _handsSystem.OnPlayerHandBlocked += HandBlocked;
         _handsSystem.OnPlayerHandUnblocked += HandUnblocked;
     }
 
-    public void OnSystemUnloaded(HandsSystem system)
+    public void OnSystemUnloaded(ClientHandsSystem system)
     {
         _handsSystem.OnPlayerAddHand -= OnAddHand;
         _handsSystem.OnPlayerItemAdded -= OnItemAdded;
@@ -65,9 +64,10 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         _handsSystem.OnPlayerSetActiveHand -= SetActiveHand;
         _handsSystem.OnPlayerRemoveHand -= OnRemoveHand;
         _handsSystem.OnPlayerHandsAdded -= LoadPlayerHands;
-        _handsSystem.OnPlayerHandsRemoved -= UnloadPlayerHands;
         _handsSystem.OnPlayerHandBlocked -= HandBlocked;
         _handsSystem.OnPlayerHandUnblocked -= HandUnblocked;
+
+        UnloadPlayerHands();
     }
 
     private void OnAddHand(Entity<HandsComponent> entity, string name, HandLocation location)

@@ -4,6 +4,7 @@ using Content.Shared.Actions;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.RetractableItemAction;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.IntegrationTests.Tests.Actions;
 
@@ -40,14 +41,16 @@ public sealed class RetractableItemActionTest : InteractionTest
             var actionUid = actionsSystem.AddAction(playerUid, ArmBladeActionProtoId);
             // Make sure the player has the action now
             Assert.That(actionUid, Is.Not.Null, "Failed to add action to player.");
-            var actionEnt = actionsSystem.GetAction(actionUid);
+            var actionEnt = actionUid.Value;
+            Assert.That(actionsSystem.TryGetActionData(actionEnt, out var actionData), Is.True);
+            Assert.That(SEntMan.TryGetComponent<ActionsComponent>(playerUid, out var actionsComp), Is.True);
 
             // Make sure the player's hand is still empty
             heldItem = handsSystem.GetActiveItem((playerUid, Hands));
             Assert.That(heldItem, Is.Null, $"Player is holding an item ({SEntMan.ToPrettyString(heldItem)}) after adding action.");
 
             // Activate the arm blade
-            actionsSystem.PerformAction(ToServer(Player), actionEnt!.Value);
+            actionsSystem.PerformAction(playerUid, actionsComp, actionEnt, actionData!, actionData!.BaseEvent, Server.ResolveDependency<IGameTiming>().CurTime);
 
             // Make sure the player is now holding the expected item
             heldItem = handsSystem.GetActiveItem((playerUid, Hands));
@@ -55,7 +58,7 @@ public sealed class RetractableItemActionTest : InteractionTest
             AssertPrototype(spawnedProtoId, SEntMan.GetNetEntity(heldItem));
 
             // Use the action again to retract the arm blade
-            actionsSystem.PerformAction(ToServer(Player), actionEnt.Value);
+            actionsSystem.PerformAction(playerUid, actionsComp, actionEnt, actionData!, actionData!.BaseEvent, Server.ResolveDependency<IGameTiming>().CurTime);
 
             // Make sure the player's hand is empty again
             heldItem = handsSystem.GetActiveItem((playerUid, Hands));

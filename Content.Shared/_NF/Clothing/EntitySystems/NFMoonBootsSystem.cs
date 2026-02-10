@@ -19,6 +19,7 @@ public sealed class SharedNFMoonBootsSystem : EntitySystem
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedItemSystem _item = default!;
+    [Dependency] private readonly SharedGravitySystem _gravity = default!; // HardLight
 
     public override void Initialize()
     {
@@ -63,12 +64,23 @@ public sealed class SharedNFMoonBootsSystem : EntitySystem
             _alerts.ShowAlert(user, ent.Comp.MoonBootsAlert);
         else
             _alerts.ClearAlert(user, ent.Comp.MoonBootsAlert);
+
+        _gravity.RefreshWeightless(user); // HardLight
     }
 
     private void OnIsWeightless(Entity<NFMoonBootsComponent> ent, ref IsWeightlessEvent args)
     {
         if (args.Handled || !_toggle.IsActivated(ent.Owner))
             return;
+
+        // HardLight start: Necessary change for upstream compatibility.
+        if (!_container.TryGetContainingContainer((ent.Owner, null, null), out var container) ||
+            !_inventory.TryGetSlotEntity(container.Owner, ent.Comp.Slot, out var worn) ||
+            worn != ent.Owner)
+        {
+            return;
+        }
+        // HardLight end
 
         args.Handled = true;
         args.IsWeightless = true;

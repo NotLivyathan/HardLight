@@ -10,6 +10,7 @@ using Content.Shared.Drugs;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Psionics.Glimmer;
+using Content.Shared.StatusEffectNew;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
@@ -30,6 +31,7 @@ namespace Content.Server.Nyanotrasen.Chat
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
         [Dependency] private readonly GlimmerSystem _glimmerSystem = default!;
         [Dependency] private readonly ChatSystem _chatSystem = default!;
+        [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
         private IEnumerable<INetChannel> GetPsionicChatClients()
         {
             return Filter.Empty()
@@ -47,7 +49,10 @@ namespace Content.Server.Nyanotrasen.Chat
         private List<INetChannel> GetDreamers(IEnumerable<INetChannel> removeList)
         {
             var filtered = Filter.Empty()
-                .AddWhereAttachedEntity(entity => HasComp<SleepingComponent>(entity) || HasComp<SeeingRainbowsComponent>(entity) && !HasComp<PsionicsDisabledComponent>(entity) && !HasComp<PsionicInsulationComponent>(entity))
+                .AddWhereAttachedEntity(entity => HasComp<SleepingComponent>(entity)
+                    || (_statusEffects.HasEffectComp<SeeingRainbowsStatusEffectComponent>(entity)
+                        && !HasComp<PsionicsDisabledComponent>(entity)
+                        && !HasComp<PsionicInsulationComponent>(entity)))
                 .Recipients
                 .Select(p => p.Channel);
 

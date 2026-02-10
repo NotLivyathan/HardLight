@@ -1,3 +1,4 @@
+using System;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Robust.Shared.Physics.Collision.Shapes;
@@ -10,6 +11,9 @@ namespace Content.Server.Atmos.Components
     {
         [DataField]
         public bool Resisting;
+
+        [DataField]
+        public TimeSpan? ResistEndTime;
 
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField]

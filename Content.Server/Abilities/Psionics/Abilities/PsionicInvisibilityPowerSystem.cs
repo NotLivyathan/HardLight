@@ -8,12 +8,15 @@ using Content.Shared.Stealth;
 using Content.Shared.Stealth.Components;
 using Content.Server.Psionics;
 using Content.Shared.Actions.Events;
+using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 
 namespace Content.Server.Abilities.Psionics
 {
     public sealed class PsionicInvisibilityPowerSystem : EntitySystem
     {
+        private static readonly SoundSpecifier TossSound = new SoundPathSpecifier("/Audio/Effects/toss.ogg");
+
         [Dependency] private readonly SharedActionsSystem _actions = default!;
         [Dependency] private readonly SharedStunSystem _stunSystem = default!;
         [Dependency] private readonly SharedPsionicAbilitiesSystem _psionics = default!;
@@ -62,7 +65,7 @@ namespace Content.Server.Abilities.Psionics
             EnsureComp<PacifiedComponent>(uid);
             var stealth = EnsureComp<StealthComponent>(uid);
             _stealth.SetVisibility(uid, 0.66f, stealth);
-            _audio.PlayPvs("/Audio/Effects/toss.ogg", uid);
+            _audio.PlayPvs(TossSound, uid);
 
         }
 
@@ -74,11 +77,12 @@ namespace Content.Server.Abilities.Psionics
             RemComp<PsionicallyInvisibleComponent>(uid);
             RemComp<PacifiedComponent>(uid);
             RemComp<StealthComponent>(uid);
-            _audio.PlayPvs("/Audio/Effects/toss.ogg", uid);
+            _audio.PlayPvs(TossSound, uid);
             //Pretty sure this DOESN'T work as intended.
             _actions.RemoveAction(uid, component.PsionicInvisibilityUsedActionEntity);
 
-            _stunSystem.TryParalyze(uid, TimeSpan.FromSeconds(8), false);
+            _stunSystem.TryKnockdown(uid, TimeSpan.FromSeconds(8), true);
+            _stunSystem.TryUpdateStunDuration(uid, TimeSpan.FromSeconds(8));
             DirtyEntity(uid);
         }
 

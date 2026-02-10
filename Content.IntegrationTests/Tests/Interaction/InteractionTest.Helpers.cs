@@ -152,7 +152,7 @@ public abstract partial class InteractionTest
     /// <param name="enableToggleable">Whether or not to automatically enable any toggleable items</param>
     protected async Task<NetEntity> PlaceInHands(EntitySpecifier entity, bool enableToggleable = true)
     {
-        if (Hands.ActiveHandID == null)
+        if (Hands.ActiveHandId == null)
         {
             Assert.Fail("No active hand");
             return default;
@@ -169,7 +169,7 @@ public abstract partial class InteractionTest
         {
             var playerEnt = SEntMan.GetEntity(Player);
 
-            Assert.That(HandSys.TryPickup(playerEnt, item, Hands.ActiveHandID, false, false, false, Hands));
+            Assert.That(HandSys.TryPickup(playerEnt, item, Hands.ActiveHandId, false, false, false, Hands));
 
             // turn on welders
             if (enableToggleable && SEntMan.TryGetComponent(item, out itemToggle) && !itemToggle.Activated)
@@ -193,7 +193,7 @@ public abstract partial class InteractionTest
     {
         entity ??= Target;
 
-        if (Hands.ActiveHandID == null)
+        if (Hands.ActiveHandId == null)
         {
             Assert.Fail("No active hand");
             return;
@@ -212,7 +212,7 @@ public abstract partial class InteractionTest
 
         await Server.WaitPost(() =>
         {
-            Assert.That(HandSys.TryPickup(ToServer(Player), uid.Value, Hands.ActiveHandID, false, false, false, Hands, item));
+            Assert.That(HandSys.TryPickup(ToServer(Player), uid.Value, Hands.ActiveHandId, false, false, false, Hands, item));
         });
 
         await RunTicks(1);

@@ -15,7 +15,6 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Robust.Shared.Audio.Systems;
-using Content.Server.Mobs.Components; // HardLight
 
 // Shitmed Change
 using Content.Shared._Shitmed.Targeting;
@@ -148,7 +147,7 @@ public sealed class HealingSystem : EntitySystem
             // Is ent missing blood that we can restore?
             if (healing.Comp.ModifyBloodLevel > 0
                 && _solutionContainerSystem.ResolveSolution(target.Owner, bloodstream.BloodSolutionName, ref bloodstream.BloodSolution, out var bloodSolution)
-                && bloodSolution.Volume < bloodSolution.MaxVolume)
+                && _bloodstreamSystem.GetBloodLevel((target, bloodstream)) < 1)
             {
                 return true;
             }
@@ -175,7 +174,7 @@ public sealed class HealingSystem : EntitySystem
     }
     // HardLight end
 
-    // Shitmed Change Start
+    // Shitmed start
     private bool IsPartDamaged(EntityUid user, EntityUid target)
     {
         if (!TryComp(user, out TargetingComponent? targeting))
@@ -189,7 +188,7 @@ public sealed class HealingSystem : EntitySystem
 
         return false;
     }
-    // Shitmed Change End
+    // Shitmed end
 
     private void OnHealingUse(Entity<HealingComponent> healing, ref UseInHandEvent args)
     {

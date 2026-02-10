@@ -125,7 +125,7 @@ public sealed class SlipperySystem : EntitySystem
         // Preventing from playing the slip sound and stunning when you are already knocked down.
         if (!HasComp<KnockedDownComponent>(other))
         {
-            _stun.TryStun(other, component.SlipData.StunTime, true);
+            _stun.TryUpdateStunDuration(other, component.SlipData.StunTime);
             _stamina.TakeStaminaDamage(other, component.StaminaDamage); // Note that this can stamCrit
             _movementMod.TryFriction(other, component.FrictionStatusTime, true, component.SlipData.SlipFriction, component.SlipData.SlipFriction);
             _audio.PlayPredicted(component.SlipSound, other, other);

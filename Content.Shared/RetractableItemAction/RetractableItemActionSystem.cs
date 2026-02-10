@@ -34,7 +34,7 @@ public sealed class RetractableItemActionSystem : EntitySystem
     {
         _containers.EnsureContainer<Container>(ent, RetractableItemActionComponent.ContainerId);
 
-        PopulateActionItem(ent.Owner);
+        PopulateActionItem(ent.AsNullable());
     }
 
     private void OnRetractableItemAction(Entity<RetractableItemActionComponent> ent, ref OnRetractableItemActionEvent args)
@@ -77,11 +77,12 @@ public sealed class RetractableItemActionSystem : EntitySystem
         if (!_actions.TryGetActionData(ent.Comp.SummoningAction, out var action))
             return;
 
-        if (!TryComp<RetractableItemActionComponent>(action.Owner, out var retract) || retract.ActionItemUid != ent.Owner)
+        if (!TryComp<RetractableItemActionComponent>(ent.Comp.SummoningAction, out var retract) || retract.ActionItemUid != ent.Owner)
             return;
 
         // If the item is somehow destroyed, re-add it to the action.
-        PopulateActionItem(action.Owner);
+        if (ent.Comp.SummoningAction is { } actionUid)
+            PopulateActionItem(new Entity<RetractableItemActionComponent?>(actionUid, null));
     }
 
     //private void OnItemHandcuffed(Entity<ActionRetractableItemComponent> ent, ref HeldRelayedEvent<TargetHandcuffedEvent> args)

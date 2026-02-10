@@ -55,13 +55,13 @@ public sealed class MutationChronicCoughSystem : EntitySystem
             if (!_random.Prob(comp.DropChance))
                 continue;
 
-            if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHand == null)
+            if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHandId == null)
                 continue;
 
-            if (hands.ActiveHandEntity is not { } held)
+            if (!_hands.TryGetActiveItem((uid, hands), out var held))
                 continue;
 
-            _hands.DoDrop(uid, hands.ActiveHand, false, hands);
+            _hands.DoDrop((uid, hands), hands.ActiveHandId, doDropInteraction: false);
             _popup.PopupEntity("You drop what you were holding", uid, uid);
         }
     }

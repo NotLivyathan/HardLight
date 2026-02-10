@@ -9,11 +9,13 @@ using Content.Shared.Database;
 using Content.Shared.Effects;
 using Content.Shared.FixedPoint;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Rounding;
 using Content.Shared.Stunnable;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Melee.Events;
 using JetBrains.Annotations;
@@ -37,6 +39,7 @@ public abstract partial class SharedStaminaSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metadata = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
     [Dependency] protected readonly SharedStunSystem StunSystem = default!;
+    [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly IConfigurationManager _config = default!;
 
@@ -292,7 +295,9 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         if (oldDamage < slowdownThreshold &&
             component.StaminaDamage > slowdownThreshold)
         {
-            StunSystem.TrySlowdown(uid, TimeSpan.FromSeconds(3), true, 0.8f, 0.8f);
+            var duration = TimeSpan.FromSeconds(3);
+            if (!_statusEffects.TryUpdateStatusEffectDuration(uid, "StatusEffectStaminaLow", out _, duration))
+                _statusEffects.TryAddStatusEffectDuration(uid, "StatusEffectStaminaLow", out _, duration);
         }
 
         UpdateStaminaVisuals((uid, component));
@@ -388,7 +393,8 @@ public abstract partial class SharedStaminaSystem : EntitySystem
         component.Critical = true;
         component.StaminaDamage = component.CritThreshold;
 
-        if (StunSystem.TryParalyze(uid, component.StunTime, true))
+        StunSystem.TryKnockdown(uid, component.StunTime, true);
+        if (StunSystem.TryUpdateStunDuration(uid, component.StunTime))
             StunSystem.TrySeeingStars(uid);
 
         // Give them buffer before being able to be re-stunned

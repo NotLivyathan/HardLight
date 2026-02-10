@@ -624,10 +624,17 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         if (!TryComp<HandsComponent>(user, out var handsComponent))
             return false;
 
-        heldItem = handsComponent.ActiveHandEntity;
+        if (!_handsSystem.TryGetActiveItem((user, handsComponent), out heldItem))
+        {
+            _popupSystem.PopupEntity(
+                Loc.GetString("deep-fryer-need-liquid-container-in-hand"),
+                fryer,
+                user);
 
-        if (heldItem == null ||
-            !TryComp<SolutionTransferComponent>(heldItem, out var solutionTransferComponent) ||
+            return false;
+        }
+
+        if (!TryComp<SolutionTransferComponent>(heldItem, out var solutionTransferComponent) ||
             !_solutionContainerSystem.TryGetRefillableSolution(heldItem.Value, out var solEnt, out var _) ||
             !solutionTransferComponent.CanReceive)
         {

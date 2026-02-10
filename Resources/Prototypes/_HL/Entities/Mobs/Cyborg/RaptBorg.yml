@@ -66,7 +66,7 @@
     node: cyborg
   - type: Speech
     speechVerb: Robotic
-  - type: LayingDown
+  - type: Crawler
   - type: SiliconLawProvider
     laws: Qborg
   - type: LeashAnchor # Floofstation
@@ -151,7 +151,7 @@
     node: cyborg
   - type: Speech
     speechVerb: Robotic
-  - type: LayingDown
+  - type: Crawler
   - type: SiliconLawProvider
     laws: Qborg
   - type: LeashAnchor # Floofstation
@@ -236,7 +236,7 @@
     node: cyborg
   - type: Speech
     speechVerb: Robotic
-  - type: LayingDown
+  - type: Crawler
   - type: SiliconLawProvider
     laws: Qborg
   - type: LeashAnchor # Floofstation

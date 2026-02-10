@@ -1,10 +1,12 @@
 using Content.Server.Traits.Assorted;
-using Content.Shared.Standing;
+using Content.Shared.Stunnable;
 
 namespace Content.Shared.Traits.Assorted.Systems;
 
 public sealed class LayingDownModifierSystem : EntitySystem
 {
+    [Dependency] private readonly SharedStunSystem _stun = default!;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -13,10 +15,6 @@ public sealed class LayingDownModifierSystem : EntitySystem
 
     private void OnStartup(EntityUid uid, LayingDownModifierComponent component, ComponentStartup args)
     {
-        if (!TryComp<LayingDownComponent>(uid, out var layingDown))
-            return;
-
-        layingDown.StandingUpTime *= component.LayingDownCooldownMultiplier;
-        layingDown.LyingSpeedModifier *= component.DownedSpeedMultiplierMultiplier;
+        _stun.TryModifyCrawler(uid, component.LayingDownCooldownMultiplier, component.DownedSpeedMultiplierMultiplier);
     }
 }

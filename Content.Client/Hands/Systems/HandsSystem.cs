@@ -34,8 +34,8 @@ namespace Content.Client.Hands.Systems
         [Dependency] private readonly DisplacementMapSystem _displacement = default!;
 
         public event Action<string?>? OnPlayerSetActiveHand;
-        public event Action<HandsComponent>? OnPlayerHandsAdded;
         public event Action<Entity<HandsComponent>>? OnPlayerHandsAdded;
+        public new event Action? OnPlayerHandsRemoved;
         public event Action<string, EntityUid>? OnPlayerItemAdded;
         public event Action<string, EntityUid>? OnPlayerItemRemoved;
         public event Action<string>? OnPlayerHandBlocked;
@@ -223,7 +223,7 @@ namespace Content.Client.Hands.Systems
             if (component.RevealedLayers.TryGetValue(location, out var revealedLayers))
             {
                 foreach (var key in revealedLayers)
-                    sprite.RemoveLayer(key);
+                    _sprite.RemoveLayer((uid, sprite), key);
 
                 revealedLayers.Clear();
             }
@@ -293,7 +293,7 @@ namespace Content.Client.Hands.Systems
 
             // Remove old layers. We could also just set them to invisible, but as items may add arbitrary layers, this
             // may eventually bloat the player with lots of layers.
-            if (handComp.RevealedLayers.TryGetValue(hand.Value, out var revealedLayers))
+            if (handComp.RevealedLayers.TryGetValue(hand.Value.Location, out var revealedLayers))
             {
                 foreach (var key in revealedLayers)
                 {
@@ -305,7 +305,7 @@ namespace Content.Client.Hands.Systems
             else
             {
                 revealedLayers = new();
-                handComp.RevealedLayers[hand.Value] = revealedLayers;
+                handComp.RevealedLayers[hand.Value.Location] = revealedLayers;
             }
 
            if (HandIsEmpty((ent, handComp), handId))
@@ -315,7 +315,7 @@ namespace Content.Client.Hands.Systems
                 return;
             }
 
-            var ev = new GetInhandVisualsEvent(ent, hand.Value.Location);
+            var ev = new GetInhandVisualsEvent(ent.Owner, hand.Value.Location);
             RaiseLocalEvent(held, ev);
 
             if (ev.Layers.Count == 0)

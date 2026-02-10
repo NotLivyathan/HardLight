@@ -6,7 +6,7 @@ using Content.Server.Stunnable;
 using Content.Shared.Abilities.Psionics;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.StatusEffect;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.GameTicking.Components;
 
 namespace Content.Server.StationEvents.Events;
@@ -33,8 +33,9 @@ internal sealed class NoosphericZapRule : StationEventSystem<NoosphericZapRuleCo
             if (!_mobStateSystem.IsAlive(psion) || HasComp<PsionicInsulationComponent>(psion))
                 continue;
 
-            _stunSystem.TryParalyze(psion, TimeSpan.FromSeconds(5), false);
-            _statusEffectsSystem.TryAddStatusEffect(psion, "Stutter", TimeSpan.FromSeconds(10), false, "StutteringAccent");
+            _stunSystem.TryKnockdown(psion, TimeSpan.FromSeconds(5), true);
+            _stunSystem.TryUpdateStunDuration(psion, TimeSpan.FromSeconds(5));
+            _statusEffectsSystem.TryAddStatusEffectDuration(psion, "StatusEffectStutter", TimeSpan.FromSeconds(10));
 
             if (HasComp<PsionicComponent>(psion))
                 _popupSystem.PopupEntity(Loc.GetString("noospheric-zap-seize"), psion, psion, Shared.Popups.PopupType.LargeCaution);

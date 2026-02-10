@@ -133,9 +133,11 @@
   - type: Stamina
     critThreshold: 200
   - type: Bloodstream
-    bloodReagent: FluorosulfuricAcid
-    bloodMaxVolume: 650
-  - type: LayingDown
+    bloodReferenceSolution:
+      reagents:
+      - ReagentId: FluorosulfuricAcid
+        Quantity: 300
+  - type: Crawler
   - type: MeleeWeapon
     altDisarm: false
     angle: 0
@@ -206,7 +208,7 @@
     maxVol: 250
     reVol: 50
     reHunger: 1
-    
+
 - type: entity
   name: Praetorian
   parent: MobXeno
@@ -1375,7 +1377,7 @@
   - type: NpcFactionMember
     factions:
     - PetsNT
-  - type: LayingDown
+  - type: Crawler
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Aliens/FXS/rouny.rsi
@@ -1420,7 +1422,7 @@
   - type: NpcFactionMember
     factions:
     - PetsNT
-  - type: LayingDown
+  - type: Crawler
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Aliens/FXS/praetorian.rsi
@@ -1477,7 +1479,7 @@
   - type: NpcFactionMember
     factions:
     - PetsNT
-  - type: LayingDown
+  - type: Crawler
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Aliens/FXS/drone.rsi
@@ -1534,7 +1536,7 @@
   - type: NpcFactionMember
     factions:
     - PetsNT
-  - type: LayingDown
+  - type: Crawler
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Aliens/FXS/ravager.rsi

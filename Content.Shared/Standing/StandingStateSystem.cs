@@ -14,6 +14,7 @@ public sealed class StandingStateSystem : EntitySystem
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly SharedRotationVisualsSystem _rotationVisuals = default!;
 
     // If StandingCollisionLayer value is ever changed to more than one layer, the logic needs to be edited.
     public const int StandingCollisionLayer = (int) CollisionGroup.MidImpassable;
@@ -106,6 +107,21 @@ public sealed class StandingStateSystem : EntitySystem
         standingState.Standing = false;
         Dirty(uid, standingState);
         RaiseLocalEvent(uid, new DownedEvent(), false);
+
+        if (TryComp(uid, out RotationVisualsComponent? rotationVisuals))
+        {
+            var desiredRotation = rotationVisuals.DefaultRotation;
+
+            if (TryComp(uid, out TransformComponent? xform))
+            {
+                var dir = xform.LocalRotation.GetCardinalDir();
+
+                if (dir == Direction.East || dir == Direction.North)
+                    desiredRotation = rotationVisuals.DefaultRotation + Angle.FromDegrees(180);
+            }
+
+            _rotationVisuals.SetHorizontalAngle((uid, rotationVisuals), desiredRotation);
+        }
 
         // Seemed like the best place to put it
         _appearance.SetData(uid, RotationVisuals.RotationState, RotationState.Horizontal, appearance);

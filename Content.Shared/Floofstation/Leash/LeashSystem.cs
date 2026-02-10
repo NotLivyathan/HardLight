@@ -4,6 +4,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Floofstation.Leash.Components;
 using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Input;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory.Events;
@@ -36,6 +37,7 @@ public sealed class LeashSystem : EntitySystem
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
 
     public static VerbCategory LeashLengthConfigurationCategory =
         new("verb-categories-leash-config", "/Textures/Interface/VerbIcons/Spare/resize.svg.192dpi.png");
@@ -293,7 +295,7 @@ public sealed class LeashSystem : EntitySystem
             || session?.AttachedEntity is not { } player
             || !player.IsValid()
             || !TryComp<HandsComponent>(player, out var hands)
-            || hands.ActiveHandEntity is not {} leash
+            || _hands.GetActiveItem((player, hands)) is not { } leash
             || !TryComp<LeashComponent>(leash, out var leashComp)
             || leashComp.NextPull > _timing.CurTime)
             return false;

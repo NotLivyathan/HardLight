@@ -53,7 +53,7 @@ public abstract partial class SharedOfferItemSystem : EntitySystem
     private void OnMove(EntityUid uid, OfferItemComponent component, MoveEvent args)
     {
         if (component.Target == null ||
-            args.NewPosition.InRange(EntityManager, _transform,
+            _transform.InRange(args.NewPosition,
                 Transform(component.Target.Value).Coordinates, component.MaxOfferDistance))
             return;
 
@@ -65,7 +65,7 @@ public abstract partial class SharedOfferItemSystem : EntitySystem
     /// </summary>
     protected void UnOffer(EntityUid uid, OfferItemComponent component)
     {
-        if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHand == null)
+        if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHandId == null)
             return;
 
 
@@ -122,7 +122,7 @@ public abstract partial class SharedOfferItemSystem : EntitySystem
         if (offerItem == null && !TryComp(component.Target, out offerItem))
             return;
 
-        if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHand == null ||
+        if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHandId == null ||
             component.Target == null)
             return;
 

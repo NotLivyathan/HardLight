@@ -83,7 +83,7 @@
     node: cyborg
   - type: Speech
     speechVerb: Robotic
-  - type: LayingDown
+  - type: Crawler
   - type: CumProducer
     maxVol: 250
     reVol: 50

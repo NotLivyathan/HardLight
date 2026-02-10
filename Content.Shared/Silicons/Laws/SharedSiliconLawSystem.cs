@@ -57,7 +57,8 @@ public abstract partial class SharedSiliconLawSystem : EntitySystem
         if(_mind.TryGetMind(uid, out var mindId, out _))
             EnsureSubvertedSiliconRole(mindId);
 
-        _stunSystem.TryParalyze(uid, component.StunTime, true);
+        _stunSystem.TryKnockdown(uid, component.StunTime, true);
+        _stunSystem.TryUpdateStunDuration(uid, component.StunTime);
 
         args.Handled = true;
     }

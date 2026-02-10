@@ -86,15 +86,10 @@ namespace Content.Server.Tabletop
             if (component.Session is not { } session)
                 return;
 
-            if (!_hands.TryGetActiveItem(uid, out var handEnt))
+            if (!_hands.TryGetActiveItem((args.User, hands), out var handEnt))
                 return;
 
-            if (hands.ActiveHand.HeldEntity == null)
-                return;
-
-            var handEnt = hands.ActiveHand.HeldEntity.Value;
-
-            if (!TryComp<ItemComponent>(handEnt, out var item))
+            if (!TryComp<ItemComponent>(handEnt.Value, out var item))
                 return;
 
             var meta = MetaData(handEnt.Value);

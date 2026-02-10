@@ -84,9 +84,10 @@ public sealed class HypospraySystem : EntitySystem
     private bool TryUseHypospray(Entity<HyposprayComponent> entity, EntityUid target, EntityUid user)
     {
         // if target is ineligible but is a container, try to draw from the container if allowed
-        if (entity.Comp.CanContainerDraw
+        if (entity.Comp.OnlyAffectsMobs
             && !EligibleEntity(target, entity)
-            && _solutionContainers.TryGetDrawableSolution(target, out var drawableSolution, out _))
+            && _solutionContainers.TryGetDrawableSolution(target, out var drawableSolution, out _)
+            && drawableSolution != null)
         {
             return TryDraw(entity, target, drawableSolution.Value, user);
         }
@@ -291,7 +292,7 @@ public sealed class HypospraySystem : EntitySystem
     private void ToggleMode(Entity<HyposprayComponent> entity, EntityUid user)
     {
         SetMode(entity, !entity.Comp.OnlyAffectsMobs);
-        var msg = (entity.Comp.OnlyAffectsMobs && entity.Comp.CanContainerDraw) ? "hypospray-verb-mode-inject-mobs-only" : "hypospray-verb-mode-inject-all";
+        var msg = entity.Comp.OnlyAffectsMobs ? "hypospray-verb-mode-inject-mobs-only" : "hypospray-verb-mode-inject-all";
         _popup.PopupClient(Loc.GetString(msg), entity, user);
     }
 

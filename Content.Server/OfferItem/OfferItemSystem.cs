@@ -11,6 +11,7 @@ namespace Content.Server.OfferItem;
 public sealed class OfferItemSystem : SharedOfferItemSystem
 {
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
 
     public override void Update(float frameTime)
     {
@@ -19,11 +20,11 @@ public sealed class OfferItemSystem : SharedOfferItemSystem
         var query = EntityQueryEnumerator<OfferItemComponent>();
         while (query.MoveNext(out var uid, out var offerItem))
         {
-            if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHand == null)
+            if (!TryComp<HandsComponent>(uid, out var hands) || hands.ActiveHandId == null)
                 continue;
 
             if (offerItem.Hand != null &&
-                hands.Hands[offerItem.Hand].HeldEntity == null)
+                _hands.GetHeldItem((uid, hands), offerItem.Hand) == null)
             {
                 if (offerItem.Target != null)
                 {

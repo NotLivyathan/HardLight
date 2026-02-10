@@ -4,6 +4,7 @@ using Content.Server.DoAfter;
 using Content.Server.Resist;
 using Content.Server.Popups;
 using Content.Server.Inventory;
+using Content.Server.Hands.Systems;
 using Content.Server.Nyanotrasen.Item.PseudoItem;
 using Content.Shared.Mobs;
 using Content.Shared.DoAfter;
@@ -38,6 +39,7 @@ namespace Content.Server.Carrying
     public sealed class CarryingSystem : EntitySystem
     {
         [Dependency] private readonly VirtualItemSystem _virtualItemSystem = default!;
+        [Dependency] private readonly HandsSystem _handsSystem = default!;
         [Dependency] private readonly CarryingSlowdownSystem _slowdown = default!;
         [Dependency] private readonly DoAfterSystem _doAfterSystem = default!;
         [Dependency] private readonly StandingStateSystem _standingState = default!;
@@ -351,7 +353,7 @@ namespace Content.Server.Carrying
                 || HasComp<BeingCarriedComponent>(carrier)
                 || HasComp<BeingCarriedComponent>(carried)
                 || !TryComp<HandsComponent>(carrier, out var hands)
-                || hands.CountFreeHands() < carriedComp.FreeHandsRequired)
+                || _handsSystem.CountFreeHands((carrier, hands)) < carriedComp.FreeHandsRequired)
                 return false;
 
             return true;
