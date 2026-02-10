@@ -1,27 +1,9 @@
-# SPDX-FileCopyrightText: 2024 Checkraze
-# SPDX-FileCopyrightText: 2024 Dvir
-# SPDX-FileCopyrightText: 2024 Ed
-# SPDX-FileCopyrightText: 2024 ErhardSteinhauer
-# SPDX-FileCopyrightText: 2024 Flareguy
-# SPDX-FileCopyrightText: 2024 Ilya246
-# SPDX-FileCopyrightText: 2024 Whatstone
-# SPDX-FileCopyrightText: 2024 chrome-cirrus
-# SPDX-FileCopyrightText: 2025 Ark
-# SPDX-FileCopyrightText: 2025 Killerqu00
-# SPDX-FileCopyrightText: 2025 Redrover1760
-# SPDX-FileCopyrightText: 2025 Winkarst
-# SPDX-FileCopyrightText: 2025 ark1368
-# SPDX-FileCopyrightText: 2025 core-mene
-# SPDX-FileCopyrightText: 2025 starch
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 # Most of these have DO NOT MAP, since stations are completely unequipped to deal with ship combat + these are basically placeholder.
 
 - type: entity
   id: ShuttleGunBase
-  parent: [ BaseStructure, BaseC3ExpeditionContraband ]
-  name: shittle gun
+  parent: [ BaseStructure, BaseC3SyndicateContraband ] # HardLight: BaseC3SyndicateContraband
+  name: shuttle gun # HardLight shittle<shuttle; I assume this was a mistake?
   abstract: true
   components:
   - type: Appearance
@@ -51,8 +33,8 @@
   - type: GunSignalControl
   - type: StaticPrice
     price: 1500
-  - type: Repairable # Frontier
-    doAfterDelay: 3 # Frontier
+  - type: Repairable # Frontier, # HardLight: Excuse me? What is Repairable??
+    doAfterDelay: 3
 
 # ---- Laser weapon branch ----
 # naming: LSE (Laser) + conventional power + suffix (c for PowerCage, e for wired energy) + Name
@@ -60,7 +42,7 @@
 
 - type: entity
   id: ShuttleGunSvalinnMachineGun
-  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3ExpeditionContraband ]
+  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3SyndicateContraband ] # HardLight: BaseC3SyndicateContraband
   name: LSE-400c "Svalinn machine gun"
   description: Basic stationary laser unit. Effective against live targets and electronics. Uses regular power cells to fire, and has an extremely high rate of fire.
   categories: [ DoNotMap ]
@@ -70,13 +52,13 @@
     layers:
     - state: lse-400c
     - state: mag-unshaded-9
-      map: ["enum.GunVisualLayers.MagUnshaded"]
+      map: [ "enum.GunVisualLayers.MagUnshaded" ]
       shader: unshaded
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
       machine_parts: !type:Container
-      gun_magazine: !type:ContainerSlot
+      cell_slot: !type:ContainerSlot
   - type: Destructible
     thresholds:
     - trigger:
@@ -86,15 +68,15 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Gun
-    fireRate: 3
+    fireRate: 5
     useKey: false
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/ship_svalinn.ogg
       params:
         variation: 0.05
-  - type: RadarBlip
+  - type: RadarBlip # HardLight: I assume this came from Mono.
     radarColor: "#DDFF00"
     scale: 3
     visibleFromOtherGrids: true
@@ -104,9 +86,11 @@
     zeroVisible: true
   - type: Machine
     board: ShuttleGunSvalinnMachineGunCircuitboard
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
   - type: ItemSlots
     slots:
-      gun_magazine:
+      cell_slot:
         name: Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
@@ -114,11 +98,13 @@
           tags:
             - PowerCell
             - PowerCellSmall
-  - type: MagazineAmmoProvider
+  - type: BatteryAmmoProvider
+    proto: RedLightLaser
+    fireCost: 50
 
 - type: entity
   id: ShuttleGunPerforator
-  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3ExpeditionContraband ]
+  parent: [ ShuttleGunBase, ConstructibleMachine]
   name: LSE-1200c "Perforator"
   description: Advanced stationary laser unit. Annihilates electronics and is extremely dangerous to health! Uses the power cage to fire.
   categories: [ DoNotMap ]
@@ -128,14 +114,14 @@
     layers:
     - state: lse-1200c
     - state: mag-unshaded-9
-      map: ["enum.GunVisualLayers.MagUnshaded"]
+      map: [ "enum.GunVisualLayers.MagUnshaded" ]
       shader: unshaded
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
       machine_parts: !type:Container
-      gun_magazine: !type:ContainerSlot
-  - type: RadarBlip
+      cell_slot: !type:ContainerSlot
+  - type: RadarBlip # HardLight: I assume this came from Mono.
     radarColor: "#DDFF00"
     scale: 3
     visibleFromOtherGrids: true
@@ -148,7 +134,7 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Gun
     fireRate: 1
     soundGunshot:
@@ -161,16 +147,20 @@
     zeroVisible: true
   - type: Machine
     board: ShuttleGunPerforatorCircuitboard
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
   - type: ItemSlots
     slots:
-      gun_magazine:
+      cell_slot:
         name: Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
             - PowerCage
-  - type: MagazineAmmoProvider
+  - type: BatteryAmmoProvider
+    proto: RedShuttleLaser
+    fireCost: 150
 
 # ---- Launchers ----
 # naming: EXP (Explosion) + conventional power + suffix (g for Grenade, c for RPG Cartridge) + Name
@@ -178,7 +168,7 @@
 
 - type: entity
   id: ShuttleGunFriendship
-  parent: [ ShuttleGunBase, BaseC3ExpeditionContraband ] # Frontier: Removed ConstructibleMachine
+  parent: [ ShuttleGunBase ] # HardLight: Frontier removed the ConstructibleMachine parent, which I guess means they don't like friendship.
   name: EXP-320g "Friendship"
   description: A small stationary grenade launcher that holds 2 grenades.
   categories: [ DoNotMap ]
@@ -188,13 +178,13 @@
     layers:
     - state: exp-320g
     - state: mag-7
-      map: ["enum.GunVisualLayers.Mag"]
+      map: [ "enum.GunVisualLayers.Mag" ]
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
       machine_parts: !type:Container
       ballistic-ammo: !type:Container
-  - type: RadarBlip
+  - type: RadarBlip # HardLight: I assume this came from Mono.
     radarColor: "#D90000"
     scale: 3
     visibleFromOtherGrids: true
@@ -207,7 +197,7 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Gun
     projectileSpeed: 80
     fireRate: 1
@@ -236,7 +226,7 @@
 
 - type: entity
   id: ShuttleGunDuster
-  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3ExpeditionContraband ]
+  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3SyndicateContraband ] # HardLight: BaseC3SyndicateContraband
   name: EXP-2100g "Duster"
   description: A powerful stationary grenade launcher. A cartridge is required for use.
   categories: [ DoNotMap ]
@@ -246,7 +236,7 @@
     layers:
     - state: exp-2100g
     - state: mag-7
-      map: ["enum.GunVisualLayers.Mag"]
+      map: [ "enum.GunVisualLayers.Mag" ]
   - type: ContainerContainer
     containers:
       machine_board: !type:Container
@@ -261,7 +251,7 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Gun
     projectileSpeed: 40
     fireRate: 0.3
@@ -274,7 +264,7 @@
       path: /Audio/Weapons/Guns/Empty/empty.ogg
   - type: Machine
     board: ShuttleGunDusterCircuitboard
-  - type: RadarBlip
+  - type: RadarBlip # HardLight: I assume this came from Mono.
     radarColor: "#D90000"
     scale: 3
     visibleFromOtherGrids: true
@@ -290,7 +280,7 @@
         priority: 2
         whitelist:
           tags:
-          - Magazine40mm
+          - Magazine40mm # HardLight: MagazineGrenade<Magazine40mm
         insertSound:
           path: /Audio/Weapons/Guns/MagIn/kinetic_reload.ogg
           params:
@@ -301,7 +291,7 @@
 
 - type: entity
   id: ShuttleGunPirateCannon
-  parent: [ BaseStructureDisableToolUse, ShuttleGunBase, BaseC3ExpeditionContraband ] # Frontier: Added BaseStructureDisableToolUse
+  parent: [ ShuttleGunBase, BaseStructureDisableToolUse, BaseC3SyndicateContraband ] # Frontier: BaseStructureDisableToolUse, # HardLight: BaseC3SyndicateContraband
   name: pirate ship cannon
   description: Kaboom!
   components:
@@ -318,15 +308,16 @@
         damage: 300
       behaviors:
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Sprite
     sprite: Objects/Weapons/Guns/Shuttles/pirate_cannon.rsi
     layers:
     - state: base
-  - type: RadarBlip
-    radarColor: "#D90000"
-    scale: 3
-    visibleFromOtherGrids: true
+# HardLight: Is this really necessary? It's a black powder cannon.
+#  - type: RadarBlip # HardLight: I assume this came from Mono.
+#    radarColor: "#D90000"
+#    scale: 3
+#    visibleFromOtherGrids: true
   - type: Gun
     fireRate: 1
     soundGunshot:
@@ -336,21 +327,22 @@
       tags:
         - CannonBall
     capacity: 1
-    proto: NFCannonBall # Frontier: use NF variant
+    proto: NFCannonBall # Frontier
     soundInsert:
       path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
   - type: NpcFactionMember # Frontier
-    factions: # Frontier
-    - NFPirate # Frontier
+    factions:
+    - NFPirate
   - type: Rotatable # Frontier
-    rotateWhileAnchored: true # Frontier
+    rotateWhileAnchored: true
 
 - type: entity
   id: ShuttleGunKinetic
-  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3ExpeditionContraband ]
-  name: PTK-1500e "Matter Dematerializer" # Frontier: "800"<"1500e" (consistent with naming scheme)
-  description: Mining turret, effective for blasting hardened targets. Has considerable range but lower firerate. # Mono: description changed
-  # categories: [ DoNotMap ] Mono
+  parent: [ ShuttleGunBase, ConstructibleMachine, BaseC3SyndicateContraband ] # HardLight: BaseC3SyndicateContraband
+  name: PTK-1500e "Matter Dematerializer" # Frontier: PTK-800<PTK-1500e; consistent with naming scheme
+  description: Mining turret, effective for blasting hardened targets. Has considerable range but lower firerate. # Mono: New description
+# HardLight: Mono did it and I have no idea why, but I'm keeping it.
+#  categories: [ DoNotMap ]
   components:
   - type: Sprite
     sprite: Objects/Weapons/Guns/Shuttles/kinetic.rsi
@@ -370,9 +362,9 @@
         - !type:ChangeConstructionNodeBehavior
           node: machineFrame
         - !type:DoActsBehavior
-          acts: ["Destruction"]
+          acts: [ "Destruction" ]
   - type: Gun
-    projectileSpeed: 80
+    projectileSpeed: 80 # HardLight: Not sure what changed it or when, but it was 20.
     fireRate: 2
     selectedMode: SemiAuto
     angleDecay: 45
@@ -385,7 +377,7 @@
       params:
         variation: 0.12
   - type: RechargeBasicEntityAmmo
-    rechargeCooldown: 3
+    rechargeCooldown: 2
     rechargeSound:
       path: /Audio/Weapons/Guns/Bolt/lmg_bolt_closed.ogg
       params:
@@ -393,14 +385,14 @@
         variation: 0.08
   - type: BasicEntityAmmoProvider
     proto: BulletKineticShuttle
-    capacity: 100 # Mono 10->100
-    count: 100 # Mono 10->100
+    capacity: 100 # HardLight: Was 5, but Mono increased it from 10 to 100, and I don't want to mess around with values to get them right, so here we are.
+    count: 100 # HardLight
   - type: Machine
     board: ShuttleGunKineticCircuitboard
   - type: ExtensionCableReceiver # Frontier
   - type: ApcPowerReceiver # Frontier
-    powerLoad: 1500 # Frontier
-    # Mono Start
+    powerLoad: 1500
+    # Mono start
   - type: FireControllable
   - type: ShipGunClass
     shipClass: Superlight
@@ -410,4 +402,53 @@
     scale: 2
   - type: ShipGunType
     shipType: Ballistic
-    # Mono End
+    # Mono end
+
+#- type: entity
+#  parent: ShuttleGunBase
+#  id: ShuttleGunKineticOld
+#  name: exomorphic dematerializer
+#  description: An ancient ship gun, utilizing biomechanical systems to store and release energy. While unique in its design, it has been rendered obsolete due to its inferior charging and firing speed compared to mechanical constructions.
+#  components:
+#  - type: Sprite
+#    sprite: Objects/Weapons/Guns/Shuttles/xeno.rsi
+#    layers:
+#    - state: rail
+#  - type: Destructible
+#    thresholds:
+#    - trigger:
+#        !type:DamageTrigger
+#        damage: 100
+#      behaviors:
+#      - !type:PlaySoundBehavior
+#        sound:
+#          collection: MetalBreak
+#      - !type:DoActsBehavior
+#        acts: ["Destruction"]
+#  - type: Gun
+#    projectileSpeed: 20
+#    fireRate: 0.2
+#    selectedMode: SemiAuto
+#    angleDecay: 45
+#    minAngle: 5
+#    maxAngle: 15
+#    availableModes:
+#    - SemiAuto
+#    soundGunshot:
+#      path: /Audio/Weapons/Guns/Gunshots/kinetic_accel.ogg
+#      params:
+#        variation: 0.12
+#  - type: RechargeBasicEntityAmmo
+#    rechargeCooldown: 35
+#    rechargeSound:
+#      path: /Audio/Weapons/Guns/Bolt/lmg_bolt_closed.ogg
+#      params:
+#        pitch: 1.2
+#        variation: 0.08
+#  - type: BasicEntityAmmoProvider
+#    proto: BulletKineticShuttle
+#    capacity: 3
+#    count: 3
+#  - type: DeviceLinkSink
+#    ports:
+#    - Trigger

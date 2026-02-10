@@ -5,27 +5,28 @@
   description: High-tech recharger adapted for portability.
   components:
   - type: Item
-    size: Ginormous # Frontier Huge<Ginormous
+    size: Huge # HardLight: Frontier made this Ginormous, which made them virtually useless. I'm not doing that.
   - type: Sprite
     sprite: Objects/Power/portable_recharger.rsi
-    state: charging
+    layers:
+    - map: [ "enum.PowerChargerVisualLayers.Base" ]
+      state: charging
+    - map: [ "enum.PowerChargerVisualLayers.Light" ]
+      state: charging-unlit
+      shader: unshaded
   - type: Clothing
     equippedPrefix: charging
     quickEquip: false
     slots:
     - back
   - type: Charger
-    chargeRate: 50 # Frontier: chargeRate: 50 
     slotId: charger_slot
     portable: true
   - type: PowerChargerVisuals
-  - type: ApcPowerReceiver
-    needsPower: false
-    powerLoad: 1 # Frontier: 0<1 (claims to work without power if 0)
   - type: StaticPrice
     price: 500
   - type: Tag
-    tags: [] # ignore "WhitelistChameleon" tag
+    tags: [] # Ignore "WhitelistChameleon" tag
   - type: ContainerContainer
     containers:
       charger_slot: !type:ContainerSlot
@@ -35,5 +36,4 @@
         ejectOnInteract: true
         whitelist:
           components:
-          - HitscanBatteryAmmoProvider
-          - ProjectileBatteryAmmoProvider
+          - BatteryAmmoProvider

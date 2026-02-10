@@ -1,10 +1,10 @@
 - type: entity
   name: laser raptor
   id: MobLaserRaptor
-  parent: SimpleSpaceMobBase
+  parent: SimpleMobBase
   description: From the Viking age.
   components:
-    - type: Body # Shitmed Change
+    - type: Body # Shitmed, # HardLight: Will need changed later to work with Nubody.
       prototype: LaserRaptor
     - type: NpcFactionMember
       factions:
@@ -49,13 +49,12 @@
     - type: Tag
       tags:
         - FootstepSound
-    - type: HitscanBatteryAmmoProvider
-      proto: NFRedLightLaser # Frontier: use NF variant
+    - type: BatteryAmmoProvider
+      proto: NFRedLightLaser # Frontier
       fireCost: 50
-    - type: BatterySelfRecharger
-      autoRecharge: true
+    - type: PredictedBatterySelfRecharger
       autoRechargeRate: 50
-    - type: Battery
+    - type: PredictedBattery
       maxCharge: 1000
       startingCharge: 1000
     - type: Gun
@@ -106,15 +105,13 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         damage:
           groups:
-            Brute: -0.25
+            Brute: -0.15
     - reagents: [ Blood ]
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         damage:
           groups:
             Brute: -0.25
@@ -123,7 +120,6 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         damage:
           groups:
             Brute: -1
@@ -132,7 +128,6 @@
       methods: [ Touch ]
       effects:
       - !type:HealthChange
-        scaling: true
         damage:
           types:
             Heat: 1
@@ -157,10 +152,9 @@
       - map: [ "enum.DamageStateVisualLayers.Base" ]
         state: alive
   - type: Bloodstream
-    bloodReferenceSolution:
-      reagents:
-      - ReagentId: JuiceTomato
-        Quantity: 50
+    bloodReagent: JuiceTomato
+    bloodMaxVolume: 50
+    chemicalMaxVolume: 30
   - type: DamageStateVisuals
     states:
       Alive:
@@ -184,7 +178,7 @@
             min: 1
             max: 2
       - !type:DoActsBehavior
-        acts: ["Destruction"]
+        acts: [ "Destruction" ]
       - !type:PlaySoundBehavior
         sound:
           collection: gib
@@ -214,9 +208,7 @@
     group: GenericNumber
   - type: FootstepModifier
     footstepSoundCollection:
-      path: /Audio/Effects/Footsteps/slime1.ogg
-      params:
-        volume: 3
+      collection: FootstepSlime
   - type: Tag
     tags:
       - FootstepSound
@@ -238,6 +230,7 @@
   - type: StaticPrice
     price: 400
 
+# HardLight start
 - type: entity
   name: Doctor Dinosaur
   id: MobDrdino
@@ -428,4 +421,4 @@
           Base: DrDino8
         Dead:
           Base: DrDino_dead
-
+# HardLight end

@@ -1,35 +1,40 @@
 # Numbers for armor here largely taken from /tg/.
-# NOTE: Half of the kind of armor you're probably thinking of is in vests.yml. These should probably be merged some day.
+# armor.yml covers both armored vests (e.g. not just cosmetic) and armor that covers multiple bodyparts/limbs
 
-#Basic armor vest for inheritance
+
+# Basic armor vest for inheritance
 - type: entity
-  parent: [ClothingBottomless, RecyclableItemClothArmor, ClothingOuterBaseMedium, AllowSuitStorageClothing, BaseC1Contraband] # Frontier: BaseSecurityContraband<BaseC1Contraband, added RecyclableItemClothArmor # HardLight: Add ClothingBottomless
+  abstract: true
+  parent: [ ClothingOuterBaseMedium, AllowSuitStorageClothing, BaseC1Contraband ] # HardLight: BaseSecurityContraband, BaseC1Contraband
   id: ClothingOuterArmorBase
   name: armor vest
-  abstract: true
   description: A standard Type I armored vest that provides decent protection against most types of damage.
   components:
   - type: Sprite
     sprite: Clothing/OuterClothing/Armor/security.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/security.rsi
-  - type: Armor #Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
+  - type: Armor # Based on /tg/ but slightly compensated to fit the fact that armor stacks in SS14.
     modifiers:
       coefficients:
-        Blunt: 0.70
-        Slash: 0.70
-        Piercing: 0.70 #Can save you, but bullets will still hurt. Will take about 10 shots from a Viper before critting, as opposed to 7 while unarmored and 16~ with a bulletproof vest.
-        Heat: 0.80
-        Caustic: 0.9
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7 # Can save you, but bullets will still hurt. Will take about 10 shots from a Viper before critting, as opposed to 7 while unarmored and 16~ with a bulletproof vest.
+        Heat: 0.8
   - type: ExplosionResistance
     damageCoefficient: 0.90
 
-#Standard armor vest, allowed for security and bartenders
+# Standard armor vest, allowed for security and bartenders
 - type: entity
-  parent: ClothingOuterArmorBase # Frontier: removed BaseSecurityBartenderContraband
+  parent: [ ClothingOuterArmorBase, BaseC1Contraband ] # HardLight: BaseBartenderContraband<BaseC1Contraband
   id: ClothingOuterArmorBasic
+  components:
+  - type: Tag
+    tags:
+    - CorgiWearable
+    - WhitelistChameleon
 
-#Alternate / slim basic armor vest
+# Alternate / slim basic armor vest
 - type: entity
   parent: ClothingOuterArmorBasic
   id: ClothingOuterArmorBasicSlim
@@ -41,28 +46,6 @@
     sprite: Clothing/OuterClothing/Armor/security_slim.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/security_slim.rsi
-
-- type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC2ContrabandUnredeemable] # Frontier: BaseSecurityContraband<BaseC2ContrabandUnredeemable
-  id: ClothingOuterArmorRiot
-  name: riot suit
-  description: A suit of semi-flexible polycarbonate body armor with heavy padding to protect against melee attacks. Perfect for fighting delinquents around the station.
-  components:
-  - type: Sprite
-    sprite: Clothing/OuterClothing/Armor/riot.rsi
-  - type: Clothing
-    sprite: Clothing/OuterClothing/Armor/riot.rsi
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.4
-        Slash: 0.4
-        Piercing: 0.7
-        Heat: 0.9
-        Caustic: 0.9 # Frontier
-  - type: ExplosionResistance
-    damageCoefficient: 0.9
-  - type: GroupExamine
 
 - type: entity
   parent: ClothingOuterArmorBase
@@ -100,14 +83,149 @@
         Blunt: 0.9
         Slash: 0.9
         Piercing: 0.9
-        Heat: 0.4 # this technically means it protects against fires pretty well? -heat is just for lasers and stuff, not atmos temperature
+        Heat: 0.4
   - type: Reflect
-    reflectProb: 0.7 # Frontier: 1<0.7
+    reflectProb: 1
     reflects:
       - Energy
+    reflectingInHands: false
+
+# Detective's vest
+- type: entity
+  parent: [ ClothingOuterArmorBase, BaseC3SyndicateContraband ] # HardLight: BaseSecurityContraband<BaseC3SyndicateContraband
+  id: ClothingOuterVestDetective
+  name: detective's vest
+  description: A hard-boiled private investigator's armored vest.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Vests/detvest.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Vests/detvest.rsi
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC3SyndicateContraband, ContrabandClothing ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband, added ContrabandClothing as parent
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing ]
+  id: ClothingOuterArmorBaseCarapace
+  abstract: true
+  components:
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.6
+        Heat: 0.5
+        Caustic: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.65
+  - type: ClothingSpeedModifier
+    walkModifier: 1.0
+    sprintModifier: 1.0
+  - type: HeldSpeedModifier
+  - type: GroupExamine
+
+- type: entity
+  parent: [ ClothingOuterArmorBaseCarapace, BaseC2Contraband ] # HardLight: BaseCommandContraband<BaseC2Contraband
+  id: ClothingOuterArmorCaptainCarapace
+  name: captain's carapace
+  description: An armored chestpiece that provides protection whilst still offering maximum mobility and flexibility. Issued only to the station's finest.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
+  - type: Tag
+    tags:
+    - CorgiWearable
+    - WhitelistChameleon
+
+- type: entity
+  parent: [ ClothingOuterArmorBaseCarapace, BaseC3SyndicateContraband ] # HardLight: BaseCentcommContraband<BaseC3SyndicateContraband
+  id: ClothingOuterArmorCentcommCarapace
+  name: centcomm carapace
+  description: An armored chestpiece that provides protection whilst still offering maximum mobility and flexibility. Issued only to centcomm officials and agents.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Armor/centcomm_carapace.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Armor/centcomm_carapace.rsi
+
+# Web vest
+- type: entity
+  parent: [ ClothingOuterStorageBase, AllowSuitStorageClothing, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
+  id: ClothingOuterVestWeb
+  name: web vest
+  description: A synthetic armor vest. This one has added webbing and ballistic plates.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Vests/webvest.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Vests/webvest.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6 # Ballistic plates = better protection
+        Slash: 0.6
+        Piercing: 0.3
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+  - type: StaticPrice
+    price: 1500
+
+# Elite web vest
+- type: entity
+  parent: [ ClothingOuterStorageBase, AllowSuitStorageClothing, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
+  id: ClothingOuterVestWebElite
+  name: elite web vest
+  description: A synthetic armor vest. This one has added webbing and heat resistant fibers.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Vests/elitevest.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Vests/elitevest.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.7
+        Heat: 0.3
+        Radiation: 0.5
+        Caustic: 0.5
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: FireProtection
+    reduction: 0.85
+  - type: StaticPrice
+    price: 2500
+
+# Mercenary web vest
+- type: entity
+  parent: [ ClothingOuterVestWeb, BaseC2Contraband ] # Web vest so it should have some pockets for ammo, # HardLight: BaseMajorContraband<BaseC2Contraband
+  id: ClothingOuterVestWebMerc
+  name: mercenary web vest
+  description: A high-quality armored vest made from a hard synthetic material. It's surprisingly flexible and light, despite formidable armor plating.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Vests/mercwebvest.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Vests/mercwebvest.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7 # Slightly better overall protection but slightly worse than bulletproof armor against bullets seems sensible
+        Slash: 0.7
+        Piercing: 0.5
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+
+# Armor covering multiple body parts including limbs
+- type: entity
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClothingOuterArmorRaid
   name: syndicate raid suit
   description: A somewhat flexible and well-armored suit with a powerful shoulder mounted flashlight manufactured in the Gorlex Marauder's iconic blood-red color scheme, it does not protect its wearer from space.
@@ -131,13 +249,13 @@
         Caustic: 0.5
   - type: ExplosionResistance
     damageCoefficient: 0.35
-  #- type: StaminaResistance
-  #  damageCoefficient: 0.45
+  - type: StaminaResistance # Do not add these to other equipment or mobs, we don't want to microbalance these everywhere
+    damageCoefficient: 0.45
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
-  #Shoulder mounted flashlight
-  - type: ToggleableLightVisuals
+  # Shoulder mounted flashlight
+  - type: ToggleableVisuals
     spriteLayer: light
     clothingVisuals:
       outerClothing:
@@ -146,6 +264,7 @@
       outerClothing-vox:
       - state: equipped-OUTERCLOTHING-light-vox
         shader: unshaded
+  - type: ItemTogglePointLight
   - type: Appearance
   - type: HandheldLight
     addPrefix: false
@@ -173,20 +292,41 @@
         id: blinking
         interpolate: Nearest
         maxDuration: 1.0
-        minValue: 0.1
-        maxValue: 2.0
+        startValue: 0.1
+        endValue: 2.0
         isLooped: true
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 600
     startingCharge: 600
-  - type: BatterySelfRecharger
-    autoRecharge: true
+  - type: PredictedBatterySelfRecharger
     autoRechargeRate: 2
   - type: Item
     size: Normal
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, BaseC3CultContraband, AllowSuitStorageClothing, ContrabandClothing] # Frontier: BaseMajorContraband<BaseC3CultContraband, added ContrabandClothing as parent
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC2Contraband ] # HardLight: BaseSecurityContraband<BaseC2Contraband
+  id: ClothingOuterArmorRiot
+  name: riot suit
+  description: A suit of semi-flexible polycarbonate body armor with heavy padding to protect against melee attacks. Perfect for fighting delinquents around the station.
+  components:
+  - type: Sprite
+    sprite: Clothing/OuterClothing/Armor/riot.rsi
+  - type: Clothing
+    sprite: Clothing/OuterClothing/Armor/riot.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.7
+        Heat: 0.9
+        Caustic: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+  - type: GroupExamine
+
+- type: entity
+  parent: [ ClothingOuterBaseLarge, BaseC3SyndicateContraband, AllowSuitStorageClothing ] # HardLight: BaseMajorContraband<BaseC3SyndicateContraband
   id: ClothingOuterArmorCult
   name: acolyte armor
   description: An evil-looking piece of cult armor, made of bones.
@@ -200,12 +340,12 @@
       coefficients:
         Blunt: 0.5
         Slash: 0.5
-        Piercing: 0.6
+        Piercing: 0.5
         Heat: 0.5
   - type: GroupExamine
 
 - type: entity
-  parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing]
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC2Contraband ] # HardLight: BaseC2Contraband
   id: ClothingOuterArmorHeavy
   name: heavy armor suit
   description: A heavily armored suit that protects against excessive damage.
@@ -217,16 +357,15 @@
   - type: Armor
     modifiers:
       coefficients:
-        Blunt: 0.6
-        Slash: 0.6
-        Piercing: 0.5
-        Heat: 0.7
+        Blunt: 0.2
+        Slash: 0.2
+        Piercing: 0.2
+        Heat: 0.5
+        Radiation: 0
         Caustic: 0.75
   - type: GroupExamine
   - type: ProtectedFromStepTriggers
     slots: WITHOUT_POCKET
-  - type: ExplosionResistance
-    damageCoefficient: 0.7
 
 - type: entity
   parent: ClothingOuterArmorHeavy
@@ -251,7 +390,7 @@
     sprite: Clothing/OuterClothing/Armor/heavyred.rsi
 
 - type: entity
-  parent: [ClothingOuterArmorHeavy, BaseC3CultContraband, ContrabandClothing] # Frontier: added BaseC3CultContraband, ContrabandClothing as parent
+  parent: ClothingOuterArmorHeavy
   id: ClothingOuterArmorMagusblue
   name: blue magus armor
   description: An blue armored suit that provides good protection.
@@ -262,7 +401,7 @@
     sprite: Clothing/OuterClothing/Armor/magusblue.rsi
 
 - type: entity
-  parent: [ClothingOuterArmorHeavy, BaseC3WizardContraband, ContrabandClothing] # Frontier: added BaseC3WizardContraband, ContrabandClothing as parent
+  parent: ClothingOuterArmorHeavy
   id: ClothingOuterArmorMagusred
   name: red magus armor
   description: A red armored suit that provides good protection.
@@ -272,61 +411,36 @@
   - type: Clothing
     sprite: Clothing/OuterClothing/Armor/magusred.rsi
 
-- type: entity
-  parent: [ClothingBottomless, ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC1Contraband] # Frontier: BaseCommandContraband<BaseC1Contraband; # HardLight: Add ClothingBottomless
-  id: ClothingOuterArmorCaptainCarapace
-  name: "captain's carapace"
-  description: "An armored chestpiece that provides protection whilst still offering maximum mobility and flexibility. Issued only to the captains of luxury vessels." # Frontier
-  components:
-  - type: Sprite
-    sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
-  - type: Clothing
-    sprite: Clothing/OuterClothing/Armor/captain_carapace.rsi
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.7 # Frontier 0.5<0.7
-        Slash: 0.7 # Frontier 0.5<0.7
-        Piercing: 0.7 # Frontier 0.6<0.7
-        Heat: 0.8 # Frontier 0.5<0.8
-        Caustic: 0.9
-  - type: ClothingSpeedModifier
-    walkModifier: 1.0
-    sprintModifier: 1.0
-  - type: ExplosionResistance
-    damageCoefficient: 0.9 # Frontier 0.65<0.9
-  - type: GroupExamine
+#- type: entity
+#  parent: [ ClothingOuterBaseLarge, BaseMajorContraband, AllowSuitStorageClothing ]
+#  id: ClothingOuterArmorChangeling
+#  name: chitinous armor
+#  description: Inflates the changeling's body into an all-consuming chitinous mass of armor.
+#  components:
+#  - type: Sprite
+#    sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
+#  - type: Clothing
+#    sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
+#  - type: Armor
+#    modifiers:
+#      coefficients:
+#        Blunt: 0.5
+#        Slash: 0.5
+#        Piercing: 0.5
+#        Heat: 0.9
+#        Radiation: 0.8
+#  - type: ClothingSpeedModifier
+#    walkModifier: 0.65
+#    sprintModifier: 0.65
+#  - type: HeldSpeedModifier
+#  - type: ExplosionResistance
+#    damageCoefficient: 0.5
+#  - type: GroupExamine
+#  - type: ProtectedFromStepTriggers
+#    slots: WITHOUT_POCKET
 
 - type: entity
-  parent: [ ClothingOuterBaseLarge, BaseC3Contraband, AllowSuitStorageClothing ] # Frontier: BaseMajorContraband<BaseC3Contraband
-  id: ClothingOuterArmorChangeling
-  name: chitinous armor
-  description: Inflates the changeling's body into an all-consuming chitinous mass of armor.
-  components:
-  - type: Sprite
-    sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
-  - type: Clothing
-    sprite: Clothing/OuterClothing/Armor/lingarmor.rsi
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.5
-        Slash: 0.5
-        Piercing: 0.5
-        Heat: 0.9
-        Radiation: 0.8
-  - type: ClothingSpeedModifier
-    walkModifier: 0.7
-    sprintModifier: 0.65
-  - type: HeldSpeedModifier
-  - type: ExplosionResistance
-    damageCoefficient: 0.5
-  - type: GroupExamine
-  - type: ProtectedFromStepTriggers
-    slots: WITHOUT_POCKET
-
-- type: entity
-  parent: [ ClothingOuterBaseLarge, BaseC1Contraband, AllowSuitStorageClothing ] # Frontier: BaseMajorContraband<BaseC1Contraband
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseC2Contraband ] # Frontier: BaseMajorContraband<BaseC2Contraband
   id: ClothingOuterArmorBone
   name: bone armor
   description: Sits on you like a second skin.
@@ -343,6 +457,7 @@
         Piercing: 0.4
   - type: ClothingSpeedModifier
     walkModifier: 0.8
+    sprintModifier: 0.8
   - type: HeldSpeedModifier
   - type: ExplosionResistance
     damageCoefficient: 0.4
@@ -354,7 +469,7 @@
     slots: WITHOUT_POCKET
 
 - type: entity
-  parent: [ ClothingOuterBaseLarge, BaseC1Contraband, AllowSuitStorageClothing ] # Frontier: BaseMajorContraband<BaseC1Contraband
+  parent: [ ClothingOuterBaseLarge, BaseC1Contraband, AllowSuitStorageClothing ] # HardLight: BaseMajorContraband<BaseC1Contraband
   id: ClothingOuterArmorPodWars
   name: ironclad II armor
   description: A repurposed suit of ironclad II armor, a relic of the pod wars.
@@ -374,8 +489,27 @@
   - type: ProtectedFromStepTriggers
     slots: WITHOUT_POCKET
 
+#- type: entity
+#  parent: ClothingOuterArmorBase
+#  id: CardArmour
+#  name: cardboard armour
+#  description: A medieval chestpiece built from cardboard.
+#  components:
+#  - type: Sprite
+#    sprite: Clothing/OuterClothing/Armor/card_armour.rsi
+#  - type: Clothing
+#    sprite: Clothing/OuterClothing/Armor/card_armour.rsi
+#  - type: Armor
+#    modifiers:
+#      coefficients:
+#        Blunt: 0.9
+#  - type: Construction
+#    graph: cardArmour
+#    node: cardarmour
+
+# HardLight start: No idea where these came from, but I'm putting them here until I know.
 - type: entity
-  parent: [ClothingNude, ClothingOuterBaseLarge, BaseC3WizardContraband, AllowSuitStorageClothing, ContrabandClothing] # Frontier: BaseMajorContraband<BaseC3CultContraband, added ContrabandClothing as parent # HardLight: Add ClothingNude
+  parent: [ ClothingOuterBaseLarge, AllowSuitStorageClothing, ClothingNude ] # HardLight: ClothingNude
   id: ClothingOuterArmorChameleon
   name: emperor's new armour
   suffix: Chameleon
@@ -395,27 +529,9 @@
         Heat: 0.5
   - type: GroupExamine
   - type: ChameleonClothing
-    slot: [outerClothing]
+    slot: [ outerClothing ]
     default: DummyOuterInvisible
   - type: UserInterface
     interfaces:
       enum.ChameleonUiKey.Key:
         type: ChameleonBoundUserInterface
-
-- type: entity
-  parent: ClothingOuterArmorBase
-  id: CardArmour
-  name: cardboard armour
-  description: A medieval chestpiece built from cardboard.
-  components:
-  - type: Sprite
-    sprite: Clothing/OuterClothing/Armor/card_armour.rsi
-  - type: Clothing
-    sprite: Clothing/OuterClothing/Armor/card_armour.rsi
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.9
-  - type: Construction
-    graph: cardArmour
-    node: cardarmour

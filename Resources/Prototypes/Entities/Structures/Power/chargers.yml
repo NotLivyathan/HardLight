@@ -1,6 +1,6 @@
 - type: entity
   abstract: true
-  parent: [BaseMachinePowered, ConstructibleMachine]
+  parent: [ BaseMachinePowered, ConstructibleMachine ]
   id: BaseRecharger
   placement:
     mode: SnapgridCenter
@@ -13,6 +13,8 @@
   - type: Appearance
   - type: Charger
     slotId: charger_slot
+  - type: ApcPowerReceiver
+    powerLoad: 1 # Same as draw given in ChargerComponent.PassiveDraw; increased when it is actually charging something
   - type: Anchorable
     delay: 1
   - type: Destructible
@@ -34,7 +36,7 @@
         sound:
           collection: MetalBreak
   - type: StaticPrice
-    price: 30 # Frontier: 75<30
+    price: 75
 
 - type: entity
   abstract: true
@@ -44,9 +46,9 @@
   - type: Sprite
     drawdepth: SmallObjects
     layers:
-    - map: ["enum.PowerChargerVisualLayers.Base"]
+    - map: [ "enum.PowerChargerVisualLayers.Base" ]
       state: "empty"
-    - map: ["enum.PowerChargerVisualLayers.Light"]
+    - map: [ "enum.PowerChargerVisualLayers.Light" ]
       state: "light-off"
       shader: "unshaded"
   - type: Fixtures
@@ -72,17 +74,18 @@
   parent: BaseItemRecharger
   id: PowerCellRecharger
   name: cell recharger
+  description: An older model recharger that can recharge power cells.
   components:
   - type: Sprite
     sprite: Structures/Power/cell_recharger.rsi
     layers:
-    - map: ["enum.PowerChargerVisualLayers.Base"]
+    - map: [ "enum.PowerChargerVisualLayers.Base" ]
       state: "empty"
-    - map: ["enum.PowerChargerVisualLayers.Light"]
+    - map: [ "enum.PowerChargerVisualLayers.Light" ]
       state: "light-off"
       shader: "unshaded"
     - state: open
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
       visible: false
   - type: Machine
     board: CellRechargerCircuitboard
@@ -95,7 +98,7 @@
           False: { visible: false }
   - type: PowerCellSlot
     cellSlotId: charger_slot
-    # fitsInCharger is true i dont think this will ever affect anything negatively but it lets it function
+    # fitsInCharger is true I dont think this will ever affect anything negatively but it lets it function
   - type: ItemSlots
     slots:
       charger_slot:
@@ -105,11 +108,15 @@
           tags:
           - PowerCell
           - PowerCellSmall
+        blacklist:
+          tags:
+          - PotatoBattery
 
 - type: entity
   parent: [ BaseItemRecharger, ConstructibleMachine ]
   id: PowerCageRecharger
   name: cage recharger
+  description: A specialized machine made for recharging the heavy cage batteries used by ship-mounted weapons.
   components:
   - type: Fixtures
     fixtures:
@@ -150,28 +157,30 @@
   parent: BaseItemRecharger
   id: WeaponCapacitorRecharger
   name: recharger
+  description: A modern recharging station that can fit both power cells and small electronic devices.
   components:
   - type: Sprite
     sprite: Structures/Power/recharger.rsi
   - type: Machine
     board: WeaponCapacitorRechargerCircuitboard
-  # no powercellslot since stun baton etc arent powercells
   - type: ItemSlots
     slots:
       charger_slot:
         ejectOnInteract: true
         whitelist:
           components:
-          - HitscanBatteryAmmoProvider
-          - ProjectileBatteryAmmoProvider
+          - BatteryAmmoProvider
           - Stunbaton
-          - Battery
+          - PowerCell
+        blacklist:
+          tags:
+          - PotatoBattery
 
 - type: entity
   parent: BaseItemRecharger
   id: TurboItemRecharger
   name: turbo recharger
-  description: An overclocked recharger that's been adapted with a global port.
+  description: An overclocked recharger. Not recommended for use around asthmatics.
   components:
   - type: Sprite
     sprite: Structures/Power/turbo_recharger.rsi
@@ -185,29 +194,27 @@
         ejectOnInteract: true
         whitelist:
           components:
-          - HitscanBatteryAmmoProvider
-          - ProjectileBatteryAmmoProvider
+          - BatteryAmmoProvider
           - Stunbaton
           - PowerCell
-          - Battery
         blacklist:
           tags:
           - PotatoBattery
 
 - type: entity
-  parent: [BaseStructureWallmount, BaseItemRecharger] # Frontier: add BaseStructureWallmount
+  parent: [ BaseItemRecharger, BaseWallmount ]
   id: WallWeaponCapacitorRecharger
   name: wall recharger
+  description: A compact wall-mounted recharger. It can only recharge electronic devices and has no space for power cells.
   components:
   - type: Sprite
     sprite: Structures/Power/wall_recharger.rsi
     layers:
-    - map: ["enum.PowerChargerVisualLayers.Base"]
+    - map: [ "enum.PowerChargerVisualLayers.Base" ]
       state: "empty"
-    - map: ["enum.PowerChargerVisualLayers.Light"]
+    - map: [ "enum.PowerChargerVisualLayers.Light" ]
       state: "light-off"
       shader: "unshaded"
-  - type: WallMount
   - type: Charger
     chargeRate: 25
   - type: ItemSlots
@@ -216,10 +223,11 @@
         ejectOnInteract: true
         whitelist:
           components:
-          - HitscanBatteryAmmoProvider
-          - ProjectileBatteryAmmoProvider
+          - BatteryAmmoProvider
           - Stunbaton
-          - Battery
+        blacklist:
+          tags:
+          - PotatoBattery
 
 - type: entity
   parent: BaseRecharger
@@ -231,16 +239,16 @@
     sprite: Structures/Power/borg_charger.rsi
     layers:
       - state: borgcharger-u1
-        map: ["base"]
+        map: [ "base" ]
       - state: borgcharger0
-        map: ["enum.PowerDeviceVisualLayers.Powered"]
+        map: [ "enum.PowerDeviceVisualLayers.Powered" ]
         shader: "unshaded"
       - state: borgcharger1
-        map: ["charged"]
+        map: [ "charged" ]
         shader: "unshaded"
         visible: false
       - state: borgdecon1
-        map: ["enum.WiresVisualLayers.MaintenancePanel"]
+        map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
         visible: false
   - type: Charger
     chargeRate: 30
@@ -248,7 +256,7 @@
     whitelist:
       components:
       - BorgChassis
-      - Silicon # EE IPCs
+      - Silicon # EE
   - type: Construction
     containers:
     - machine_parts
@@ -292,7 +300,7 @@
     whitelist:
       components:
       - BorgChassis
-      - Silicon
+      - Silicon # EE
   - type: ContainerContainer
     containers:
       entity_storage: !type:Container

@@ -4,6 +4,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Shared.Silicons.Borgs.Components;
 
@@ -12,7 +13,8 @@ namespace Content.Shared.Silicons.Borgs.Components;
 /// "brain", legs, modules, and battery. Essentially the master component
 /// for borg logic.
 /// </summary>
-[RegisterComponent, NetworkedComponent, Access(typeof(SharedBorgSystem)), AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, Access(typeof(SharedBorgSystem))]
+[AutoGenerateComponentState, AutoGenerateComponentPause]
 public sealed partial class BorgChassisComponent : Component
 {
     #region Brain
@@ -44,7 +46,7 @@ public sealed partial class BorgChassisComponent : Component
     /// <summary>
     /// How many modules can be installed in this borg
     /// </summary>
-    [DataField("maxModules"), ViewVariables(VVAccess.ReadWrite), AutoNetworkedField] // Frontier: add AutoNetworkedField
+    [DataField("maxModules"), ViewVariables(VVAccess.ReadWrite), AutoNetworkedField] // Frontier: Add AutoNetworkedField, // HardLight: I wish I knew what this did.
     public int MaxModules = 3;
 
     /// <summary>
@@ -80,6 +82,14 @@ public sealed partial class BorgChassisComponent : Component
     public ProtoId<AlertPrototype> NoBatteryAlert = "BorgBatteryNone";
 
     /// <summary>
+    /// The next update time for the battery charge level.
+    /// Used for the alert and borg UI.
+    /// </summary>
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [AutoPausedField]
+    public TimeSpan NextBatteryUpdate = TimeSpan.Zero;
+
+    /// <summary>
     /// If the entity can open own UI.
     /// </summary>
     [DataField]
@@ -95,5 +105,18 @@ public enum BorgVisuals : byte
 [Serializable, NetSerializable]
 public enum BorgVisualLayers : byte
 {
-    Light
+    /// <summary>
+    /// Main borg body layer.
+    /// </summary>
+    Body,
+
+    /// <summary>
+    /// Layer for the borg's mind state.
+    /// </summary>
+    Light,
+
+    /// <summary>
+    /// Layer for the borg flashlight status.
+    /// </summary>
+    LightStatus,
 }

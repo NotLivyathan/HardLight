@@ -94,15 +94,9 @@
     - FullAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
-  - type: ProjectileBatteryAmmoProvider
-    proto: Cartridge635x40mmCaseless
-    fireCost: 1
-  - type: BatterySelfRecharger
-    autoRecharge: true
-    autoRechargeRate: 15
-  - type: Battery
-    maxCharge: 2000
-    startingCharge: 0
+  - type: BallisticAmmoProvider
+    proto: Cartridge635x40mmCaseless # HardLight: CartridgeCaselessRifle<Cartridge635x40mmCaseless
+    capacity: 500
 
 - type: entity
   parent: BaseWeaponTurret
@@ -126,7 +120,7 @@
     fireRate: 1.5
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/taser2.ogg
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: NFBulletEnergyTurretLaser # Frontier
     fireCost: 100
   - type: Battery
@@ -135,7 +129,7 @@
   - type: ApcPowerReceiverBattery
     idleLoad: 5
     batteryRechargeRate: 200
-    batteryRechargeEfficiency: 0.0 # temporarily no power draw because this was causing potentially seizure inducing light flickering
+    batteryRechargeEfficiency: 0.0 # Temporarily no power draw because this was causing potentially seizure inducing light flickering
   - type: ApcPowerReceiver
     powerLoad: 5
   - type: ExtensionCableReceiver

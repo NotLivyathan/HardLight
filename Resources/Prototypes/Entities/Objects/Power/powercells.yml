@@ -1,63 +1,11 @@
-# SPDX-FileCopyrightText: 2018 Pieter-Jan Briers
-# SPDX-FileCopyrightText: 2019 Acruid
-# SPDX-FileCopyrightText: 2019 L.E.D
-# SPDX-FileCopyrightText: 2019 Swept
-# SPDX-FileCopyrightText: 2020 AJCM-git
-# SPDX-FileCopyrightText: 2020 DrSmugleaf
-# SPDX-FileCopyrightText: 2020 Hugo Laloge
-# SPDX-FileCopyrightText: 2020 Paul Ritter
-# SPDX-FileCopyrightText: 2020 Peter Wedder
-# SPDX-FileCopyrightText: 2020 Reno DuBois
-# SPDX-FileCopyrightText: 2020 Víctor Aguilera Puerto
-# SPDX-FileCopyrightText: 2020 juliangiebel
-# SPDX-FileCopyrightText: 2020 py01
-# SPDX-FileCopyrightText: 2020 zumorica
-# SPDX-FileCopyrightText: 2021 20kdc
-# SPDX-FileCopyrightText: 2021 Alex Evgrashin
-# SPDX-FileCopyrightText: 2021 Nikita Brancatisano
-# SPDX-FileCopyrightText: 2021 Peptide90
-# SPDX-FileCopyrightText: 2021 Ygg01
-# SPDX-FileCopyrightText: 2022 Kara
-# SPDX-FileCopyrightText: 2022 Leon Friedrich
-# SPDX-FileCopyrightText: 2022 Moony
-# SPDX-FileCopyrightText: 2022 Rane
-# SPDX-FileCopyrightText: 2022 Ripmorld
-# SPDX-FileCopyrightText: 2022 ShadowCommander
-# SPDX-FileCopyrightText: 2022 Visne
-# SPDX-FileCopyrightText: 2022 corentt
-# SPDX-FileCopyrightText: 2022 metalgearsloth
-# SPDX-FileCopyrightText: 2023 Checkraze
-# SPDX-FileCopyrightText: 2023 Chief-Engineer
-# SPDX-FileCopyrightText: 2023 Doru991
-# SPDX-FileCopyrightText: 2023 Emisse
-# SPDX-FileCopyrightText: 2023 LankLTE
-# SPDX-FileCopyrightText: 2023 Sailor
-# SPDX-FileCopyrightText: 2023 chromiumboy
-# SPDX-FileCopyrightText: 2023 crazybrain23
-# SPDX-FileCopyrightText: 2023 deltanedas
-# SPDX-FileCopyrightText: 2023 h3half
-# SPDX-FileCopyrightText: 2023 keronshb
-# SPDX-FileCopyrightText: 2023 kxv
-# SPDX-FileCopyrightText: 2023 sTiKyt
-# SPDX-FileCopyrightText: 2024 Debug
-# SPDX-FileCopyrightText: 2024 Dvir
-# SPDX-FileCopyrightText: 2024 Ed
-# SPDX-FileCopyrightText: 2024 ErhardSteinhauer
-# SPDX-FileCopyrightText: 2024 Nemanja
-# SPDX-FileCopyrightText: 2024 Whatstone
-# SPDX-FileCopyrightText: 2024 lzk
-# SPDX-FileCopyrightText: 2025 wewman222
-#
-# SPDX-License-Identifier: AGPL-3.0-or-later
-
 - type: entity
   id: BasePowerCell
   abstract: true
-  parent: [BaseItem, RecyclableItemDeviceSmall] # Frontier: added RecyclableItemDeviceSmall
+  parent: [ BaseItem, RecyclableItemDeviceSmall ] # Frontier: RecyclableItemDeviceSmall
   components:
   - type: Item
     storedRotation: -90
-  - type: Battery
+  - type: PredictedBattery
     pricePerJoule: 0.15
   - type: PowerCell
   - type: Explosive
@@ -82,12 +30,16 @@
   - type: Tag
     tags:
       - PowerCell
-  - type: Appearance
-  - type: PowerCellVisuals
   - type: Riggable
-  - type: HitscanBatteryAmmoProvider
-    proto: NFRedLightLaser # Frontier: RedLightLaser<NFRedLightLaser
-    fireCost: 60 # Frontier: 50<60
+  - type: Appearance
+  - type: PredictedBatteryVisuals
+  - type: GenericVisualizer
+    visuals:
+      enum.BatteryVisuals.State:
+        enum.PowerCellVisualLayers.Unshaded:
+          Full: {visible: true, state: o2}
+          Neither: {visible: true, state: o1}
+          Empty: {visible: false}
 
 - type: entity
   name: potato battery
@@ -98,7 +50,7 @@
   - type: Sprite
     layers:
     - state: potato
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 70
     startingCharge: 70
   - type: Tag
@@ -108,8 +60,8 @@
     graph: PowerCellPotato
     node: potatobattery
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 1 # Frontier: ideally 0
+    part: PowerCell
+    rating: 1
 
 - type: entity
   name: small-capacity power cell
@@ -125,16 +77,16 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 360
     startingCharge: 360
   - type: Tag
     tags:
       - PowerCellSmall
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 1 # Frontier
-  - type: Construction
+    part: PowerCell
+    rating: 1
+  - type: Construction # HardLight: I'm not sure if Frontier added this or we did.
     deconstructionTarget: null
     graph: Energyweapon
     node: laser
@@ -152,7 +104,7 @@
         state: o2
         shader: unshaded
         visible: false
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 360
     startingCharge: 0
 
@@ -162,10 +114,8 @@
   name: small-capacity nuclear power cell
   description: A self rechargeable power cell, designed for fast recharge rate at the expense of capacity.
   components:
-  - type: BatterySelfRecharger
-    autoRecharge: true
+  - type: PredictedBatterySelfRecharger
     autoRechargeRate: 36 # 10 seconds to recharge
-    autoRechargePause: true
     autoRechargePauseTime: 30
 
 - type: entity
@@ -182,12 +132,12 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 720
     startingCharge: 720
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 2 # Frontier
+    part: PowerCell
+    rating: 3
 
 - type: entity
   id: PowerCellMediumPrinted
@@ -202,7 +152,7 @@
         state: o2
         shader: unshaded
         visible: false
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 720
     startingCharge: 0
 
@@ -220,12 +170,12 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 1080
     startingCharge: 1080
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 3 # Frontier
+    part: PowerCell
+    rating: 3
 
 - type: entity
   id: PowerCellHighPrinted
@@ -240,13 +190,13 @@
         state: o2
         shader: unshaded
         visible: false
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 1080
     startingCharge: 0
 
 - type: entity
   name: hyper-capacity power cell
-  description: A rechargeable standardized power cell. This one looks like a rare and powerful prototype.
+  description: A rechargeable standardized power cell. This iteration pushes the upper limits of portable power storage, boasting 66% more capacity than its predecessor.
   id: PowerCellHyper
   suffix: Full
   parent: BasePowerCell
@@ -258,12 +208,12 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 1800
     startingCharge: 1800
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 4 # Frontier
+    part: PowerCell
+    rating: 4
 
 - type: entity
   id: PowerCellHyperPrinted
@@ -278,7 +228,7 @@
         state: o2
         shader: unshaded
         visible: false
-  - type: Battery
+  - type: PredictedBattery
     maxCharge: 1800
     startingCharge: 0
 
@@ -296,15 +246,14 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
-    maxCharge: 400
-    startingCharge: 0
-  - type: BatterySelfRecharger
-    autoRecharge: true
-    autoRechargeRate: 12 # takes 1 minute to charge itself back to full
+  - type: PredictedBattery
+    maxCharge: 720 # HardLight: Was 400; not sure if we did that or upstream did.
+    startingCharge: 720 # Was 0, # HardLight: I assume it was 0 in order to make them need charging before use. Not sure if we care.
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 12 # Takes 1 minute to charge itself back to full
   - type: MachinePart # Frontier
-    part: PowerCell # Frontier
-    rating: 3 # Frontier: tier of this is arguable
+    part: PowerCell
+    rating: 3
 
 - type: entity
   parent: PowerCellMicroreactor
@@ -319,7 +268,7 @@
       state: o2
       shader: unshaded
       visible: false
-  - type: Battery
+  - type: PredictedBattery
     startingCharge: 0
 
 - type: entity
@@ -335,15 +284,14 @@
       - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
         state: o2
         shader: unshaded
-    - type: Battery
-      maxCharge: 720
-      startingCharge: 0
-    - type: BatterySelfRecharger
-      autoRecharge: true
+    - type: PredictedBattery
+      maxCharge: 1200 # HardLight: Was 720; not sure if we did that or upstream did.
+      startingCharge: 1200 # Was 0, # HardLight: I assume it was 0 in order to make them need charging before use. Not sure if we care.
+    - type: PredictedBatterySelfRecharger
       autoRechargeRate: 40
     - type: MachinePart # Frontier
-      part: PowerCell # Frontier
-      rating: 4 # Frontier: tier of this is arguable
+      part: PowerCell
+      rating: 4
 
 # Power cage (big heavy power cell for big devices)
 
@@ -367,9 +315,6 @@
   - type: Tag
     tags:
       - PowerCage
-  - type: HitscanBatteryAmmoProvider
-    proto: RedShuttleLaser
-    fireCost: 150
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
@@ -389,9 +334,9 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
-    maxCharge: 2000
-    startingCharge: 0
+  - type: PredictedBattery
+    maxCharge: 1400 # Was 2000, # HardLight: Commenting this just in case we want to revert later.
+    startingCharge: 1400 # Was 0, # HardLight: I assume it was 0 in order to make them need charging before use. Not sure if we care.
 
 - type: entity
   id: PowerCageMedium
@@ -407,27 +352,9 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
-    maxCharge: 3500
-    startingCharge: 0
-
-- type: entity
-  id: PowerCageMech
-  parent: BasePowerCage
-  name: mech fuel cell
-  description: A rechargeable fuel cell for mechs.
-  components:
-  - type: Sprite
-    sprite: Objects/Power/power_cages.rsi
-    layers:
-    - map: [ "enum.PowerCellVisualLayers.Base" ]
-      state: high
-    - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
-      state: o2
-      shader: unshaded
-  - type: Battery
-    maxCharge: 3000
-    startingCharge: 0
+  - type: PredictedBattery
+    maxCharge: 2700 # Was 3000, # HardLight: Commenting this just in case we want to revert later.
+    startingCharge: 2700 # Was 0, # HardLight: I assume it was 0 in order to make them need charging before use. Not sure if we care.
 
 - type: entity
   id: PowerCageHigh
@@ -443,9 +370,9 @@
     - map: [ "enum.PowerCellVisualLayers.Unshaded" ]
       state: o2
       shader: unshaded
-  - type: Battery
-    maxCharge: 6500
-    startingCharge: 0
+  - type: PredictedBattery
+    maxCharge: 6200 # Was 6500, # HardLight: Commenting this just in case we want to revert later.
+    startingCharge: 6200 # Was 0, # HardLight: I assume it was 0 in order to make them need charging before use. Not sure if we care.
 
 - type: entity
   id: PowerCageSmallEmpty
@@ -461,8 +388,8 @@
       state: o2
       shader: unshaded
       visible: false
-  - type: Battery
-    maxCharge: 2000
+  - type: PredictedBattery
+    maxCharge: 1400 # Was 2000, # HardLight: Commenting this just in case we want to revert later.
     startingCharge: 0
 
 - type: entity
@@ -479,7 +406,7 @@
       state: o2
       shader: unshaded
       visible: false
-  - type: Battery
+  - type: PredictedBattery
     startingCharge: 0
 
 - type: entity
@@ -496,5 +423,5 @@
       state: o2
       shader: unshaded
       visible: false
-  - type: Battery
+  - type: PredictedBattery
     startingCharge: 0

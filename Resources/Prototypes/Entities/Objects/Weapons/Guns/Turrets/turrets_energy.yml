@@ -1,12 +1,12 @@
 - type: entity
   abstract: true
-  parent: [BaseWeaponEnergyTurret, ConstructibleMachine]
+  parent: [ BaseWeaponEnergyTurret, ConstructibleMachine ]
   id: WeaponEnergyTurretStationBase
   name: sentry turret
   description: A high-tech autonomous weapons system designed to keep unauthorized personnel out of sensitive areas.
   components:
   - type: Anchorable
-    flags: 
+    flags:
     - Anchorable
   - type: Rotatable
   - type: Fixtures
@@ -28,7 +28,6 @@
         layer:
           - MachineLayer
         hard: false
-
   # Sprites and appearance
   - type: Sprite
     sprite: Objects/Weapons/Guns/Turrets/sentry_turret.rsi
@@ -73,19 +72,15 @@
         enum.WiresVisualLayers.MaintenancePanel:
           True: { visible: false }
           False: { visible: true }
-
   # HTN
   - type: HTN
     enabled: false
-
-  # Faction / control
+  # Faction and control
   - type: StationAiWhitelist
   - type: NpcFactionMember
     factions:
     - AllHostile
-
-  # Weapon systems
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: BulletEnergyTurretDisabler
     fireCost: 100
   - type: BatteryWeaponFireModes
@@ -94,8 +89,7 @@
       fireCost: 100
     - proto: BulletEnergyTurretLaser
       fireCost: 100
-
-  # Defenses / destruction
+  # Defenses and destruction
   - type: DeployableTurret
     retractedDamageModifierSetId: Metallic
     deployedDamageModifierSetId: FlimsyMetallic
@@ -126,7 +120,6 @@
         node: machineFrame
       - !type:DoActsBehavior
         acts: ["Destruction"]
-
   # Device network
   - type: DeviceNetwork
     deviceNetId: Wired
@@ -137,7 +130,6 @@
     examinableAddress: true
   - type: DeviceNetworkRequiresPower
   - type: WiredNetworkConnection
-
   # Wires
   - type: UserInterface
     interfaces:
@@ -208,11 +200,10 @@
   - type: DeviceNetwork
     receiveFrequencyId: TurretControl
     transmitFrequencyId: Turret
-# Magic spawned turret
+
+# Magic spawned turret, # HardLight: No idea where this came from, but it wasn't upstream.
 - type: entity
-  parent:
-  - BaseC3WizardContraband
-  - BaseWeaponTurretNF
+  parent: [ BaseC3WizardContraband, BaseWeaponTurretNF ]
   id: MagicSummonTurret
   name: crystalline sentry
   description: A willing crystal entity pulled through the space aether by magic. They can temporarily exist on this plane, but will return home before long.

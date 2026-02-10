@@ -1,6 +1,6 @@
 - type: entity
   name: improvised pneumatic cannon
-  parent: [BaseStorageItem, BaseC1Contraband] # Frontier: BaseMinorContraband<BaseC1Contraband
+  parent: [ BaseStorageItem, BaseC1Contraband ] # HardLight: BaseMinorContraband<BaseC1Contraband
   id: WeaponImprovisedPneumaticCannon
   description: Improvised using nothing but a pipe, some zipties, and a pneumatic cannon. Doesn't accept tanks without enough gas.
   components:
@@ -36,7 +36,7 @@
     - 0,0,1,1
   - type: Appearance
   - type: ItemMapper
-    containerWhitelist: [gas_tank]
+    containerWhitelist: [ gas_tank ]
     mapLayers:
       tank:
         whitelist:
@@ -93,7 +93,7 @@
   - type: ContainerAmmoProvider
     container: storagebase
   - type: Item
-    size: Normal
+    size: Large
   - type: Clothing
     sprite: Objects/Weapons/Guns/Cannons/pie_cannon.rsi
     quickEquip: false
@@ -103,7 +103,40 @@
     containers:
       storagebase: !type:Container
         ents: []
-        
+
+#- type: entity
+#  name: experimental pie cannon
+#  parent: BaseWeaponBattery
+#  id: BorgLauncherCreamPie
+#  description: Deliver a generous portion of cream directly to the crew! Automatically bakes pies over time.
+#  components:
+#  - type: Sprite
+#    sprite: Objects/Weapons/Guns/Cannons/pie_cannon.rsi
+#    layers:
+#    - state: piecannon
+#  - type: Gun
+#    fireRate: 2
+#    selectedMode: SemiAuto
+#    availableModes:
+#    - SemiAuto
+#    - FullAuto
+#    soundGunshot:
+#      path: /Audio/Effects/thunk.ogg
+#    soundEmpty:
+#      path: /Audio/Items/hiss.ogg
+#    clumsyProof: true
+#  - type: BatteryAmmoProvider
+#    proto: FoodPieBananaCream
+#    fireCost: 30
+#  - type: PredictedBattery
+#    maxCharge: 90
+#    startingCharge: 90
+#  - type: PredictedBatterySelfRecharger
+#    autoRechargeRate: 1
+#  - type: AmmoCounter
+#  - type: Item
+#    size: Normal
+
 - type: entity
   name: syringe gun
   parent: BaseStorageItem
@@ -135,13 +168,15 @@
   - type: ContainerAmmoProvider
     container: storagebase
   - type: Item
-    size: Normal
+    size: Large
+    shape:
+    - 0,0,2,1
   - type: ContainerContainer
     containers:
       storagebase: !type:Container
         ents: []
 
-# shoots bullets instead of throwing them, no other changes
+# Shoots bullets instead of throwing them, no other changes
 - type: entity
   parent: WeaponImprovisedPneumaticCannon
   id: WeaponImprovisedPneumaticCannonGun
@@ -150,7 +185,7 @@
   - type: PneumaticCannon
     throwItems: false
 
-# doesn't need gas, extra capacity
+# Doesn't need gas, extra capacity
 - type: entity
   parent: WeaponImprovisedPneumaticCannonGun
   id: WeaponImprovisedPneumaticCannonAdmeme
@@ -163,7 +198,7 @@
     grid:
     - 0,0,19,10
     whitelist:
-      tags: [] #dodging a test fail like the IRS
+      tags: [] # Dodging a test fail like the IRS
   - type: PneumaticCannon
     gasUsage: 0
     throwItems: false
