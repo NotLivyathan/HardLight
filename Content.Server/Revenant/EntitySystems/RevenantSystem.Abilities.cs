@@ -3,7 +3,7 @@ using Content.Shared.Damage;
 using Content.Shared.Revenant;
 using Robust.Shared.Random;
 using Content.Shared.Tag;
-using Content.Server.Storage.Components;
+using Content.Shared.Storage.Components;
 using Content.Server.Light.Components;
 using Content.Server.Ghost;
 using Robust.Shared.Physics;
@@ -20,6 +20,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Emag.Systems;
 using Content.Shared.FixedPoint;
 using Content.Shared.Humanoid;
+using Content.Shared.Light.Components;
 using Content.Shared.Maps;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -35,6 +36,7 @@ namespace Content.Server.Revenant.EntitySystems;
 
 public sealed partial class RevenantSystem
 {
+    [Dependency] private readonly EmagSystem _emagSystem = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
@@ -158,7 +160,7 @@ public sealed partial class RevenantSystem
             DistanceThreshold = 2,
             BreakOnMove = true,
             BreakOnDamage = true,
-            RequireCanInteract = false, // stuns itself
+            RequireCanInteract = false, // Stuns itself
         };
 
         if (!_doAfter.TryStartDoAfter(doAfter))
@@ -205,13 +207,13 @@ public sealed partial class RevenantSystem
             component.EssenceRegenCap += component.MaxEssenceUpgradeAmount;
         }
 
-        //KILL THEMMMM
+        // KILL THEMMMM
 
         if (!_mobThresholdSystem.TryGetThresholdForState(args.Args.Target.Value, MobState.Dead, out var damage))
             return;
         DamageSpecifier dspec = new();
         dspec.DamageDict.Add("Cold", damage.Value);
-        _damage.TryChangeDamage(args.Args.Target, dspec, true, origin: uid);
+        _damage.ChangeDamage(args.Args.Target.Value, dspec, true, origin: uid);
 
         args.Handled = true;
     }
@@ -226,8 +228,8 @@ public sealed partial class RevenantSystem
 
         args.Handled = true;
 
-        //var coords = Transform(uid).Coordinates;
-        //var gridId = coords.GetGridUid(EntityManager);
+        // var coords = Transform(uid).Coordinates;
+        // var gridId = coords.GetGridUid(EntityManager);
         var xform = Transform(uid);
         if (!TryComp<MapGridComponent>(xform.GridUid, out var map))
             return;
@@ -255,10 +257,10 @@ public sealed partial class RevenantSystem
 
         foreach (var ent in lookup)
         {
-            //break windows
+            // Break windows
             if (tags.HasComponent(ent) && _tag.HasTag(ent, WindowTag))
             {
-                //hardcoded damage specifiers til i die.
+                // Hardcoded damage specifiers til I die.
                 var dspec = new DamageSpecifier();
                 dspec.DamageDict.Add("Structural", 60);
                 _damage.TryChangeDamage(ent, dspec, origin: uid);
@@ -267,16 +269,16 @@ public sealed partial class RevenantSystem
             if (!_random.Prob(component.DefileEffectChance))
                 continue;
 
-            //randomly opens some lockers and such.
+            // Randomly opens some lockers and such.
             if (entityStorage.TryGetComponent(ent, out var entstorecomp))
                 _entityStorage.OpenStorage(ent, entstorecomp);
 
-            //chucks shit
+            // Chucks shit
             if (items.HasComponent(ent) &&
                 TryComp<PhysicsComponent>(ent, out var phys) && phys.BodyType != BodyType.Static)
                 _throwing.TryThrow(ent, _random.NextAngle().ToWorldVec());
 
-            //flicker lights
+            // Flicker lights
             if (lights.HasComponent(ent))
                 _ghost.DoGhostBooEvent(ent);
         }
@@ -296,7 +298,7 @@ public sealed partial class RevenantSystem
         var poweredLights = GetEntityQuery<PoweredLightComponent>();
         var mobState = GetEntityQuery<MobStateComponent>();
         var lookup = _lookup.GetEntitiesInRange(uid, component.OverloadRadius);
-        //TODO: feels like this might be a sin and a half
+        // TODO: Feels like this might be a sin and a half
         foreach (var ent in lookup)
         {
             if (!mobState.HasComponent(ent) || !_mobState.IsAlive(ent))
@@ -309,11 +311,11 @@ public sealed partial class RevenantSystem
             if (!nearbyLights.Any())
                 continue;
 
-            //get the closest light
+            // Get the closest light
             var allLight = nearbyLights.OrderBy(e =>
                 Transform(e).Coordinates.TryDistance(EntityManager, xform.Coordinates, out var dist) ? component.OverloadZapRadius : dist);
             var comp = EnsureComp<RevenantOverloadedLightsComponent>(allLight.First());
-            comp.Target = ent; //who they gon fire at?
+            comp.Target = ent; // Who they gon fire at?
         }
     }
 
@@ -345,8 +347,7 @@ public sealed partial class RevenantSystem
                 _whitelistSystem.IsBlacklistPass(component.MalfunctionBlacklist, ent))
                 continue;
 
-            var ev = new GotEmaggedEvent(uid, EmagType.Interaction | EmagType.Access);
-            RaiseLocalEvent(ent, ref ev);
+            _emagSystem.TryEmagEffect(uid, uid, ent);
         }
     }
 }

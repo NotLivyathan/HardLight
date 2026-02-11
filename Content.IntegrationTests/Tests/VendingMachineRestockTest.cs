@@ -5,6 +5,7 @@ using Content.Server.Wires;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Prototypes;
 using Content.Shared.Storage.Components;
 using Content.Shared.VendingMachines;
@@ -20,7 +21,7 @@ namespace Content.IntegrationTests.Tests
     [TestOf(typeof(VendingMachineSystem))]
     public sealed class VendingMachineRestockTest : EntitySystem
     {
-        private const string Blunt = "Blunt";
+        private static readonly ProtoId<DamageTypePrototype> TestDamageType = "Blunt";
 
         [TestPrototypes]
         private const string Prototypes = @"
@@ -106,7 +107,7 @@ namespace Content.IntegrationTests.Tests
 ";
 
         [Test]
-        [Ignore("Frontier: restocks for vendors are intentionally unpurchaseable.")] // Frontier
+        [Ignore("Frontier: restocks for vendors are intentionally unpurchaseable.")] // Frontier, // HardLight: I guess this explains a few things.
         public async Task TestAllRestocksAreAvailableToBuy()
         {
             await using var pair = await PoolManager.GetServerClient();
@@ -187,7 +188,7 @@ namespace Content.IntegrationTests.Tests
 
             var entityManager = server.ResolveDependency<IEntityManager>();
             var entitySystemManager = server.ResolveDependency<IEntitySystemManager>();
-            var mapSystem = entitySystemManager.GetEntitySystem<SharedMapSystem>();
+            var mapSystem = server.System<SharedMapSystem>();
 
             EntityUid packageRight;
             EntityUid packageWrong;
@@ -248,17 +249,17 @@ namespace Content.IntegrationTests.Tests
                         "Machine inventory is empty before emptying.");
                 });
 
-                /* Frontier TODO: Restore this ones we add bank to the dummy
-                // Empty the inventory.
-                systemMachine.EjectRandom(machine, false, true, machineComponent);
-                Assert.That(systemMachine.GetAvailableInventory(machine, machineComponent), Has.Count.EqualTo(0),
-                    "Machine inventory is not empty after ejecting.");
+//                // HardLight: Frontier has this disabled for some reason, stating something to do with bank accounts and dummies. I'll look into whether or not this has been changed later.
+//                // Empty the inventory.
+//                systemMachine.EjectRandom(machine, false, true, machineComponent);
+//                Assert.That(systemMachine.GetAvailableInventory(machine, machineComponent), Has.Count.EqualTo(0),
+//                    "Machine inventory is not empty after ejecting.");
+//
+//                // Test that the inventory is actually restocked.
+//                systemMachine.TryRestockInventory(machine, machineComponent);
+//                Assert.That(systemMachine.GetAvailableInventory(machine, machineComponent), Has.Count.GreaterThan(0),
+//                    "Machine available inventory count is not greater than zero after restock.");
 
-                // Test that the inventory is actually restocked.
-                systemMachine.TryRestockInventory(machine, machineComponent);
-                Assert.That(systemMachine.GetAvailableInventory(machine, machineComponent), Has.Count.GreaterThan(0),
-                    "Machine available inventory count is not greater than zero after restock.");
-                */
                 mapSystem.DeleteMap(testMap.MapId);
             });
 
@@ -275,6 +276,7 @@ namespace Content.IntegrationTests.Tests
             var prototypeManager = server.ResolveDependency<IPrototypeManager>();
             var entityManager = server.ResolveDependency<IEntityManager>();
             var entitySystemManager = server.ResolveDependency<IEntitySystemManager>();
+            var mapSystem = server.System<SharedMapSystem>();
 
             var damageableSystem = entitySystemManager.GetEntitySystem<DamageableSystem>();
 
@@ -296,15 +298,13 @@ namespace Content.IntegrationTests.Tests
                     "Did not start with zero ramen.");
 
                 restock = entityManager.SpawnEntity("TestRestockExplode", coordinates);
-                var damageSpec = new DamageSpecifier(prototypeManager.Index<DamageTypePrototype>(Blunt), 100);
-                var damageResult = damageableSystem.TryChangeDamage(restock, damageSpec);
+                var damageSpec = new DamageSpecifier(prototypeManager.Index(TestDamageType), 100);
+                var damageResult = damageableSystem.ChangeDamage(restock, damageSpec);
 
 #pragma warning disable NUnit2045
-                Assert.That(damageResult, Is.Not.Null,
-                    "Received null damageResult when attempting to damage restock box.");
+                Assert.That(!damageResult.Empty, "Received empty damageResult when attempting to damage restock box.");
 
-                Assert.That((int) damageResult!.GetTotal(), Is.GreaterThan(0),
-                    "Box damage result was not greater than 0.");
+                Assert.That((int) damageResult.GetTotal(), Is.GreaterThan(0), "Box damage result was not greater than 0.");
 #pragma warning restore NUnit2045
             });
             await server.WaitRunTicks(15);
@@ -322,7 +322,7 @@ namespace Content.IntegrationTests.Tests
                 Assert.That(totalRamen, Is.EqualTo(2),
                     "Did not find enough ramen after destroying restock box.");
 
-                entitySystemManager.GetEntitySystem<SharedMapSystem>().DeleteMap(testMap.MapId);
+                mapSystem.DeleteMap(testMap.MapId);
             });
 
             await pair.CleanReturnAsync();

@@ -1,12 +1,14 @@
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Map;
-using Content.Server.Power.Components; // Frontier
-using Content.Server.Power.EntitySystems; // Frontier
-using Content.Shared.Interaction; // Frontier
-using Content.Shared.Examine; // Frontier
-using Content.Server.Popups; // Frontier
-using Content.Shared.Power; // Frontier
+// Frontier start
+using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
+using Content.Shared.Interaction;
+using Content.Shared.Examine;
+using Content.Server.Popups;
+using Content.Shared.Power;
+// Frontier end
 
 namespace Content.Server.Weapons.Ranged.Systems;
 

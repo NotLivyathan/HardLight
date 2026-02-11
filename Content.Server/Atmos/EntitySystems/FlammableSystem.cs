@@ -1,16 +1,13 @@
-// SPDX-License-Identifier: MIT OR AGPL-3.0-or-later OR MPL-2.0
-
 using Content.Server.Administration.Logs;
 using Content.Server.Atmos.Components;
 using Content.Server.Stunnable;
 using Content.Server.Temperature.Systems;
 using Content.Server.Damage.Components;
-using Content.Server._NF.Atmos.Components; // Frontier
 using Content.Shared.ActionBlocker;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
 using Content.Shared.Atmos.Components;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.IgnitionSource;
 using Content.Shared.Interaction;
@@ -32,6 +29,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Random;
+using Content.Server._NF.Atmos.Components; // Frontier
 
 namespace Content.Server.Atmos.EntitySystems
 {
@@ -112,7 +110,7 @@ namespace Content.Server.Atmos.EntitySystems
             }
         }
 
-        // Frontier: ignition on projectile hit event
+        // Frontier start: Ignition on projectile hit event
         private void OnProjectileHit(EntityUid uid, IgniteOnProjectileHitComponent component, ProjectileHitEvent args)
         {
             if (!TryComp<FlammableComponent>(args.Target, out var flammable))
@@ -122,7 +120,7 @@ namespace Content.Server.Atmos.EntitySystems
             if (component.FireStacks >= 0)
                 Ignite(args.Target, uid, flammable, args.Shooter);
         }
-        // End Frontier
+        // Frontier end
 
         private void OnIgniteLand(EntityUid uid, IgniteOnCollideComponent component, ref LandEvent args)
         {
@@ -139,7 +137,7 @@ namespace Content.Server.Atmos.EntitySystems
             if (!TryComp(otherEnt, out FlammableComponent? flammable))
                 return;
 
-            //Only ignite when the colliding fixture is projectile or ignition.
+            // Only ignite when the colliding fixture is projectile or ignition.
             if (args.OurFixtureId != component.FixtureId && args.OurFixtureId != SharedProjectileSystem.ProjectileFixture)
             {
                 return;

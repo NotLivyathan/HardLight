@@ -59,12 +59,17 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Spawners;
 using Robust.Shared.Utility;
+using System.Numerics;
+using System.Threading;
+using Content.Shared.Damage.Components;
 using Timer = Robust.Shared.Timing.Timer;
-using Robust.Shared.Audio.Systems; // Frontier
-using Robust.Shared.Audio; // Frontier
-using Content.Server.NF.Speech.Components; // Frontier
-using Content.Shared.Damage.Prototypes; // Frontier
-using Content.Shared.Bed.Sleep; // Frontier
+// Frontier start
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Audio;
+using Content.Server.NF.Speech.Components;
+using Content.Shared.Damage.Prototypes;
+using Content.Shared.Bed.Sleep;
+// Frontier end
 
 namespace Content.Server.Administration.Systems;
 
@@ -100,9 +105,12 @@ public sealed partial class AdminVerbSystem
     [Dependency] private readonly SuperBonkSystem _superBonkSystem = default!;
     [Dependency] private readonly SlipperySystem _slipperySystem = default!;
     [Dependency] private readonly GibbingSystem _gibbing = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!; // Frontier
-    [Dependency] private readonly DamageableSystem _damageable = default!; // Frontier
-    [Dependency] private readonly SleepingSystem _sleep = default!; // Frontier
+
+    // Frontier start
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly SleepingSystem _sleep = default!;
+    // Frontier end
 
     private readonly EntProtoId _actionViewLawsProtoId = "ActionViewLaws";
     private readonly ProtoId<SiliconLawsetPrototype> _crewsimovLawset = "Crewsimov";
@@ -589,15 +597,18 @@ public sealed partial class AdminVerbSystem
                 Icon = new SpriteSpecifier.Rsi(new("/Textures/Objects/Misc/killsign.rsi"), "icon"),
                 Act = () =>
                 {
+                    // ??? start, // HardLight: Not the way upstream handles this particular smite, but they also don't have the hidden version of it, so I'm this in for now.
                     EnsureComp<KillSignComponent>(args.Target, out var comp);
                     comp.HideFromOwner = false; // We set it to false anyway, in case the hidden smite was used beforehand.
                     Dirty(args.Target, comp);
+                    // ??? end
                 },
                 Impact = LogImpact.Extreme,
                 Message = string.Join(": ", killSignName, Loc.GetString("admin-smite-kill-sign-description"))
             };
             args.Verbs.Add(killSign);
 
+            // ??? start, // HardLight: Not sure where this came from, but it wasn't upstream. Commenting for now.
             var hiddenKillSignName = Loc.GetString("admin-smite-kill-sign-hidden-name").ToLowerInvariant();
             Verb hiddenKillSign = new()
             {
@@ -614,6 +625,7 @@ public sealed partial class AdminVerbSystem
                 Message = string.Join(": ", hiddenKillSignName, Loc.GetString("admin-smite-kill-sign-hidden-description"))
             };
             args.Verbs.Add(hiddenKillSign);
+            // ??? end
 
             var cluwneName = Loc.GetString("admin-smite-cluwne-name").ToLowerInvariant();
             Verb cluwne = new()
@@ -1079,7 +1091,7 @@ public sealed partial class AdminVerbSystem
         };
         args.Verbs.Add(homingRodSlow);
 
-        // Frontier
+        // Frontier start
         var cavemanName = Loc.GetString("admin-smite-caveman-name").ToLowerInvariant();
         Verb caveman = new()
         {
@@ -1135,9 +1147,9 @@ public sealed partial class AdminVerbSystem
             Message = string.Join(": ", cavemanName, Loc.GetString("admin-smite-caveman-description"))
         };
         args.Verbs.Add(caveman);
-        // End Frontier
+        // Frontier end
 
-        // Far Horizons - Start
+        // Far Horizons start
         var fuelRodifyName = Loc.GetString("admin-smite-become-fuelrod-name").ToLowerInvariant();
         Verb fuelRodify = new()
         {
@@ -1153,7 +1165,7 @@ public sealed partial class AdminVerbSystem
             Message = string.Join(": ", fuelRodifyName, Loc.GetString("admin-smite-become-fuelrod-description"))
         };
         args.Verbs.Add(fuelRodify);
-        // Far Horizons - End
+        // Far Horizons end
     }
 
     public void HomingLaunchSequence(EntityUid target, EntProtoId proto, float distance, float speed)
@@ -1178,4 +1190,3 @@ public sealed partial class AdminVerbSystem
             despawn.Lifetime = offset.Length() / speed * 3; // exists thrice as long as it takes to get to you.
     }
 }
-

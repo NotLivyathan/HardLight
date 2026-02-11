@@ -1,13 +1,10 @@
-using System.Linq;
 using System.Numerics;
-using Content.Server.Atmos.EntitySystems;
-using Content.Server.Explosion.Components;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Database;
 using Content.Shared.Explosion;
 using Content.Shared.Explosion.Components;
-using Content.Shared.Explosion.EntitySystems;
 using Content.Shared.Maps;
 using Content.Shared.Physics;
 using Content.Shared.Projectiles;
@@ -17,7 +14,6 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Dynamics;
-using Robust.Shared.Player;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
@@ -27,8 +23,6 @@ namespace Content.Server.Explosion.EntitySystems;
 
 public sealed partial class ExplosionSystem
 {
-    [Dependency] private readonly FlammableSystem _flammableSystem = default!;
-
     /// <summary>
     ///     Used to limit explosion processing time. See <see cref="MaxProcessingTime"/>.
     /// </summary>
@@ -85,7 +79,7 @@ public sealed partial class ExplosionSystem
     public override void Update(float frameTime)
     {
         if (_activeExplosion == null && _explosionQueue.Count == 0)
-            // nothing to do
+            // Nothing to do
             return;
 
         Stopwatch.Restart();
@@ -94,10 +88,10 @@ public sealed partial class ExplosionSystem
         var tilesRemaining = TilesPerTick;
         while (tilesRemaining > 0 && MaxProcessingTime > Stopwatch.Elapsed.TotalMilliseconds)
         {
-            // if there is no active explosion, get a new one to process
+            // If there is no active explosion, get a new one to process
             if (_activeExplosion == null)
             {
-                // EXPLOSION TODO allow explosion spawning to be interrupted by time limit. In the meantime, ensure that
+                // EXPLOSION TODO: Allow explosion spawning to be interrupted by time limit. In the meantime, ensure that
                 // there is at-least 1ms of time left before creating a new explosion
                 if (MathF.Max(MaxProcessingTime - 1, 0.1f) < Stopwatch.Elapsed.TotalMilliseconds)
                     break;
@@ -108,25 +102,25 @@ public sealed partial class ExplosionSystem
                 _queuedExplosions.Remove(queued);
                 _activeExplosion = SpawnExplosion(queued);
 
-                // explosion spawning can be null if something somewhere went wrong. (e.g., negative explosion
+                // Explosion spawning can be null if something somewhere went wrong. (e.g., negative explosion
                 // intensity).
                 if (_activeExplosion == null)
                     continue;
 
-                // just a lil nap
+                // Just a lil nap
                 if (SleepNodeSys)
                 {
                     _nodeGroupSystem.PauseUpdating = true;
                     _pathfindingSystem.PauseUpdating = true;
-                    // snooze grid-chunk regeneration?
-                    // snooze power network (recipients look for new suppliers as wires get destroyed).
+                    // Snooze grid-chunk regeneration?
+                    // Snooze power network (recipients look for new suppliers as wires get destroyed).
                 }
 
                 if (_activeExplosion.Area > SingleTickAreaLimit)
                     break; // start processing next turn.
             }
 
-            // TODO EXPLOSION  check if active explosion is on a paused map. If it is... I guess support swapping out &
+            // TODO EXPLOSION: Check if active explosion is on a paused map. If it is... I guess support swapping out &
             // storing the "currently active" explosion?
 
 #if EXCEPTION_TOLERANCE
@@ -136,7 +130,7 @@ public sealed partial class ExplosionSystem
             var processed = _activeExplosion.Process(tilesRemaining);
             tilesRemaining -= processed;
 
-            // has the explosion finished processing?
+            // Has the explosion finished processing?
             if (_activeExplosion.FinishedProcessing)
             {
                 var comp = EnsureComp<TimedDespawnComponent>(_activeExplosion.VisualEnt);
@@ -146,7 +140,7 @@ public sealed partial class ExplosionSystem
             }
 #if EXCEPTION_TOLERANCE
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Ensure the system does not get stuck in an error-loop.
                 if (_activeExplosion != null)
@@ -161,7 +155,7 @@ public sealed partial class ExplosionSystem
 
         Log.Info($"Processed {TilesPerTick - tilesRemaining} tiles in {Stopwatch.Elapsed.TotalMilliseconds}ms");
 
-        // we have finished processing our tiles. Is there still an ongoing explosion?
+        // We have finished processing our tiles. Is there still an ongoing explosion?
         if (_activeExplosion != null)
         {
             _appearance.SetData(_activeExplosion.VisualEnt, ExplosionAppearanceData.Progress, _activeExplosion.CurrentIteration + 1);
@@ -171,7 +165,7 @@ public sealed partial class ExplosionSystem
         if (_explosionQueue.Count > 0)
             return;
 
-        //wakey wakey
+        // Wakey wakey
         _nodeGroupSystem.PauseUpdating = false;
         _pathfindingSystem.PauseUpdating = false;
     }
@@ -213,24 +207,24 @@ public sealed partial class ExplosionSystem
         var size = grid.Comp.TileSize;
         var gridBox = new Box2(tile * size, (tile + 1) * size);
 
-        // get the entities on a tile. Note that we cannot process them directly, or we get
+        // Get the entities on a tile. Note that we cannot process them directly, or we get
         // enumerator-changed-while-enumerating errors.
         List<(EntityUid, TransformComponent)> list = new();
         var state = (list, processed, EntityManager.TransformQuery);
 
-        // get entities:
+        // Get entities
         lookup.DynamicTree.QueryAabb(ref state, GridQueryCallback, gridBox, true);
         lookup.StaticTree.QueryAabb(ref state, GridQueryCallback, gridBox, true);
         lookup.SundriesTree.QueryAabb(ref state, GridQueryCallback, gridBox, true);
         lookup.StaticSundriesTree.QueryAabb(ref state, GridQueryCallback, gridBox, true);
 
-        // process those entities
+        // Process those entities
         foreach (var (uid, xform) in list)
         {
             ProcessEntity(uid, epicenter, damage, throwForce, id, xform, fireStacks, cause);
         }
 
-        // process anchored entities
+        // Process anchored entities
         var tileBlocked = false;
         _anchored.Clear();
         _map.GetAnchoredEntities(grid, tile, _anchored);
@@ -300,7 +294,7 @@ public sealed partial class ExplosionSystem
     /// <summary>
     ///     Same as <see cref="ExplodeTile"/>, but for SPAAAAAAACE.
     /// </summary>
-    internal void ExplodeSpace(BroadphaseComponent lookup,
+    internal void ExplodeSpace(Entity<BroadphaseComponent> lookup,
         Matrix3x2 spaceMatrix,
         Matrix3x2 invSpaceMatrix,
         Vector2i tile,
@@ -317,11 +311,11 @@ public sealed partial class ExplosionSystem
         var list = new List<(EntityUid, TransformComponent)>();
         var state = (list, processed, invSpaceMatrix, lookup.Owner, EntityManager.TransformQuery, gridBox, _transformSystem);
 
-        // get entities:
-        lookup.DynamicTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
-        lookup.StaticTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
-        lookup.SundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
-        lookup.StaticSundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        // Get entities
+        lookup.Comp.DynamicTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        lookup.Comp.StaticTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        lookup.Comp.SundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        lookup.Comp.StaticSundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
 
         foreach (var (uid, xform) in state.Item1)
         {
@@ -335,8 +329,8 @@ public sealed partial class ExplosionSystem
         // Also, throw any entities that were spawned as shrapnel. Compared to entity spawning & destruction, this extra
         // lookup is relatively minor computational cost, and throwing is disabled for nukes anyways.
         list.Clear();
-        lookup.DynamicTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
-        lookup.SundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        lookup.Comp.DynamicTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
+        lookup.Comp.SundriesTree.QueryAabb(ref state, SpaceQueryCallback, worldBox, true);
 
         foreach (var (uid, xform) in list)
         {
@@ -355,14 +349,14 @@ public sealed partial class ExplosionSystem
 
         if (xform.ParentUid == state.LookupOwner)
         {
-            // parented directly to the map, use local position
+            // Parented directly to the map, use local position
             if (state.GridBox.Contains(Vector2.Transform(xform.LocalPosition, state.InvSpaceMatrix)))
                 state.List.Add((uid, xform));
 
             return true;
         }
 
-        // finally check if it intersects our tile
+        // Finally check if it intersects our tile
         var wpos = state.System.GetWorldPosition(xform);
         if (state.GridBox.Contains(Vector2.Transform(wpos, state.InvSpaceMatrix)))
             state.List.Add((uid, xform));
@@ -381,7 +375,7 @@ public sealed partial class ExplosionSystem
     private DamageSpecifier GetDamage(EntityUid uid,
         string id, DamageSpecifier damage)
     {
-        // TODO Explosion Performance
+        // TODO Explosion: Performance
         // Cache this? I.e., instead of raising an event, check for a component?
         var resistanceEv = new GetExplosionResistanceEvent(id);
         RaiseLocalEvent(uid, ref resistanceEv);
@@ -398,7 +392,7 @@ public sealed partial class ExplosionSystem
     {
         _toDamage.Clear();
 
-        // don't raise BeforeExplodeEvent if the entity is completely immune to explosions
+        // Don't raise BeforeExplodeEvent if the entity is completely immune to explosions
         var thisDamage = GetDamage(uid, prototype, originalDamage);
         if (thisDamage.Empty)
             return;
@@ -441,32 +435,29 @@ public sealed partial class ExplosionSystem
         float? fireStacksOnIgnite,
         EntityUid? cause)
     {
-        if (originalDamage != null)
+        if (originalDamage is not null)
         {
             GetEntitiesToDamage(uid, originalDamage, id);
             foreach (var (entity, damage) in _toDamage)
             {
-                if (damage.GetTotal() > 0 && TryComp<ActorComponent>(entity, out var actorComponent))
+                if (!_damageableQuery.TryComp(entity, out var damageable))
+                    continue;
+
+                // TODO EXPLOSIONS: Turn explosions into entities, and pass the entity in as the damage origin.
+                _damageableSystem.TryChangeDamage((entity, damageable), damage, ignoreResistances: true, ignoreGlobalModifiers: true);
+
+                if (_actorQuery.HasComp(entity))
                 {
-                    // Log damage to player entities only, cause this will create a massive amount of log spam otherwise.
-                    if (cause != null)
-                    {
+                    // Log damage to player entities only; this will create a massive amount of log spam otherwise.
+                    if (cause is not null)
                         _adminLogger.Add(LogType.ExplosionHit, LogImpact.Medium, $"Explosion of {ToPrettyString(cause):actor} dealt {damage.GetTotal()} damage to {ToPrettyString(entity):subject}");
-                    }
                     else
-                    {
                         _adminLogger.Add(LogType.ExplosionHit, LogImpact.Medium, $"Explosion at {epicenter:epicenter} dealt {damage.GetTotal()} damage to {ToPrettyString(entity):subject}");
-                    }
-
                 }
-
-                // TODO EXPLOSIONS turn explosions into entities, and pass the the entity in as the damage origin.
-                _damageableSystem.TryChangeDamage(entity, damage * _damageableSystem.UniversalExplosionDamageModifier, ignoreResistances: true);
-
             }
         }
 
-        // ignite
+        // Ignite
         if (fireStacksOnIgnite != null)
         {
             if (_flammableQuery.TryGetComponent(uid, out var flammable))
@@ -476,7 +467,7 @@ public sealed partial class ExplosionSystem
             }
         }
 
-        // throw
+        // Throw
         if (xform != null // null implies anchored or in a container
             && !xform.Anchored
             && throwForce > 0
@@ -513,14 +504,13 @@ public sealed partial class ExplosionSystem
             || tileDef.Indestructible)
             return;
 
-        // Mono
-        if (tileDef.Indestructible)
+        if (tileDef.Indestructible) // Mono
             return;
 
         if (!CanCreateVacuum)
             canCreateVacuum = false;
         else if (tileDef.MapAtmosphere)
-            canCreateVacuum = true; // is already a vacuum.
+            canCreateVacuum = true; // Is already a vacuum.
 
         int tileBreakages = 0;
         while (maxTileBreak > tileBreakages && _robustRandom.Prob(type.TileBreakChance(effectiveIntensity)))
@@ -528,7 +518,7 @@ public sealed partial class ExplosionSystem
             tileBreakages++;
             effectiveIntensity -= type.TileBreakRerollReduction;
 
-            // does this have a base-turf that we can break it down to?
+            // Does this have a base-turf that we can break it down to?
             if (string.IsNullOrEmpty(tileDef.BaseTurf))
                 break;
 
@@ -573,12 +563,12 @@ sealed class Explosion
         /// <summary>
         ///     Lookup component for this grid (or space/map).
         /// </summary>
-        public BroadphaseComponent Lookup;
+        public Entity<BroadphaseComponent> Lookup;
 
         /// <summary>
         ///     The actual grid that this corresponds to. If null, this implies space.
         /// </summary>
-        public MapGridComponent? MapGrid;
+        public Entity<MapGridComponent>? MapGrid;
     }
 
     private readonly List<ExplosionData> _explosionData = new();
@@ -629,8 +619,8 @@ sealed class Explosion
 #if DEBUG
     private DamageSpecifier? _expectedDamage;
 #endif
-    private BroadphaseComponent _currentLookup = default!;
-    private MapGridComponent? _currentGrid;
+    private Entity<BroadphaseComponent> _currentLookup = default!;
+    private Entity<MapGridComponent>? _currentGrid;
     private float _currentIntensity;
     private float _currentThrowForce;
     private List<Vector2i>.Enumerator _currentEnumerator;
@@ -640,7 +630,7 @@ sealed class Explosion
     ///     The set of tiles that need to be updated when the explosion has finished processing. Used to avoid having
     ///     the explosion trigger chunk regeneration & shuttle-system processing every tick.
     /// </summary>
-    private readonly Dictionary<MapGridComponent, List<(Vector2i, Tile)>> _tileUpdateDict = new();
+    private readonly Dictionary<Entity<MapGridComponent>, List<(Vector2i, Tile)>> _tileUpdateDict = new();
 
     // Entity Queries
     private readonly EntityQuery<TransformComponent> _xformQuery;
@@ -672,6 +662,7 @@ sealed class Explosion
     private readonly IEntityManager _entMan;
     private readonly ExplosionSystem _system;
     private readonly SharedMapSystem _mapSystem;
+    private readonly Shared.Damage.Systems.DamageableSystem _damageable;
 
     public readonly EntityUid VisualEnt;
 
@@ -692,10 +683,10 @@ sealed class Explosion
         int maxTileBreak,
         bool canCreateVacuum,
         IEntityManager entMan,
-        IMapManager mapMan,
         EntityUid visualEnt,
         EntityUid? cause,
-        SharedMapSystem mapSystem)
+        SharedMapSystem mapSystem,
+        Shared.Damage.Systems.DamageableSystem damageable)
     {
         VisualEnt = visualEnt;
         Cause = cause;
@@ -710,6 +701,7 @@ sealed class Explosion
         _maxTileBreak = maxTileBreak;
         _canCreateVacuum = canCreateVacuum;
         _entMan = entMan;
+        _damageable = damageable;
 
         _xformQuery = entMan.GetEntityQuery<TransformComponent>();
         _physicsQuery = entMan.GetEntityQuery<PhysicsComponent>();
@@ -724,7 +716,7 @@ sealed class Explosion
             _explosionData.Add(new()
             {
                 TileLists = spaceData.TileLists,
-                Lookup = entMan.GetComponent<BroadphaseComponent>(mapUid),
+                Lookup = (mapUid, entMan.GetComponent<BroadphaseComponent>(mapUid)),
                 MapGrid = null
             });
 
@@ -737,7 +729,7 @@ sealed class Explosion
             _explosionData.Add(new ExplosionData
             {
                 TileLists = grid.TileLists,
-                Lookup = entMan.GetComponent<BroadphaseComponent>(grid.Grid.Owner),
+                Lookup = (grid.Grid, entMan.GetComponent<BroadphaseComponent>(grid.Grid)),
                 MapGrid = grid.Grid,
             });
         }
@@ -764,17 +756,19 @@ sealed class Explosion
                 _expectedDamage = ExplosionType.DamagePerIntensity * _currentIntensity;
             }
 #endif
+            var modifier = _currentIntensity
+                           * _damageable.UniversalExplosionDamageModifier
+                           * _damageable.UniversalAllDamageModifier;
+            _currentDamage = ExplosionType.DamagePerIntensity * modifier;
 
-            _currentDamage = ExplosionType.DamagePerIntensity * _currentIntensity;
-
-            // only throw if either the explosion is small, or if this is the outer ring of a large explosion.
+            // Only throw if either the explosion is small, or if this is the outer ring of a large explosion.
             var doThrow = Area < _system.ThrowLimit || CurrentIteration > _tileSetIntensity.Count - 6;
             _currentThrowForce = doThrow ? 10 * MathF.Sqrt(_currentIntensity) : 0;
 
-            // for each grid/space tile set
+            // For each grid/space tile set
             while (_currentDataIndex < _explosionData.Count)
             {
-                // try get any tile hash-set corresponding to this intensity
+                // Try get any tile hash-set corresponding to this intensity
                 var tileSets = _explosionData[_currentDataIndex].TileLists;
                 if (!tileSets.TryGetValue(CurrentIteration, out var tileList))
                 {
@@ -787,8 +781,8 @@ sealed class Explosion
                 _currentGrid = _explosionData[_currentDataIndex].MapGrid;
                 _currentDataIndex++;
 
-                // sanity checks, in case something changed while the explosion was being processed over several ticks.
-                if (_currentLookup.Deleted || _currentGrid != null && !_entMan.EntityExists(_currentGrid.Owner))
+                // Sanity checks, in case something changed while the explosion was being processed over several ticks.
+                if (_currentLookup.Comp.Deleted || _currentGrid != null && !_entMan.EntityExists(_currentGrid.Value))
                     continue;
 
                 return true;
@@ -843,20 +837,20 @@ sealed class Explosion
             }
 
             // Is the current tile on a grid (instead of in space)?
-            if (_currentGrid != null &&
-                _currentGrid.TryGetTileRef(_currentEnumerator.Current, out var tileRef) &&
+            if (_currentGrid is { } currentGrid &&
+                _mapSystem.TryGetTileRef(currentGrid, currentGrid.Comp, _currentEnumerator.Current, out var tileRef) &&
                 !tileRef.Tile.IsEmpty)
             {
-                if (!_tileUpdateDict.TryGetValue(_currentGrid, out var tileUpdateList))
+                if (!_tileUpdateDict.TryGetValue(currentGrid, out var tileUpdateList))
                 {
                     tileUpdateList = new();
-                    _tileUpdateDict[_currentGrid] = tileUpdateList;
+                    _tileUpdateDict[currentGrid] = tileUpdateList;
                 }
 
-                // damage entities on the tile. Also figures out whether there are any solid entities blocking the floor
+                // Damage entities on the tile. Also figures out whether there are any solid entities blocking the floor
                 // from being destroyed.
                 var canDamageFloor = _system.ExplodeTile(_currentLookup,
-                    (_currentGrid.Owner, _currentGrid),
+                    currentGrid,
                     _currentEnumerator.Current,
                     _currentThrowForce,
                     _currentDamage,
@@ -917,10 +911,10 @@ sealed class Explosion
 /// <summary>
 /// Data needed to spawn an explosion with <see cref="ExplosionSystem.SpawnExplosion"/>.
 /// </summary>
-public sealed class QueuedExplosion
+public sealed class QueuedExplosion(ExplosionPrototype proto)
 {
     public MapCoordinates Epicenter;
-    public ExplosionPrototype Proto = new();
+    public ExplosionPrototype Proto = proto;
     public float TotalIntensity, Slope, MaxTileIntensity, TileBreakScale;
     public int MaxTileBreak;
     public bool CanCreateVacuum;

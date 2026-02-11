@@ -1,9 +1,3 @@
-// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
-// SPDX-FileCopyrightText: 2025 Tim <timfalken@hotmail.com>
-// SPDX-FileCopyrightText: 2025 slarticodefast <161409025+slarticodefast@users.noreply.github.com>
-//
-// SPDX-License-Identifier: AGPL-3.0-or-later
-
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Chat.Systems;
 using Content.Server.Cloning.Components;
@@ -13,13 +7,12 @@ using Content.Server.Fluids.EntitySystems;
 using Content.Server.Materials;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
-using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared.Atmos;
 using Content.Shared.CCVar;
-using Content.Shared.Chat;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Cloning;
-using Content.Shared.Damage;
+using Content.Shared.Chat;
+using Content.Shared.Damage.Components;
 using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
@@ -46,6 +39,7 @@ public sealed class CloningPodSystem : EntitySystem
     [Dependency] private readonly EuiManager _euiManager = null!;
     [Dependency] private readonly CloningConsoleSystem _cloningConsoleSystem = default!;
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
+    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
     [Dependency] private readonly PowerReceiverSystem _powerReceiverSystem = default!;
     [Dependency] private readonly IRobustRandom _robustRandom = default!;
     [Dependency] private readonly AtmosphereSystem _atmosphereSystem = default!;
@@ -84,11 +78,23 @@ public sealed class CloningPodSystem : EntitySystem
         _signalSystem.EnsureSinkPorts(ent.Owner, ent.Comp.PodPort);
     }
 
-    // GoobStation: rewrite so it uses BeingClonedComponent instead of a dictionary
-    // Most other edits in this commit are ported from f4f4e258929bdf61177a4fb61467d527dd9d103b
+    // GoobStation start: Rewrite so it uses BeingClonedComponent instead of a dictionary
     internal void TransferMindToClone(EntityUid mindId, MindComponent mind)
     {
-        // find first mob this player is meant to use and doesn't already have a mind via alternate means
+        if (!ClonesWaitingForMind.TryGetValue(mind, out var entity) ||
+            !Exists(entity) ||
+            !TryComp<MindContainerComponent>(entity, out var mindComp) ||
+            mindComp.Mind != null)
+            return;
+
+        _mindSystem.TransferTo(mindId, entity, ghostCheckOverride: true, mind: mind);
+        _mindSystem.UnVisit(mindId, mind);
+        ClonesWaitingForMind.Remove(mind);
+    }
+
+    private void HandleMindAdded(EntityUid uid, BeingClonedComponent clonedComponent, MindAddedMessage message)
+    {
+        // Find first mob this player is meant to use and doesn't already have a mind via alternate means
         var query = EntityQueryEnumerator<BeingClonedComponent, MindContainerComponent>();
         var found = false;
         EntityUid mob;
@@ -121,6 +127,8 @@ public sealed class CloningPodSystem : EntitySystem
         }
         UpdateStatus(clonedComponent.Parent, CloningPodStatus.Cloning, cloningPodComponent);
     }
+    // GoobStation end
+
     private void OnPortDisconnected(Entity<CloningPodComponent> ent, ref PortDisconnectedEvent args)
     {
         ent.Comp.ConnectedConsole = null;
@@ -156,25 +164,20 @@ public sealed class CloningPodSystem : EntitySystem
             return false;
 
         var mind = mindEnt.Comp;
-        // Goobstation - allowing cloning living people
-        /*
-        if (ClonesWaitingForMind.TryGetValue(mind, out var clone))
-        {
-            if (EntityManager.EntityExists(clone) &&
-                !_mobStateSystem.IsDead(clone) &&
-                TryComp<MindContainerComponent>(clone, out var cloneMindComp) &&
-                (cloneMindComp.Mind == null || cloneMindComp.Mind == mindEnt))
-                return false; // Mind already has clone
-
-            ClonesWaitingForMind.Remove(mind);
-        }
-        */
-
-        // Goobstation - allowing cloning living people
-        /*
-        if (mind.OwnedEntity != null && !_mobStateSystem.IsDead(mind.OwnedEntity.Value))
-            return false; // Body controlled by mind is not dead
-        */
+// HardLight: Goobstation commented this out in order to allow cloning living people, which I'm okay with keeping.
+//        if (ClonesWaitingForMind.TryGetValue(mind, out var clone))
+//        {
+//            if (Exists(clone) &&
+//                !_mobStateSystem.IsDead(clone) &&
+//                TryComp<MindContainerComponent>(clone, out var cloneMindComp) &&
+//                (cloneMindComp.Mind == null || cloneMindComp.Mind == mindEnt))
+//                return false; // Mind already has clone
+//
+//            ClonesWaitingForMind.Remove(mind);
+//        }
+//
+//        if (mind.OwnedEntity != null && !_mobStateSystem.IsDead(mind.OwnedEntity.Value))
+//            return false; // Body controlled by mind is not dead
 
         // Yes, we still need to track down the client because we need to open the Eui
         if (mind.UserId == null || !_playerManager.TryGetSessionById(mind.UserId.Value, out var client))
@@ -188,7 +191,7 @@ public sealed class CloningPodSystem : EntitySystem
         if (_configManager.GetCVar(CCVars.BiomassEasyMode))
             cloningCost = (int)Math.Round(cloningCost * EasyModeCloningCost);
 
-        // biomass checks
+        // Biomass checks
         var biomassAmount = _material.GetMaterialAmount(uid, clonePod.RequiredMaterial);
 
         if (biomassAmount < cloningCost)
@@ -198,9 +201,9 @@ public sealed class CloningPodSystem : EntitySystem
             return false;
         }
 
-        // end of biomass checks
+        // End of biomass checks
 
-        // genetic damage checks
+        // Genetic damage checks
         if (TryComp<DamageableComponent>(bodyToClone, out var damageable) &&
             damageable.Damage.DamageDict.TryGetValue("Cellular", out var cellularDmg))
         {
@@ -220,20 +223,20 @@ public sealed class CloningPodSystem : EntitySystem
                 return true;
             }
         }
-        // end of genetic damage checks
+        // End of genetic damage checks
 
-        if (!_cloning.TryCloning(bodyToClone, _transformSystem.GetMapCoordinates(bodyToClone), SettingsId, out var mob)) // spawn a new body
+        if (!_cloning.TryCloning(bodyToClone, _transformSystem.GetMapCoordinates(bodyToClone), SettingsId, out var mob)) // Spawn a new body
         {
             if (clonePod.ConnectedConsole != null)
                 _chatSystem.TrySendInGameICMessage(clonePod.ConnectedConsole.Value, Loc.GetString("cloning-console-uncloneable-trait-error"), InGameICChatType.Speak, false);
             return false;
         }
 
-        var cloneMindReturn = EntityManager.AddComponent<BeingClonedComponent>(mob.Value);
+        var cloneMindReturn = AddComp<BeingClonedComponent>(mob.Value);
         cloneMindReturn.Mind = mind;
         cloneMindReturn.Parent = uid;
         _containerSystem.Insert(mob.Value, clonePod.BodyContainer);
-        //ClonesWaitingForMind.Add(mind, mob.Value); // Goobstation: use mindId
+//        ClonesWaitingForMind.Add(mind, mob.Value); // Goobstation: Use mindId instead
         _euiManager.OpenEui(new AcceptCloningEui(mindEnt, mind, this), client);
 
         UpdateStatus(uid, CloningPodStatus.NoMind, clonePod);
@@ -297,7 +300,7 @@ public sealed class CloningPodSystem : EntitySystem
         if (clonePod.BodyContainer.ContainedEntity is not { Valid: true } entity || clonePod.CloningProgress < clonePod.CloningTime)
             return;
 
-        EntityManager.RemoveComponent<BeingClonedComponent>(entity);
+        RemComp<BeingClonedComponent>(entity);
         _containerSystem.Remove(entity, clonePod.BodyContainer);
         clonePod.CloningProgress = 0f;
         clonePod.UsedBiomass = 0;

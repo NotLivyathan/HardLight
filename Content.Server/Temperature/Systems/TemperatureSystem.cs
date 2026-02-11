@@ -5,7 +5,8 @@ using Content.Server.Body.Components;
 using Content.Server.Temperature.Components;
 using Content.Shared.Alert;
 using Content.Shared.Atmos;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.Inventory;
 using Content.Shared.Rejuvenate;
@@ -36,7 +37,7 @@ public sealed class TemperatureSystem : SharedTemperatureSystem
 
     private float _accumulatedFrametime;
 
-    public static readonly ProtoId<AlertCategoryPrototype> TemperatureAlertCategory = new("Temperature");
+    public static readonly ProtoId<AlertCategoryPrototype> TemperatureAlertCategory = "Temperature";
 
     public override void Initialize()
     {
@@ -160,15 +161,16 @@ public sealed class TemperatureSystem : SharedTemperatureSystem
         ChangeHeat(uid, heat * temperature.AtmosTemperatureTransferEfficiency, temperature: temperature);
     }
 
-    public float GetHeatCapacity(EntityUid uid, TemperatureComponent? comp = null, PhysicsComponent? physics = null)
-    {
-        if (!Resolve(uid, ref comp) || !Resolve(uid, ref physics, false) || physics.FixturesMass <= 0)
-        {
-            return Atmospherics.MinimumHeatCapacity;
-        }
-
-        return comp.SpecificHeat * physics.FixturesMass;
-    }
+// HardLight: Not sure what this does exactly, but it was removed during the cherry pick. I'm commenting it for now in case it's important for something.
+//    public float GetHeatCapacity(EntityUid uid, TemperatureComponent? comp = null, PhysicsComponent? physics = null)
+//    {
+//        if (!Resolve(uid, ref comp) || !Resolve(uid, ref physics, false) || physics.FixturesMass <= 0)
+//        {
+//            return Atmospherics.MinimumHeatCapacity;
+//        }
+//
+//        return comp.SpecificHeat * physics.FixturesMass;
+//    }
 
     private void OnInit(EntityUid uid, InternalTemperatureComponent comp, MapInitEvent args)
     {
@@ -296,17 +298,16 @@ public sealed class TemperatureSystem : SharedTemperatureSystem
         }
     }
 
-    private void OnTemperatureChangeAttempt(EntityUid uid, TemperatureProtectionComponent component,
-        InventoryRelayedEvent<ModifyChangedTemperatureEvent> args)
+    private void OnTemperatureChangeAttempt(EntityUid uid, TemperatureProtectionComponent component, ModifyChangedTemperatureEvent args)
     {
-        var coefficient = args.Args.TemperatureDelta < 0
+        var coefficient = args.TemperatureDelta < 0
             ? component.CoolingCoefficient
             : component.HeatingCoefficient;
 
         var ev = new GetTemperatureProtectionEvent(coefficient);
         RaiseLocalEvent(uid, ref ev);
 
-        args.Args.TemperatureDelta *= ev.Coefficient;
+        args.TemperatureDelta *= ev.Coefficient;
     }
 
     private void ChangeTemperatureOnCollide(Entity<ChangeTemperatureOnCollideComponent> ent, ref ProjectileHitEvent args)

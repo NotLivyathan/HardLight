@@ -1,13 +1,8 @@
 using Content.Server.Destructible;
 using Content.Shared.Construction;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Examine;
 using Content.Shared.FixedPoint;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Server.Construction.Conditions;
 
@@ -20,7 +15,7 @@ public sealed partial class MinHealth : IGraphCondition
     /// <summary>
     /// If ByProportion is true, Threshold is a value less than or equal to 1, but more than 0,
     /// which is compared to the percent of health remaining in the structure.
-    /// Else, Threshold is any positive value with at most 2 decimal points of percision,
+    /// Else, Threshold is any positive value with at most 2 decimal points of precision,
     /// which is compared to the current health of the structure.
     /// </summary>
     [DataField]

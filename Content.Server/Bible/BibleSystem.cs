@@ -1,13 +1,10 @@
 using Content.Server.Bible.Components;
-using Content.Server.Chemistry.EntitySystems; // Frontier
 using Content.Server.Ghost.Roles.Events;
 using Content.Server.Popups;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Bible;
-using Content.Shared.Chemistry.Components;
-using Content.Shared.Chemistry.Reaction;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Ghost.Roles.Components;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
@@ -17,10 +14,10 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Timing;
 using Content.Shared.Verbs;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
+using Content.Server.Chemistry.EntitySystems; // Frontier
 
 namespace Content.Server.Bible
 {
@@ -41,13 +38,13 @@ namespace Content.Server.Bible
         {
             base.Initialize();
 
-            SubscribeLocalEvent<BibleComponent, MixingAttemptEvent>(OnMixingAttempt); // Frontier: restrict solution blessing to bible users
-            SubscribeLocalEvent<BibleComponent, AfterInteractEvent>(OnAfterInteract, before: [typeof(ReactionMixerSystem)]); // Frontier: add before parameter
+            SubscribeLocalEvent<BibleComponent, AfterInteractEvent>(OnAfterInteract, before: [typeof(ReactionMixerSystem)]); // Frontier: Added before: [typeof(ReactionMixerSystem)]
             SubscribeLocalEvent<SummonableComponent, GetVerbsEvent<AlternativeVerb>>(AddSummonVerb);
             SubscribeLocalEvent<SummonableComponent, GetItemActionsEvent>(GetSummonAction);
             SubscribeLocalEvent<SummonableComponent, SummonActionEvent>(OnSummon);
             SubscribeLocalEvent<FamiliarComponent, MobStateChangedEvent>(OnFamiliarDeath);
             SubscribeLocalEvent<FamiliarComponent, GhostRoleSpawnerUsedEvent>(OnSpawned);
+            SubscribeLocalEvent<BibleComponent, MixingAttemptEvent>(OnMixingAttempt); // Frontier: Restrict solution blessing to bible users
         }
 
         private readonly Queue<EntityUid> _addQueue = new();
@@ -83,7 +80,7 @@ namespace Content.Server.Bible
                 // Clean up the old body
                 if (summonableComp.Summon != null)
                 {
-                    EntityManager.DeleteEntity(summonableComp.Summon.Value);
+                    Del(summonableComp.Summon.Value);
                     summonableComp.Summon = null;
                 }
                 summonableComp.AlreadySummoned = false;
@@ -95,7 +92,7 @@ namespace Content.Server.Bible
             }
         }
 
-        // Frontier: only bible users can bless water/blood
+        // Frontier start: Only bible users can bless water/blood
         private void OnMixingAttempt(EntityUid uid, BibleComponent component, ref MixingAttemptEvent args)
         {
             // Block water/blood blessing attempts by non-bible users
@@ -106,7 +103,7 @@ namespace Content.Server.Bible
                 return;
             }
         }
-        // End Frontier
+        // Frontier end
 
         private void OnAfterInteract(EntityUid uid, BibleComponent component, AfterInteractEvent args)
         {
@@ -116,8 +113,8 @@ namespace Content.Server.Bible
             if (!TryComp(uid, out UseDelayComponent? useDelay) || _delay.IsDelayed((uid, useDelay)))
                 return;
 
-            // Frontier: only bible users can bless water/blood
-            if (args.Target == null)
+            // Frontier start: Only bible users can bless water/blood
+            if (args.Target == null) // Removed args.Target == args.User || !_mobStateSystem.IsAlive(args.Target.Value)
             {
                 return;
             }
@@ -133,7 +130,7 @@ namespace Content.Server.Bible
             }
             // End Frontier
 
-            if (!hasBibleUserComponent) // Frontier: cache bible component lookup
+            if (!HasComp<BibleUserComponent>) // Frontier: Cache bible component lookup; removed (args.User)
             {
                 _popupSystem.PopupEntity(Loc.GetString("bible-sizzle"), args.User, args.User);
 
@@ -162,9 +159,7 @@ namespace Content.Server.Bible
                 }
             }
 
-            var damage = _damageableSystem.TryChangeDamage(args.Target.Value, component.Damage, true, origin: uid);
-
-            if (damage == null || damage.Empty)
+            if (_damageableSystem.TryChangeDamage(args.Target.Value, component.Damage, true, origin: uid))
             {
                 var othersMessage = Loc.GetString(component.LocPrefix + "-heal-success-none-others", ("user", Identity.Entity(args.User, EntityManager)), ("target", Identity.Entity(args.Target.Value, EntityManager)), ("bible", uid));
                 _popupSystem.PopupEntity(othersMessage, args.User, Filter.PvsExcept(args.User), true, PopupType.Medium);
@@ -255,10 +250,12 @@ namespace Content.Server.Bible
             if (component.AlreadySummoned || component.SpecialItemPrototype == null)
                 return;
             if (component.RequiresBibleUser && !HasComp<BibleUserComponent>(user))
+            // Frontier start
             {
-                _popupSystem.PopupEntity(Loc.GetString("bible-summon-request-failed"), user, user, PopupType.Small); // Frontier: better summon feedback
+                _popupSystem.PopupEntity(Loc.GetString("bible-summon-request-failed"), user, user, PopupType.Small); // Better summon feedback
                 return;
             }
+            // Frontier end
             if (!Resolve(user, ref position))
                 return;
             if (component.Deleted || Deleted(uid))
@@ -267,7 +264,7 @@ namespace Content.Server.Bible
                 return;
 
             // Make this familiar the component's summon
-            var familiar = EntityManager.SpawnEntity(component.SpecialItemPrototype, position.Coordinates);
+            var familiar = Spawn(component.SpecialItemPrototype, position.Coordinates);
             component.Summon = familiar;
 
             // If this is going to use a ghost role mob spawner, attach it to the bible.

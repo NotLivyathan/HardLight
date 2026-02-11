@@ -1,6 +1,7 @@
 using Content.Server.NPC.Components;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Mobs.Components;
 using Content.Shared.NPC.Components;
 using Content.Shared.NPC.Systems;
@@ -42,11 +43,11 @@ public sealed class NPCRetaliationSystem : EntitySystem
 
     public bool TryRetaliate(Entity<NPCRetaliationComponent> ent, EntityUid target)
     {
-        // don't retaliate against inanimate objects.
+        // Don't retaliate against inanimate objects.
         if (!HasComp<MobStateComponent>(target))
             return false;
 
-        // don't retaliate against the same faction
+        // Don't retaliate against the same faction
         if (_npcFaction.IsEntityFriendly(ent.Owner, target))
             return false;
 
@@ -64,14 +65,14 @@ public sealed class NPCRetaliationSystem : EntitySystem
         var query = EntityQueryEnumerator<NPCRetaliationComponent, FactionExceptionComponent>();
         while (query.MoveNext(out var uid, out var retaliationComponent, out var factionException))
         {
-            // TODO: can probably reuse this allocation and clear it
+            // TODO: Can probably reuse this allocation and clear it
             foreach (var entity in new ValueList<EntityUid>(retaliationComponent.AttackMemories.Keys))
             {
                 if (!TerminatingOrDeleted(entity) && _timing.CurTime < retaliationComponent.AttackMemories[entity])
                     continue;
 
                 _npcFaction.DeAggroEntity((uid, factionException), entity);
-                // TODO: should probably remove the AttackMemory, thats the whole point of the ValueList right??
+                // TODO: Should probably remove the AttackMemory, thats the whole point of the ValueList right??
             }
         }
     }

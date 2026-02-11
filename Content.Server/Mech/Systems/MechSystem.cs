@@ -25,9 +25,11 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Content.Shared.Mobs.Components; // Frontier
-using Content.Shared.NPC.Components; // Frontier
-using Content.Shared.Mobs; // Frontier
+// Frontier start
+using Content.Shared.Mobs.Components;
+using Content.Shared.NPC.Components;
+using Content.Shared.Mobs;
+// Frontier end
 
 namespace Content.Server.Mech.Systems;
 
@@ -136,14 +138,14 @@ public sealed partial class MechSystem : SharedMechSystem
     private void OnMapInit(EntityUid uid, MechComponent component, MapInitEvent args)
     {
         var xform = Transform(uid);
-        // TODO: this should use containerfill?
+        // TODO: This should use containerfill?
         foreach (var equipment in component.StartingEquipment)
         {
             var ent = Spawn(equipment, xform.Coordinates);
             InsertEquipment(uid, ent, component);
         }
 
-        // TODO: this should just be damage and battery
+        // TODO: This should just be damage and battery
         component.Integrity = component.MaxIntegrity;
         component.Energy = component.MaxEnergy;
 
@@ -153,10 +155,8 @@ public sealed partial class MechSystem : SharedMechSystem
 
     private void OnRemoveEquipmentMessage(EntityUid uid, MechComponent component, MechEquipmentRemoveMessage args)
     {
-        // Frontier: mechs with fixed equipment
-        if (!component.CanRemoveEquipment)
+        if (!component.CanRemoveEquipment) // Frontier: Mechs with fixed equipment
             return;
-        // End Frontier: mechs with fixed equipment
 
         var equip = GetEntity(args.Equipment);
 
@@ -201,7 +201,7 @@ public sealed partial class MechSystem : SharedMechSystem
                     _doAfter.TryStartDoAfter(doAfterEventArgs);
                 }
             };
-            var openUiVerb = new AlternativeVerb //can't hijack someone else's mech
+            var openUiVerb = new AlternativeVerb // Can't hijack someone else's mech
             {
                 Act = () => ToggleMechUi(uid, component, args.User),
                 Text = Loc.GetString("mech-ui-open-verb")
@@ -247,7 +247,7 @@ public sealed partial class MechSystem : SharedMechSystem
             return;
         }
 
-        // Frontier - Make AI Attack mechs based on user.
+        // Frontier start: Make AI Attack mechs based on user.
         if (TryComp<MobStateComponent>(args.User, out var _))
             EnsureComp<MobStateComponent>(uid);
         if (TryComp<NpcFactionMemberComponent>(args.User, out var faction))
@@ -256,7 +256,7 @@ public sealed partial class MechSystem : SharedMechSystem
             if (faction.Factions != null)
                 factionMech.Factions = faction.Factions;
         }
-        // End Frontier
+        // Frontier end
 
         TryInsert(uid, args.Args.User, component);
         _actionBlocker.UpdateCanMove(uid);
@@ -287,7 +287,7 @@ public sealed partial class MechSystem : SharedMechSystem
             _damageable.ChangeDamage(component.PilotSlot.ContainedEntity.Value, damage);
         }
 
-        if (TryComp<MobStateComponent>(component.PilotSlot.ContainedEntity, out var state) && state.CurrentState != MobState.Alive) // Frontier - Eject players from mechs when they go crit
+        if (TryComp<MobStateComponent>(component.PilotSlot.ContainedEntity, out var state) && state.CurrentState != MobState.Alive) // Frontier: Eject players from mechs when they go crit
             TryEject(uid, component);
     }
 
@@ -365,7 +365,7 @@ public sealed partial class MechSystem : SharedMechSystem
         _battery.SetCharge((battery.Value, batteryComp), _battery.GetCharge((battery.Value, batteryComp)) + delta.Float());
         // TODO: Power cells are predicted now, so no need to duplicate the charge level
         var charge = _battery.GetCharge((battery.Value, batteryComp));
-        if (charge != component.Energy) //if there's a discrepency, we have to resync them
+        if (charge != component.Energy) // If there's a discrepency, we have to resync them
         {
             Log.Debug($"Battery charge was not equal to mech charge. Battery {charge}. Mech {component.Energy}");
             component.Energy = charge;
@@ -457,7 +457,7 @@ public sealed partial class MechSystem : SharedMechSystem
         if (args.Air != null)
             return;
 
-        // only airtight mechs get internal air
+        // Only airtight mechs get internal air
         if (!TryComp<MechComponent>(uid, out var mech) || !mech.Airtight)
             return;
 

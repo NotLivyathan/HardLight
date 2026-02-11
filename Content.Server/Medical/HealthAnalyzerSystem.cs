@@ -1,32 +1,26 @@
-using Content.Server._NF.Traits.Assorted; // Frontier
 using Content.Server.Medical.Components;
-using Content.Shared._Shitmed.Targeting;
-// Shitmed Change
-using Content.Shared.Body.Part;
-using Content.Shared.Body.Systems;
+using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
-using Content.Shared.Medical;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
 using Content.Shared.PowerCell;
 using Content.Shared.Temperature.Components;
-using Content.Shared.Body.Components;
-using Content.Shared._DV.Traits.Assorted; // DeltaV
+using Content.Shared.Traits.Assorted;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
-using Content.Server.Body.Systems;
-using System.Linq;
-using static Content.Server.Traits.Assorted.UnrevivableSystem;
+using Content.Server._NF.Traits.Assorted; // Frontier
+using Content.Shared._Shitmed.Targeting; // Shitmed
+using Content.Shared._DV.Traits.Assorted; // DeltaV
 
 namespace Content.Server.Medical;
 
@@ -36,7 +30,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     [Dependency] private readonly PowerCellSystem _cell = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
+    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
@@ -51,12 +45,13 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         SubscribeLocalEvent<HealthAnalyzerComponent, EntGotInsertedIntoContainerMessage>(OnInsertedIntoContainer);
         SubscribeLocalEvent<HealthAnalyzerComponent, ItemToggledEvent>(OnToggled);
         SubscribeLocalEvent<HealthAnalyzerComponent, DroppedEvent>(OnDropped);
-        // Shitmed Change Start
+
+        // Shitmed start
         Subs.BuiEvents<HealthAnalyzerComponent>(HealthAnalyzerUiKey.Key, subs =>
         {
             subs.Event<HealthAnalyzerPartMessage>(OnHealthAnalyzerPartSelected);
         });
-        // Shitmed Change End
+        // Shitmed end
     }
 
     public override void Update(float frameTime)
@@ -64,7 +59,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
         var analyzerQuery = EntityQueryEnumerator<HealthAnalyzerComponent, TransformComponent>();
         while (analyzerQuery.MoveNext(out var uid, out var component, out var transform))
         {
-            //Update rate limited to 1 second
+            // Update rate limited to 1 second
             if (component.NextUpdate > _timing.CurTime)
                 continue;
 
@@ -77,7 +72,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
                 continue;
             }
 
-            // Shitmed Change Start
+            // Shitmed start
             if (component.CurrentBodyPart != null
                 && (Deleted(component.CurrentBodyPart)
                     || TryComp(component.CurrentBodyPart, out BodyPartComponent? bodyPartComponent)
@@ -86,21 +81,21 @@ public sealed class HealthAnalyzerSystem : EntitySystem
                 BeginAnalyzingEntity((uid, component), patient, null);
                 continue;
             }
-            // Shitmed Change End
+            // Shitmed end
 
             component.NextUpdate = _timing.CurTime + component.UpdateInterval;
 
-            //Get distance between health analyzer and the scanned entity
-            //null is infinite range
+            // Get distance between health analyzer and the scanned entity
+            // Null is infinite range
             var patientCoordinates = Transform(patient).Coordinates;
             if (component.MaxScanRange != null && !_transformSystem.InRange(patientCoordinates, transform.Coordinates, component.MaxScanRange.Value))
             {
-                //Range too far, disable updates
+                // Range too far, disable updates
                 StopAnalyzingEntity((uid, component), patient);
                 continue;
             }
 
-            UpdateScannedUser(uid, patient, true, component.CurrentBodyPart); // Shitmed Change
+            UpdateScannedUser(uid, patient, true, component.CurrentBodyPart); // Shitmed
         }
     }
 
@@ -180,16 +175,16 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     /// </summary>
     /// <param name="healthAnalyzer">The health analyzer that should receive the updates</param>
     /// <param name="target">The entity to start analyzing</param>
-    /// <param name="part">Shitmed Change: The body part to analyze, if any</param>
+    /// <param name="part">Shitmed: The body part to analyze, if any</param>
     private void BeginAnalyzingEntity(Entity<HealthAnalyzerComponent> healthAnalyzer, EntityUid target, EntityUid? part = null)
     {
-        //Link the health analyzer to the scanned entity
+        // Link the health analyzer to the scanned entity
         healthAnalyzer.Comp.ScannedEntity = target;
-        healthAnalyzer.Comp.CurrentBodyPart = part; // Shitmed Change
+        healthAnalyzer.Comp.CurrentBodyPart = part; // Shitmed
 
         _toggle.TryActivate(healthAnalyzer.Owner);
 
-        UpdateScannedUser(healthAnalyzer, target, true, part); // Shitmed Change
+        UpdateScannedUser(healthAnalyzer, target, true, part); // Shitmed
     }
 
     /// <summary>
@@ -201,16 +196,16 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     {
         //Unlink the analyzer
         healthAnalyzer.Comp.ScannedEntity = null;
-        healthAnalyzer.Comp.CurrentBodyPart = null; // Shitmed Change
+        healthAnalyzer.Comp.CurrentBodyPart = null; // Shitmed
 
         _toggle.TryDeactivate(healthAnalyzer.Owner);
 
         UpdateScannedUser(healthAnalyzer, target, false);
     }
 
-    // Shitmed Change Start
+    // Shitmed start
     /// <summary>
-    /// Shitmed Change: Handle the selection of a body part on the health analyzer
+    /// Handle the selection of a body part on the health analyzer
     /// </summary>
     /// <param name="healthAnalyzer">The health analyzer that's receiving the updates</param>
     /// <param name="args">The message containing the selected part</param>
@@ -230,7 +225,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
                 BeginAnalyzingEntity(healthAnalyzer, owner.Value, part.FirstOrDefault().Id);
         }
     }
-    // Shitmed Change End
+    // Shitmed end
 
     /// <summary>
     /// Send an update for the target to the healthAnalyzer
@@ -238,7 +233,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
     /// <param name="healthAnalyzer">The health analyzer</param>
     /// <param name="target">The entity being scanned</param>
     /// <param name="scanMode">True makes the UI show ACTIVE, False makes the UI show INACTIVE</param>
-    /// <param name="part">Shitmed Change: The body part being scanned, if any</param>
+    /// <param name="part">Shitmed: The body part being scanned, if any</param>
     public void UpdateScannedUser(EntityUid healthAnalyzer, EntityUid target, bool scanMode, EntityUid? part = null)
     {
         if (!_uiSystem.HasUi(healthAnalyzer, HealthAnalyzerUiKey.Key))
@@ -265,12 +260,13 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             bleeding = bloodstream.BleedAmount > 0;
         }
 
-        // Shitmed Change Start
+        // Shitmed start
         Dictionary<TargetBodyPart, TargetIntegrity>? body = null;
         if (HasComp<TargetingComponent>(target))
             body = _bodySystem.GetBodyPartStatus(target);
-        // Shitmed Change End
-        //HL START
+        // Shitmed end
+
+        // HardLight start
         var attemptDefib = new DefibrillationAttemptEvent();
         RaiseLocalEvent(target, ref attemptDefib);
         var attemptAnalyze = new AnalyzeUnrevivableAttemptEvent();
@@ -278,7 +274,7 @@ public sealed class HealthAnalyzerSystem : EntitySystem
 
         if (attemptDefib.Cancelled && !attemptAnalyze.Cancelled)
             unrevivable = true;
-        //HL END
+        // HardLight end
 
         if (TryComp<UnrevivableComponent>(target, out var unrevivableComp) && unrevivableComp.Analyzable)
             unrevivable = true;
@@ -294,9 +290,10 @@ public sealed class HealthAnalyzerSystem : EntitySystem
             bleeding,
             unrevivable,
             uncloneable, // DeltaV: Uncloneable
-            // Shitmed Change
+            // Shitmed start
             body,
             part != null ? GetNetEntity(part) : null
+            // Shitmed end
         ));
     }
 }

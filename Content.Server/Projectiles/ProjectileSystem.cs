@@ -12,19 +12,21 @@ using Content.Shared.Projectiles;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
 using Content.Shared.StatusEffect;
-using Content.Shared.Eye.Blinding.Components; // Frontier
-using Content.Shared.Eye.Blinding.Systems; // Frontier
 using Content.Shared.Physics;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Physics.Dynamics; // Mono
 using Robust.Shared.Physics.Systems;
-using Robust.Shared.Random; // Frontier
-using Content.Server.Chat.Systems; // Frontier
 using Robust.Shared.Timing;
 using System.Linq;
 using System.Numerics;
+using Robust.Shared.Physics.Dynamics; // Mono
+// Frontier start
+using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Eye.Blinding.Systems;
+using Robust.Shared.Random;
+using Content.Server.Chat.Systems;
+// Frontier end
 
 namespace Content.Server.Projectiles;
 

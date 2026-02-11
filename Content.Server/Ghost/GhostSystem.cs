@@ -1,19 +1,16 @@
 using System.Linq;
 using System.Numerics;
-using Content.Server._NF.CryoSleep; // Frontier
 using Content.Server.Administration.Logs;
-using Content.Server.Administration.Managers; // Frontier
-using Content.Server.Cargo.Systems; // Frontier
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
-using Content.Server.Ghost.Components;
 using Content.Server.Mind;
 using Content.Server.Roles.Jobs;
-using Content.Server.Warps;
 using Content.Shared.Actions;
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Eye;
@@ -33,7 +30,6 @@ using Content.Shared.Storage.Components;
 using Content.Shared.Tag;
 using Content.Shared.Warps;
 using Robust.Server.GameObjects;
-using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
@@ -42,6 +38,11 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+// Frontier start
+using Content.Server._NF.CryoSleep;
+using Content.Server.Administration.Managers;
+using Content.Server.Cargo.Systems;
+// Frontier end
 
 namespace Content.Server.Ghost
 {
@@ -79,7 +80,7 @@ namespace Content.Server.Ghost
         private EntityQuery<PhysicsComponent> _physicsQuery;
 
         private static readonly ProtoId<TagPrototype> AllowGhostShownByEventTag = "AllowGhostShownByEvent";
-        private static readonly ProtoId<DamageTypePrototype> AsphyxiationId = "Asphyxiation";
+        private static readonly ProtoId<DamageTypePrototype> AsphyxiationDamageType = "Asphyxiation";
 
         public override void Initialize()
         {
@@ -305,11 +306,10 @@ namespace Content.Server.Ghost
                 return;
             }
 
-            // Frontier: get admin status for entity.
+            // Frontier start: Get admin status for entity, // HardLight: What... does this do exactly? I guess it just doesn't work?
             bool isAdmin = _admin.IsAdmin(entity);
 
-            // Only include admin ghosts if the requester is an admin
-            var warps = GetPlayerWarps(entity)
+            var warps = GetPlayerWarps(entity) // Only include admin ghosts if the requester is an admin
                 .Concat(GetLocationWarps(isAdmin));
 
             if (isAdmin)
@@ -318,8 +318,9 @@ namespace Content.Server.Ghost
                 warps = warps.Concat(GetAdminGhostWarps(entity))
                             .Concat(GetRegularGhostWarps(entity));
             }
+            // Frontier end
 
-            var response = new GhostWarpsResponseEvent(warps.ToList());
+            var response = new GhostWarpsResponseEvent(GetPlayerWarps(entity).Concat(GetLocationWarps()).ToList());
             RaiseNetworkEvent(response, args.SenderSession.Channel);
         }
 
@@ -340,7 +341,7 @@ namespace Content.Server.Ghost
                 return;
             }
 
-            // Frontier: check admin status when warping to admin-only warp points
+            // Frontier start: Check admin status when warping to admin-only warp points
             if (!_admin.IsAdmin(attached) &&
                 TryComp<WarpPointComponent>(target, out var warpPoint) &&
                 warpPoint.AdminOnly)
@@ -349,7 +350,7 @@ namespace Content.Server.Ghost
                 _adminLog.Add(LogType.Action, LogImpact.Medium, $"{EntityManager.ToPrettyString(attached):player} tried to warp to admin warp point {EntityManager.ToPrettyString(msg.Target)}");
                 return;
             }
-            // End Frontier
+            // Frontier end
 
             WarpTo(attached, target);
         }
@@ -386,14 +387,14 @@ namespace Content.Server.Ghost
                 _physics.SetLinearVelocity(uid, Vector2.Zero, body: physics);
         }
 
-        private IEnumerable<GhostWarp> GetLocationWarps(bool isAdmin) // Frontier: add isAdmin
+        private IEnumerable<GhostWarp> GetLocationWarps(bool isAdmin) // Frontier: Added bool isAdmin
         {
             var allQuery = AllEntityQuery<WarpPointComponent>();
 
             while (allQuery.MoveNext(out var uid, out var warp))
             {
-                if (warp.AdminOnly && !isAdmin) // Frontier: skip admin-only warp points if not an admin
-                    continue; // Frontier
+                if (warp.AdminOnly && !isAdmin) // Frontier: Skip admin-only warp points if not an admin
+                    continue;
 
                 yield return new GhostWarp(GetNetEntity(uid), warp.Location ?? Name(uid), true);
             }
@@ -418,6 +419,7 @@ namespace Content.Server.Ghost
             }
         }
 
+        // ??? start, // HardLight: Not sure where this came from, but it wasn't upstream. I also think it's super useful, so I'm keeping it.
         private IEnumerable<GhostWarp> GetAdminGhostWarps(EntityUid except)
         {
             foreach (var player in _player.Sessions)
@@ -463,6 +465,7 @@ namespace Content.Server.Ghost
                 yield return new GhostWarp(GetNetEntity(attached), playerInfo, false);
             }
         }
+        // ??? end
 
         #endregion
 
@@ -584,8 +587,8 @@ namespace Content.Server.Ghost
                 _minds.TransferTo(mind.Owner, ghost, mind: mind.Comp);
             Log.Debug($"Spawned ghost \"{ToPrettyString(ghost)}\" for {mind.Comp.CharacterName}.");
 
-            // we changed the entity name above
-            // we have to call this after the mind has been transferred since some mind roles modify the ghost's name
+            // We changed the entity name above
+            // We have to call this after the mind has been transferred since some mind roles modify the ghost's name
             _nameMod.RefreshNameModifiers(ghost);
             return ghost;
         }
@@ -600,9 +603,9 @@ namespace Content.Server.Ghost
             if (playerEntity != null && viaCommand)
             {
                 if (forced)
-                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} was forced to ghost via command");
+                    _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} was forced to ghost via command");
                 else
-                    _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
+                    _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} is attempting to ghost via command");
             }
 
             var handleEv = new GhostAttemptHandleEvent(mind, canReturnGlobal);
@@ -656,8 +659,8 @@ namespace Content.Server.Ghost
                 {
                     canReturn = true;
 
-                    //todo: what if they dont breathe lol
-                    //cry deeply
+                    // TODO: What if they dont breathe lol
+                    // Cry deeply
 
                     FixedPoint2 dealtDamage = 200;
 
@@ -668,14 +671,14 @@ namespace Content.Server.Ghost
                         dealtDamage = playerDeadThreshold - damageable.TotalDamage;
                     }
 
-                    DamageSpecifier damage = new(_prototypeManager.Index(AsphyxiationId), dealtDamage);
+                    DamageSpecifier damage = new(_prototypeManager.Index(AsphyxiationDamageType), dealtDamage);
 
-                    _damageable.TryChangeDamage(playerEntity, damage, true);
+                    _damageable.ChangeDamage(playerEntity.Value, damage, true);
                 }
             }
 
             if (playerEntity != null)
-                _adminLog.Add(LogType.Mind, $"{EntityManager.ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}");
+                _adminLog.Add(LogType.Mind, $"{ToPrettyString(playerEntity.Value):player} ghosted{(!canReturn ? " (non-returnable)" : "")}");
 
             var ghost = SpawnGhost((mindId, mind), position, canReturn);
 
@@ -685,13 +688,13 @@ namespace Content.Server.Ghost
             return true;
         }
 
-        // Frontier: worthless ghosts
+        // Frontier start: Worthless ghosts
         private void OnPriceCalculation(Entity<GhostComponent> ent, ref PriceCalculationEvent args)
         {
             args.Price = 0;
             args.Handled = true;
         }
-        // End Frontier
+        // Frontier end
     }
 
     public sealed class GhostAttemptHandleEvent(MindComponent mind, bool canReturnGlobal) : HandledEntityEventArgs

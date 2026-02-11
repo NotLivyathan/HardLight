@@ -42,7 +42,7 @@ using Content.Shared._NF.Kitchen.Components; // Frontier
 
 namespace Content.Server.Kitchen.EntitySystems
 {
-    public sealed partial class MicrowaveSystem : EntitySystem // Frontier: add partial
+    public sealed class MicrowaveSystem : EntitySystem
     {
         [Dependency] private readonly DeviceLinkSystem _deviceLink = default!;
         [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
@@ -177,10 +177,8 @@ namespace Content.Server.Kitchen.EntitySystems
         /// <param name="time">The time on the microwave, in seconds.</param>
         private void AddTemperature(MicrowaveComponent component, float time)
         {
-            // Frontier: temperature requires heat or irradiation
-            if (!component.CanHeat && !component.CanIrradiate)
+            if (!component.CanHeat && !component.CanIrradiate) // Frontier: Temperature requires heat or irradiation
                 return;
-            // End Frontier
 
             var heatToAdd = time * component.BaseHeatMultiplier;
             foreach (var entity in component.Storage.ContainedEntities)
@@ -203,20 +201,21 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void SubtractContents(MicrowaveComponent component, FoodRecipePrototype recipe)
         {
-            // TODO Turn recipe.IngredientsReagents into a ReagentQuantity[]
+            // TODO: Turn recipe.IngredientsReagents into a ReagentQuantity[]
 
             var totalReagentsToRemove = new Dictionary<string, FixedPoint2>(recipe.IngredientsReagents);
 
-            // this is spaghetti ngl
-            foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
+            // This is spaghetti ngl
+            // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
+            foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Added .ToArray()
             {
-                // use the same reagents as when we selected the recipe
+                // Use the same reagents as when we selected the recipe
                 if (!_solutionContainer.TryGetDrainableSolution(item, out var solutionEntity, out var solution))
                     continue;
 
                 foreach (var (reagent, _) in recipe.IngredientsReagents)
                 {
-                    // removed everything
+                    // Removed everything
                     if (!totalReagentsToRemove.ContainsKey(reagent))
                         continue;
 
@@ -240,12 +239,14 @@ namespace Content.Server.Kitchen.EntitySystems
             {
                 for (var i = 0; i < recipeSolid.Value; i++)
                 {
-                    foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
+                    // HardLight: Iterate over a snapshot to avoid modifying the collection while iterating
+                    foreach (var item in component.Storage.ContainedEntities.ToArray()) // HardLight: Added .ToArray()
                     {
                         string? itemID = null;
                         StackComponent? stackComp = null; // HardLight
 
-                        // HardLight: If an entity has a stack component, prefer the entity prototype when the
+                        // HardLight start
+                        // If an entity has a stack component, prefer the entity prototype when the
                         // stack spawns itself; otherwise use the stack prototype's spawn.
                         if (TryComp<StackComponent>(item, out var sc))
                         {
@@ -264,6 +265,7 @@ namespace Content.Server.Kitchen.EntitySystems
                                 itemID = _prototype.Index<StackPrototype>(stackComp.StackTypeId).Spawn;
                             }
                         }
+                        // HardLight end
                         else
                         {
                             var metaData = MetaData(item);
@@ -302,9 +304,9 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void OnInit(Entity<MicrowaveComponent> ent, ref ComponentInit args)
         {
-            // this really does have to be in ComponentInit
+            // This really does have to be in ComponentInit
             ent.Comp.Storage = _container.EnsureContainer<Container>(ent, ent.Comp.ContainerId);
-            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier; // Frontier: initial cook time consistency (assumes stock components)
+            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier; // Frontier: Initial cook time consistency (assumes stock components)
         }
 
         private void OnMapInit(Entity<MicrowaveComponent> ent, ref MapInitEvent args)
@@ -325,10 +327,9 @@ namespace Content.Server.Kitchen.EntitySystems
             if (!TryComp<DamageableComponent>(args.Victim, out var damageableComponent))
                 return;
 
-            // Frontier: suicide requires heat or irradiation
+            // Frontier: Suicide requires heat or irradiation
             if (!ent.Comp.CanHeat && !ent.Comp.CanIrradiate)
                 return;
-            // Frontier
 
             // The application of lethal damage is what kills you...
             _suicide.ApplyLethalDamage((args.Victim, damageableComponent), "Heat");
@@ -353,7 +354,9 @@ namespace Content.Server.Kitchen.EntitySystems
             UpdateUserInterfaceState(ent, ent.Comp);
         }
 
-        private void OnContentUpdate(EntityUid uid, MicrowaveComponent component, ContainerModifiedMessage args) // For some reason ContainerModifiedMessage just can't be used at all with Entity<T>. TODO: replace with Entity<T> syntax once that's possible
+        // For some reason ContainerModifiedMessage just can't be used at all with Entity<T>.
+        // TODO: replace with Entity<T> syntax once that's possible
+        private void OnContentUpdate(EntityUid uid, MicrowaveComponent component, ContainerModifiedMessage args)
         {
             if (component.Storage != args.Container)
                 return;
@@ -408,7 +411,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
             if (TryComp<ItemComponent>(args.Used, out var item))
             {
-                // check if size of an item you're trying to put in is too big
+                // Check if size of an item you're trying to put in is too big
                 if (_item.GetSizePrototype(item.Size) > _item.GetSizePrototype(ent.Comp.MaxItemSize))
                 {
                     _popupSystem.PopupEntity(Loc.GetString(ent.Comp.TooBigPopup, ("item", args.Used)), ent, args.User); // Frontier: "microwave-component-interact-item-too-big"<ent.Comp.TooBigPopup
@@ -417,7 +420,7 @@ namespace Content.Server.Kitchen.EntitySystems
             }
             else
             {
-                // check if thing you're trying to put in isn't an item
+                // Check if thing you're trying to put in isn't an item
                 _popupSystem.PopupEntity(Loc.GetString("microwave-component-interact-using-transfer-fail"), ent, args.User);
                 return;
             }
@@ -430,7 +433,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
             args.Handled = true;
 
-            // Handle stacks: split them before inserting so each item is separate for recipes
+            // HardLight start: Split stacks before inserting so each item is separate for recipes
             if (TryComp<StackComponent>(args.Used, out var stack) && stack.Count > 1)
             {
                 var splitEnt = _stack.Split(args.Used, 1, Transform(args.Used).Coordinates, stack);
@@ -446,9 +449,10 @@ namespace Content.Server.Kitchen.EntitySystems
             }
             else
             {
-                // Non-stack item or single item stack - use normal insertion
+                // Use normal insertion for non-stack item or single item stack
                 _handsSystem.TryDropIntoContainer(args.User, args.Used, ent.Comp.Storage);
             }
+            // HardLight end
 
             UpdateUserInterfaceState(ent, ent.Comp);
         }
@@ -478,16 +482,19 @@ namespace Content.Server.Kitchen.EntitySystems
                 _container.EmptyContainer(component.Storage);
         }
 
+        // Frontier start
         private void OnRefreshParts(Entity<MicrowaveComponent> ent, ref RefreshPartsEvent args)
         {
             var cookRating = args.PartRatings[ent.Comp.MachinePartCookTimeMultiplier];
-            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier * MathF.Pow(ent.Comp.CookTimeScalingConstant, cookRating - 1); // Frontier: apply base cooktimemultiplier as a coefficient (syndie microwave)
+            // Apply base CookTimeMultiplier as a coefficient (Syndie microwave)
+            ent.Comp.FinalCookTimeMultiplier = ent.Comp.CookTimeMultiplier * MathF.Pow(ent.Comp.CookTimeScalingConstant, cookRating - 1);
         }
 
         private void OnUpgradeExamine(Entity<MicrowaveComponent> ent, ref UpgradeExamineEvent args)
         {
             args.AddPercentageUpgrade("microwave-component-upgrade-cook-time", ent.Comp.FinalCookTimeMultiplier);
         }
+        // Frontier end
 
         private void OnSignalReceived(Entity<MicrowaveComponent> ent, ref SignalReceivedEvent args)
         {
@@ -502,7 +509,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
         public void UpdateUserInterfaceState(EntityUid uid, MicrowaveComponent component)
         {
-            _userInterface.SetUiState(uid, component.Key, new MicrowaveUpdateUserInterfaceState(
+            _userInterface.SetUiState(uid, MicrowaveUiKey.Key, new MicrowaveUpdateUserInterfaceState(
                 GetNetEntityArray(component.Storage.ContainedEntities.ToArray()),
                 HasComp<ActiveMicrowaveComponent>(uid),
                 component.CurrentCookTimeButtonIndex,
@@ -559,7 +566,7 @@ namespace Content.Server.Kitchen.EntitySystems
             if (_random.Prob(ent.Comp2.ExplosionChance))
             {
                 Explode((ent, ent.Comp2));
-                return;  // microwave is fucked, stop the cooking.
+                return;  // Microwave is fucked, stop the cooking.
             }
 
             if (_random.Prob(ent.Comp2.LightningChance))
@@ -581,12 +588,16 @@ namespace Content.Server.Kitchen.EntitySystems
             var solidsDict = new Dictionary<string, int>();
             var reagentDict = new Dictionary<string, FixedPoint2>();
             var malfunctioning = false;
-            // TODO use lists of Reagent quantities instead of reagent prototype ids.
+            // TODO: Use lists of Reagent quantities instead of reagent prototype ids.
             foreach (var item in component.Storage.ContainedEntities.ToArray())
             {
-                // special behavior when being microwaved ;)
-                var ev = new BeingMicrowavedEvent(uid, user, component.CanHeat, component.CanIrradiate); // Frontier: add CanHeat, CanIrradiate
+                // Special behavior when being microwaved ;)
+                var ev = new BeingMicrowavedEvent(uid, user, component.CanHeat, component.CanIrradiate); // Frontier: Added CanHeat, CanIrradiate
                 RaiseLocalEvent(item, ev);
+
+                // TODO MICROWAVE SPARKS & EFFECTS
+                // Various microwaveable entities should probably spawn a spark, play a sound, and generate a pop=up.
+                // This should probably be handled by the microwave system, with fields in BeingMicrowavedEvent.
 
                 if (ev.Handled)
                 {
@@ -594,12 +605,12 @@ namespace Content.Server.Kitchen.EntitySystems
                     return;
                 }
 
-                if (_tag.HasTag(item, MetalTag) && component.CanIrradiate) // Frontier: add && !component.DisableMetalMalfunctions
+                if (_tag.HasTag(item, MetalTag) && component.CanIrradiate) // Frontier: Added && !component.DisableMetalMalfunctions
                 {
                     malfunctioning = true;
                 }
 
-                if (_tag.HasTag(item, PlasticTag) && (component.CanHeat || component.CanIrradiate)) // Frontier: add && !component.DisableRuiningPlastic
+                if (_tag.HasTag(item, PlasticTag) && (component.CanHeat || component.CanIrradiate)) // Frontier: Added && !component.DisableRuiningPlastic
                 {
                     var junk = Spawn(component.BadRecipeEntityId, Transform(uid).Coordinates);
                     _container.Insert(junk, component.Storage);
@@ -621,7 +632,7 @@ namespace Content.Server.Kitchen.EntitySystems
                 {
                     if (HasComp<StackSpawnSelfComponent>(item))
                     {
-                        var metaData = MetaData(item); //this simply begs for cooking refactor
+                        var metaData = MetaData(item); // This simply begs for cooking refactor
                         if (metaData.EntityPrototype is not null)
                             solidID = metaData.EntityPrototype.ID;
                         else
@@ -637,7 +648,7 @@ namespace Content.Server.Kitchen.EntitySystems
                 }
                 else
                 {
-                    var metaData = MetaData(item); //this simply begs for cooking refactor x2
+                    var metaData = MetaData(item); // This simply begs for cooking refactor
                     if (metaData.EntityPrototype is not null)
                         solidID = metaData.EntityPrototype.ID;
                 }
@@ -648,8 +659,8 @@ namespace Content.Server.Kitchen.EntitySystems
                 if (!solidsDict.TryAdd(solidID, amountToAdd))
                     solidsDict[solidID] += amountToAdd;
 
-                // only use reagents we have access to
-                // you have to break the eggs before we can use them!
+                // Only use reagents we have access to
+                // You have to break the eggs before we can use them!
                 if (!_solutionContainer.TryGetDrainableSolution(item, out var _, out var solution))
                     continue;
 
@@ -670,11 +681,11 @@ namespace Content.Server.Kitchen.EntitySystems
                 CanSatisfyRecipe(component, r, solidsDict, reagentDict)).FirstOrDefault(r => r.Item2 > 0);
 
             _audio.PlayPvs(component.StartCookingSound, uid);
-            var activeComp = AddComp<ActiveMicrowaveComponent>(uid); //microwave is now cooking
+            var activeComp = AddComp<ActiveMicrowaveComponent>(uid); // Microwave is now cooking
             activeComp.CookTimeRemaining = component.CurrentCookTimerTime * component.FinalCookTimeMultiplier; // Frontier: CookTimeMultiplier<FinalCookTimeMultiplier
-            activeComp.TotalTime = component.CurrentCookTimerTime; //this doesn't scale so that we can have the "actual" time
+            activeComp.TotalTime = component.CurrentCookTimerTime; // This doesn't scale so that we can have the "actual" time
             activeComp.PortionedRecipe = portionedRecipe;
-            //Scale tiems with cook times
+            // Scale times with cook times
             component.CurrentCookTimeEnd = _gameTiming.CurTime + TimeSpan.FromSeconds(component.CurrentCookTimerTime * component.FinalCookTimeMultiplier); // Frontier: CookTimeMultiplier<FinalCookTimeMultiplier
             if (malfunctioning)
                 activeComp.MalfunctionTime = _gameTiming.CurTime + TimeSpan.FromSeconds(component.MalfunctionInterval);
@@ -683,10 +694,10 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void StopCooking(Entity<MicrowaveComponent> ent)
         {
-            RemComp<ActiveMicrowaveComponent>(ent);
+            RemCompDeferred<ActiveMicrowaveComponent>(ent);
             foreach (var solid in ent.Comp.Storage.ContainedEntities)
             {
-                RemComp<ActivelyMicrowavedComponent>(solid);
+                RemCompDeferred<ActivelyMicrowavedComponent>(solid);
             }
         }
 
@@ -700,12 +711,12 @@ namespace Content.Server.Kitchen.EntitySystems
                 return (recipe, 0);
             }
 
-            // Frontier: microwave recipe machine types
+            // Frontier start: Microwave recipe machine types
             if ((recipe.RecipeType & component.ValidRecipeTypes) == 0)
             {
                 return (recipe, 0);
             }
-            // End Frontier
+            // Frontier end
 
             foreach (var solid in recipe.IngredientsSolids)
             {
@@ -722,7 +733,7 @@ namespace Content.Server.Kitchen.EntitySystems
 
             foreach (var reagent in recipe.IngredientsReagents)
             {
-                // TODO Turn recipe.IngredientsReagents into a ReagentQuantity[]
+                // TODO: Turn recipe.IngredientsReagents into a ReagentQuantity[]
                 if (!reagents.ContainsKey(reagent.Key))
                     return (recipe, 0);
 
@@ -734,7 +745,7 @@ namespace Content.Server.Kitchen.EntitySystems
                     : Math.Min(portions, reagents[reagent.Key].Int() / reagent.Value.Int());
             }
 
-            //cook only as many of those portions as time allows
+            // Cook only as many of those portions as time allows
             return (recipe, (int) Math.Min(portions, component.CurrentCookTimerTime / recipe.CookTime));
         }
 
@@ -750,15 +761,15 @@ namespace Content.Server.Kitchen.EntitySystems
 
                 RollMalfunction((uid, active, microwave));
 
-                //check if there's still cook time left
+                // Check if there's still cook time left
                 if (active.CookTimeRemaining > 0)
                 {
                     AddTemperature(microwave, frameTime);
                     continue;
                 }
 
-                //this means the microwave has finished cooking.
-                AddTemperature(microwave, Math.Max(frameTime + active.CookTimeRemaining, 0)); //Though there's still a little bit more heat to pump out
+                // This means the microwave has finished cooking.
+                AddTemperature(microwave, Math.Max(frameTime + active.CookTimeRemaining, 0)); // Though there's still a little bit more heat to pump out
 
                 if (active.PortionedRecipe.Item1 != null)
                 {
@@ -766,24 +777,20 @@ namespace Content.Server.Kitchen.EntitySystems
                     for (var i = 0; i < active.PortionedRecipe.Item2; i++)
                     {
                         SubtractContents(microwave, active.PortionedRecipe.Item1);
-                        // Frontier: ResultCount - support multiple results per recipe
+                        // Frontier start: ResultCount; support multiple results per recipe
                         for (var r = 0; r < active.PortionedRecipe.Item1.ResultCount; r++)
                         {
                             Spawn(active.PortionedRecipe.Item1.Result, coords);
                         }
-                        // End Frontier
+                        // Frontier end
                     }
                 }
 
-                // Stop cooking first to clean up ActiveMicrowaveComponent and ActivelyMicrowavedComponent
-                StopCooking((uid, microwave));
-
-                // Now empty the container - all items should eject properly
                 _container.EmptyContainer(microwave.Storage);
-
                 microwave.CurrentCookTimeEnd = TimeSpan.Zero;
                 UpdateUserInterfaceState(uid, microwave);
                 _audio.PlayPvs(microwave.FoodDoneSound, uid);
+                StopCooking((uid, microwave));
             }
         }
 
@@ -795,7 +802,7 @@ namespace Content.Server.Kitchen.EntitySystems
         {
             foreach (ProtoId<FoodRecipePrototype> recipeId in ent.Comp.ProvidedRecipes)
             {
-                if (_prototype.TryIndex(recipeId, out var recipeProto))
+                if (_prototype.Resolve(recipeId, out var recipeProto))
                 {
                     args.Recipes.Add(recipeProto);
                 }
@@ -818,7 +825,7 @@ namespace Content.Server.Kitchen.EntitySystems
             if (!HasContents(ent.Comp) || HasComp<ActiveMicrowaveComponent>(ent))
                 return;
 
-            _container.Remove(EntityManager.GetEntity(args.EntityID), ent.Comp.Storage);
+            _container.Remove(GetEntity(args.EntityID), ent.Comp.Storage);
             UpdateUserInterfaceState(ent, ent.Comp);
         }
 
@@ -827,7 +834,7 @@ namespace Content.Server.Kitchen.EntitySystems
             if (!HasContents(ent.Comp) || HasComp<ActiveMicrowaveComponent>(ent) || !(TryComp<ApcPowerReceiverComponent>(ent, out var apc) && apc.Powered))
                 return;
 
-            // some validation to prevent trollage
+            // Some validation to prevent trollage
             if (args.NewCookTime % 5 != 0 || args.NewCookTime > ent.Comp.MaxCookTime)
                 return;
 

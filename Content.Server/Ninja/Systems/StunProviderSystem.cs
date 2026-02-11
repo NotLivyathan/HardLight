@@ -39,7 +39,7 @@ public sealed class StunProviderSystem : SharedStunProviderSystem
     /// </summary>
     private void OnBeforeInteractHand(Entity<StunProviderComponent> ent, ref BeforeInteractHandEvent args)
     {
-        // TODO: generic check
+        // TODO: Generic check
         var (uid, comp) = ent;
         if (args.Handled || comp.BatteryUid == null || !_gloves.AbilityCheck(uid, args, out var target))
             return;
@@ -51,7 +51,7 @@ public sealed class StunProviderSystem : SharedStunProviderSystem
         if (_useDelay.IsDelayed((uid, useDelay), id: comp.DelayId))
             return;
 
-        // take charge from battery
+        // Take charge from battery
         if (!_battery.TryUseCharge(comp.BatteryUid.Value, comp.StunCharge))
         {
             _popup.PopupEntity(Loc.GetString(comp.NoPowerPopup), uid, uid);
@@ -63,7 +63,7 @@ public sealed class StunProviderSystem : SharedStunProviderSystem
         _damageable.ChangeDamage(target, comp.StunDamage, origin: uid);
         _stun.TryAddParalyzeDuration(target, comp.StunTime);
 
-        // short cooldown to prevent instant stunlocking
+        // Short cooldown to prevent instant stunlocking
         _useDelay.SetLength((uid, useDelay), comp.Cooldown, id: comp.DelayId);
         _useDelay.TryResetDelay((uid, useDelay), id: comp.DelayId);
 
