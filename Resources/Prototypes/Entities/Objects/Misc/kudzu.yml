@@ -15,6 +15,8 @@
     - type: ActiveEdgeSpreader
     - type: EdgeSpreader
       id: Kudzu
+    - type: SpeedModifierContacts
+      affectAirborne: true
 
 - type: entity
   id: Kudzu
@@ -64,13 +66,13 @@
       damage:
         types:
           Heat: 3
-    - type: Reactive
+    - type: Reactive # HardLight: Do these not need quotations around Touch? Commenting for now until I know for sure.
       groups:
-        Flammable: [Touch]
-        Extinguish: [Touch]
+        Flammable: [ Touch ]
+        Extinguish: [ Touch ]
       reactions:
-      - reagents: [WeedKiller, PlantBGone]
-        methods: [Touch]
+      - reagents: [ WeedKiller, PlantBGone ]
+        methods: [ Touch ]
         effects:
         - !type:HealthChange
           scaling: true
@@ -88,7 +90,7 @@
         components:
         - IgnoreKudzu
     - type: Food
-      requiredStomachs: 2 # ruminants have 4 stomachs but i dont care to give them literally 4 stomachs. 2 is good
+      requiresSpecialDigestion: true
       delay: 0.5
     - type: FlavorProfile
       flavors:
@@ -99,6 +101,9 @@
           reagents:
           - ReagentId: Nutriment
             Quantity: 2
+    - type: Tag
+      tags:
+      - Ruminant
 
 - type: entity
   id: WeakKudzu
@@ -134,7 +139,7 @@
       offset: 0.2
       chance: 0.05
       prototypes:
-      - LightTree #TODO: transform into EntityTable with weight
+      - LightTree # TODO: Transform into EntityTable with weight
       - LightTree
       - LightTree
       - LightTree
@@ -224,11 +229,11 @@
           Heat: 10
       coldDamage:
         types:
-          Cold: 5 #per second, scales with temperature & other constants
+          Cold: 5 # Per second; scales with temperature & other constants
     - type: Barotrauma
       damage:
         types:
-          Blunt: 0.10 #per second, scales with pressure and other constants.
+          Blunt: 0.10 # Per second; scales with pressure and other constants.
     - type: Flammable
       fireSpread: true
       damage:
@@ -241,7 +246,7 @@
       ignoreWhitelist:
         tags:
         - Flesh
-    - type: Food # delightfully devilish !
+    - type: Food # Delightfully devilish!
       delay: 0.5
     - type: SolutionContainerManager
       solutions:
@@ -276,7 +281,7 @@
       layers:
       - state: spookysmoke
         color: "#793a80dd"
-        map: [base]
+        map: [ "base" ]
     - type: Kudzu
       growthTickChance: 0.2
       spreadChance: 0.99
@@ -308,4 +313,4 @@
   parent: ShadowKudzu
   components:
     - type: Kudzu
-      spreadChance: 0 #appears during pulsation. It shouldnt spreading.
+      spreadChance: 0 # Appears during pulsation. It shouldn't be spreading.

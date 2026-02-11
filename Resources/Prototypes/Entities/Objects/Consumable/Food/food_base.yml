@@ -9,7 +9,7 @@
   - type: FlavorProfile
     flavors:
       - food
-  - type: Food
+  - type: Edible
   - type: Sprite
   - type: StaticPrice
     price: 0
@@ -38,7 +38,8 @@
     solution: food
   - type: RefillableSolution
     solution: food
-    preventTransferOut: true # Frontier
+# Hardlight: Commenting this for now because it's another case of, "I have no f**king clue what Frontier did this for." Thanks for the info, Frontier!
+#    preventTransferOut: true # Frontier
 
 # usable by any food that can be opened
 # handles appearance with states "icon" and "icon-open"

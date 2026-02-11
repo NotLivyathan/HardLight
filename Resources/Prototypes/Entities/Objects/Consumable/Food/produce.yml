@@ -2,48 +2,50 @@
 # For produce that can't be immediately eaten
 
 - type: entity
-  parent: [BaseItem, RecyclableItemOrganicTiny] # Frontier: added RecyclableItemOrganicTiny
+  parent: BaseItem
   id: ProduceBase
   abstract: true
   components:
+  # HardLight start: Perishable; produce rots if left out too long. Maybe look into doing something more for this.
   - type: Perishable
     rotAfter: 300 # 5 minutes outside a body until rotting, 15 to completely perish
     molsPerSecondPerUnitMass: 0
   - type: RotInto
     entity: Ash
     stage: 2
+  # HardLight end
   - type: SolutionContainerManager
   - type: Sprite
     state: produce
-  - type: Stack
-    stackType: BotanyProduce
-    count: 1
-  - type: StackSignature
-  - type: StackSpawnSelf
-  # let cows eat raw produce like wheat and oats
-  - type: Food
-    requiredStomachs: 2
+  # Let cows eat raw produce like wheat and oats
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: Produce
   - type: PotencyVisuals
   - type: Appearance
   - type: Extractable
     grindableSolutionName: food
+  - type: Tag
+    tags:
+    - Ruminant
 
 # For produce that can be immediately eaten
 
 - type: entity
-  parent: [FoodInjectableBase, RecyclableItemOrganicTiny] # Frontier: added RecyclableItemOrganicTiny
+  parent: [ FoodInjectableBase, RecyclableItemOrganicTiny ] # Frontier: RecyclableItemOrganicTiny
   id: FoodProduceBase
   abstract: true
   components:
-  - type: SolutionContainerManager
-  - type: Sprite
-    state: produce
+  # HardLight start
   - type: Stack
     stackType: BotanyProduce
     count: 1
   - type: StackSignature
   - type: StackSpawnSelf
+  # HardLight end
+  - type: SolutionContainerManager
+  - type: Sprite
+    state: produce
   - type: Produce
   - type: PotencyVisuals
   - type: Appearance
@@ -73,6 +75,7 @@
   - type: Tag
     tags:
     - Wheat
+    - Ruminant
 
 - type: entity
   name: meatwheat bushel
@@ -106,6 +109,8 @@
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/oat.rsi
+  - type: Item
+    heldPrefix: produce
   - type: SolutionContainerManager
     solutions:
       food:
@@ -190,6 +195,7 @@
   - type: Tag
     tags:
     - Vegetable
+    - Ruminant
 
 - type: entity
   name: tower-cap log
@@ -209,7 +215,7 @@
   - type: Produce
     seedId: towercap
   - type: Log
-  - type: PhysicalComposition # Frontier
+  - type: PhysicalComposition # Frontier, # HardLight: Leaving this for now, but commenting in case it's important later.
     materialComposition:
       Wood: 200
 
@@ -233,7 +239,7 @@
   - type: Log
     spawnedPrototype: SheetSteel1
     spawnCount: 1
-  - type: PhysicalComposition # Frontier
+  - type: PhysicalComposition # Frontier, # HardLight: Leaving this for now, but commenting in case it's important later.
     materialComposition:
       Steel: 100
 
@@ -262,7 +268,7 @@
   - type: Produce
     seedId: nettle
   - type: MeleeChemicalInjector
-    transferAmount: 3 #TODO someone you would need 2 nettles and about 6-7 hits, the DOT is likely to crit them if they are running away with almost no health
+    transferAmount: 3 # TODO: Someone you would need 2 nettles and about 6-7 hits, the DOT is likely to crit them if they are running away with almost no health
     solution: food
     pierceArmor: false
   - type: Extractable
@@ -272,7 +278,7 @@
   name: death nettle
   description: This nettle's out for blood.
   id: DeathNettle
-  parent: [ProduceBase, BaseC1Contraband ] # Frontier: BaseMajorContraband<BaseC1Contraband
+  parent: [ ProduceBase, BaseC1Contraband ] # HardLight: BaseMajorContraband<BaseC1Contraband
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/death_nettle.rsi
@@ -343,7 +349,7 @@
   - type: FlavorProfile
     flavors:
       - banana
-  - type: Food
+  - type: Edible
     trash:
     - TrashBananaPeel
   - type: SolutionContainerManager
@@ -385,7 +391,7 @@
     flavors:
       - banana
       - nothing
-  - type: Food
+  - type: Edible
     trash:
     - TrashMimanaPeel
   - type: SolutionContainerManager
@@ -457,6 +463,9 @@
     - Recyclable
     - Trash
     - BananaPeel
+    - Ruminant
+    - WhitelistChameleon
+    - HamsterWearable
   - type: SolutionContainerManager
     solutions:
       food:
@@ -467,12 +476,23 @@
   - type: Extractable
     grindableSolutionName: food
   - type: SpaceGarbage
+  - type: Edible
+    requiresSpecialDigestion: true
+  - type: Clothing
+    sprite: Objects/Specific/Hydroponics/banana.rsi
+    equippedState: peel-equipped-HELMET
+    slots:
+    - HEAD
+    quickEquip: false
 
 - type: entity
   name: baked banana peel
   parent: TrashBananaPeel
   id: TrashBakedBananaPeel
   components:
+  - type: Clothing
+    sprite: Objects/Specific/Hydroponics/banana.rsi
+    equippedState: baked-peel-equipped-HELMET
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/banana.rsi
     state: baked-peel
@@ -489,8 +509,9 @@
           Quantity: 1
         - ReagentId: Carbon
           Quantity: 2
-  - type: Food
-    requiresSpecialDigestion: true
+# HardLight: Commenting this out for now because I don't know if it's still needed or not. I'll find out later.
+#  - type: Food
+#    requiresSpecialDigestion: true
 
 - type: entity
   name: mimana peel
@@ -503,6 +524,9 @@
   - type: Item
     sprite: Objects/Specific/Hydroponics/mimana.rsi
     heldPrefix: peel
+  - type: Clothing
+    sprite: Objects/Specific/Hydroponics/mimana.rsi
+    equippedState: equipped-HELMET
   - type: Slippery
     slipSound:
       path: /Audio/Effects/slip.ogg
@@ -521,6 +545,9 @@
     sprite: Objects/Materials/materials.rsi
     heldPrefix: peel
   - type: Slippery
+  - type: Clothing
+    sprite: Objects/Materials/materials.rsi
+    equippedState: peel-equipped-HELMET
 
 - type: entity
   name: carrot
@@ -870,9 +897,9 @@
       reagents:
       - ReagentId: JuicePotato
         Quantity: 10
-  - type: SliceableFood # Frontier
-    count: 1 # Frontier
-    slice: FoodPotatoSlice # Frontier
+  - type: SliceableFood # Frontier, # HardLight: At least this one doesn't need explanation.
+    count: 1
+    slice: FoodPotatoSlice
   - type: Tag
     tags:
     - Potato
@@ -885,7 +912,7 @@
 
 - type: entity
   name: tomato
-  parent: [FoodProduceBase, ItemHeftyBase]
+  parent: [ FoodProduceBase, ItemHeftyBase ]
   id: FoodTomato
   description: I say to-mah-to, you say tom-mae-to.
   components:
@@ -1095,6 +1122,8 @@
           Quantity: 4
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/apple.rsi
+  - type: Item
+    heldPrefix: produce
   - type: Produce
     seedId: apple
   - type: Extractable
@@ -1194,7 +1223,7 @@
   - type: FlavorProfile
     flavors:
       - corn
-  - type: Food
+  - type: Edible
     trash:
     - FoodCornTrash
   - type: SolutionContainerManager
@@ -1219,7 +1248,9 @@
     juiceSolution:
       reagents:
       - ReagentId: Cornoil
-        Quantity: 5
+        Quantity: 3
+      - ReagentId: Enzyme
+        Quantity: 2
   - type: FoodSequenceElement
     entries:
       Burger: Corn
@@ -1335,6 +1366,7 @@
   - type: Tag
     tags:
     - Vegetable
+    - Mushroom
 
 # Slices
 
@@ -1343,11 +1375,13 @@
   id: ProduceSliceBase
   abstract: true
   components:
+  # HardLight start
   - type: Stack
     stackType: ProduceSlice
     count: 1
   - type: StackSignature
   - type: StackSpawnSelf
+  # HardLight end
   - type: SolutionContainerManager
     solutions:
       food:
@@ -1651,6 +1685,9 @@
     entries:
       Taco: Lingzhi
       Burger: Lingzhi
+  - type: Tag
+    tags:
+    - Mushroom
 
 - type: entity
   name: ambrosia vulgaris
@@ -1840,7 +1877,7 @@
     entries:
       Taco: Glasstle
       Burger: GlasstleBurger
-  - type: PhysicalComposition # Frontier
+  - type: PhysicalComposition # Frontier, # HardLight: Leaving this for now, but commenting in case it's important later.
     materialComposition:
       Glass: 100
 
@@ -1875,10 +1912,13 @@
     entries:
       Taco: FlyAmanita
       Burger: FlyAmanita
+  - type: Tag
+    tags:
+    - Mushroom
 
 - type: entity
   name: gatfruit
-  parent: [ FoodProduceBase, BaseC3SyndicateContrabandUnredeemable ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContrabandUnredeemable
+  parent: [ FoodProduceBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: FoodGatfruit
   description: A delicious, gun-shaped fruit with a thick wooden stem.
   components:
@@ -1890,15 +1930,15 @@
       food:
         maxVol: 10
         reagents:
-#        - ReagentId: Nutriment # Frontier
-#          Quantity: 5 # Frontier
+        - ReagentId: Nutriment
+          Quantity: 5
         - ReagentId: Sulfur
-          Quantity: 10 # Frontier: 5<10
+          Quantity: 5
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/gatfruit.rsi
   - type: Produce
     seedId: gatfruit
-  - type: Food
+  - type: Edible
     trash:
     - NFWeaponRevolverRitland45 # Frontier: WeaponRevolverPython<NFWeaponRevolverRitland45
   - type: Tag
@@ -1923,17 +1963,17 @@
       food:
         maxVol: 10
         reagents:
-#        - ReagentId: Nutriment # Frontier
-#          Quantity: 5 # Frontier
+        - ReagentId: Nutriment
+          Quantity: 5
         - ReagentId: Sulfur
-          Quantity: 10 # Frontier: 5<10
+          Quantity: 5
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/capfruit.rsi
   - type: Item
     heldPrefix: produce
   - type: Produce
     seedId: realCapfruit
-  - type: Food
+  - type: Edible
     trash:
     - NFRevolverCapGun # Frontier: RevolverCapGun<NFRevolverCapGun
   - type: Tag
@@ -1952,9 +1992,9 @@
   components:
   - type: Produce
     seedId: fakeCapfruit
-  - type: Food
+  - type: Edible
     trash:
-    - NFRevolverCapGunFakeGrown # Frontier: add Grown
+    - NFRevolverCapGunFakeGrown # Frontier: RevolverCapGunFake<NFRevolverCapGunFakeGrown
 
 - type: entity
   name: rice bushel
@@ -2032,7 +2072,7 @@
   - type: Tag
     tags:
     - Flower
-  - type: Instrument #hehe trumpet
+  - type: Instrument # Hehe trumpet
     program: 56
   - type: FoodSequenceElement
     entries:
@@ -2073,7 +2113,7 @@
 
 - type: entity
   name: watermelon
-  parent: [FoodProduceBase, ItemHeftyBase]
+  parent: [ FoodProduceBase, ItemHeftyBase ]
   id: FoodWatermelon
   description: Round green object that you can slice and eat.
   components:
@@ -2175,7 +2215,7 @@
 
 - type: entity
   name: holymelon
-  parent: [FoodProduceBase, ItemHeftyBase]
+  parent: [ FoodProduceBase, ItemHeftyBase ]
   id: FoodHolymelon
   description: The water within this melon has been blessed by some deity that's particularly fond of watermelon.
   components:
@@ -2356,7 +2396,7 @@
   - type: FlavorProfile
     flavors:
       - bungo
-  - type: Food
+  - type: Edible
     trash:
     - FoodBungoPit
   - type: SolutionContainerManager
@@ -2591,6 +2631,8 @@
   - type: FlavorProfile
     flavors:
       - cotton
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
       food:
@@ -2606,7 +2648,11 @@
     tags:
     - ClothMade
     - CottonBoll
-  - type: MothFood # Frontier
+# HardLight: Commenting this for now because it might be needed later.
+#  - type: MothFood # Frontier
+  - type: FoodSequenceElement
+    entries:
+      CottonBurger: CottonBol
 
 - type: entity
   name: pyrotton boll
@@ -2619,6 +2665,8 @@
   - type: FlavorProfile
     flavors:
       - pyrotton
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
       food:
@@ -2638,7 +2686,11 @@
     - CottonBoll
   - type: Extractable
     grindableSolutionName: food
-  - type: MothFood # Frontier
+# HardLight: Commenting this for now because it might be needed later.
+#  - type: MothFood # Frontier
+  - type: FoodSequenceElement
+    entries:
+      CottonBurger: PyrottonBol
 
 - type: entity
   name: cherry
@@ -2649,7 +2701,7 @@
   - type: FlavorProfile
     flavors:
       - cherry
-  - type: Food
+  - type: Edible
     trash:
     - TrashCherryPit
   - type: SolutionContainerManager
@@ -2689,6 +2741,7 @@
   - type: Item
     sprite: Objects/Specific/Hydroponics/cherry.rsi
     heldPrefix: pit
+    size: Tiny
   - type: Tag
     tags:
     - Recyclable
@@ -2723,7 +2776,7 @@
     heldPrefix: produce
   - type: Produce
     seedId: anomalyBerry
-  - type: Food
+  - type: Edible
     trash:
     - EffectAnomalyFloraBulb # Random loot
   - type: SolutionContainerManager
@@ -2745,6 +2798,7 @@
       Taco: AnomalyBerry
       Burger: AnomalyBerryBurger
 
+# HardLight: Some produce from Floof. I'll probably clean these up later.
 - type: entity # Floofstation
   name: pomegranate
   parent: FoodProduceBase

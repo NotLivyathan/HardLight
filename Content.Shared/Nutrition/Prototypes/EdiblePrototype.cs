@@ -12,7 +12,7 @@ public sealed partial class EdiblePrototype : IPrototype
 {
     /// <inheritdoc/>
     [IdDataField]
-    public string ID { get; private set; } = default!;
+    public string ID { get; } = default!;
 
     /// <summary>
     /// The sound we make when eaten.
@@ -21,16 +21,10 @@ public sealed partial class EdiblePrototype : IPrototype
     public SoundSpecifier UseSound = new SoundCollectionSpecifier("eating");
 
     /// <summary>
-    /// The localization identifier for the user's ingestion message.
+    /// The localization identifier for the ingestion message.
     /// </summary>
     [DataField]
     public LocId Message;
-
-    /// <summary>
-    /// The localization identifier for an observer's or "others'" ingestion message.
-    /// </summary>
-    [DataField]
-    public LocId OtherMessage;
 
     /// <summary>
     /// Localization verb used when consuming this item.
@@ -55,6 +49,4 @@ public sealed partial class EdiblePrototype : IPrototype
     /// </summary>
     [DataField]
     public SpriteSpecifier? VerbIcon;
-
-
 }

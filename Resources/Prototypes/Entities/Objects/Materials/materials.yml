@@ -11,9 +11,9 @@
     size: Normal
   - type: Tag
     tags:
-      - DroneUsable
       - RawMaterial
-      - NoPaint
+      - NoPaint # HardLight: I assume this has to do with the spray painting system that we have. Not 100% sure, though.
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Damageable
     damageContainer: Inorganic
   - type: Destructible
@@ -46,7 +46,7 @@
     state: cardboard_3
     layers:
     - state: cardboard_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Extractable
     grindableSolutionName: cardboard
@@ -58,13 +58,15 @@
           Quantity: 6
   - type: Item
     heldPrefix: cardboard
+  # ??? start: I have no idea where this came from. It could be upstream, it could be downstream. I think I know what it does, though, so I'm leaving it for now.
   - type: FloorTile
     outputs:
     - Plating
-  - type: SpawnAfterInteract #Nuke after convert to FloorTile
+  - type: SpawnAfterInteract # Nuke after convert to FloorTile
     prototype: CarpetCard
     doAfter: 0.5
     removeOnInteract: true
+  # ??? end
 
 - type: entity
   parent: MaterialCardboard
@@ -131,9 +133,9 @@
     state: cloth_3
     layers:
     - state: cloth_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -148,10 +150,10 @@
   - type: Tag
     tags:
       - ClothMade
-      - DroneUsable
       - Gauze
       - RawMaterial
-      - TiderAnvilParts
+      - TiderAnvilParts # HardLight: Added by Starlight, I believe. Obviously with the Tider Anvil.
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Construction
     graph: WebObjects # not sure if I should either keep this here or just make another prototype. Will keep it here just in case.
     node: cloth
@@ -200,12 +202,12 @@
     state: durathread_3
     layers:
     - state: durathread_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Construction
     graph: Durathread
     node: MaterialDurathread
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
@@ -217,8 +219,8 @@
   - type: Tag
     tags:
       - ClothMade
-      - DroneUsable
       - RawMaterial
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Item
     heldPrefix: durathread
 
@@ -235,7 +237,7 @@
     solutions:
       food:
         maxVol: 5
-        reagents: #Hell if I know what durathread is made out of.
+        reagents: # Hell if I know what durathread is made out of.
         - ReagentId: Fiber
           Quantity: 6
 
@@ -261,16 +263,16 @@
     state: wood
     layers:
     - state: wood
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Item
     heldPrefix: wood
   - type: Tag
     tags:
-    - Wooden
-    - DroneUsable
-    - RawMaterial
-    - TiderAnvilParts
+      - Wooden
+      - RawMaterial
+      - TiderAnvilParts # HardLight: Added by Starlight, I believe. Obviously with the Tider Anvil.
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Extractable
     grindableSolutionName: wood
   - type: SolutionContainerManager
@@ -390,7 +392,7 @@
     state: diamond
     layers:
     - state: diamond
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Item
     heldPrefix: diamond
@@ -407,7 +409,11 @@
     materialComposition:
       Diamond: 100
   - type: PirateBountyItem # Frontier
-    id: MaterialDiamond # Frontier
+    id: MaterialDiamond
+  - type: Tag
+    tags:
+    - RawMaterial
+    - Diamond
 
 - type: entity
   parent: MaterialDiamond
@@ -434,9 +440,9 @@
     state: cotton_3
     layers:
     - state: cotton_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -455,12 +461,18 @@
         Quantity: 3
   - type: Tag
     tags:
-      - DroneUsable
       - ClothMade
       - RawMaterial
+      - Boll
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Cotton: 100
   - type: Item
     heldPrefix: cotton
-  - type: MothFood # Frontier
+# HardLight: Commenting this for now because it might be needed later.
+#  - type: MothFood # Frontier
 
 - type: entity
   parent: MaterialCotton
@@ -489,9 +501,9 @@
     state: pyrotton_3
     layers:
     - state: pyrotton_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
@@ -515,7 +527,8 @@
       - RawMaterial
   - type: Item
     heldPrefix: pyrotton
-  - type: MothFood # Frontier
+# HardLight: Commenting this for now because it might be needed later.
+#  - type: MothFood # Frontier
 
 - type: entity
   parent: MaterialPyrotton
@@ -542,7 +555,7 @@
     state: bananium_1
     layers:
     - state: bananium_1
-      map: ["base"]
+      map: [ "base" ]
   - type: Stack
     stackType: Bananium
     count: 10
@@ -553,7 +566,7 @@
   - type: FlavorProfile
     flavors:
       - banana
-  - type: Food
+  - type: Edible
     trash:
     - TrashBananiumPeel
   - type: BadFood
@@ -607,7 +620,7 @@
   - type: Stack
     count: 50
     stackType: WebSilk
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -629,8 +642,8 @@
   - type: Tag
     tags:
       - ClothMade
-      - DroneUsable
       - RawMaterial
+      - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Item
     sprite: Objects/Materials/silk.rsi
     heldPrefix: silk
@@ -696,6 +709,10 @@
   description: Looks sharp. Sharp enough to poke someone's eye out. Holy fuck it's big.
   suffix: Full
   components:
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 15
   - type: Sprite
     sprite: Objects/Materials/Mob/sharktooth.rsi
     layers:
@@ -734,11 +751,13 @@
   name: bones
   suffix: Full
   components:
-  - type: ConstructionMaterials # Frontier
-  - type: Material # Frontier
-  - type: PhysicalComposition # Frontier
-    materialComposition: # Frontier
-      Bones: 100 # Frontier
+  # Frontier start
+  - type: ConstructionMaterials
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Bones: 100
+  # Frontier end
   - type: Stack
     stackType: Bones
     baseLayer: base
@@ -752,15 +771,15 @@
     - state: cotton_3
       map: ["base"]
   - type: Appearance
-  - type: Food
+  - type: Edible
   - type: BadFood
-  # - type: SolutionContainerManager # Frontier: no eating bones
-  #   solutions: # Frontier
-  #     food: # Frontier
-  #       maxVol: 5 # Frontier
-  #       reagents: # Frontier
-  #       - ReagentId: Vitamin # Frontier
-  #         Quantity: 3 # Frontier
+  - type: SolutionContainerManager # HardLight: Frontier commented this out for fairly obvious reasons, but I think it's funny, so I'm keeping it.
+    solutions:
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: Vitamin
+          Quantity: 3
   - type: Item
     heldPrefix: bones
 
@@ -821,6 +840,9 @@
     sprite: Objects/Materials/hide.rsi
     shape:
     - 0,0,2,2
+  - type: Tag
+    tags:
+    - GoliathPlate
 
 - type: entity
   parent: MaterialGoliathHide

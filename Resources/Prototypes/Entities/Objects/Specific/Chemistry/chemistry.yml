@@ -81,7 +81,7 @@
   - type: DamageOnLand
     damage:
       types:
-        Blunt: 10 # glass resistance set reduces damage. Need to land twice (w/o hitting wall)
+        Blunt: 10 # Glass resistance set reduces damage. Need to land twice (w/o hitting wall)
   - type: DamageOtherOnHit
     damage:
       types:
@@ -94,8 +94,66 @@
   - type: StaticPrice
     price: 30
   - type: DnaSubstanceTrace
-  - type: TrashOnSolutionEmpty # Frontier, # HardLight: I wish they provided literally any more information.
-    solution: beaker
+
+# HardLight: I don't THINK we need this?
+#- type: entity
+#  parent: BaseItem
+#  id: BorgBeaker
+#  name: integrated beaker
+#  description: An internal compartment installed into a cyborg. Rated for 50 units of any liquid.
+#  components:
+#  # 3 morbillion components are to avoid inheriting breakable since borgs can't replace beakers.
+#  - type: Tag
+#    tags:
+#    - GlassBeaker
+#  - type: Sprite
+#    sprite: Objects/Specific/Chemistry/beaker.rsi
+#    layers:
+#      - state: beaker
+#      - state: beaker1
+#        map: [ "enum.SolutionContainerLayers.Fill" ]
+#        visible: false
+#  - type: Item
+#    sprite: Objects/Specific/Chemistry/beaker.rsi
+#  - type: MeleeWeapon
+#    soundNoDamage:
+#      path: "/Audio/Effects/Fluids/splat.ogg"
+#    damage:
+#      types:
+#        Blunt: 0
+#  - type: SolutionContainerManager
+#    solutions:
+#      beaker:
+#        maxVol: 50
+#  - type: MixableSolution
+#    solution: beaker
+#  - type: FitsInDispenser
+#    solution: beaker
+#  - type: RefillableSolution
+#    solution: beaker
+#  - type: DrainableSolution
+#    solution: beaker
+#  - type: ExaminableSolution
+#    solution: beaker
+#    exactVolume: true
+#  - type: DrawableSolution
+#    solution: beaker
+#  - type: InjectableSolution
+#    solution: beaker
+#  - type: SolutionTransfer
+#    canChangeTransferAmount: true
+#  - type: SolutionItemStatus
+#    solution: beaker
+#  - type: UserInterface
+#    interfaces:
+#      enum.TransferAmountUiKey.Key:
+#        type: TransferAmountBoundUserInterface
+#  - type: Drink
+#    solution: beaker
+#  - type: Appearance
+#  - type: SolutionContainerVisuals
+#    maxFillLevels: 6
+#    fillBaseName: beaker
 
 - type: entity
   parent: BaseItem
@@ -110,7 +168,7 @@
     layers:
       - state: beaker
       - state: beaker1
-        map: ["enum.SolutionContainerLayers.Fill"]
+        map: [ "enum.SolutionContainerLayers.Fill" ]
         visible: false
   - type: Item
     sprite: Objects/Specific/Chemistry/beaker.rsi
@@ -288,13 +346,10 @@
     injectOnly: false
     ignoreMobs: true
     ignoreClosed: false
-    transferAmounts:
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    currentTransferAmount: 1
+    minTransferAmount: 1
+    maxTransferAmount: 5
+    transferAmount: 1
+    toggleState: 1 # Draw
   - type: ExaminableSolution
     solution: dropper
     exactVolume: true
@@ -332,7 +387,7 @@
     layers:
       - state: borgdropper
       - state: dropper1
-        map: ["enum.SolutionContainerLayers.Fill"]
+        map: [ "enum.SolutionContainerLayers.Fill" ]
         visible: false
   - type: SolutionContainerManager
     solutions:
@@ -352,10 +407,10 @@
     sprite: Objects/Specific/Chemistry/syringe.rsi
     layers:
       - state: syringe1
-        map: ["enum.SolutionContainerLayers.Fill"]
+        map: [ "enum.SolutionContainerLayers.Fill" ]
         visible: false
       - state: syringe_base0
-        map: ["enum.SolutionContainerLayers.Base"]
+        map: [ "enum.SolutionContainerLayers.Base" ]
   - type: Icon
     sprite: Objects/Specific/Chemistry/syringe.rsi
     state: "syringe_base0"
@@ -390,7 +445,8 @@
   id: Syringe
   components:
   - type: Injector
-    currentTransferAmount: 15
+    transferAmount: 15
+    toggleState: Draw
   - type: Tag
     tags:
     - Syringe
@@ -414,13 +470,9 @@
       injector:
         maxVol: 5
   - type: Injector
-    transferAmounts:
-    - 1
-    - 2
-    - 3
-    - 4
-    - 5
-    currentTransferAmount: 5
+    minTransferAmount: 1
+    maxTransferAmount: 5
+    transferAmount: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 3
     fillBaseName: minisyringe
@@ -469,7 +521,6 @@
     - SyringeGunAmmo
 
 - type: entity
-  abstract: true
   parent: BaseSyringe
   id: PrefilledSyringe
   components:
@@ -516,10 +567,10 @@
   - type: Sprite
     layers:
     - state: syringe1
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
       visible: false
     - state: cryo_base0
-      map: ["enum.SolutionContainerLayers.Base"]
+      map: [ "enum.SolutionContainerLayers.Base" ]
   - type: Icon
     sprite: Objects/Specific/Chemistry/syringe.rsi
     state: cryo_base0
@@ -530,10 +581,9 @@
         canReact: false
   - type: Injector
     injectOnly: false
-    transferAmounts:
-    - 5
-    - 10
-    currentTransferAmount: 10
+    minTransferAmount: 5
+    maxTransferAmount: 10
+    transferAmount: 10
   - type: Tag
     tags:
     - Syringe
@@ -565,7 +615,7 @@
       food:
         maxVol: 20
   - type: ExplosionResistance
-    damageCoefficient: 0.025 # survives conventional explosives but not minibombs and nukes
+    damageCoefficient: 0.025 # Survives conventional explosives but not minibombs and nukes
   - type: Damageable
     damageContainer: Inorganic
   - type: Destructible

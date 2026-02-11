@@ -1,6 +1,5 @@
 using Content.Server.DoAfter;
 using Content.Server.Nutrition.Components;
-using Content.Server.Stack;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Nutrition;
 using Content.Shared.Nutrition.Components;
@@ -8,7 +7,6 @@ using Content.Shared.Chemistry.Components;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
 using Content.Shared.Interaction;
-using Content.Shared.Stacks;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -17,9 +15,13 @@ using Robust.Shared.Containers;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Content.Shared.Destructible;
-using System;
+// HardLight start
+using System; // HardLight: Isn't that a bit, uh... much? I'll look into it later and see if I can remove it.
 using System.Linq;
 using System.Text;
+using Content.Server.Stack;
+using Content.Shared.Stacks;
+// HardLight end
 
 namespace Content.Server.Nutrition.EntitySystems;
 
@@ -27,12 +29,13 @@ public sealed class SliceableFoodSystem : EntitySystem
 {
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedDestructibleSystem _destroy = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly DoAfterSystem _doAfter = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-    [Dependency] private readonly StackSystem _stackSystem = default!;
+    [Dependency] private readonly StackSystem _stackSystem = default!; // HardLight
     public override void Initialize()
     {
         base.Initialize();
@@ -47,6 +50,9 @@ public sealed class SliceableFoodSystem : EntitySystem
         if (args.Handled)
             return;
 
+        if (!TryComp<UtensilComponent>(args.Used, out var utensil) || (utensil.Types & UtensilType.Knife) == 0)
+            return;
+
         var doAfterArgs = new DoAfterArgs(EntityManager,
             args.User,
             entity.Comp.SliceTime,
@@ -59,7 +65,7 @@ public sealed class SliceableFoodSystem : EntitySystem
             BreakOnMove = true,
             NeedHand = true,
         };
-        _doAfter.TryStartDoAfter(doAfterArgs);
+        args.Handled = _doAfter.TryStartDoAfter(doAfterArgs);
     }
 
     private void OnSlicedoAfter(Entity<SliceableFoodComponent> entity, ref SliceFoodDoAfterEvent args)
@@ -67,24 +73,22 @@ public sealed class SliceableFoodSystem : EntitySystem
         if (args.Cancelled || args.Handled || args.Args.Target == null)
             return;
 
-        if (TrySliceFood(entity, args.User, args.Used, entity.Comp))
+        if (TrySliceFood(entity.Owner, args.User, args.Used))
             args.Handled = true;
     }
 
-    private bool TrySliceFood(EntityUid uid,
+    private bool TrySliceFood(Entity<TransformComponent?, SliceableFoodComponent?, EdibleComponent?> entity,
         EntityUid user,
-        EntityUid? usedItem,
-        SliceableFoodComponent? component = null,
-        FoodComponent? food = null,
-        TransformComponent? transform = null)
+        EntityUid? usedItem)
     {
-        if (!Resolve(uid, ref component, ref food, ref transform) ||
-            string.IsNullOrEmpty(component.Slice))
+        if (!Resolve(entity, ref entity.Comp1, ref entity.Comp2, ref entity.Comp3) || string.IsNullOrEmpty(entity.Comp2.Slice))
             return false;
 
-        if (!_solutionContainer.TryGetSolution(uid, food.Solution, out var soln, out var solution))
+        if (!_solutionContainer.TryGetSolution(entity.Owner, entity.Comp3.Solution, out var soln, out var solution))
             return false;
 
+        // HardLight start: Check if the food is stackable and if so, get the count of items in the stack.
+        // This is used to determine how much solution to put in each slice and to update the stack count after slicing.
         var stackCount = 1;
         if (TryComp<StackComponent>(uid, out var stack))
             stackCount = stack.Count;
@@ -93,10 +97,10 @@ public sealed class SliceableFoodSystem : EntitySystem
             return false;
 
         var sourceSolution = stackCount > 1 ? new Solution(solution) : solution;
-        var sliceVolume = sourceSolution.Volume / FixedPoint2.New(component.TotalCount);
-        for (int i = 0; i < component.TotalCount; i++)
+        var sliceVolume = solution.Volume / FixedPoint2.New(entity.Comp2.TotalCount);
+        for (int i = 0; i < entity.Comp2.TotalCount; i++)
         {
-            var sliceUid = Slice(uid, user, component, transform);
+            var sliceUid = Slice(entity, user);
 
             var lostSolution = stackCount > 1
                 ? sourceSolution.SplitSolution(sliceVolume)
@@ -106,18 +110,21 @@ public sealed class SliceableFoodSystem : EntitySystem
             FillSlice(sliceUid, lostSolution);
             UpdateSliceStackSignature(sliceUid);
         }
+        // HardLight end
 
-        _audio.PlayPvs(component.Sound, transform.Coordinates, AudioParams.Default.WithVolume(-2));
+        _audio.PlayPvs(entity.Comp2.Sound, entity.Comp1.Coordinates, AudioParams.Default.WithVolume(-2));
         var ev = new SliceFoodEvent();
-        RaiseLocalEvent(uid, ref ev);
+        RaiseLocalEvent(entity, ref ev);
 
+        // HardLight start: If the food is stackable and has more than 1 item in the stack, reduce the stack count by 1 instead of deleting the entity.
         if (stackCount > 1 && stack != null)
         {
             _stackSystem.SetCount(uid, stack.Count - 1, stack);
             return true;
         }
+        // HardLight end
 
-        DeleteFood(uid, user, food);
+        DeleteFood(entity, user);
         return true;
     }
 
@@ -125,19 +132,16 @@ public sealed class SliceableFoodSystem : EntitySystem
     /// Create a new slice in the world and returns its entity.
     /// The solutions must be set afterwards.
     /// </summary>
-    public EntityUid Slice(EntityUid uid,
-        EntityUid user,
-        SliceableFoodComponent? comp = null,
-        TransformComponent? transform = null)
+    public EntityUid Slice(Entity<TransformComponent?, SliceableFoodComponent?> entity, EntityUid user)
     {
-        if (!Resolve(uid, ref comp, ref transform))
+        if (!Resolve(entity, ref entity.Comp1, ref entity.Comp2))
             return EntityUid.Invalid;
 
-        var sliceUid = Spawn(comp.Slice, _transform.GetMapCoordinates(uid));
+        var sliceUid = Spawn(entity.Comp2.Slice, _transform.GetMapCoordinates((entity, entity.Comp1)));
 
         // try putting the slice into the container if the food being sliced is in a container!
         // this lets you do things like slice a pizza up inside of a hot food cart without making a food-everywhere mess
-        _transform.DropNextTo(sliceUid, (uid, transform));
+        _transform.DropNextTo(sliceUid, entity);
         _transform.SetLocalRotation(sliceUid, 0);
 
         if (!_container.IsEntityOrParentInContainer(sliceUid))
@@ -155,7 +159,7 @@ public sealed class SliceableFoodSystem : EntitySystem
         return sliceUid;
     }
 
-    private void DeleteFood(EntityUid uid, EntityUid user, FoodComponent foodComp)
+    private void DeleteFood(EntityUid uid, EntityUid user)
     {
         var ev = new BeforeFullySlicedEvent
         {
@@ -165,35 +169,26 @@ public sealed class SliceableFoodSystem : EntitySystem
         if (ev.Cancelled)
             return;
 
-        var dev = new DestructionEventArgs();
-        RaiseLocalEvent(uid, dev);
-
-        // Locate the sliced food and spawn its trash
-        foreach (var trash in foodComp.Trash)
-        {
-            var trashUid = Spawn(trash, _transform.GetMapCoordinates(uid));
-
-            // try putting the trash in the food's container too, to be consistent with slice spawning?
-            _transform.DropNextTo(trashUid, uid);
-            _transform.SetLocalRotation(trashUid, 0);
-        }
-
-        QueueDel(uid);
+        _destroy.DestroyEntity(uid);
     }
 
-    private void FillSlice(EntityUid sliceUid, Solution solution)
+    private void FillSlice(Entity<EdibleComponent?> slice, Solution solution)
     {
-        // Replace all reagents on prototype not just copying poisons (example: slices of eaten pizza should have less nutrition)
-        if (TryComp<FoodComponent>(sliceUid, out var sliceFoodComp) &&
-            _solutionContainer.TryGetSolution(sliceUid, sliceFoodComp.Solution, out var itsSoln, out var itsSolution))
-        {
-            _solutionContainer.RemoveAllSolution(itsSoln.Value);
+        if (!Resolve(slice, ref slice.Comp, false))
+            return;
 
-            var lostSolutionPart = solution.SplitSolution(itsSolution.AvailableVolume);
-            _solutionContainer.TryAddSolution(itsSoln.Value, lostSolutionPart);
-        }
+        // Replace all reagents on prototype not just copying poisons (example: slices of eaten pizza should have less nutrition)
+        if (!_solutionContainer.TryGetSolution(slice.Owner, slice.Comp.Solution, out var itsSoln, out var itsSolution))
+            return;
+
+        _solutionContainer.RemoveAllSolution(itsSoln.Value);
+
+        var lostSolutionPart = solution.SplitSolution(itsSolution.AvailableVolume);
+        _solutionContainer.TryAddSolution(itsSoln.Value, lostSolutionPart);
     }
 
+    // HardLight start: This is used to update the stack signature of a slice after filling it with the solution from the original food.
+    // This ensures that slices with different solutions (e.g. different amounts of reagents) will not stack together.
     private void UpdateSliceStackSignature(EntityUid sliceUid)
     {
         if (!TryComp<StackComponent>(sliceUid, out _))
@@ -230,11 +225,16 @@ public sealed class SliceableFoodSystem : EntitySystem
                 .Append(';');
         }
     }
+    // HardLight end
 
     private void OnComponentStartup(Entity<SliceableFoodComponent> entity, ref ComponentStartup args)
     {
-        var foodComp = EnsureComp<FoodComponent>(entity);
+        // TODO: When Food Component is fully kill delete this awful method
+        // This exists just to make tests fail I guess, awesome!
+        // If you're here because your test just failed, make sure that:
+        // Your food has the edible component
+        // The solution listed in the edible component exists
+        var foodComp = EnsureComp<EdibleComponent>(entity);
         _solutionContainer.EnsureSolution(entity.Owner, foodComp.Solution, out _);
     }
 }
-

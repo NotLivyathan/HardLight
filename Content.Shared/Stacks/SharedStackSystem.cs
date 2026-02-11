@@ -1,18 +1,19 @@
-using System;
 using System.Numerics;
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
+using Content.Shared.Nutrition;
 using Content.Shared.Popups;
 using Content.Shared.Storage.EntitySystems;
 using JetBrains.Annotations;
 using Robust.Shared.GameStates;
-using Robust.Shared.Map; // Goobstation
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using System; // HardLight: Isn't that a bit, uh... much? I'll look into it later and see if I can remove it.
+using Robust.Shared.Map; // Goobstation
 
 namespace Content.Shared.Stacks
 {
@@ -39,16 +40,12 @@ namespace Content.Shared.Stacks
             SubscribeLocalEvent<StackComponent, ComponentStartup>(OnStackStarted);
             SubscribeLocalEvent<StackComponent, ExaminedEvent>(OnStackExamined);
             SubscribeLocalEvent<StackComponent, InteractUsingEvent>(OnStackInteractUsing);
-            SubscribeLocalEvent<StackComponent, StackCustomSplitAmountMessage>(OnCustomSplitMessage); // cherry-pick #32938
+            SubscribeLocalEvent<StackComponent, BeforeIngestedEvent>(OnBeforeEaten);
+            SubscribeLocalEvent<StackComponent, IngestedEvent>(OnEaten);
 
             _vvm.GetTypeHandler<StackComponent>()
                 .AddPath(nameof(StackComponent.Count), (_, comp) => comp.Count, SetCount);
         }
-
-        // Cherry-pick #32938 courtesy of Ilya246
-        // client shouldn't try to split stacks so do nothing on client
-        protected virtual void OnCustomSplitMessage(Entity<StackComponent> ent, ref StackCustomSplitAmountMessage message) {}
-        // End cherry-pick #32938 courtesy of Ilya246
 
         public override void Shutdown()
         {
@@ -124,7 +121,7 @@ namespace Content.Shared.Stacks
             if (string.IsNullOrEmpty(recipientStack.StackTypeId) || !recipientStack.StackTypeId.Equals(donorStack.StackTypeId))
                 return false;
 
-            if (!StackSignaturesCompatible(donor, recipient))
+            if (!StackSignaturesCompatible(donor, recipient)) // HardLight
                 return false;
 
             transferred = Math.Min(donorStack.Count, GetAvailableSpace(recipientStack));
@@ -133,6 +130,12 @@ namespace Content.Shared.Stacks
             return transferred > 0;
         }
 
+        /// <summary>
+        ///     HardLight: Checks if two stacks are compatible for merging based on their signatures.
+        ///     If both stacks have a signature, they must match for the stacks to be considered compatible.
+        ///     If only one stack has a signature, they are not compatible.
+        ///     If neither stack has a signature, they are considered compatible.
+        /// </summary>
         protected bool StackSignaturesCompatible(EntityUid donor, EntityUid recipient)
         {
             var donorHasSignature = TryComp(donor, out StackSignatureComponent? donorSignature);
@@ -207,7 +210,7 @@ namespace Content.Shared.Stacks
         }
 
         /// <summary>
-        /// Goobstation - virtual method to allow calling from shared.
+        /// Goobstation: Virtual method to allow calling from shared.
         /// Does nothing on the client.
         /// </summary>
         public virtual EntityUid? Split(EntityUid uid, int amount, EntityCoordinates spawnPosition, StackComponent? stack = null)
@@ -354,7 +357,7 @@ namespace Content.Shared.Stacks
             if (!Resolve(insertEnt, ref insertStack) || !Resolve(targetEnt, ref targetStack))
                 return false;
 
-            if (!StackSignaturesCompatible(insertEnt, targetEnt))
+            if (!StackSignaturesCompatible(insertEnt, targetEnt)) // HardLight
                 return false;
 
             var count = insertStack.Count;
@@ -372,7 +375,7 @@ namespace Content.Shared.Stacks
             if (insertStack.StackTypeId != targetStack.StackTypeId)
                 return false;
 
-            if (!StackSignaturesCompatible(insertEnt, targetEnt))
+            if (!StackSignaturesCompatible(insertEnt, targetEnt)) // HardLight
                 return false;
 
             var available = GetAvailableSpace(targetStack);
@@ -428,6 +431,51 @@ namespace Content.Shared.Stacks
                     ("markupCountColor", "lightgray")
                 )
             );
+        }
+
+        private void OnBeforeEaten(Entity<StackComponent> eaten, ref BeforeIngestedEvent args)
+        {
+            if (args.Cancelled)
+                return;
+
+            if (args.Solution is not { } sol)
+                return;
+
+            // If the entity is empty and is a lingering entity we can't eat from it.
+            if (eaten.Comp.Count <= 0)
+            {
+                args.Cancelled = true;
+                return;
+            }
+
+            /*
+            Edible stacked items is near completely evil so we must choose one of the following:
+            - Option 1: Eat the entire solution each bite and reduce the stack by 1.
+            - Option 2: Multiply the solution eaten by the stack size.
+            - Option 3: Divide the solution consumed by stack size.
+            The easiest and safest option is and always will be Option 1 otherwise we risk reagent deletion or duplication.
+            That is why we cancel if we cannot set the minimum to the entire volume of the solution.
+            */
+            if(args.TryNewMinimum(sol.Volume))
+                return;
+
+            args.Cancelled = true;
+        }
+
+        private void OnEaten(Entity<StackComponent> eaten, ref IngestedEvent args)
+        {
+            if (!Use(eaten, 1))
+                return;
+
+            // We haven't eaten the whole stack yet or are unable to eat it completely.
+            if (eaten.Comp.Count > 0 || eaten.Comp.Lingering)
+            {
+                args.Refresh = true;
+                return;
+            }
+
+            // Here to tell the food system to do destroy stuff.
+            args.Destroy = true;
         }
     }
 

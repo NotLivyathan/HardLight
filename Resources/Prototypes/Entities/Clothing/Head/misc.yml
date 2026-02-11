@@ -32,6 +32,11 @@
     sprite: Clothing/Head/Misc/chickenhead.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
 
 - type: entity
   parent: ClothingHeadBase
@@ -74,17 +79,26 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
+    - FacialHair
 
-- type: entity
+- type: entity # HardLight: Frontier apparently has their own version of this that we were using, but to be honest, I don't care enough to keep it.
   parent: ClothingHeadBase
   id: ClothingHeadHatPwig
-  name: powdered wig # Frontier: pwig < powdered wig
-  description: A foppish article, fit for but the most conspicuous of dandies. # Frontier: "To be honest, those look ridiculous."
+  name: pwig
+  description: To be honest, those look ridiculous.
   components:
   - type: Sprite
-    sprite: _NF/Clothing/Head/Misc/pwig.rsi # Frontier: add _NF prefix
+    sprite: Clothing/Head/Misc/pwig.rsi
   - type: Clothing
-    sprite: _NF/Clothing/Head/Misc/pwig.rsi # Frontier: add _NF prefix
+    sprite: Clothing/Head/Misc/pwig.rsi
+  - type: HideLayerClothing
+    slots:
+    - HeadTop
 
 - type: entity
   parent: ClothingHeadBase
@@ -109,6 +123,12 @@
     sprite: Clothing/Head/Misc/richard.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
+    - FacialHair
 
 - type: entity
   parent: ClothingHeadBase
@@ -122,6 +142,11 @@
     sprite: Clothing/Head/Misc/skubhead.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
 
 - type: entity
   parent: ClothingHeadBase
@@ -137,6 +162,11 @@
     tags:
     - HamsterWearable
     - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
 
 - type: entity
   parent: ClothingHeadBase
@@ -150,7 +180,7 @@
     sprite: Clothing/Head/Misc/cone.rsi
   - type: Item
     storedRotation: 0
-  - type: PhysicalComposition #you can't just pass up some free plastic!
+  - type: PhysicalComposition # You can't just pass up some free plastic!
     materialComposition:
       Plastic: 100
   - type: StaticPrice
@@ -166,26 +196,30 @@
     sprite: Clothing/Head/Misc/fancycrown.rsi
   - type: Clothing
     sprite: Clothing/Head/Misc/fancycrown.rsi
-  - type: StaticPrice
+  - type: TypingIndicatorClothing
+    proto: regal
+  - type: MobPrice
     price: 3000
   - type: AddAccentClothing
     accent: MobsterAccent
 
 - type: entity
-  parent: [ ClothingHeadBase, BaseC3SyndicateContraband ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ ClothingHeadBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClothingHeadHatCatEars
   name: cat ears
   description: "NYAH!"
   categories: [ DoNotMap ]
   components:
   - type: Tag
-    tags: [] # ignore "WhitelistChameleon" tag
+    tags: [] # Ignore "WhitelistChameleon" tag
   - type: Sprite
     sprite: Clothing/Head/Hats/catears.rsi
   - type: Clothing
     sprite: Clothing/Head/Hats/catears.rsi
   - type: AddAccentClothing
     accent: OwOAccent
+  - type: StaticPrice
+    price: 15000
 
 - type: entity
   parent: [ClothingHeadHatCatEars, BaseToggleClothing]
@@ -201,7 +235,7 @@
     components:
     - type: KillSign
   - type: Tag
-    tags: [] # ignore "WhitelistChameleon" tag
+    tags: [] # Ignore "WhitelistChameleon" tag
   - type: Sprite
     sprite: Clothing/Head/Hats/catears.rsi
   - type: Clothing
@@ -210,13 +244,10 @@
     accent: OwOAccent
 
 - type: entity
-  categories: [ Actions, HideSpawnMenu ]
+  parent: BaseToggleAction
   id: ActionBecomeValid
   name: Become Valid
   description: "*notices your killsign* owo whats this"
-  components:
-  - type: InstantAction
-    event: !type:ToggleActionEvent
 
 - type: entity
   parent: ClothingHeadBase
@@ -244,6 +275,12 @@
     sprite: Clothing/Head/Misc/squiddy.rsi
   - type: IngestionBlocker
   - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
+    - FacialHair
 
 - type: entity
   parent: ClothingHeadBase
@@ -255,6 +292,12 @@
     sprite: Clothing/Head/Misc/red_racoon.rsi
   - type: Clothing
     sprite: Clothing/Head/Misc/red_racoon.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - HeadTop
+    - HeadSide
+    - FacialHair
 
 - type: entity
   parent: Clothing
@@ -272,15 +315,16 @@
   - type: Clothing
     slots:
     - HEAD
-  - type: Food
+  - type: Edible
+    edible: Drink
     solution: drink
-    useSound: /Audio/Items/drink.ogg
-    eatMessage: drink-component-try-use-drink-success-slurp
     delay: 0.5
     forceFeedDelay: 1.5
   - type: FlavorProfile
     flavors:
       - water
+  - type: DrainableSolution
+    solution: drink
   - type: SolutionContainerManager
     solutions:
       drink:
@@ -338,7 +382,10 @@
   - type: HideLayerClothing
     slots:
     - Hair
+    - HeadTop
+    - HeadSide
 
+# HardLight start: No idea where these came from, but I'm putting them here until I know.
 - type: entity
   parent: ClothingHeadBase
   id: DummyHelmetInvisible
