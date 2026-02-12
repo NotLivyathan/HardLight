@@ -701,7 +701,7 @@
   - type: StepTrigger
     intersectRatio: 0.2
     requiredTriggeredSpeed: 1
-  - type: TriggerOnStepTrigger
+  - type: TriggerOnStepTrigger # For payloads
   - type: EmitSoundOnTrigger
     sound:
       collection: Parp

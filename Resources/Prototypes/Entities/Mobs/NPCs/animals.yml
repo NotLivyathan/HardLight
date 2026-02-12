@@ -13,7 +13,7 @@
     - map: ["enum.DamageStateVisualLayers.Base"]
       state: bat
       sprite: Mobs/Animals/bat.rsi
-  - type: Carriable #DeltaV
+  - type: Carriable # DeltaV
   - type: Speech
     speechSounds: Squeak
     speechVerb: SmallMob
@@ -2480,7 +2480,8 @@
         Brute: 5
   - type: Item
     size: Normal
-  - type: OnUseTimerTrigger
+  - type: TriggerOnUse
+  - type: TimerTrigger
     delay: 10
     beepSound:
       path: /Audio/Weapons/Guns/MagOut/pistol_magout.ogg #funny sfx use
@@ -2493,6 +2494,8 @@
     intensitySlope: 20
     totalIntensity: 225
   - type: ExplodeOnTrigger
+    keysIn:
+    - timer
   - type: Destructible
     thresholds:
     - trigger:

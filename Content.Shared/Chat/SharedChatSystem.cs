@@ -5,7 +5,6 @@ using Content.Shared.Radio;
 using Content.Shared.Speech;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
-using Robust.Shared.Serialization;
 
 namespace Content.Shared.Chat;
 
@@ -13,24 +12,27 @@ public abstract class SharedChatSystem : EntitySystem
 {
     public const char RadioCommonPrefix = ';';
     public const char RadioChannelPrefix = ':';
+    public const char RadioChannelAltPrefix = '.';
     public const char LocalPrefix = '>';
     public const char ConsolePrefix = '/';
     public const char DeadPrefix = '\\';
     public const char LOOCPrefix = '(';
     public const char OOCPrefix = '[';
-    public const char EmotesPrefix = '*';
-    public const char EmotesAltPrefix = '@';
-    public const char SubtlePrefix = '-';
-    public const char SubtleOOCPrefix = '.';
+    public const char EmotesPrefix = '@';
+    public const char EmotesAltPrefix = '*';
     public const char AdminPrefix = ']';
     public const char WhisperPrefix = ',';
-    public const char TelepathicPrefix = '='; //Nyano - Summary: Adds the telepathic channel's prefix.
+    public const char TelepathicPrefix = '='; // Nyano: Adds the telepathic channel's prefix.
     public const char DefaultChannelKey = 'h';
+
+    public const int VoiceRange = 10; // How far voice goes in world units
+    public const int WhisperClearRange = 2; // How far whisper goes while still being understandable, in world units
+    public const int WhisperMuffledRange = 5; // How far whisper goes at all, in world units
+    public const string DefaultAnnouncementSound = "/Audio/Announcements/announce.ogg";
 
     public static readonly ProtoId<RadioChannelPrototype> CommonChannel = "Common";
 
-    public static string DefaultChannelPrefix = $"{RadioChannelPrefix}{DefaultChannelKey}";
-
+    public static readonly string DefaultChannelPrefix = $"{RadioChannelPrefix}{DefaultChannelKey}";
     public static readonly ProtoId<SpeechVerbPrototype> DefaultSpeechVerb = "Default";
 
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
@@ -44,7 +46,7 @@ public abstract class SharedChatSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        DebugTools.Assert(_prototypeManager.HasIndex<RadioChannelPrototype>(CommonChannel));
+        DebugTools.Assert(_prototypeManager.HasIndex(CommonChannel));
         SubscribeLocalEvent<PrototypesReloadedEventArgs>(OnPrototypeReload);
         CacheRadios();
     }
@@ -68,13 +70,13 @@ public abstract class SharedChatSystem : EntitySystem
     public SpeechVerbPrototype GetSpeechVerb(EntityUid source, string message, SpeechComponent? speech = null)
     {
         if (!Resolve(source, ref speech, false))
-            return _prototypeManager.Index<SpeechVerbPrototype>(DefaultSpeechVerb);
+            return _prototypeManager.Index(DefaultSpeechVerb);
 
         // check for a suffix-applicable speech verb
         SpeechVerbPrototype? current = null;
         foreach (var (str, id) in speech.SuffixSpeechVerbs)
         {
-            var proto = _prototypeManager.Index<SpeechVerbPrototype>(id);
+            var proto = _prototypeManager.Index(id);
             if (message.EndsWith(Loc.GetString(str)) && proto.Priority >= (current?.Priority ?? 0))
             {
                 current = proto;
@@ -82,7 +84,7 @@ public abstract class SharedChatSystem : EntitySystem
         }
 
         // if no applicable suffix verb return the normal one used by the entity
-        return current ?? _prototypeManager.Index<SpeechVerbPrototype>(speech.SpeechVerb);
+        return current ?? _prototypeManager.Index(speech.SpeechVerb);
     }
 
     /// <summary>
@@ -104,7 +106,7 @@ public abstract class SharedChatSystem : EntitySystem
         if (input.Length <= 2)
             return;
 
-        if (!input.StartsWith(RadioChannelPrefix))
+        if (!(input.StartsWith(RadioChannelPrefix) || input.StartsWith(RadioChannelAltPrefix)))
             return;
 
         if (!_keyCodes.TryGetValue(char.ToLower(input[1]), out _))
@@ -144,7 +146,7 @@ public abstract class SharedChatSystem : EntitySystem
             return true;
         }
 
-        if (!input.StartsWith(RadioChannelPrefix))
+        if (!(input.StartsWith(RadioChannelPrefix) || input.StartsWith(RadioChannelAltPrefix)))
             return false;
 
         if (input.Length < 2 || char.IsWhiteSpace(input[1]))
@@ -292,6 +294,7 @@ public abstract class SharedChatSystem : EntitySystem
     }
 }
 
+// HardLight start: I think this was done with the Subtle port. Not 100% on that, though.
 /// <summary>
 ///     InGame IC chat is for chat that is specifically ingame (not lobby) but is also in character, i.e. speaking.
 /// </summary>
@@ -334,3 +337,4 @@ public enum ChatTransmitRange : byte
     /// Ghosts hear in range, and skip admin spam checks (server use)
     GhostRangeLimitNoAdminCheck,
 }
+// HardLight end

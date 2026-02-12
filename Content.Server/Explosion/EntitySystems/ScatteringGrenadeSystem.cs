@@ -1,5 +1,8 @@
 ﻿using Content.Shared.Explosion.Components;
 using Content.Shared.Throwing;
+using Content.Shared.Trigger;
+using Content.Shared.Trigger.Systems;
+using Content.Shared.Trigger.Components;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -15,6 +18,7 @@ public sealed class ScatteringGrenadeSystem : SharedScatteringGrenadeSystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
+    [Dependency] private readonly TriggerSystem _trigger = default!;
 
     public override void Initialize()
     {
@@ -24,19 +28,22 @@ public sealed class ScatteringGrenadeSystem : SharedScatteringGrenadeSystem
     }
 
     /// <summary>
-    /// Can be triggered either by damage or the use in hand timer, either way
-    /// will store the event happening in IsTriggered for the next frame update rather than
-    /// handling it here to prevent crashing the game
+    ///     Can be triggered either by damage or the use in hand timer, either way
+    ///     will store the event happening in IsTriggered for the next frame update rather than
+    ///     handling it here to prevent crashing the game
     /// </summary>
     private void OnScatteringTrigger(Entity<ScatteringGrenadeComponent> entity, ref TriggerEvent args)
     {
+        if (args.Key != entity.Comp.TriggerKey)
+            return;
+
         entity.Comp.IsTriggered = true;
         args.Handled = true;
     }
 
     /// <summary>
-    /// Every frame update we look for scattering grenades that were triggered (by damage or timer)
-    /// Then we spawn the contents, throw them, optionally trigger them, then delete the original scatter grenade entity
+    ///     Every frame update we look for scattering grenades that were triggered (by damage or timer)
+    ///     Then we spawn the contents, throw them, optionally trigger them, then delete the original scatter grenade entity
     /// </summary>
     public override void Update(float frametime)
     {
@@ -47,7 +54,7 @@ public sealed class ScatteringGrenadeSystem : SharedScatteringGrenadeSystem
         {
             var totalCount = component.Container.ContainedEntities.Count + component.UnspawnedCount;
 
-            // if triggered while empty, (if it's blown up while empty) it'll just delete itself
+            // If triggered while empty (if it's blown up while empty), it'll just delete itself
             if (component.IsTriggered && totalCount > 0)
             {
                 var grenadeCoord = _transformSystem.GetMapCoordinates(uid);
@@ -76,13 +83,12 @@ public sealed class ScatteringGrenadeSystem : SharedScatteringGrenadeSystem
 
                     _throwingSystem.TryThrow(contentUid, direction, component.Velocity);
 
-                    if (component.TriggerContents)
+                    if (component.TriggerContents && TryComp<TimerTriggerComponent>(contentUid, out var contentTimer))
                     {
                         additionalIntervalDelay += _random.NextFloat(component.IntervalBetweenTriggersMin, component.IntervalBetweenTriggersMax);
-                        var contentTimer = EnsureComp<ActiveTimerTriggerComponent>(contentUid);
-                        contentTimer.TimeRemaining = component.DelayBeforeTriggerContents + additionalIntervalDelay;
-                        var ev = new ActiveTimerTriggerEvent(contentUid, uid);
-                        RaiseLocalEvent(contentUid, ref ev);
+
+                        _trigger.SetDelay((contentUid, contentTimer), TimeSpan.FromSeconds(component.DelayBeforeTriggerContents + additionalIntervalDelay));
+                        _trigger.ActivateTimerTrigger((contentUid, contentTimer));
                     }
                 }
 
@@ -94,7 +100,7 @@ public sealed class ScatteringGrenadeSystem : SharedScatteringGrenadeSystem
     }
 
     /// <summary>
-    /// Spawns one instance of the fill prototype or contained entity at the coordinate indicated
+    ///     Spawns one instance of the fill prototype or contained entity at the coordinate indicated
     /// </summary>
     private bool TrySpawnContents(MapCoordinates spawnCoordinates, ScatteringGrenadeComponent component, out EntityUid contentUid)
     {

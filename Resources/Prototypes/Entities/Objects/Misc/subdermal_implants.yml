@@ -10,7 +10,7 @@
     - SubdermalImplant
     - HideContextMenu
 
-#Fun implants
+# Fun implants
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -22,7 +22,7 @@
     - type: SubdermalImplant
       whitelist:
         components:
-        - MobState # admeme implanting a chair with trombone implant needs to give the chair mobstate so it can die first
+        - MobState # Admeme implanting a chair with trombone implant needs to give the chair mobstate so it can die first
     - type: TriggerOnMobstateChange
       mobState:
       - Dead
@@ -43,8 +43,10 @@
       implantAction: ActionToggleLight
     - type: PointLight
       enabled: false
-      radius: 4
-      softness: 1
+      radius: 4 # HardLight: Was 2.5; buffed to make it actually useful instead of just being a waste code.
+      softness: 1 # HardLight: Was 5 ^
+      mask: /Textures/Effects/LightMasks/cone.png
+      autoRot: true
     - type: Tag
       tags:
         - SubdermalImplant
@@ -59,32 +61,33 @@
   description: This implant lets the user honk anywhere at any time.
   categories: [ HideSpawnMenu ]
   components:
-    - type: SubdermalImplant
-      implantAction: ActionActivateHonkImplant
-    - type: TriggerImplantAction
-    - type: EmitSoundOnTrigger
-      sound:
-        collection: BikeHorn
-        params:
-          variation: 0.125
-    - type: Tag
-      tags:
-      - BikeHorn
+  - type: SubdermalImplant
+    implantAction: ActionActivateHonkImplant
+  - type: TriggerOnActivateImplant
+  - type: EmitSoundOnTrigger
+    predicted: true
+    sound:
+      collection: BikeHorn
+      params:
+        variation: 0.125
+  - type: Tag
+    tags:
+    - BikeHorn
 
-#Security implants
+# Security implants
 
 - type: entity
   parent: BaseSubdermalImplant
   id: TrackingImplant
   name: tracking implant
-  description: This implant has a condition monitor for the ColSec radio channel, alongside tracking sensors.
+  description: This implant has a condition monitor for the ColSec radio channel, alongside tracking sensors. # HardLight: Added reference to ColSec
   categories: [ HideSpawnMenu ]
   components:
     - type: SubdermalImplant
       whitelist:
         components:
-        - MobState # admeme implanting a chair with tracking implant needs to give the chair mobstate so it can die first
-    - type: SuitSensor # HL readd suit sensor component
+        - MobState # Admeme implanting a chair with tracking implant needs to give the chair mobstate so it can die first
+    - type: SuitSensor
       randomMode: false
       controlsLocked: true
       mode: SensorCords
@@ -92,17 +95,11 @@
     - type: DeviceNetwork
       deviceNetId: Wireless
       transmitFrequencyId: SuitSensor
+    - type: StationLimitedNetwork
     - type: WirelessNetworkConnection
-      range: 10000
-    - type: TriggerOnMobstateChange
-      mobState:
-      - Critical
-      - Dead
-    - type: Rattle
-      radioChannel: "ColSec" # HardLight
+      range: 500
 
-
-#Traitor implants
+# Traitor implants
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -115,10 +112,10 @@
       implantAction: ActionOpenStorageImplant
       whitelist:
         components:
-        - Hands # no use giving a mouse a storage implant, but a monkey is another story...
+        - Hands # No use giving a mouse a storage implant, but a monkey is another story...
     - type: Storage
       grid:
-      - 0,0,3,3
+      - 0,0,3,3 # HardLight: I'm not sure if Frontier buffed it or our version was just from some pre nerf era of upstream, but I'm keeping it at 0,0,3,3 for now.
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -139,12 +136,12 @@
       implantAction: ActionActivateFreedomImplant
       whitelist:
         components:
-        - Cuffable # useless if you cant be cuffed
+        - Cuffable # Useless if you cant be cuffed
 
 - type: entity
   parent: BaseSubdermalImplant
   id: RadioImplant
-  name: syndicate radio implant # Frontier: add syndicate
+  name: syndicate radio implant # Frontier: radio implant<syndicate radio implant
   description: This implant grants access to the Syndicate channel without a headset.
   categories: [ HideSpawnMenu ]
   components:
@@ -164,7 +161,7 @@
     implantAction: ActionOpenUplinkImplant
     whitelist:
       components:
-      - Hands # prevent mouse buying grenade penguin since its not telepathic
+      - Hands # Prevent mouse buying grenade penguin since its not telepathic
   - type: Store
     balance:
       Telecrystal: 0
@@ -177,16 +174,16 @@
   parent: BaseSubdermalImplant
   id: EmpImplant
   name: EMP implant
-  description: This implant creates a 2.75 m, 10 s, 2.7 MJ electromagnetic pulse when activated. # Frontier: add units
+  description: This implant creates a 2.75 m, 10 s, 2.7 MJ electromagnetic pulse when activated. # Frontier: Added units
   categories: [ HideSpawnMenu ]
   components:
-    - type: SubdermalImplant
-      implantAction: ActionActivateEmpImplant
-    - type: TriggerImplantAction
-    - type: EmpOnTrigger
-      range: 2.75
-      energyConsumption: 2700000 # Frontier: 50000<2700000
-      disableDuration: 10
+  - type: SubdermalImplant
+    implantAction: ActionActivateEmpImplant
+  - type: TriggerOnActivateImplant
+  - type: EmpOnTrigger
+    range: 2.75
+    energyConsumption: 50000
+    disableDuration: 10
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -195,10 +192,10 @@
   description: This implant randomly teleports the user within a large radius when activated.
   categories: [ HideSpawnMenu ]
   components:
-    - type: SubdermalImplant
-      implantAction: ActionActivateScramImplant
-    - type: TriggerImplantAction
-    - type: ScramImplant
+  - type: SubdermalImplant
+    implantAction: ActionActivateScramImplant
+  - type: TriggerOnActivateImplant
+  - type: ScramImplant
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -211,9 +208,26 @@
       implantAction: ActionActivateDnaScramblerImplant
       whitelist:
         components:
-        - HumanoidAppearance # syndies cant turn hamlet into a human
+        - HumanoidAppearance # Syndies can't turn Hamlet into a human
 
-#Nuclear Operative/Special Exclusive implants
+- type: entity
+  categories: [ HideSpawnMenu, Spawner ]
+  parent: BaseSubdermalImplant
+  id: ChameleonControllerImplant
+  name: chameleon controller implant
+  description: This implant allows you to instantly change the appearance of all worn chameleon clothing.
+  components:
+  - type: ChameleonControllerImplant
+  - type: SubdermalImplant
+    implantAction: ActionChameleonController
+  - type: UseDelay
+    delay: 1
+  - type: UserInterface
+    interfaces:
+      enum.ChameleonControllerKey.Key:
+        type: ChameleonControllerBoundUserInterface
+
+# Nuclear Operative/Special Exclusive implants
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -222,27 +236,28 @@
   description: This implant detonates the user upon activation or upon death.
   categories: [ HideSpawnMenu ]
   components:
-    - type: SubdermalImplant
-      permanent: true
-      implantAction: ActionActivateMicroBomb
-    - type: TriggerOnMobstateChange
-      mobState:
-      - Dead
-    - type: TriggerImplantAction
-    - type: ExplodeOnTrigger
-    - type: GibOnTrigger
-      deleteItems: true
-    - type: Explosive
-      explosionType: MicroBomb
-      totalIntensity: 120
-      intensitySlope: 5
-      maxIntensity: 30
-      canCreateVacuum: false
-    - type: Tag
-      tags:
-        - SubdermalImplant
-        - HideContextMenu
-        - MicroBomb
+  - type: SubdermalImplant
+    permanent: true
+    implantAction: ActionActivateMicroBomb
+  - type: TriggerOnMobstateChange
+    mobState:
+    - Dead
+  - type: TriggerOnActivateImplant
+  - type: ExplodeOnTrigger
+  - type: GibOnTrigger
+    targetUser: true
+    deleteItems: true
+  - type: Explosive
+    explosionType: MicroBomb
+    totalIntensity: 120
+    intensitySlope: 5
+    maxIntensity: 30
+    canCreateVacuum: false
+  - type: Tag
+    tags:
+    - SubdermalImplant
+    - HideContextMenu
+    - MicroBomb
 
 
 - type: entity
@@ -254,20 +269,24 @@
   components:
     - type: SubdermalImplant
       permanent: true
-    - type: TriggerOnMobstateChange #Chains with OnUseTimerTrigger
+    - type: TriggerOnMobstateChange # Activates the timer
       mobState:
       - Dead
       preventSuicide: true
-    - type: OnUseTimerTrigger
+    - type: TimerTrigger
       delay: 7
-      initialBeepDelay: 0
       beepSound:
         path: /Audio/Machines/Nuke/general_beep.ogg
         params:
           volume: -2
     - type: ExplodeOnTrigger
+      keysIn:
+      - timer
     - type: GibOnTrigger
+      targetUser: true
       deleteItems: true
+      keysIn:
+      - timer
     - type: Explosive
       explosionType: Default
       totalIntensity: 3500
@@ -293,11 +312,13 @@
   - type: TriggerOnMobstateChange
     mobState:
     - Dead
-  - type: TriggerImplantAction
+  - type: TriggerOnActivateImplant
   - type: GibOnTrigger
+    targetUser: true
     deleteItems: true
   - type: SpawnOnTrigger
     proto: Acidifier
+    predicted: true
   - type: Tag
     tags:
     - SubdermalImplant
@@ -315,18 +336,19 @@
       permanent: true
       whitelist:
         components:
-        - MobState # admeme implanting a chair with rattle implant needs to give the chair mobstate so it can die first
+        - MobState # Admeme implanting a chair with rattle implant needs to give the chair mobstate so it can die first
     - type: TriggerOnMobstateChange
       mobState:
       - Critical
       - Dead
-    - type: Rattle
+    - type: RattleOnTrigger
+      targetUser: true
 
 - type: entity
   parent: BaseSubdermalImplant
   id: FakeMindShieldImplant
   name: fake mindshield implant
-  description: This implant allows the implanter to produce a fake signal that security huds use to identify individuals implanted with a mindshield. # Hardlight, change description
+  description: This implant allows the implanter to produce a fake signal that security huds use to identify individuals implanted with a mindshield. # HardLight: Removed reference to Nanotrasen.
   categories: [ HideSpawnMenu ]
   components:
       - type: SubdermalImplant
@@ -339,32 +361,32 @@
   parent: BaseSubdermalImplant
   id: MindShieldImplant
   name: mindshield implant
-  description: This implant will ensure loyalty to the TSF and prevent mind control devices.
+  description: This implant will ensure loyalty to the TSF and prevent mind control devices. # HardLight: Nanotrasen<the TSF
   categories: [ HideSpawnMenu ]
   components:
    - type: SubdermalImplant
    - type: MindShieldImplant
 
-# Colcomm implants
+# ColComm implants # HardLight: CentComm<ColComm
 
 - type: entity
   parent: BaseSubdermalImplant
-  id: RadioImplantColcomm
+  id: RadioImplantColcomm # HardLight: RadioImplantCentComm<RadioImplantColComm
   name: radio implant
-  description: This implant grants access to the Colcomm channel without a headset. Only authorized for Colcomm employees.
+  description: This implant grants access to the ColComm channel without a headset. Only authorized for ColComm employees. # HardLight: CentComm<ColComm
   categories: [ HideSpawnMenu ]
   components:
   - type: SubdermalImplant
   - type: RadioImplant
     radioChannels:
-    - ColCom
+    - ColCom # HardLight: CentCom<ColCom
 
 - type: entity
   parent: DeathRattleImplant
-  id: DeathRattleImplantColcomm
-  name: Colcomm death rattle implant
-  description: This implant will inform the Colcomm radio channel should the user fall into critical condition or die.
+  id: DeathRattleImplantColcomm # HardLight: DeathRattleImplantCentCom<DeathRattleImplantColCom
+  name: Colcomm death rattle implant # HardLight: CentCom<ColCom
+  description: This implant will inform the ColComm radio channel should the user fall into critical condition or die. # HardLight: CentComm<ColComm
   categories: [ HideSpawnMenu ]
   components:
-  - type: Rattle
-    radioChannel: ColCom
+  - type: RattleOnTrigger
+    radioChannel: ColCom # HardLight: CentCom<ColCom

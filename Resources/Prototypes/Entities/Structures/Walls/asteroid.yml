@@ -3,7 +3,7 @@
 # Anyway
 # See WallRock variants for the remappings.
 
-#Asteroid rock
+# Asteroid rock
 - type: entity
   id: AsteroidRock
   parent: BaseWall
@@ -48,14 +48,80 @@
           path: /Audio/Effects/break_stone.ogg
           params:
             volume: -6
-  - type: SoundOnGather # Frontier
-  - type: Gatherable # Frontier
-    toolWhitelist: # Frontier
-      tags: # Frontier
-      - Pickaxe # Frontier
-      components: # Frontier
-      - MiningGatheringHard # Frontier
-      - MiningGatheringSoft # Frontier
+  # Frontier start
+  - type: SoundOnGather
+  - type: Gatherable
+    toolWhitelist:
+      tags:
+      - Pickaxe
+      components:
+      - MiningGatheringHard
+      - MiningGatheringSoft
+  # Frontier end
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 2000
+
+#- type: entity
+#  abstract: true
+#  id: BaseRockGibtonite
+#  suffix: Gibtonite
+#  components:
+#  - type: Appearance
+#  - type: GenericVisualizer
+#    visuals:
+#      enum.Trigger.TriggerVisuals.VisualState:
+#        "gib":
+#          Primed:
+#            state: gibtonite_active
+#            shader: unshaded
+#            visible: true
+#          Unprimed:
+#            state: gibtonite_inactive
+#            visible: false
+#  - type: TimerTrigger
+#    examinable: false
+#    beepInterval: 0.4
+#    beepSound:
+#      collection: GlassCrack
+#  - type: RandomTimerTrigger
+#    min: 8
+#    max: 10
+#  - type: ExplodeOnTrigger
+#    keysIn:
+#    - timer
+#  - type: Explosive
+#    explosionType: DemolitionCharge
+#    totalIntensity: 450
+#    intensitySlope: 2.5
+#    maxIntensity: 10
+#    canCreateVacuum: false
+#  - type: Destructible
+#    thresholds:
+#    - trigger:
+#        !type:DamageTrigger
+#        damage: 3
+#      behaviors:
+#      - !type:TimerStartBehavior
+#      - !type:PlaySoundBehavior
+#        sound:
+#          collection: GlassBreak
+#    - trigger:
+#        !type:DamageTrigger
+#        damage: 500 # You have to really smack it for it to manually detonate. Re-examine once defusal exists
+#      behaviors:
+#      - !type:DoActsBehavior
+#        acts: ["Destruction"]
+#      - !type:TriggerBehavior
+#        keyOut: timer # Explode immediately
 
 # Ore veins
 - type: entity
@@ -66,7 +132,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -97,7 +163,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -150,7 +216,7 @@
   suffix: Plasma
   components:
   - type: OreVein
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -173,7 +239,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -204,7 +270,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -236,7 +302,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -267,7 +333,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -298,7 +364,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -321,7 +387,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_asteroid
@@ -358,6 +424,25 @@
       state: rock_asteroid_west
     - state: rock_artifact_fragment
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+#- type: entity
+#  parent: [ BaseRockGibtonite, AsteroidRock ]
+#  id: AsteroidRockGibtonite
+#  components:
+#  - type: Sprite
+#    layers:
+#    - state: rock_asteroid
+#    - map: [ "enum.EdgeLayer.South" ]
+#      state: rock_asteroid_south
+#    - map: [ "enum.EdgeLayer.East" ]
+#      state: rock_asteroid_east
+#    - map: [ "enum.EdgeLayer.North" ]
+#      state: rock_asteroid_north
+#    - map: [ "enum.EdgeLayer.West" ]
+#      state: rock_asteroid_west
+#    - state: gibtonite_inactive
+#      visible: false
+#      map: [ "enum.MiningScannerVisualLayers.Overlay", "gib" ]
 
 - type: entity
   id: AsteroidRockMining
@@ -417,7 +502,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -440,7 +525,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -463,7 +548,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -486,7 +571,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -509,7 +594,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -532,7 +617,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -555,7 +640,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -578,7 +663,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -601,7 +686,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: ironrock
@@ -638,6 +723,25 @@
       state: ironrock_west
     - state: rock_artifact_fragment
       map: [ "enum.MiningScannerVisualLayers.Overlay" ]
+
+#- type: entity
+#  parent: [ BaseRockGibtonite, IronRock ]
+#  id: IronRockGibtonite
+#  components:
+#  - type: Sprite
+#    layers:
+#    - state: ironrock
+#    - map: [ "enum.EdgeLayer.South" ]
+#      state: ironrock_south
+#    - map: [ "enum.EdgeLayer.East" ]
+#      state: ironrock_east
+#    - map: [ "enum.EdgeLayer.North" ]
+#      state: ironrock_north
+#    - map: [ "enum.EdgeLayer.West" ]
+#      state: ironrock_west
+#    - state: gibtonite_inactive
+#      visible: false
+#      map: [ "enum.MiningScannerVisualLayers.Overlay", "gib" ]
 
 - type: entity
   id: IronRockDiamond
@@ -727,7 +831,7 @@
       WallRockSnow: WallRockSnowCoal
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -757,7 +861,7 @@
       WallRockSnow: WallRockSnowGold
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -810,7 +914,7 @@
       WallRockSnow: WallRockSnowPlasma
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -840,7 +944,7 @@
       WallRockSnow: WallRockSnowQuartz
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -870,7 +974,7 @@
       WallRockSnow: WallRockSnowSilver
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -901,7 +1005,7 @@
       WallRockSnow: WallRockSnowTin
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -931,7 +1035,7 @@
       WallRockSnow: WallRockSnowUranium
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -962,7 +1066,7 @@
       WallRockSnow: WallRockSnowBananium
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -1022,7 +1126,7 @@
       WallRockSnow: WallRockSnowSalt
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock
@@ -1067,7 +1171,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1090,7 +1194,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1136,7 +1240,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1159,7 +1263,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1182,7 +1286,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1205,7 +1309,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1228,7 +1332,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1252,7 +1356,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1298,7 +1402,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_wall
@@ -1343,7 +1447,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1366,7 +1470,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1412,7 +1516,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1435,7 +1539,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1458,7 +1562,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1481,7 +1585,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1504,7 +1608,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1528,7 +1632,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1574,7 +1678,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_snow
@@ -1619,7 +1723,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1642,7 +1746,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1688,7 +1792,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1711,7 +1815,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1734,7 +1838,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1757,7 +1861,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1780,7 +1884,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1803,7 +1907,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1849,7 +1953,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_sand
@@ -1894,7 +1998,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -1917,7 +2021,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -1963,7 +2067,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -1986,7 +2090,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2009,7 +2113,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2032,7 +2136,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2055,7 +2159,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2079,7 +2183,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2125,7 +2229,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_chromite
@@ -2170,7 +2274,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreCoal # Frontier: NF prefix
+    currentOre: NFOreCoal # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2193,7 +2297,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreGold # Frontier: NF prefix
+    currentOre: NFOreGold # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2239,7 +2343,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOrePlasma # Frontier: NF prefix
+    currentOre: NFOrePlasma # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2262,7 +2366,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSpaceQuartz # Frontier: NF prefix
+    currentOre: NFOreSpaceQuartz # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2285,7 +2389,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSilver # Frontier: NF prefix
+    currentOre: NFOreSilver # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2308,7 +2412,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSteel # Frontier: NF prefix
+    currentOre: NFOreSteel # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2331,7 +2435,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreUranium # Frontier: NF prefix
+    currentOre: NFOreUranium # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2355,7 +2459,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreBananium # Frontier: NF prefix
+    currentOre: NFOreBananium # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite
@@ -2401,7 +2505,7 @@
   components:
   - type: OreVein
     oreChance: 1.0
-    currentOre: NFOreSalt # Frontier: NF prefix
+    currentOre: NFOreSalt # Frontier
   - type: Sprite
     layers:
     - state: rock_andesite

@@ -1,11 +1,11 @@
 - type: entity
   abstract: true
-  parent: [BaseMob, MobCombat]
+  parent: [ BaseMob, MobCombat ]
   id: MobElementalBase
   components:
   - type: Reactive
     groups:
-      Acidic: [Touch]
+      Acidic: [ Touch ]
   - type: Damageable
     damageContainer: Inorganic
   - type: MovementSpeedModifier

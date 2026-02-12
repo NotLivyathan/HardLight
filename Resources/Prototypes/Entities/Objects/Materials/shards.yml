@@ -10,15 +10,15 @@
     doAfterDuration: 4.0
   - type: Sprite
     layers:
-    - sprite: Objects/Materials/Shards/shard.rsi
-      state: shard1
-      map: [ "enum.DamageStateVisualLayers.Base" ]
+      - sprite: Objects/Materials/Shards/shard.rsi
+        state: shard1
+        map: [ "enum.DamageStateVisualLayers.Base" ]
   - type: RandomSprite
     available:
-    - enum.DamageStateVisualLayers.Base:
-        shard1: ""
-        shard2: ""
-        shard3: ""
+      - enum.DamageStateVisualLayers.Base:
+          shard1: ""
+          shard2: ""
+          shard3: ""
   - type: MeleeWeapon
     attackRate: 1
     damage:
@@ -73,7 +73,8 @@
     slipData:
       launchForwardsMultiplier: 0
   - type: TriggerOnStepTrigger
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
+    targetUser: true
     damage:
       types:
         Piercing: 5
@@ -99,14 +100,14 @@
   - type: ToolRefinable
     refineResult:
     - id: SheetGlass1
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
     damage:
       types:
         Piercing: 4.5
   - type: Tag
     tags:
-    - GlassShard
-    - Trash
+      - GlassShard
+      - Trash
   - type: Extractable
     grindableSolutionName: shardglass
   - type: SolutionContainerManager
@@ -114,7 +115,7 @@
       shardglass:
         reagents:
         - ReagentId: Silicon
-          Quantity: 5 #Half of the value of regular glass. TECHNICALLY, welding a single shard of glass gives you the full thing back with just 1 sheet, but that is stupid so I am making it half.
+          Quantity: 5 # Half of the value of regular glass. TECHNICALLY, welding a single shard of glass gives you the full thing back with just 1 sheet, but that is stupid so I am making it half.
   - type: Construction
     graph: ShivConstruct
     node: start
@@ -135,14 +136,14 @@
     refineResult:
     - id: SheetGlass1
     - id: PartRodMetal1
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
     damage:
       types:
         Piercing: 5.5
   - type: Tag
     tags:
-    - ReinforcedGlassShard
-    - Trash
+      - ReinforcedGlassShard
+      - Trash
   - type: Extractable
     grindableSolutionName: shardrglass
   - type: SolutionContainerManager
@@ -150,7 +151,7 @@
       shardrglass:
         reagents:
         - ReagentId: Silicon
-          Quantity: 5 #I don't care enough to divide all of the reinforced glass materials by 2 because reinforced glass shards are due for removal anyways.
+          Quantity: 5 # I don't care enough to divide all of the reinforced glass materials by 2 because reinforced glass shards are due for removal anyways.
   - type: Construction
     graph: ReinforcedShivConstruct
     node: start
@@ -171,14 +172,14 @@
     refineResult:
     - id: SheetGlass1
     - id: SheetPlasma1
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
     damage:
       types:
         Piercing: 6.5
   - type: Tag
     tags:
-    - PlasmaGlassShard
-    - Trash
+      - PlasmaGlassShard
+      - Trash
   - type: Extractable
     grindableSolutionName: shardpglass
   - type: SolutionContainerManager
@@ -210,15 +211,15 @@
     refineResult:
     - id: SheetGlass1
     - id: SheetUranium1
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
     damage:
       types:
         Piercing: 5
         Radiation: 2.5
   - type: Tag
     tags:
-    - UraniumGlassShard
-    - Trash
+      - UraniumGlassShard
+      - Trash
   - type: Extractable
     grindableSolutionName: sharduglass
   - type: SolutionContainerManager
@@ -245,14 +246,14 @@
     refineResult:
     - id: SheetGlass1
     - id: SheetBrass1
-  - type: DamageUserOnTrigger
+  - type: DamageOnTrigger
     damage:
       types:
         Piercing: 5
   - type: Tag
     tags:
-    - ClockworkGlassShard
-    - Trash
+      - ClockworkGlassShard
+      - Trash
   - type: Extractable
     grindableSolutionName: shardcglass
   - type: SolutionContainerManager

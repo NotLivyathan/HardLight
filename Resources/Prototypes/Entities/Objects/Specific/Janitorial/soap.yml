@@ -1,7 +1,7 @@
 - type: entity
   name: soap
   id: Soap
-  parent: [BaseItem, RecyclableItemOrganicTiny] # Frontier: added RecyclableItemOrganicTiny
+  parent: [ BaseItem, RecyclableItemOrganicTiny ] # Frontier: RecyclableItemOrganicTiny
   description: A cheap bar of soap. Doesn't smell.
   components:
   - type: Tag
@@ -11,7 +11,7 @@
     sprite: Objects/Specific/Janitorial/soap.rsi
     layers:
     - state: soap-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     maxFillLevels: 4
     fillBaseName: soap-
@@ -81,7 +81,7 @@
   - type: Sprite
     layers:
     - state: nt-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     fillBaseName: nt-
   - type: Item
@@ -106,7 +106,7 @@
   - type: Sprite
     layers:
     - state: deluxe-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     fillBaseName: deluxe-
   - type: Item
@@ -118,13 +118,13 @@
 - type: entity
   name: soap
   id: SoapSyndie
-  parent: [Soap, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ Soap, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   description: An untrustworthy bar of soap. Smells of fear.
   components:
   - type: Sprite
     layers:
     - state: syndie-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     fillBaseName: syndie-
   - type: Slippery
@@ -157,6 +157,7 @@
   - type: Slippery
   - type: StepTrigger
     intersectRatio: 0.04
+  - type: TriggerOnStepTrigger
   - type: Item
     heldPrefix: syndie
   - type: Fixtures
@@ -177,10 +178,12 @@
         - ItemMask
   - type: DeleteOnTrigger
   - type: EmitSoundOnTrigger
+    predicted: true
+    positional: true
     sound:
       path: "/Audio/Effects/Fluids/splat.ogg"
       params:
-        volume: -20
+        volume: -8
 
 - type: entity
   name: soap
@@ -191,7 +194,7 @@
   - type: Sprite
     layers:
     - state: gibs-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     fillBaseName: gibs-
   - type: Slippery
@@ -215,7 +218,7 @@
   - type: Sprite
     layers:
     - state: omega-4
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
   - type: SolutionContainerVisuals
     fillBaseName: omega-
   - type: Slippery
@@ -228,7 +231,7 @@
   - type: SolutionContainerManager
     solutions:
       soap:
-        maxVol: 240 #In the Greek alphabet, Omega is the 24th letter
+        maxVol: 240 # In the Greek alphabet, Omega is the 24th letter
         reagents:
         - ReagentId: SoapReagent
           Quantity: 240

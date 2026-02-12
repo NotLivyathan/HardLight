@@ -1,5 +1,6 @@
 ﻿using Content.Server.Explosion.Components;
 using Content.Server.Weapons.Ranged.Systems;
+using Content.Shared.Trigger;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -30,7 +31,7 @@ public sealed class ProjectileGrenadeSystem : EntitySystem
     }
 
     /// <summary>
-    /// Setting the unspawned count based on capacity so we know how many new entities to spawn
+    ///     Setting the unspawned count based on capacity so we know how many new entities to spawn
     /// </summary>
     private void OnFragStartup(Entity<ProjectileGrenadeComponent> entity, ref ComponentStartup args)
     {
@@ -41,23 +42,31 @@ public sealed class ProjectileGrenadeSystem : EntitySystem
     }
 
     /// <summary>
-    /// Can be triggered either by damage or the use in hand timer
+    ///     Can be triggered either by damage or the use in hand timer
     /// </summary>
     private void OnFragTrigger(Entity<ProjectileGrenadeComponent> entity, ref TriggerEvent args)
     {
+        if (args.Key != entity.Comp.TriggerKey)
+            return;
+
         FragmentIntoProjectiles(entity.Owner, entity.Comp);
         args.Handled = true;
     }
 
     /// <summary>
-    /// Spawns projectiles at the coordinates of the grenade upon triggering
-    /// Can customize the angle and velocity the projectiles come out at
+    ///     Spawns projectiles at the coordinates of the grenade upon triggering
+    ///     Can customize the angle and velocity the projectiles come out at
     /// </summary>
     private void FragmentIntoProjectiles(EntityUid uid, ProjectileGrenadeComponent component)
     {
         var grenadeCoord = _transformSystem.GetMapCoordinates(uid);
         var shootCount = 0;
         var totalCount = component.Container.ContainedEntities.Count + component.UnspawnedCount;
+
+        // Just in case
+        if (totalCount == 0)
+            return;
+
         var segmentAngle = 360 / totalCount;
 
         while (TrySpawnContents(grenadeCoord, component, out var contentUid))
@@ -73,16 +82,16 @@ public sealed class ProjectileGrenadeSystem : EntitySystem
                 shootCount++;
             }
 
-            // velocity is randomized to make the projectiles look
-            // slightly uneven, doesn't really change much, but it looks better
+            // Velocity is randomized to make the projectiles look
+            // Slightly uneven, doesn't really change much, but it looks better
             var direction = angle.ToVec().Normalized();
             var velocity = _random.NextVector2(component.MinVelocity, component.MaxVelocity);
-            _gun.ShootProjectile(contentUid, direction, velocity, uid, null);
+            _gun.ShootProjectile(contentUid, direction, velocity, null);
         }
     }
 
     /// <summary>
-    /// Spawns one instance of the fill prototype or contained entity at the coordinate indicated
+    ///     Spawns one instance of the fill prototype or contained entity at the coordinate indicated
     /// </summary>
     private bool TrySpawnContents(MapCoordinates spawnCoordinates, ProjectileGrenadeComponent component, out EntityUid contentUid)
     {

@@ -5,11 +5,8 @@ using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
-using Content.Server.Players.RateLimiting;
-using Content.Server.Speech.Prototypes;
 using Content.Server.Speech.EntitySystems;
-using Content.Server.Players;
-using Content.Server.Nyanotrasen.Chat;
+using Content.Server.Speech.Prototypes;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared.ActionBlocker;
@@ -36,6 +33,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
+using Content.Server.Nyanotrasen.Chat; // Nyano
 
 namespace Content.Server.Chat.Systems;
 
@@ -62,14 +60,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     [Dependency] private readonly ReplacementAccentSystem _wordreplacement = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly ExamineSystemShared _examineSystem = default!;
-
-    //Nyano - Summary: pulls in the nyano chat system for psionics.
-    [Dependency] private readonly NyanoChatSystem _nyanoChatSystem = default!;
-
-    public const int VoiceRange = 10; // how far voice goes in world units
-    public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
-    public const int WhisperMuffledRange = 5; // how far whisper goes at all, in world units
-    public const string DefaultAnnouncementSound = "/Audio/Announcements/announce.ogg";
+    [Dependency] private readonly NyanoChatSystem _nyanoChatSystem = default!; // Nyano
 
     private bool _loocEnabled = true;
     private bool _deadLoocEnabled;
@@ -176,9 +167,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         ICommonSession? player = null,
         string? nameOverride = null,
         bool checkRadioPrefix = true,
-        bool ignoreActionBlocker = false,
-        //LanguagePrototype? languageOverride = null
-        string? color = null
+        bool ignoreActionBlocker = false
         )
     {
         if (HasComp<GhostComponent>(source))
@@ -222,9 +211,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             message = message[1..];
         }
 
-        //var language = languageOverride ?? _language.GetLanguage(source);
-
-        bool shouldCapitalize = (desiredType != InGameICChatType.Emote && desiredType != InGameICChatType.Subtle);
+        bool shouldCapitalize = (desiredType != InGameICChatType.Emote && desiredType != InGameICChatType.Subtle); // ???: Added && desiredType != InGameICChatType.Subtle
         bool shouldPunctuate = _configurationManager.GetCVar(CCVars.ChatPunctuation);
         // Capitalizing the word I only happens in English, so we check language here
         bool shouldCapitalizeTheWordI = (!CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en")
@@ -274,14 +261,15 @@ public sealed partial class ChatSystem : SharedChatSystem
             case InGameICChatType.Emote:
                 SendEntityEmote(source, message, range, nameOverride, hideLog: hideLog, ignoreActionBlocker: ignoreActionBlocker);
                 break;
+            // ??? start, // HardLight: I'm not sure if Subtle and SubtleOOC come from Floof or some other fork, so I can't accurately comment them for now.
             case InGameICChatType.Subtle:
                 SendEntitySubtle(source, message, range, nameOverride, hideLog: hideLog, ignoreActionBlocker: ignoreActionBlocker, color: color);
                 break;
             case InGameICChatType.SubtleOOC:
-                SendEntitySubtle(source, $"OOC: {message}", range, nameOverride, hideLog: hideLog, ignoreActionBlocker: ignoreActionBlocker, color: color); // HardLight: Capitalized OOC for consistency with other OOC chats.
+                SendEntitySubtle(source, $"OOC: {message}", range, nameOverride, hideLog: hideLog, ignoreActionBlocker: ignoreActionBlocker, color: color); // HardLight: ooc<OOC
                 break;
-            //Nyano - Summary: case adds the telepathic chat sending ability.
-            case InGameICChatType.Telepathic:
+            // ??? end
+            case InGameICChatType.Telepathic: // Nyano
                 _nyanoChatSystem.SendTelepathicChat(source, message, range == ChatTransmitRange.HideChat);
                 break;
         }
@@ -419,7 +407,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             return;
         }
 
-        if (!EntityManager.TryGetComponent<StationDataComponent>(station, out var stationDataComp)) return;
+        if (!TryComp<StationDataComponent>(station, out var stationDataComp)) return;
 
         var filter = _stationSystem.GetInStation(stationDataComp);
 
@@ -565,7 +553,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             if (MessageRangeCheck(session, data, range) != MessageRangeCheckResult.Full)
                 continue; // Won't get logged to chat, and ghosts are too far away to see the pop-up, so we just won't send it to them.
 
-            if (data.Range <= WhisperClearRange)
+            if (data.Range <= WhisperClearRange || data.Observer)
                 _chatManager.ChatMessageToOne(ChatChannel.Whisper, message, wrappedMessage, source, false, session.Channel);
             //If listener is too far, they only hear fragments of the message
             else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange))
@@ -598,7 +586,6 @@ public sealed partial class ChatSystem : SharedChatSystem
             }
     }
 
-
     private void SendEntityEmote(
         EntityUid source,
         string action,
@@ -623,9 +610,10 @@ public sealed partial class ChatSystem : SharedChatSystem
             ("entity", ent),
             ("message", FormattedMessage.RemoveMarkupOrThrow(action)));
 
-        bool soundEmoteSent = true; // Frontier: if check emote is false, assume somebody's sending an emote
+        // Frontier start
+        bool soundEmoteSent = true; // If check emote is false, assume somebody's sending an emote
         if (checkEmote)
-            soundEmoteSent = TryEmoteChatInput(source, action); // Frontier: assign value to soundEmoteSent
+            soundEmoteSent = TryEmoteChatInput(source, action); // Assign value to soundEmoteSent
 
         // Frontier: send emote message
         if (!soundEmoteSent)
@@ -633,7 +621,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             var ev = new NFEntityEmotedEvent(source, action);
             RaiseLocalEvent(source, ev, true);
         }
-        // End Frontier
+        // Frontier end
 
         SendInVoiceRange(ChatChannel.Emotes, action, wrappedMessage, source, range, author);
         if (!hideLog)
@@ -643,6 +631,7 @@ public sealed partial class ChatSystem : SharedChatSystem
                 _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Emote from {ToPrettyString(source):user}: {action}");
     }
 
+    // ??? start, // HardLight: I'm not sure if Subtle and SubtleOOC come from Floof or some other fork, so I can't accurately comment them for now.
     private void SendEntitySubtle(
         EntityUid source,
         string action,
@@ -656,7 +645,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     {
         if (!_actionBlocker.CanEmote(source) && !ignoreActionBlocker)
             return;
-        // get the entity's apparent name (if no override provided).
+        // Get the entity's apparent name (if no override provided).
         var ent = Identity.Entity(source, EntityManager);
         string name = FormattedMessage.EscapeText(nameOverride ?? Name(ent));
         // Emotes use Identity.Name, since it doesn't actually involve your voice at all.
@@ -680,6 +669,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             else
                 _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Subtle from {ToPrettyString(source):user}: {action}");
     }
+    // ??? end
 
     // ReSharper disable once InconsistentNaming
     private void SendLOOC(EntityUid source, ICommonSession player, string message, bool hideChat)
@@ -768,7 +758,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             case ChatTransmitRange.NoGhosts:
                 initialResult = (data.Observer && !_adminManager.IsAdmin(session)) ? MessageRangeCheckResult.Disallowed : MessageRangeCheckResult.Full;
                 break;
-            case ChatTransmitRange.GhostRangeLimitNoAdminCheck:
+            case ChatTransmitRange.GhostRangeLimitNoAdminCheck: // HardLight: Not sure where this came from, but I assume it has to do with Subtle.
                 initialResult = (data.Observer && data.Range < 0) ? MessageRangeCheckResult.HideChat : MessageRangeCheckResult.Full;
                 break;
         }
@@ -890,7 +880,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         return message;
     }
 
-    public static readonly ProtoId<ReplacementAccentPrototype> ChatSanitize_Accent = new("chatsanitize");
+    public static readonly ProtoId<ReplacementAccentPrototype> ChatSanitize_Accent = "chatsanitize";
 
     public string SanitizeMessageReplaceWords(string message)
     {
@@ -1041,7 +1031,7 @@ public sealed class EntitySpokeEvent : EntityEventArgs
     }
 }
 
-// Frontier: emote event
+// Frontier start: Emote event
 /// <summary>
 ///     Raised on an entity when it sends a custom emote (one with a message but no sound).
 /// </summary>
@@ -1056,6 +1046,6 @@ public sealed class NFEntityEmotedEvent : EntityEventArgs
         Emote = emote;
     }
 }
-// End Frontier
+// Frontier end
 
-// Enums moved to shared (Content.Shared.Chat.SharedChatSystem)
+// ???: Enums moved to shared (Content.Shared.Chat.SharedChatSystem)

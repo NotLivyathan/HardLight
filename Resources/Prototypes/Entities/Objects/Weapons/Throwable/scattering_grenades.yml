@@ -1,3 +1,4 @@
+
 # ScatteringGrenade is intended for grenades that spawn entities, especially those with timers
 - type: entity
   abstract: true
@@ -17,15 +18,27 @@
         damage: 10
       behaviors:
       - !type:TriggerBehavior
+        keyOut: timer # Explode immediately
   - type: ScatteringGrenade
-  - type: OnUseTimerTrigger
+  - type: TriggerOnUse
+  - type: TimerTrigger
     delay: 3
   - type: Tag
     tags:
     - HandGrenade
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeCircle
+          radius: 0.2
+        density: 20 # Derived from base_item
+        mask:
+        - ItemMask
+        restitution: 0.3
+        friction: 0.2
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC2ContrabandUnredeemable, RecyclableItemSteelMedium] # Frontier: BaseSecurityContraband<BaseC2ContrabandUnredeemable added RecyclableItemSteelMedium
+  parent: [ ScatteringGrenadeBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClusterBang
   name: clusterbang
   description: Can be used only with flashbangs. Explodes several times.
@@ -53,7 +66,7 @@
     sprite: Objects/Weapons/Grenades/clusterbang.rsi
     layers:
     - state: icon
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
     whitelist:
       tags:
@@ -71,11 +84,13 @@
           Primed: { state: primed }
           Unprimed: { state: icon }
   - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
     sound:
       path: "/Audio/Machines/door_lock_off.ogg"
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ ScatteringGrenadeBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClusterGrenade
   name: clustergrenade
   description: Why use one grenade when you can use three at once!
@@ -84,11 +99,11 @@
     sprite: Objects/Weapons/Grenades/clusterbomb.rsi
     layers:
     - state: icon
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
     fillPrototype: ExGrenade
     distance: 4
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     beepSound:
       path: "/Audio/Effects/beep1.ogg"
       params:
@@ -96,11 +111,15 @@
     initialBeepDelay: 0
     beepInterval: 0.5
   - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
     sound:
       path: "/Audio/Machines/door_lock_off.ogg"
+  - type: StaticPrice
+    price: 2500
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ ScatteringGrenadeBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClusterBananaPeel
   name: cluster banana peel
   description: Splits into 6 explosive banana peels after throwing, guaranteed fun!
@@ -118,11 +137,13 @@
       types:
         Blunt: 10
   - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
     sound:
       path: "/Audio/Items/bikehorn.ogg"
 
 - type: entity
-  parent: [SoapSyndie, ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ SoapSyndie, ScatteringGrenadeBase, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: SlipocalypseClusterSoap
   name: slipocalypse clustersoap
   description: Spreads small pieces of syndicate soap over an area upon landing on the floor.
@@ -144,8 +165,12 @@
       types:
         Blunt: 10
   - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
     sound:
       path: "/Audio/Effects/flash_bang.ogg"
+  - type: StaticPrice
+    price: 1000
 
 - type: entity
   parent: ScatteringGrenadeBase
@@ -154,17 +179,17 @@
   description: Releases a bothersome spray of foam darts that cause severe welching.
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Grenades/foamdart.rsi
+    sprite: Objects/Fun/Foam/foam_grenade.rsi
     layers:
     - state: icon
-      map: ["Base"]
+      map: [ "Base" ]
     - state: primed
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
-    fillPrototype: NFBulletFoam # Frontier: use NF variant
+    fillPrototype: NFBulletFoam # Frontier
     capacity: 30
     velocity: 30
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     beepSound:
       path: "/Audio/Effects/beep1.ogg"
       params:
@@ -172,5 +197,7 @@
     initialBeepDelay: 0
     beepInterval: 2
   - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
     sound:
       path: "/Audio/Weapons/Guns/Gunshots/batrifle.ogg"

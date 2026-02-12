@@ -21,7 +21,7 @@
 
 - type: entity
   name: explosive payload
-  parent: [BasePayload, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ BasePayload, BaseC2Contraband ] # HardLight: BaseSecurityContraband<BaseC2Contraband
   id: ExplosivePayload
   components:
   - type: Sprite
@@ -29,19 +29,13 @@
     state: payload-explosive-armed
   - type: Explosive
     explosionType: Default
-    # same as the standard grenade, but those numbers were also just picked out of a hat.
+    # Same as the standard grenade, but those numbers were also just picked out of a hat.
     maxIntensity: 10
     intensitySlope: 3
-    totalIntensity: 120 # about a ~4 tile radius
+    totalIntensity: 120 # About a ~4 tile radius
   - type: ExplodeOnTrigger
   - type: Destructible
     thresholds:
-    - trigger:
-        !type:DamageTypeTrigger
-        damageType: Heat
-        damage: 25
-      behaviors:
-      - !type:ExplodeBehavior
     - trigger:
         !type:DamageTrigger
         damage: 50
@@ -51,7 +45,7 @@
 
 - type: entity
   name: chemical payload
-  parent: BasePayload
+  parent: [ BasePayload, BaseC1Contraband ] # HardLight: BaseMedicalScienceContraband<BaseC1Contraband
   id: ChemicalPayload
   description: A chemical payload. Has space to store two beakers. In combination with a trigger and a case, this can be used to initiate chemical reactions.
   components:
@@ -60,7 +54,7 @@
     state: payload-empty
     layers:
     - state: payload-empty
-      map: ["base"]
+      map: [ "base" ]
   - type: ChemicalPayload
     beakerSlotA: &slotDef
       whitelist:
@@ -87,7 +81,7 @@
 
 - type: entity
   name: flash payload
-  parent: [BasePayload, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ BasePayload, BaseC2Contraband ] # HardLight: BaseSecurityScienceCommandContraband<BaseC2Contraband
   id: FlashPayload
   description: A single-use flash payload.
   components:
@@ -100,3 +94,4 @@
     - type: EmitSoundOnTrigger
       sound:
         path: "/Audio/Effects/flash_bang.ogg"
+      positional: true

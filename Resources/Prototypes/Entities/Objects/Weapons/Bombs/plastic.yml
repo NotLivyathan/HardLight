@@ -13,7 +13,7 @@
     stickPopupSuccess: comp-sticky-success-stick-bomb
     unstickPopupStart: comp-sticky-start-unstick-bomb
     unstickPopupSuccess: comp-sticky-success-unstick-bomb
-    blacklist: # can't stick it to other items
+    blacklist: # Can't stick it to other items
       components:
       - Item
   - type: Damageable
@@ -34,12 +34,12 @@
       enum.Trigger.TriggerVisuals.VisualState:
         base:
           Primed: { state: primed }
-          Unprimed: { state: complete }
+          Unprimed: { state: icon }
 
 - type: entity
   name: composition C-4
   description: Used to put holes in specific areas without too much extra hole. A saboteur's favorite.
-  parent: [BasePlasticExplosive, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ BasePlasticExplosive, BaseC3SyndicateContraband ] # HardLight: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: C4
   components:
   - type: Sprite
@@ -47,7 +47,7 @@
     state: icon
     layers:
     - state: icon
-      map: ["base"]
+      map: [ "base" ]
   - type: Clothing
     sprite: Objects/Weapons/Bombs/c4.rsi
     slots:
@@ -55,17 +55,27 @@
     quickEquip: false
     equipDelay: 3
     unequipDelay: 6
-  - type: OnUseTimerTrigger
+  - type: TriggerOnActivate
+  - type: TriggerOnSignal
+  - type: TriggerOnStuck
+    keyOut: stuck
+  - type: ToggleTriggerCondition # For toggling the start on stuck ability
+    keys:
+    - stuck
+    toggleVerb: toggle-trigger-condition-stick-verb
+    toggleOn: toggle-trigger-condition-stick-on
+    toggleOff: toggle-trigger-condition-stick-off
+  - type: TimerTrigger
+    keysIn:
+    - trigger
+    - stuck
     delay: 10
-    delayOptions: [10, 30, 60, 120, 300]
+    delayOptions: [ 10, 30, 60, 120, 300 ]
     initialBeepDelay: 0
     beepSound: /Audio/Machines/Nuke/general_beep.ogg
-    startOnStick: true
-    canToggleStartOnStick: true
-  - type: TimerStartOnSignal
   - type: DeviceLinkSink
     ports:
-      - Timer
+    - Trigger
   - type: Explosive # Powerful explosion in a very small radius. Doesn't break underplating.
     explosionType: DemolitionCharge
     totalIntensity: 60
@@ -73,6 +83,8 @@
     maxIntensity: 30
     canCreateVacuum: false
   - type: ExplodeOnTrigger
+    keysIn:
+    - timer
   - type: HolidayVisuals
     holidays:
       festive:
@@ -80,11 +92,13 @@
   - type: HolidayRsiSwap
     sprite:
       festive: Objects/Weapons/Bombs/c4gift.rsi
+  - type: StaticPrice
+    price: 625 # 5000 for a bundle of 8
 
 - type: entity
   name: seismic charge
   description: Concussion based explosive designed to destroy large amounts of rock.
-  parent: [BasePlasticExplosive, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ BasePlasticExplosive, BaseC2Contraband ] # HardLight: BaseSecurityCargoContraband<BaseC2Contraband
   id: SeismicCharge
   components:
   - type: Sprite
@@ -92,18 +106,28 @@
     state: icon
     layers:
     - state: icon
-      map: ["base"]
-  - type: OnUseTimerTrigger
+      map: [ "base" ]
+  - type: TriggerOnActivate
+  - type: TriggerOnSignal
+  - type: TriggerOnStuck
+    keyOut: stuck
+  - type: ToggleTriggerCondition # For toggling the start on stuck ability
+    keys:
+    - stuck
+    toggleVerb: toggle-trigger-condition-stick-verb
+    toggleOn: toggle-trigger-condition-stick-on
+    toggleOff: toggle-trigger-condition-stick-off
+  - type: TimerTrigger
+    keysIn:
+    - trigger
+    - stuck
     delay: 5
-    delayOptions: [5, 10, 15, 20]
+    delayOptions: [ 5, 10, 15, 20 ]
     initialBeepDelay: 0
     beepSound:
       path: /Audio/Effects/Cargo/buzz_two.ogg
       params:
         volume: -6
-    startOnStick: false
-    canToggleStartOnStick: true
-  - type: TriggerOnSignal
   - type: DeviceLinkSink
     ports:
     - Trigger
@@ -114,3 +138,5 @@
     maxIntensity: 30
     canCreateVacuum: false
   - type: ExplodeOnTrigger
+    keysIn:
+    - timer

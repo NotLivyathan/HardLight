@@ -2,25 +2,28 @@ using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server.Interaction;
 using Content.Server.Popups;
-using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Radio.Components;
-using Content.Server.Speech;
-using Content.Server.Speech.Components;
 using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Power;
 using Content.Shared.Radio;
+using Content.Shared.Speech;
+using Content.Shared.Speech.Components;
 using Content.Shared.Chat;
 using Content.Shared.Radio.Components;
-using Content.Shared.UserInterface; // Nuclear-14
-using Content.Shared._NC.Radio; // Nuclear-14
-using Robust.Server.GameObjects; // Nuclear-14
 using Robust.Shared.Prototypes;
-using Content.Shared.Access.Systems; // Frontier
-using Content.Shared.Verbs; //Frontier
-using Robust.Shared.Utility; // Frontier
-using Content.Shared.ActionBlocker; //Frontier
+// Nuclear-14 start
+using Content.Shared._NC.Radio;
+using Content.Shared.UserInterface;
+using Robust.Server.GameObjects;
+// Nuclear-14 end
+// Frontier start
+using Content.Shared.Access.Systems;
+using Content.Shared.ActionBlocker;
+using Content.Shared.Verbs;
+using Robust.Shared.Utility;
+// Frontier end
 
 namespace Content.Server.Radio.EntitySystems;
 
@@ -36,15 +39,16 @@ public sealed class RadioDeviceSystem : EntitySystem
     [Dependency] private readonly InteractionSystem _interaction = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier: access
+    [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier
     [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!; // Frontier
 
     // Used to prevent a shitter from using a bunch of radios to spam chat.
     private HashSet<(string, EntityUid, RadioChannelPrototype)> _recentlySent = new();
 
-    // Frontier: minimum, maximum radio frequencies
+    // Frontier start: minimum, maximum radio frequencies
     private const int MinRadioFrequency = 1000;
     private const int MaxRadioFrequency = 3000;
+    // Frontier end
 
     public override void Initialize()
     {
@@ -66,12 +70,12 @@ public sealed class RadioDeviceSystem : EntitySystem
         SubscribeLocalEvent<IntercomComponent, ToggleIntercomSpeakerMessage>(OnToggleIntercomSpeaker);
         SubscribeLocalEvent<IntercomComponent, SelectIntercomChannelMessage>(OnSelectIntercomChannel);
 
-        // Nuclear-14-Start
+        // Nuclear-14 start
         SubscribeLocalEvent<RadioMicrophoneComponent, BeforeActivatableUIOpenEvent>(OnBeforeHandheldRadioUiOpen);
         SubscribeLocalEvent<RadioMicrophoneComponent, ToggleHandheldRadioMicMessage>(OnToggleHandheldRadioMic);
         SubscribeLocalEvent<RadioMicrophoneComponent, ToggleHandheldRadioSpeakerMessage>(OnToggleHandheldRadioSpeaker);
         SubscribeLocalEvent<RadioMicrophoneComponent, SelectHandheldRadioFrequencyMessage>(OnChangeHandheldRadioFrequency);
-        // Nuclear-14-End
+        // Nuclear-14 end
 
         SubscribeLocalEvent<IntercomComponent, MapInitEvent>(OnMapInit); // Frontier
     }
@@ -204,7 +208,7 @@ public sealed class RadioDeviceSystem : EntitySystem
 
         using (args.PushGroup(nameof(RadioMicrophoneComponent)))
         {
-            args.PushMarkup(Loc.GetString("handheld-radio-component-on-examine", ("frequency", /*Nuclear-14-start*/ component.Frequency /*Nuclear-14-end*/)));
+            args.PushMarkup(Loc.GetString("handheld-radio-component-on-examine", ("frequency", component.Frequency))); // Nuclear-14: Added component.Frequency
             args.PushMarkup(Loc.GetString("handheld-radio-component-chennel-examine",
                 ("channel", proto.LocalizedName)));
         }
@@ -217,7 +221,7 @@ public sealed class RadioDeviceSystem : EntitySystem
 
         var channel = _protoMan.Index<RadioChannelPrototype>(component.BroadcastChannel)!;
         if (_recentlySent.Add((args.Message, args.Source, channel)))
-            _radio.SendRadioMessage(args.Source, args.Message, channel, uid, /*Nuclear-14-start*/ frequency: component.Frequency /*Nuclear-14-end*/);
+            _radio.SendRadioMessage(args.Source, args.Message, channel, uid, frequency: component.Frequency); // Nuclear-14: Added frequency: component.Frequency
     }
 
     private void OnAttemptListen(EntityUid uid, RadioMicrophoneComponent component, ListenAttemptEvent args)
@@ -241,7 +245,7 @@ public sealed class RadioDeviceSystem : EntitySystem
             ("speaker", Name(uid)),
             ("originalName", nameEv.VoiceName));
 
-        // log to chat so people can identity the speaker/source, but avoid clogging ghost chat if there are many radios
+        // Log to chat so people can identity the speaker/source, but avoid clogging ghost chat if there are many radios
         _chat.TrySendInGameICMessage(uid, args.Message, component.OutputChatType, ChatTransmitRange.GhostRangeLimitNoAdminCheck, nameOverride: name, checkRadioPrefix: false); // Frontier: GhostRangeLimit<GhostRangeLimitNoAdminCheck, InGameICChatType.Whisper<component.OutputChatType
     }
 
@@ -290,7 +294,7 @@ public sealed class RadioDeviceSystem : EntitySystem
             || !_actionBlocker.CanComplexInteract(args.Actor)) // Frontier
             return; // Frontier
 
-        if (!_protoMan.TryIndex<RadioChannelPrototype>(args.Channel, out var channel) || !ent.Comp.SupportedChannels.Contains(args.Channel)) // Nuclear-14: add channel
+        if (!_protoMan.TryIndex<RadioChannelPrototype>(args.Channel, out var channel) || !ent.Comp.SupportedChannels.Contains(args.Channel)) // Nuclear-14: Added out var channel
             return;
 
         SetIntercomChannel(ent, args.Channel);
@@ -321,7 +325,7 @@ public sealed class RadioDeviceSystem : EntitySystem
         Dirty(ent);
     }
 
-    // Nuclear-14-Start
+    // Nuclear-14 start
     #region Handheld Radio
 
     private void OnBeforeHandheldRadioUiOpen(Entity<RadioMicrophoneComponent> microphone, ref BeforeActivatableUIOpenEvent args)
@@ -372,9 +376,9 @@ public sealed class RadioDeviceSystem : EntitySystem
     }
 
     #endregion
-    // Nuclear-14-End
+    // Nuclear-14 end
 
-    // Frontier Start
+    // Frontier start
     /// <summary>
     ///     Adds an alt verb allowing for the mic to be toggled easily.
     /// </summary>
@@ -413,10 +417,10 @@ public sealed class RadioDeviceSystem : EntitySystem
             Dirty<IntercomComponent>((uid, intercom));
         }
     }
-    // Frontier End
+    // Frontier end
 
 
-    // Frontier: init intercom with map
+    // Frontier start: Map init intercom
     private void OnMapInit(EntityUid uid, IntercomComponent ent, MapInitEvent args)
     {
         // Set initial frequency (must be done regardless of power/enabled)
@@ -439,5 +443,5 @@ public sealed class RadioDeviceSystem : EntitySystem
             _appearance.SetData(uid, RadioDeviceVisuals.Broadcasting, true);
         }
     }
-    // End Frontier
+    // Frontier end
 }

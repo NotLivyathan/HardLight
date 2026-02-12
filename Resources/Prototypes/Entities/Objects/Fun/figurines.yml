@@ -1,7 +1,7 @@
 #HUMANOID FIGURINES
 
 - type: entity
-  parent: [BaseItem, RecyclableItemPlasticTiny] # Frontier: added RecyclableItemPlasticTiny
+  parent: [ BaseItem, RecyclableItemPlasticTiny ] # Frontier: RecyclableItemPlasticTiny
   id: BaseFigurine
   name: figurine
   description: A small miniature.
@@ -19,10 +19,12 @@
     - Figurine
   - type: UseDelay
     delay: 5
+  - type: UseDelayOnTrigger
+  - type: UseDelayTriggerCondition # Prevent spam
   - type: TriggerOnActivate
   - type: TriggerOnSignal
   - type: Speech
-    speechSounds: Pai # it just sounds better
+    speechSounds: Pai # It just sounds better
   - type: DeviceNetwork
     deviceNetId: Wireless
     receiveFrequencyId: BasicDevice

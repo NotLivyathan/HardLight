@@ -1,8 +1,8 @@
-# ied crafted from random stuff
-# ideally it would be dynamic and work by actually sparking the solution but that doesnt exist yet :(
-# with that you could make napalm ied instead of welding fuel with no additional complexity
+# IED crafted from random stuff
+# Ideally it would be dynamic and work by actually sparking the solution but that doesnt exist yet :(
+# With that you could make napalm IED instead of welding fuel with no additional complexity
 - type: entity
-  parent: [BaseItem, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ BaseItem, BaseC2Contraband ] # HardLight: BaseMinorContraband<BaseC2Contraband
   id: FireBomb
   name: fire bomb
   description: A weak, improvised incendiary device.
@@ -13,12 +13,13 @@
     sprite: Objects/Weapons/Bombs/ied.rsi
     layers:
     - state: base
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
     - state: fuel
     - state: wires
   - type: Item
     sprite: Objects/Weapons/Bombs/ied.rsi
-  - type: OnUseTimerTrigger
+  - type: TriggerOnUse
+  - type: TimerTrigger
     delay: 5
     examinable: false
     initialBeepDelay: 0
@@ -36,6 +37,8 @@
     maxIntensity: 3
     canCreateVacuum: false
   - type: ExplodeOnTrigger
+    keysIn:
+    - timer
   - type: Appearance
   - type: AnimationPlayer
   - type: TimerTriggerVisuals
@@ -49,15 +52,15 @@
         damage: 50
       behaviors:
       - !type:DoActsBehavior
-        acts: ["Destruction"]
+        acts: [ "Destruction" ]
       - !type:ExplodeBehavior
   - type: Construction
     graph: FireBomb
     node: firebomb
 
-# has igniter but no fuel or wires
+# Has igniter but no fuel or wires
 - type: entity
-  parent: [DrinkColaCanEmpty, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ DrinkColaCanEmpty, BaseC2Contraband ] # HardLight: BaseMinorContraband<BaseC2Contraband
   id: FireBombEmpty
   name: fire bomb
   suffix: empty
@@ -67,8 +70,8 @@
     sprite: Objects/Weapons/Bombs/ied.rsi
     layers:
     - state: base
-      map: ["enum.OpenableVisuals.Layer"]
-  # bad dog
+      map: [ "enum.OpenableVisuals.Layer" ]
+  # Bad dog
   - type: GenericVisualizer
     visuals:
       enum.OpenableVisuals.Opened:
@@ -82,10 +85,10 @@
   - type: Tag
     tags:
     - Trash
-    # no DrinkCan, prevent using it to make another ied
+    # No DrinkCan; prevent using it to make another IED
 
 - type: entity
-  parent: [FireBombEmpty, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ FireBombEmpty, BaseC2Contraband ] # HardLight: BaseC2Contraband
   id: FireBombFuel
   suffix: fuel
   description: A weak, improvised incendiary device. This one is missing wires.
@@ -93,7 +96,7 @@
   - type: Sprite
     layers:
     - state: base
-      map: ["enum.OpenableVisuals.Layer"]
+      map: [ "enum.OpenableVisuals.Layer" ]
     - state: fuel
   - type: SolutionContainerManager
     solutions:

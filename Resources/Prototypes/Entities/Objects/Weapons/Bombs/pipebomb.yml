@@ -1,5 +1,5 @@
 - type: entity
-  parent: [GrenadeBase, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ GrenadeBase, BaseC2Contraband ] # HardLight: BaseMinorContraband<BaseC2Contraband
   id: PipeBomb
   name: pipe bomb
   description: An improvised explosive made from pipes and wire.
@@ -9,9 +9,10 @@
     sprite: Objects/Weapons/Bombs/pipebomb.rsi
     layers:
     - state: base
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
     - state: wires
-  - type: OnUseTimerTrigger # todo: make it activate through welder/lighter/fire instead
+  - type: TriggerOnActivate # TODO: make it activate through welder/lighter/fire instead
+  - type: TimerTrigger
     delay: 5
     examinable: false
     initialBeepDelay: 0
@@ -20,6 +21,8 @@
     min: 1
     max: 10
   - type: ExplodeOnTrigger
+    keysIn:
+    - timer
   - type: Explosive # Weak explosion in a very small radius. Doesn't break underplating.
     explosionType: Default
     totalIntensity: 50
@@ -33,7 +36,7 @@
     node: pipebomb
 
 - type: entity
-  parent: [BaseItem, BaseC2ContrabandUnredeemable] # Frontier: Added BaseC2ContrabandUnredeemable
+  parent: [ BaseItem, BaseC2Contraband ] # HardLight: BaseMinorContraband<BaseC2Contraband
   id: PipeBombGunpowder
   name: pipe bomb
   description: An improvised explosive made from a pipe. This one has no gunpowder.
@@ -49,7 +52,7 @@
     defaultTarget: pipebomb
 
 - type: entity
-  parent: BaseItem
+  parent: [ BaseItem, BaseC1Contraband ] # HardLight: BaseMinorContraband<BaseC1Contraband
   id: PipeBombCable
   name: pipe bomb
   description: An improvised explosive made from a pipe. This one has no cable.
