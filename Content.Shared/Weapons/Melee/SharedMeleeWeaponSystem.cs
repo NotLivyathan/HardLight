@@ -7,6 +7,8 @@ using Content.Shared.Administration.Components;
 using Content.Shared.Administration.Logs;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Events;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.FixedPoint;
@@ -63,6 +65,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
     [Dependency] protected readonly SharedPopupSystem PopupSystem = default!;
     [Dependency] protected readonly SharedTransformSystem TransformSystem = default!;
     [Dependency] private   readonly SharedStaminaSystem _stamina = default!;
+    [Dependency] private   readonly DamageExamineSystem _damageExamine = default!;
 
     private const int AttackMask = (int) (CollisionGroup.MobMask | CollisionGroup.Opaque);
 
@@ -83,6 +86,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         SubscribeLocalEvent<MeleeWeaponComponent, HandSelectedEvent>(OnMeleeSelected);
         SubscribeLocalEvent<MeleeWeaponComponent, ShotAttemptedEvent>(OnMeleeShotAttempted);
         SubscribeLocalEvent<MeleeWeaponComponent, GunShotEvent>(OnMeleeShot);
+        SubscribeLocalEvent<MeleeWeaponComponent, DamageExamineEvent>(OnMeleeExamineDamage);
         SubscribeLocalEvent<BonusMeleeDamageComponent, GetMeleeDamageEvent>(OnGetBonusMeleeDamage);
         SubscribeLocalEvent<BonusMeleeDamageComponent, GetHeavyDamageModifierEvent>(OnGetBonusHeavyDamageModifier);
         SubscribeLocalEvent<BonusMeleeAttackRateComponent, GetMeleeAttackRateEvent>(OnGetBonusMeleeAttackRate);
@@ -95,8 +99,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         SubscribeAllEvent<StopAttackEvent>(OnStopAttack);
 
 #if DEBUG
-        SubscribeLocalEvent<MeleeWeaponComponent,
-                            MapInitEvent>                   (OnMapInit);
+        SubscribeLocalEvent<MeleeWeaponComponent, MapInitEvent>(OnMapInit);
     }
 
     private void OnMapInit(EntityUid uid, MeleeWeaponComponent component, MapInitEvent args)
@@ -124,6 +127,18 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         }
     }
 
+    private void OnMeleeExamineDamage(EntityUid uid, MeleeWeaponComponent component, ref DamageExamineEvent args)
+    {
+        if (component.Hidden)
+            return;
+
+        var damageSpec = GetDamage(uid, args.User, component);
+
+        if (damageSpec.Empty)
+            return;
+
+        _damageExamine.AddDamageExamine(args.Message, Damageable.ApplyUniversalAllModifiers(damageSpec), Loc.GetString("damage-melee"));
+    }
     private void OnMeleeSelected(EntityUid uid, MeleeWeaponComponent component, HandSelectedEvent args)
     {
         var attackRate = GetAttackRate(uid, args.User, component);
@@ -294,7 +309,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         {
             // Make sure the entity is a weapon AND it doesn't need
             // to be equipped to be used (E.g boxing gloves).
-            if (EntityManager.TryGetComponent(held, out melee) &&
+            if (TryComp(held, out melee) &&
                 !melee.MustBeEquippedToUse)
             {
                 weaponUid = held.Value;
@@ -305,7 +320,8 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 return false;
         }
 
-        // #HL Use any clothing with melee weapons, hands/gloves have highest priority
+        // # HardLight start: Use any clothing with melee weapons.
+        // Hands/gloves have highest priority
         if (_inventory.TryGetSlots(entity, out var slotDefinitions))
         {
             // Check gloves first (highest priority after held items)
@@ -331,6 +347,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 }
             }
         }
+        // HardLight end
 
         // Use our own melee
         if (TryComp(entity, out melee))
@@ -545,9 +562,9 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         RaiseLocalEvent(target.Value, attackedEvent);
 
         var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEvent.BonusDamage, hitEvent.ModifiersList);
-        var damageResult = Damageable.TryChangeDamage(target, modifiedDamage, ignoreResistances: resistanceBypass, origin: user, partMultiplier: component.ClickPartDamageMultiplier); // Shitmed Change
+        var damageResult = Damageable.TryChangeDamage(target, modifiedDamage, ignoreResistances: resistanceBypass, origin: user, partMultiplier: component.ClickPartDamageMultiplier); // Shitmed
 
-        if (damageResult is {Empty: false})
+        if (!Damageable.TryChangeDamage(target.Value, modifiedDamage, out var damageResult, origin:user, ignoreResistances:resistanceBypass))
         {
             // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
             if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
@@ -572,7 +589,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
 
         _meleeSound.PlayHitSound(target.Value, user, GetHighestDamageSound(modifiedDamage, _protoManager), hitEvent.HitSoundOverride, component);
 
-        if (damageResult?.GetTotal() > FixedPoint2.Zero)
+        if (damageResult.GetTotal() > FixedPoint2.Zero)
         {
             DoDamageEffect(targets, user, targetXform);
         }
@@ -652,7 +669,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
 
         foreach (var entity in entities)
         {
-            if (entity == EntityUid.Invalid || entity == user ||
+            if (entity == user ||
                 !damageQuery.HasComponent(entity))
                 continue;
 
@@ -701,9 +718,9 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             RaiseLocalEvent(entity, attackedEvent);
             var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEvent.BonusDamage, hitEvent.ModifiersList);
 
-            var damageResult = Damageable.TryChangeDamage(entity, modifiedDamage, ignoreResistances: resistanceBypass, origin: user, partMultiplier: component.HeavyPartDamageMultiplier); // Shitmed Change
+            var damageResult = Damageable.ChangeDamage(entity, modifiedDamage, origin: user, ignoreResistances: resistanceBypass);
 
-            if (damageResult != null && damageResult.GetTotal() > FixedPoint2.Zero)
+            if (damageResult.GetTotal() > FixedPoint2.Zero)
             {
                 // If the target has stamina and is taking blunt damage, they should also take stamina damage based on their blunt to stamina factor
                 if (damageResult.DamageDict.TryGetValue("Blunt", out var bluntDamage))
@@ -734,15 +751,15 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             _meleeSound.PlayHitSound(target, user, GetHighestDamageSound(appliedDamage, _protoManager), hitEvent.HitSoundOverride, component);
         }
 
-        if (appliedDamage.GetTotal() > FixedPoint2.Zero && targets.Count > 0 && targets[0] != EntityUid.Invalid && TryComp(targets[0], out TransformComponent? targetXform))
+        if (appliedDamage.GetTotal() > FixedPoint2.Zero)
         {
-            DoDamageEffect(targets, user, targetXform);
+            DoDamageEffect(targets, user, Transform(targets[0]));
         }
 
         return true;
     }
 
-    protected HashSet<EntityUid> ArcRayCast(Vector2 position, Angle angle, Angle arcWidth, float range, MapId mapId, EntityUid origin, params EntityUid[] ignores)
+    protected HashSet<EntityUid> ArcRayCast(Vector2 position, Angle angle, Angle arcWidth, float range, MapId mapId, EntityUid ignore)
     {
         // TODO: This is pretty sucky.
         var widthRad = arcWidth;
@@ -755,13 +772,12 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         for (var i = 0; i < increments; i++)
         {
             var castAngle = new Angle(baseAngle + increment * i);
-            var primaryIgnore = ignores != null && ignores.Length > 0 ? ignores[0] : EntityUid.Invalid;
             var res = _physics.IntersectRay(mapId,
                 new CollisionRay(position,
                     castAngle.ToWorldVec(),
                     AttackMask),
                 range,
-                primaryIgnore,
+                ignore,
                 false)
                 .ToList();
 
@@ -771,11 +787,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 var resChecked = res.Where(x => x.Distance.Equals(res[0].Distance));
                 foreach (var r in resChecked)
                 {
-                    // Exclude any explicitly ignored entities.
-                    if (ignores != null && ignores.Contains(r.HitEntity))
-                        continue;
-
-                    if (Interaction.InRangeUnobstructed(origin, r.HitEntity, range + 0.1f, overlapCheck: false))
+                    if (Interaction.InRangeUnobstructed(ignore, r.HitEntity, range + 0.1f, overlapCheck: false))
                         resSet.Add(r.HitEntity);
                 }
             }

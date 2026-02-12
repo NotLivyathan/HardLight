@@ -2,7 +2,8 @@ using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.EntitySystems;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
@@ -15,10 +16,10 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Robust.Shared.Audio.Systems;
-
-// Shitmed Change
+// Shitmed start
 using Content.Shared._Shitmed.Targeting;
 using System.Linq;
+// Shitmed end
 
 namespace Content.Shared.Medical.Healing;
 
@@ -34,7 +35,7 @@ public sealed class HealingSystem : EntitySystem
     [Dependency] private readonly MobThresholdSystem _mobThresholdSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
+    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed
 
     public override void Initialize()
     {
@@ -81,20 +82,19 @@ public sealed class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0 && bloodstream != null)
             _bloodstreamSystem.TryModifyBloodLevel((target.Owner, bloodstream), healing.ModifyBloodLevel);
 
-        // HardLight start: Determines if the entity is a Synth and scales damage recovery accordingly.
-        var damageToApply = healing.Damage;
-        if (TryComp<HLSynthComponent>(target.Owner, out _))
-        {
-            damageToApply = ScaleDamageSpecifier(healing.Damage, 0.5f);
-        }
+// HardLight: Commenting this out for now since it'll need to be refactored to work with the new systems.
+//        // HardLight start: Determines if the entity is a Synth and scales damage recovery accordingly.
+//        var damageToApply = healing.Damage;
+//        if (TryComp<HLSynthComponent>(target.Owner, out _))
+//        {
+//            damageToApply = ScaleDamageSpecifier(healing.Damage, 0.5f);
+//        }
 
-        var healed = _damageable.TryChangeDamage(target.Owner, damageToApply, true, origin: args.User, canSever: false); // Shitmed Change
+        if (!_damageable.TryChangeDamage(target.Owner, healing.Damage * _damageable.UniversalTopicalsHealModifier, out var healed, true, origin: args.Args.User, canSever: false) && healing.BloodlossModifier != 0) // Shitmed: Added canSever: false to prevent healing from reattaching limbs, which would cause issues with the targeting system. Also made it so that if the healing item modifies bloodloss but doesn't actually heal any damage, it won't consume the item or play the sound, since the item is presumably being used to stop bleeding rather than heal damage.
+            return;
         // HardLight end
 
-        if (healed == null && healing.BloodlossModifier != 0)
-            return;
-
-        var total = healed?.GetTotal() ?? FixedPoint2.Zero;
+        var total = healed.GetTotal();
 
         // Re-verify that we can heal the damage.
         var dontRepeat = false;

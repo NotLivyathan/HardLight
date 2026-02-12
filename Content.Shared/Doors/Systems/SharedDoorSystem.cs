@@ -2,7 +2,7 @@ using System.Linq;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Administration.Logs;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.Doors.Components;
 using Content.Shared.Emag.Systems;
@@ -46,7 +46,6 @@ public abstract partial class SharedDoorSystem : EntitySystem
     [Dependency] protected readonly SharedPopupSystem Popup = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly SharedPowerReceiverSystem _powerReceiver = default!;
-
 
     public static readonly ProtoId<TagPrototype> DoorBumpTag = "DoorBumpOpener";
 
@@ -138,7 +137,8 @@ public abstract partial class SharedDoorSystem : EntitySystem
         args.Handled = true;
     }
 
-    private void OnUnEmagged(EntityUid uid, DoorComponent door, ref GotUnEmaggedEvent args) // Frontier - Added DEMUG
+    // Frontier start: Added DEMUG
+    private void OnUnEmagged(EntityUid uid, DoorComponent door, ref GotUnEmaggedEvent args)
     {
         if (!_emag.CompareFlag(args.Type, EmagType.Access))
             return;
@@ -162,6 +162,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
         Audio.PlayPredicted(door.SparkSound, uid, args.UserUid, AudioParams.Default.WithVolume(8));
         args.Handled = true;
     }
+    // Frontier end
 
     #region StateManagement
     private void OnHandleState(Entity<DoorComponent> ent, ref AfterAutoHandleStateEvent args)
@@ -561,8 +562,7 @@ public abstract partial class SharedDoorSystem : EntitySystem
             if (door.CrushDamage != null)
                 _damageableSystem.TryChangeDamage(entity, door.CrushDamage, origin: uid);
 
-            _stunSystem.TryKnockdown(entity, stunTime, true);
-            _stunSystem.TryUpdateStunDuration(entity, stunTime);
+            _stunSystem.TryUpdateParalyzeDuration(entity, stunTime);
         }
 
         if (door.CurrentlyCrushing.Count == 0)

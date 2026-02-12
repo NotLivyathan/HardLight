@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Content.Shared._Goobstation.DoAfter; // Goobstation
-using Content.Shared._Funkystation.Genetics.Mutations.Components;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Hands.Components;
 using Content.Shared.Tag;
 using Robust.Shared.GameStates;
@@ -11,6 +10,8 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Shared._Goobstation.DoAfter; // Goobstation
+using Content.Shared._Funkystation.Genetics.Mutations.Components; // Funkystation - Genetics
 
 namespace Content.Shared.DoAfter;
 
@@ -31,6 +32,7 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
         SubscribeLocalEvent<DoAfterComponent, DamageChangedEvent>(OnDamage);
         SubscribeLocalEvent<DoAfterComponent, EntityUnpausedEvent>(OnUnpaused);
         SubscribeLocalEvent<DoAfterComponent, ComponentGetState>(OnDoAfterGetState);
@@ -87,14 +89,14 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         else if (doAfter.Args.Broadcast)
             RaiseLocalEvent((object)ev);
 
-        // <Goobstation>
+        // Goobstation start
         if (component.RaiseEndedEvent
             && Exists(doAfter.Args.User))
         {
             var ended = new DoAfterEndedEvent(doAfter.Args.Target, doAfter.Cancelled);
             RaiseLocalEvent(doAfter.Args.User, ref ended);
         }
-        // </Goobstation>
+        // Goobstation end
 
         if (component.AwaitedDoAfters.Remove(doAfter.Index, out var tcs))
             tcs.SetResult(doAfter.Cancelled ? DoAfterStatus.Cancelled : DoAfterStatus.Finished);
@@ -207,13 +209,13 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
 
         id = new DoAfterId(args.User, comp.NextId++);
 
-        // Funkystation - Genetics DoAfter Modifier Mutation
+        // Funkystation - Genetics start: DoAfter Modifier Mutation
         if (TryComp<MutationDoAfterModifierComponent>(args.User, out var modComp))
         {
             var newSeconds = args.Delay.TotalSeconds * modComp.Multiplier;
             args.Delay = TimeSpan.FromSeconds(newSeconds);
         }
-        // End of Funkystation changes
+        // Funkystation - Genetics end
 
         var doAfter = new DoAfter(id.Value.Index, args, GameTiming.CurTime);
 
@@ -333,16 +335,16 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
     /// <summary>
     ///     Cancels an active DoAfter.
     /// </summary>
-    public void Cancel(DoAfterId? id, DoAfterComponent? comp = null)
+    public void Cancel(DoAfterId? id, DoAfterComponent? comp = null, bool force = false)
     {
         if (id != null)
-            Cancel(id.Value.Uid, id.Value.Index, comp);
+            Cancel(id.Value.Uid, id.Value.Index, comp, force);
     }
 
     /// <summary>
     ///     Cancels an active DoAfter.
     /// </summary>
-    public void Cancel(EntityUid entity, ushort id, DoAfterComponent? comp = null)
+    public void Cancel(EntityUid entity, ushort id, DoAfterComponent? comp = null, bool force = false)
     {
         if (!Resolve(entity, ref comp, false))
             return;
@@ -353,13 +355,13 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
             return;
         }
 
-        InternalCancel(doAfter, comp);
+        InternalCancel(doAfter, comp, force: force);
         Dirty(entity, comp);
     }
 
-    private void InternalCancel(DoAfter doAfter, DoAfterComponent component)
+    private void InternalCancel(DoAfter doAfter, DoAfterComponent component, bool force = false)
     {
-        if (doAfter.Cancelled || doAfter.Completed)
+        if (doAfter.Cancelled || (doAfter.Completed && !force))
             return;
 
         // Caller is responsible for dirtying the component.
