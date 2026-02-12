@@ -6,8 +6,6 @@
   order:
     - category: Health
     - category: Stamina
-    - alertType: Shadekin # Starlight
-    - category: Mana
     - alertType: SuitPower
     - category: Internals
     - alertType: Fire
@@ -26,8 +24,10 @@
     - category: Hunger
     - category: Thirst
     - alertType: Magboots
+    - alertType: Rooted
     - alertType: Pacified
-    - alertType: Offer
+    - alertType: Stealthy
+    - alertType: Offer # ???, # HardLight: Not sure where the Offer system came from. I'm commenting this for future reference.
 
 - type: entity
   id: AlertSpriteView
@@ -137,6 +137,7 @@
     state: walking
   name: alerts-walking-name
   description: alerts-walking-desc
+  clientHandled: true
 
 - type: alert
   id: Stun
@@ -178,15 +179,6 @@
   icons: [ /Textures/Interface/Alerts/Buckle/buckled.png ]
   name: alerts-buckled-name
   description: alerts-buckled-desc
-
-- type: alert
-  id: Offer
-  clickEvent: !type:AcceptOfferAlertEvent
-  icons:
-  - sprite: /Textures/Interface/Alerts/offer_item.rsi
-    state: offer_item
-  name: alerts-offer-name
-  description: alerts-offer-desc
 
 - type: alert
   id: HumanCrit
@@ -292,6 +284,7 @@
   description: alerts-battery-desc
   minSeverity: 0
   maxSeverity: 10
+  clientHandled: true # the power cell is read on the client so that we don't have to periodically network the charge
 
 - type: alert
   id: BorgBatteryNone
@@ -301,6 +294,7 @@
     state: battery-none
   name: alerts-no-battery-name
   description: alerts-no-battery-desc
+  clientHandled: true # the power cell battery is read on the client so that we don't have to periodically network the charge
 
 - type: alert
   id: Internals
@@ -460,6 +454,19 @@
   description: alerts-pacified-desc
 
 - type: alert
+  id: Stealthy
+  clickEvent: !type:ToggleThievingEvent
+  icons:
+  - sprite: /Textures/Interface/Alerts/stealthy.rsi
+    state: stealthy-off
+  - sprite: /Textures/Interface/Alerts/stealthy.rsi
+    state: stealthy-on
+  name: alerts-stealthy-name
+  description: alerts-stealthy-desc
+  minSeverity: 0
+  maxSeverity: 1
+
+- type: alert
   id: Adrenaline
   icons:
   - sprite: Mobs/Species/Human/organs.rsi
@@ -515,7 +522,16 @@
   name: Debug6
   description: Debug
 
-- type: alert
+- type: alert # ???, # HardLight: Not sure where the Offer system came from. I'm commenting this for future reference.
+  id: Offer
+  clickEvent: !type:AcceptOfferAlertEvent
+  icons:
+  - sprite: /Textures/Interface/Alerts/offer_item.rsi
+    state: offer_item
+  name: alerts-offer-name
+  description: alerts-offer-desc
+
+- type: alert # Nyano
   id: Mana
   category: Mana
   icons:
