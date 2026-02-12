@@ -17,10 +17,7 @@ namespace Content.Server.Destructible.Thresholds.Behaviors
 
         public void Execute(EntityUid owner, DestructibleSystem system, EntityUid? cause = null)
         {
-            if (system.EntityManager.TryGetComponent(owner, out BodyComponent? body))
-            {
-                system.BodySystem.GibBody(owner, _recursive, body, gib: GibType, contents: GibContents); // Shitmed Change
-            }
+            system.Gibbing.Gib(owner, _recursive, gib: GibType, contents: GibContents); // Shitmed: Added gib: GibType, contents: GibContents
         }
     }
 }

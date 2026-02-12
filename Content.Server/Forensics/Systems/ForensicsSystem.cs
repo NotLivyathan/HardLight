@@ -12,6 +12,8 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.DoAfter;
 using Content.Shared.Forensics;
 using Content.Shared.Forensics.Components;
+using Content.Shared.Forensics.Systems;
+using Content.Shared.Gibbing;
 using Content.Shared.Interaction;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;
@@ -23,7 +25,7 @@ using Content.Shared.Hands.Components;
 
 namespace Content.Server.Forensics
 {
-    public sealed class ForensicsSystem : EntitySystem
+    public sealed class ForensicsSystem : SharedForensicsSystem
     {
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly InventorySystem _inventory = default!;
@@ -38,7 +40,7 @@ namespace Content.Server.Forensics
             // The solution entities are spawned on MapInit as well, so we have to wait for that to be able to set the DNA in the bloodstream correctly without ResolveSolution failing
             SubscribeLocalEvent<DnaComponent, MapInitEvent>(OnDNAInit, after: new[] { typeof(BloodstreamSystem) });
 
-            SubscribeLocalEvent<ForensicsComponent, BeingGibbedEvent>(OnBeingGibbed);
+            SubscribeLocalEvent<ForensicsComponent, GibbedBeforeDeletionEvent>(OnBeingGibbed);
             SubscribeLocalEvent<ForensicsComponent, MeleeHitEvent>(OnMeleeHit);
             SubscribeLocalEvent<ForensicsComponent, GotRehydratedEvent>(OnRehydrated);
             SubscribeLocalEvent<CleansForensicsComponent, AfterInteractEvent>(OnAfterInteract, after: new[] { typeof(AbsorbentSystem) });
@@ -84,14 +86,14 @@ namespace Content.Server.Forensics
             }
         }
 
-        private void OnBeingGibbed(EntityUid uid, ForensicsComponent component, BeingGibbedEvent args)
+        private void OnBeingGibbed(Entity<ForensicsComponent> ent, ref GibbedBeforeDeletionEvent args)
         {
             string dna = Loc.GetString("forensics-dna-unknown");
 
-            if (TryComp(uid, out DnaComponent? dnaComp) && dnaComp.DNA != null)
+            if (TryComp(ent, out DnaComponent? dnaComp) && dnaComp.DNA != null)
                 dna = dnaComp.DNA;
 
-            foreach (EntityUid part in args.GibbedParts)
+            foreach (var part in args.Giblets)
             {
                 var partComp = EnsureComp<ForensicsComponent>(part);
                 partComp.DNAs.Add(dna);
@@ -319,12 +321,7 @@ namespace Content.Server.Forensics
         }
 
         #region Public API
-
-        /// <summary>
-        /// Give the entity a new, random DNA string and call an event to notify other systems like the bloodstream that it has been changed.
-        /// Does nothing if it does not have the DnaComponent.
-        /// </summary>
-        public void RandomizeDNA(Entity<DnaComponent?> ent)
+        public override void RandomizeDNA(Entity<DnaComponent?> ent)
         {
             if (!Resolve(ent, ref ent.Comp, false))
                 return;
@@ -336,11 +333,7 @@ namespace Content.Server.Forensics
             RaiseLocalEvent(ent.Owner, ref ev);
         }
 
-        /// <summary>
-        /// Give the entity a new, random fingerprint string.
-        /// Does nothing if it does not have the FingerprintComponent.
-        /// </summary>
-        public void RandomizeFingerprint(Entity<FingerprintComponent?> ent)
+        public override void RandomizeFingerprint(Entity<FingerprintComponent?> ent)
         {
             if (!Resolve(ent, ref ent.Comp, false))
                 return;
