@@ -1,4 +1,4 @@
-# Base prototypes
+## Base prototypes
 
 - type: latheRecipe
   abstract: true
@@ -7,7 +7,7 @@
   materials:
     Steel: 200
 
-# Recipes
+## Recipes
 
 - type: latheRecipe
   parent: BaseSurgicalRecipe
@@ -70,7 +70,7 @@
   result: Gauze1
   completetime: 1
   materials:
-    Cloth: 100 # lathe more efficient than handcrafting
+    Cloth: 100 # Lathe more efficient than handcrafting
 
 - type: latheRecipe
   id: HandheldHealthAnalyzer
@@ -189,7 +189,7 @@
   result: Jug
   completetime: 4
   materials:
-    Plastic: 200 # Frontier: 400<200
+    Plastic: 400
 
 - type: latheRecipe
   id: RollerBedSpawnFolded
@@ -217,7 +217,67 @@
     Steel: 100
     Plastic: 100
 
-# Shitmed Recipes
+- type: latheRecipe
+  id: OffsetCane
+  result: OffsetCane
+  completetime: 2
+  materials:
+    Steel: 100
+    Plastic: 100
+
+- type: latheRecipe
+  id: OffsetCaneWood
+  result: OffsetCaneWood
+  completetime: 2
+  materials:
+    Steel: 100
+    Wood: 100
+
+- type: latheRecipe
+  id: LauncherSyringe
+  result: LauncherSyringe
+  completetime: 10
+  materials:
+    Silver: 200
+    Steel: 1000
+    Plastic: 200
+    Glass: 100
+
+- type: latheRecipe
+  id: MiniSyringe
+  result: MiniSyringe
+  completetime: 2
+  materials:
+    Steel: 200
+    Glass: 100
+    Plastic: 100
+
+- type: latheRecipe
+  id: JetInjector
+  result: JetInjector
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 500
+    Glass: 500
+    Plastic: 250
+    Silver: 250
+
+- type: latheRecipe
+  id: AdvancedJetInjector
+  result: AdvancedJetInjector
+  categories:
+  - Tools
+  completetime: 5
+  materials:
+    Steel: 500
+    Glass: 500
+    Plastic: 250
+    Silver: 400
+    Gold: 50 # A bit of gold for the gold ornaments on it!
+
+## Shitmed Recipes
 
 - type: latheRecipe
   id: BoneGel

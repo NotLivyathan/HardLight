@@ -1,4 +1,4 @@
-# Tier 1
+## Tier 1
 
 - type: technology
   id: Hydroponics
@@ -8,17 +8,19 @@
     state: seedextractor
   discipline: CivilianServices
   tier: 1
-  cost: 7500 # Delta Price. 5000 is pre-adjustment.
+  cost: 7500 # DeltaV: Price; 5000 is pre-adjustment.
   recipeUnlocks:
   - BorgModuleGardening
   - BorgModuleHarvesting
-  - PlantBagOfHolding #DeltaV
+  - PlantBagOfHolding # DeltaV
   - SeedExtractorMachineCircuitboard
   - HydroponicsTrayMachineCircuitboard
   - ReagentGrinderIndustrialMachineCircuitboard
-  - PlantAnalyzer # Frontier
-  - NFBlueprintPlantAnalyzerEmpty # Frontier
-  - NFBlueprintPlantBagOfHolding # Frontier
+  # Frontier start
+  - PlantAnalyzer
+  - NFBlueprintPlantAnalyzerEmpty
+  - NFBlueprintPlantBagOfHolding
+  # Frontier end
 
 - type: technology
   id: CritterMechs
@@ -51,13 +53,13 @@
   cost: 5000
   recipeUnlocks:
   - SurveillanceCameraRouterCircuitboard
-  #  - SurveillanceCameraWirelessRouterCircuitboard # Frontier - Removal of range limits made it useless to build
+#  - SurveillanceCameraWirelessRouterCircuitboard # Frontier: Removal of range limits made it useless to build
   - SurveillanceWirelessCameraMovableCircuitboard
   - SurveillanceWirelessCameraAnchoredCircuitboard
   - SurveillanceCameraMonitorCircuitboard
   - SurveillanceWirelessCameraMonitorCircuitboard
   - TelecomServerCircuitboard
-#  - HolopadMachineCircuitboard # Frontier: needs work before use
+#  - HolopadMachineCircuitboard # Frontier: Needs work before use
 
 - type: technology
   id: AdvancedEntertainment
@@ -106,7 +108,7 @@
   - BiomassReclaimerMachineCircuitboard
   - SlopDispenserMachineCircuitboard
 
-# Tier 2
+## Tier 2
 
 - type: technology
   id: FauxAstroTiles
@@ -140,7 +142,7 @@
   - CryostasisBeaker
   - SyringeCryostasis
 
-# Shitmed Change Start
+# Shitmed start
 - type: technology
   id: AdvancedTreatment
   name: research-technology-advanced-treatment
@@ -151,14 +153,16 @@
   tier: 2
   cost: 5000
   recipeUnlocks:
-  # - BorgModuleAdvancedTreatment # Frontier
-  # - BorgModuleDefibrillator # Frontier
+# Frontier
+#  - BorgModuleAdvancedTreatment
+#  - BorgModuleDefibrillator
   - BorgModuleAdvancedParamedic # Frontier
   - MedicalTechFabCircuitboard
   - EnergyScalpel
   - EnergyCautery
   - AdvancedRetractor
   - BorgModuleAdvancedSurgery
+  - AdvancedJetInjector # HardLight: We don't have the tech tree this would normally be under, so I moved it here for now.
 
 - type: technology
   id: CyberneticEnhancements
@@ -177,7 +181,7 @@
   - BasicCyberneticEyes
   - SecurityCyberneticEyes
   - MedicalCyberneticEyes
-# Shitmed Change End
+# Shitmed end
 
 - type: technology
   id: AdvancedCleaning
@@ -227,19 +231,20 @@
   - WeaponSprayNozzle
   - ClothingBackpackWaterTank
 
-    # Tier 3
+## Tier 3
 
-    # - type: technology # Frontier
-    # id: BluespaceCargoTransport
-    # name: research-technology-bluespace-cargo-transport
-    # icon:
-    # sprite: Structures/cargo_telepad.rsi
-  # state: display
-  # discipline: CivilianServices
-  # tier: 3
-  # cost: 15000
-  # recipeUnlocks:
-  # - CargoTelepadMachineCircuitboard
+# Frontier
+#- type: technology
+#  id: BluespaceCargoTransport
+#  name: research-technology-bluespace-cargo-transport
+#  icon:
+#    sprite: Structures/cargo_telepad.rsi
+#    state: display
+#  discipline: CivilianServices
+#  tier: 3
+#  cost: 15000
+#  recipeUnlocks:
+#  - CargoTelepadMachineCircuitboard
 
 - type: technology
   id: QuantumFiberWeaving
@@ -265,9 +270,11 @@
   recipeUnlocks:
   - BluespaceBeaker
   - SyringeBluespace
-  - JugBluespace # Frontier
-  - VialBluespace # Frontier
-  - NFBlueprintBluespaceBeaker # Frontier
-  - NFBlueprintSyringeBluespace # Frontier
-  - NFBlueprintJugBluespace # Frontier
-  - NFBlueprintVialBluespace # Frontier
+  # Frontier start
+  - JugBluespace
+  - VialBluespace
+  - NFBlueprintBluespaceBeaker
+  - NFBlueprintSyringeBluespace
+  - NFBlueprintJugBluespace
+  - NFBlueprintVialBluespace
+  # Frontier end

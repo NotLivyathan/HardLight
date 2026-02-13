@@ -16,6 +16,7 @@
   - PillCanister
   - HandLabeler
   - BaseChemistryEmptyVial
+  - Dropper
 
 - type: latheRecipePack
   parent: BasicChemistryStatic
@@ -44,7 +45,10 @@
   - DiseaseSwab
   - BodyBag
   - WhiteCane
-  - AACTablet
+  - OffsetCane
+  - OffsetCaneWood
+  - JetInjector
+  - AACTablet # ???, # HardLight: I don't remember where this came from. Commenting for now.
 
 - type: latheRecipePack
   id: RollerBedsStatic
@@ -72,22 +76,22 @@
   - MedkitAdvanced
   - MedkitRadiation
   - MedkitCombat
-  - SyringeCase
-  - SyringeCaseAlt
+  - SyringeCase # ???, # HardLight: I don't remember where these came from. Commenting for now.
+  - SyringeCaseAlt # ???, # HardLight: ^
 
 - type: latheRecipePack
   id: MedicalBoardsStatic
   recipes:
   - ElectrolysisUnitMachineCircuitboard
   - CentrifugeMachineCircuitboard
-  # - ChemDispenserMachineCircuitboard # Frontier: dynamic
-  # - ChemMasterMachineCircuitboard # Frontier: dynamic
+# Frontier, # HardLight: Commented out for some dynamic system that has no explanation.
+#  - ChemDispenserMachineCircuitboard
+#  - ChemMasterMachineCircuitboard
   - CondenserMachineCircuitBoard
-  # - HotplateMachineCircuitboard # Frontier: dynamic
-  - OperatingTableCircuitboard # Shitmed Change
+#  - HotplateMachineCircuitboard
+  - OperatingTableCircuitboard # Shitmed
 
-# Shitmed
-- type: latheRecipePack
+- type: latheRecipePack # Shitmed
   id: MedicalSynthLimbsStatic
   recipes:
   - SynthLiver
@@ -102,10 +106,9 @@
   - SynthRightArm
   - SynthLeftHand
   - SynthRightHand
-  - SynthHeadEmpty # Hardlight change
+  - SynthHeadEmpty # Hardlight
 
-# Shitmed
-- type: latheRecipePack
+- type: latheRecipePack # Shitmed
   id: MedicalPizzaLimbsStatic
   recipes:
   - PizzaLeftArm
@@ -122,8 +125,11 @@
   - SyringeCryostasis
   - BluespaceBeaker
   - SyringeBluespace
-  - BluespaceBucket
-  - BluespaceBarrel
+  - BluespaceBucket # HardLight
+  - BluespaceBarrel # HardLight
+  - LauncherSyringe
+  - MiniSyringe
+  - AdvancedJetInjector
 
 - type: latheRecipePack
   id: MedicalBoards
