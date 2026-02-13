@@ -2,7 +2,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Chemistry.Events;
 using Content.Shared.Climbing.Components;
 using Content.Shared.Climbing.Events;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Medical;
 using Content.Shared.Popups;
@@ -27,13 +27,14 @@ public sealed class ClumsySystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly INetManager _net = default!;
 
     public override void Initialize()
     {
         SubscribeLocalEvent<ClumsyComponent, SelfBeforeInjectEvent>(BeforeHyposprayEvent);
         SubscribeLocalEvent<ClumsyComponent, SelfBeforeDefibrillatorZapsEvent>(BeforeDefibrillatorZapsEvent);
         SubscribeLocalEvent<ClumsyComponent, SelfBeforeGunShotEvent>(BeforeGunShotEvent);
-        //SubscribeLocalEvent<ClumsyComponent, CatchAttemptEvent>(OnCatchAttempt); // HardLight: We don't have catching yet.
+        SubscribeLocalEvent<ClumsyComponent, CatchAttemptEvent>(OnCatchAttempt);
         SubscribeLocalEvent<ClumsyComponent, SelfBeforeClimbEvent>(OnBeforeClimbEvent);
     }
 
@@ -48,7 +49,7 @@ public sealed class ClumsySystem : EntitySystem
             return;
 
         // TODO: Replace with RandomPredicted once the engine PR is merged
-        var seed = HashCode.Combine((int) _timing.CurTick.Value, GetNetEntity(ent).Id);
+        var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(ent).Id);
         var rand = new System.Random(seed);
         if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
             return;
@@ -67,7 +68,7 @@ public sealed class ClumsySystem : EntitySystem
             return;
 
         // TODO: Replace with RandomPredicted once the engine PR is merged
-        var seed = HashCode.Combine((int) _timing.CurTick.Value, GetNetEntity(ent).Id);
+        var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(ent).Id);
         var rand = new System.Random(seed);
         if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
             return;
@@ -77,37 +78,36 @@ public sealed class ClumsySystem : EntitySystem
 
     }
 
-    // HardLight: We don't have catching yet.
-    //private void OnCatchAttempt(Entity<ClumsyComponent> ent, ref CatchAttemptEvent args)
-    //{
-    //    // Clumsy people sometimes fail to catch items!
-    //
-    //    // checks if ClumsyCatching is false, if so, skips.
-    //    if (!ent.Comp.ClumsyCatching)
-    //        return;
-    //
-    //    // TODO: Replace with RandomPredicted once the engine PR is merged
-    //    var seed = HashCode.Combine((int) _timing.CurTick.Value, GetNetEntity(args.Item).Id);
-    //    var rand = new System.Random(seed);
-    //    if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
-    //        return;
-    //
-    //    args.Cancelled = true; // fail to catch
-    //
-    //    if (ent.Comp.CatchingFailDamage != null)
-    //        _damageable.ChangeDamage(ent.Owner, ent.Comp.CatchingFailDamage, origin: args.Item);
-    //
-    //    // Collisions don't work properly with PopupPredicted or PlayPredicted.
-    //    // So we make this server only.
-    //    if (_net.IsClient)
-    //        return;
-    //
-    //    var selfMessage = Loc.GetString(ent.Comp.CatchingFailedMessageSelf, ("item", ent.Owner), ("catcher", Identity.Entity(ent.Owner, EntityManager)));
-    //    var othersMessage = Loc.GetString(ent.Comp.CatchingFailedMessageOthers, ("item", ent.Owner), ("catcher", Identity.Entity(ent.Owner, EntityManager)));
-    //    _popup.PopupEntity(selfMessage, ent.Owner, ent.Owner);
-    //    _popup.PopupEntity(othersMessage, ent.Owner, Filter.PvsExcept(ent.Owner), true);
-    //    _audio.PlayPvs(ent.Comp.ClumsySound, ent);
-    //}
+    private void OnCatchAttempt(Entity<ClumsyComponent> ent, ref CatchAttemptEvent args)
+    {
+        // Clumsy people sometimes fail to catch items!
+
+        // checks if ClumsyCatching is false, if so, skips.
+        if (!ent.Comp.ClumsyCatching)
+            return;
+
+        // TODO: Replace with RandomPredicted once the engine PR is merged
+        var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(args.Item).Id);
+        var rand = new System.Random(seed);
+        if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
+            return;
+
+        args.Cancelled = true; // fail to catch
+
+        if (ent.Comp.CatchingFailDamage != null)
+            _damageable.ChangeDamage(ent.Owner, ent.Comp.CatchingFailDamage, origin: args.Item);
+
+        // Collisions don't work properly with PopupPredicted or PlayPredicted.
+        // So we make this server only.
+        if (_net.IsClient)
+            return;
+
+        var selfMessage = Loc.GetString(ent.Comp.CatchingFailedMessageSelf, ("item", ent.Owner), ("catcher", Identity.Entity(ent.Owner, EntityManager)));
+        var othersMessage = Loc.GetString(ent.Comp.CatchingFailedMessageOthers, ("item", ent.Owner), ("catcher", Identity.Entity(ent.Owner, EntityManager)));
+        _popup.PopupEntity(selfMessage, ent.Owner, ent.Owner);
+        _popup.PopupEntity(othersMessage, ent.Owner, Filter.PvsExcept(ent.Owner), true);
+        _audio.PlayPvs(ent.Comp.ClumsySound, ent);
+    }
 
     private void BeforeGunShotEvent(Entity<ClumsyComponent> ent, ref SelfBeforeGunShotEvent args)
     {
@@ -121,13 +121,13 @@ public sealed class ClumsySystem : EntitySystem
             return;
 
         // TODO: Replace with RandomPredicted once the engine PR is merged
-        var seed = HashCode.Combine((int) _timing.CurTick.Value, GetNetEntity(args.Gun).Id);
+        var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(args.Gun).Id);
         var rand = new System.Random(seed);
         if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
             return;
 
         if (ent.Comp.GunShootFailDamage != null)
-            _damageable.TryChangeDamage(ent.Owner, ent.Comp.GunShootFailDamage, origin: ent);
+            _damageable.ChangeDamage(ent.Owner, ent.Comp.GunShootFailDamage, origin: ent);
 
         _stun.TryUpdateParalyzeDuration(ent, ent.Comp.GunShootFailStunTime);
 
@@ -146,7 +146,7 @@ public sealed class ClumsySystem : EntitySystem
             return;
 
         // TODO: Replace with RandomPredicted once the engine PR is merged
-        var seed = HashCode.Combine((int) _timing.CurTick.Value, GetNetEntity(ent).Id);
+        var seed = SharedRandomExtensions.HashCodeCombine((int)_timing.CurTick.Value, GetNetEntity(ent).Id);
         var rand = new System.Random(seed);
         if (!_cfg.GetCVar(CCVars.GameTableBonk) && !rand.Prob(ent.Comp.ClumsyDefaultCheck))
             return;
@@ -199,7 +199,7 @@ public sealed class ClumsySystem : EntitySystem
         {
             stunTime = bonkComp.BonkTime;
             if (bonkComp.BonkDamage != null)
-                _damageable.TryChangeDamage(target.Owner, bonkComp.BonkDamage, true);
+                _damageable.ChangeDamage(target.Owner, bonkComp.BonkDamage, true);
         }
 
         _stun.TryUpdateParalyzeDuration(target, stunTime);

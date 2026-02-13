@@ -609,6 +609,9 @@ VariedXenoArtifactItem: ComplexXenoArtifactItem
 # 2025-08-29
 PrefilledSyringe: Syringe
 
+# 2025-10-8
+ClothingBeltAssault: ClothingBeltMilitaryWebbing
+
 # 2026-01-14
 HeadHuman: OrganHumanHead
 HeadSkeleton: OrganSkeletonPersonHead
