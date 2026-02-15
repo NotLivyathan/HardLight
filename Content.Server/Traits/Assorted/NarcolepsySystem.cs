@@ -1,7 +1,6 @@
+using Content.Server.StatusEffectNew;
 using Content.Shared.Bed.Sleep;
-using Content.Shared.StatusEffect;
 using Robust.Shared.Random;
-using Robust.Shared.Prototypes;
 
 namespace Content.Server.Traits.Assorted;
 
@@ -10,8 +9,6 @@ namespace Content.Server.Traits.Assorted;
 /// </summary>
 public sealed class NarcolepsySystem : EntitySystem
 {
-    private static readonly ProtoId<StatusEffectPrototype> StatusEffectKey = new("ForcedSleep"); // Same one used by N2O and other sleep chems.
-
     [Dependency] private readonly StatusEffectsSystem _statusEffects = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
@@ -56,8 +53,7 @@ public sealed class NarcolepsySystem : EntitySystem
             // Make sure the sleep time doesn't cut into the time to next incident.
             narcolepsy.NextIncidentTime += duration;
 
-            _statusEffects.TryAddStatusEffect<ForcedSleepingComponent>(uid, StatusEffectKey,
-                TimeSpan.FromSeconds(duration), false);
+            _statusEffects.TryAddStatusEffect(uid, SleepingSystem.StatusEffectForcedSleeping, TimeSpan.FromSeconds(duration));
         }
     }
 }
