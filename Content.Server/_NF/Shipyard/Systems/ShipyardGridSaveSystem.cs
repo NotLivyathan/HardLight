@@ -34,9 +34,12 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Server.Construction.Components;
 using Content.Shared._HL.Shipyard;
 // HardLight start
-using Robust.Shared.Prototypes;
-using Content.Shared.Mind.Components;
 using Content.Shared._Common.Consent;
+using Content.Shared.Mind.Components;
+using Content.Shared.SprayPainter.Components;
+using Content.Shared.SprayPainter.Prototypes;
+using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 // HardLight end
 
 namespace Content.Server._NF.Shipyard.Systems;
@@ -56,6 +59,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!; // HardLight
+    [Dependency] private readonly AppearanceSystem _appearance = default!; // HardLight
 
     private ISawmill _sawmill = default!;
     private MapLoaderSystem _mapLoader = default!;
@@ -194,6 +198,9 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
 
             // HardLight: Remove components that fail serialization (e.g., player state) from entities on the grid.
             RemoveSerializationBlockingComponentsOnGrid(gridUid);
+
+            // HardLight: Preserve spray-painted visual prototype by copying runtime appearance data into a serialized component field.
+            StampSprayPaintedPrototypesOnGrid(gridUid);
 
             //_sawmill.Info($"Serializing ship grid {gridUid} as '{shipName}' after transient purge using direct serialization");
 
@@ -647,6 +654,24 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         }
     }
 
+    // HardLight start: Scans painted entities on a grid and copies current paint appearance into SprayPainted.PaintedPrototype before save.
+    private void StampSprayPaintedPrototypesOnGrid(EntityUid gridUid)
+    {
+        var query = _entityManager.EntityQueryEnumerator<SprayPaintedComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var painted, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            if (_appearance.TryGetData(uid, PaintableVisuals.Prototype, out string styleProto))
+            {
+                painted.PaintedPrototype = styleProto;
+                Dirty(uid, painted);
+            }
+        }
+    }
+    // HardLight end
+
     /// <summary>
     /// Remove fields and components from the serialized YAML node to match blueprint output:
     /// - Clear nullspace
@@ -891,6 +916,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 // Determine if this entity is the grid root (has MapGrid component)
                 var hasMapGrid = false;
                 var compsNotNull = comps!; // Assert non-null for analyzer; guarded above.
+                var paintStylePrototype = GetPaintStylePrototype(compsNotNull); // HardLight
                 foreach (var c in compsNotNull)
                 {
                     if (c is MappingDataNode cm && cm.TryGet("type", out ValueDataNode? t) && t != null && t.Value == "MapGrid")
@@ -955,6 +981,13 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     if (typeName == "Transform" && hasMapGrid)
                     {
                         compMap.Remove("rot");
+                    }
+
+                    // HardLight - Appearance: if this entity has an Appearance component and we found a paint style prototype from SprayPainted,
+                    // apply that paint style to the Appearance component so it gets saved with the ship.
+                    if (typeName == "Appearance" && paintStylePrototype != null)
+                    {
+                        ApplyPaintStyleToAppearance(compMap, paintStylePrototype);
                     }
 
                     // Gravity: preserve enabled state so gravity persists on ship load
@@ -1081,8 +1114,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                         {
                             // Only set canReact to false for ChemMaster buffers
                             // Check if the solution name is "buffer"
-                            if (solutionMap.TryGetValue("name", out var nameNode) && 
-                                nameNode is ValueDataNode nameValue && 
+                            if (solutionMap.TryGetValue("name", out var nameNode) &&
+                                nameNode is ValueDataNode nameValue &&
                                 nameValue.Value == "buffer")
                             {
                                 // This is a ChemMaster buffer - prevent mixing
@@ -1104,7 +1137,21 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                     newComps.Add(compMap);
                 }
 
-                // HardLight start: If a prototype contains components that are forced missing, we need to remove those components from all entities of that prototype below and log them for debugging.
+                // HardLight start
+                // If we found a paint style prototype from SprayPainted but the Appearance component was missing,
+                // add an Appearance component with the paint style data so the ship saves with the correct paint appearance.
+                if (paintStylePrototype != null && !HasComponentNode(newComps, "Appearance"))
+                {
+                    var appearanceComp = new MappingDataNode
+                    {
+                        ["type"] = new ValueDataNode("Appearance")
+                    };
+                    ApplyPaintStyleToAppearance(appearanceComp, paintStylePrototype);
+                    newComps.Add(appearanceComp);
+                }
+
+                // If a prototype contains components that are forced missing,
+                // we need to remove those components from all entities of that prototype below and log them for debugging.
                 if (removedFromPrototype != null && removedFromPrototype.Count > 0 || protoMissing != null && protoMissing.Count > 0)
                 {
                     var existingMissing = new HashSet<string>(StringComparer.Ordinal);
@@ -1130,7 +1177,9 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                             mergedSet.Add(name);
                     }
 
-                    if (allowFillComponents) // HardLight: If this entity is allowed to have fill components, make sure they aren't marked as missing even if the prototype has them forced missing.
+                    // If this entity is allowed to have fill components,
+                    // make sure they aren't marked as missing even if the prototype has them forced missing.
+                    if (allowFillComponents)
                     {
                         foreach (var name in fillComponentTypes)
                             mergedSet.Remove(name);
@@ -1159,6 +1208,62 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             }
         }
     }
+
+    // HardLight start: Helper method to scan components for a SprayPainted component and extract the painted prototype if it exists,
+    // so we can apply that paint style to the Appearance component for proper saving.
+    private static string? GetPaintStylePrototype(SequenceDataNode components)
+    {
+        foreach (var compNode in components)
+        {
+            if (compNode is not MappingDataNode compMap)
+                continue;
+
+            if (!compMap.TryGet("type", out ValueDataNode? typeNode) || typeNode == null || typeNode.Value != "SprayPainted")
+                continue;
+
+            if (!compMap.TryGet("paintedPrototype", out ValueDataNode? styleNode) || styleNode == null)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(styleNode.Value))
+                return styleNode.Value;
+        }
+
+        return null;
+    }
+
+    private static bool HasComponentNode(SequenceDataNode components, string componentType)
+    {
+        foreach (var compNode in components)
+        {
+            if (compNode is not MappingDataNode compMap)
+                continue;
+
+            if (!compMap.TryGet("type", out ValueDataNode? typeNode) || typeNode == null)
+                continue;
+
+            if (typeNode.Value == componentType)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static void ApplyPaintStyleToAppearance(MappingDataNode appearanceComp, string stylePrototype)
+    {
+        MappingDataNode appearanceDataInit;
+        if (appearanceComp.TryGet("appearanceDataInit", out MappingDataNode? existing) && existing != null)
+        {
+            appearanceDataInit = existing;
+        }
+        else
+        {
+            appearanceDataInit = new MappingDataNode();
+            appearanceComp["appearanceDataInit"] = appearanceDataInit;
+        }
+
+        appearanceDataInit["enum.PaintableVisuals.Prototype"] = new ValueDataNode(stylePrototype);
+    }
+    // HardLight end
 
     private string WriteYamlToString(MappingDataNode node)
     {
