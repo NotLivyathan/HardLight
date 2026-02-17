@@ -720,6 +720,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "StorageFill", // Remove refill-on-spawn behavior on ship save only
             "ContainerFill", // Remove refill-on-spawn behavior on ship save only
             "EntityTableContainerFill", // Remove refill-on-spawn behavior on ship save only
+            "SurplusBundle", // Syndicate Surplus Crates refill on ship load; this should prevent that behavior
         };
 
         var fillComponentWhitelistPrototypes = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase) // HardLight: Entities you want to bypass the fill component removal for go here.
@@ -736,6 +737,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "StorageFill",
             "ContainerFill",
             "EntityTableContainerFill",
+            "SurplusBundle",
         };
 
         // Prototype-level exclusions for obvious non-ship entities.
