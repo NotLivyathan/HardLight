@@ -35,6 +35,7 @@ using Content.Server.Construction.Components;
 using Content.Shared._HL.Shipyard;
 // HardLight start
 using Content.Shared._Common.Consent;
+using Content.Shared.Light.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.SprayPainter.Components;
 using Content.Shared.SprayPainter.Prototypes;
@@ -633,6 +634,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 return true; // Found stash root above.
             if (HasComp<MachineComponent>(owner))
                 return true; // This is so machines keep their upgraded parts.
+            if (HasComp<PoweredLightComponent>(owner)) // HardLight
+                return true; // Keep bulbs inside powered lights so ship loads don't depend on ContainerFill.
             current = owner;
         }
         return false;

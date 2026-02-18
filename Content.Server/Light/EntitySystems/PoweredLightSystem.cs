@@ -3,6 +3,8 @@ using Content.Server.Ghost;
 using Content.Shared.Light.Components;
 using Content.Shared.Light.EntitySystems;
 using Robust.Shared.Random; // Frontier
+using System; // HardLight
+using Content.Shared.Containers; // HardLight
 
 namespace Content.Server.Light.EntitySystems;
 
@@ -12,6 +14,7 @@ namespace Content.Server.Light.EntitySystems;
 public sealed class PoweredLightSystem : SharedPoweredLightSystem
 {
     [Dependency] private readonly IRobustRandom _random = default!; // Frontier
+
     public override void Initialize()
     {
         base.Initialize();
@@ -46,17 +49,40 @@ public sealed class PoweredLightSystem : SharedPoweredLightSystem
         args.Handled = true;
     }
 
+    // HardLight start
     private void OnMapInit(EntityUid uid, PoweredLightComponent light, MapInitEvent args)
     {
-        // TODO: Use ContainerFill dog
-        if (light.HasLampOnSpawn != null)
-        {
-            var entity = EntityManager.SpawnEntity(light.HasLampOnSpawn, EntityManager.GetComponent<TransformComponent>(uid).Coordinates);
-            ContainerSystem.Insert(entity, light.LightBulbContainer);
-        }
-        // need this to update visualizers
         UpdateLight(uid, light);
+
+        // If the light doesn't have a bulb and isn't set to be filled with one, make sure it's off.
+        if (GetBulb(uid, light) == null && !HasComp<ContainerFillComponent>(uid))
+            return;
+
+        ScheduleLateRefresh(uid);
     }
+
+    // Schedules a light update for a later time to ensure bulbs are properly inserted before checking for them.
+    private void ScheduleLateRefresh(EntityUid uid)
+    {
+        uid.SpawnTimer(TimeSpan.FromSeconds(0.05), () =>
+        {
+            if (TerminatingOrDeleted(uid))
+                return;
+
+            if (!TryComp<PoweredLightComponent>(uid, out var light))
+                return;
+
+            var bulb = GetBulb(uid, light);
+            if (bulb != null)
+            {
+                if (ContainerSystem.Remove(bulb.Value, light.LightBulbContainer))
+                    ContainerSystem.Insert(bulb.Value, light.LightBulbContainer);
+            }
+
+            UpdateLight(uid, light);
+        });
+    }
+    // HardLight end
 
     private void OnEmpPulse(EntityUid uid, PoweredLightComponent component, ref EmpPulseEvent args)
     {
