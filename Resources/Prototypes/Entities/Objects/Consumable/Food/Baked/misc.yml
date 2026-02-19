@@ -6,7 +6,6 @@
   id: FoodBakedBase
   abstract: true
   components:
-  - type: Food
   - type: Sprite
     sprite: Objects/Consumable/Food/Baked/misc.rsi
   - type: SolutionContainerManager
@@ -27,7 +26,7 @@
   id: FoodBakedMuffin
   description: A delicious and spongy little cake.
   components:
-  - type: Food
+  - type: Edible
     trash:
     - FoodPlateMuffinTin
   - type: Sprite
@@ -160,9 +159,9 @@
   - type: Sprite
     state: bun-honey
   - type: FlavorProfile # Frontier
-    flavors: # Frontier
-      - honey # Frontier
-      - bread # Frontier
+    flavors:
+      - honey
+      - bread
 
 - type: entity
   name: hotcross bun
@@ -341,13 +340,6 @@
       map: ["pancakes9"]
       visible: false
   - type: Appearance
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 6
-        reagents:
-        - ReagentId: Flavorol
-          Quantity: 5
   - type: Tag
     tags:
     - Pancake
@@ -404,13 +396,6 @@
     tags:
     - Pancake
     - Fruit
-  - type: SolutionContainerManager # Frontier: flavorol
-    solutions:
-      food:
-        maxVol: 6
-        reagents:
-        - ReagentId: Flavorol
-          Quantity: 5 # End Frontier: flavorol
 
 - type: entity
   name: chocolate chip pancake
@@ -465,7 +450,7 @@
       food:
         maxVol: 6
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 5
         - ReagentId: Theobromine
           Quantity: 1
@@ -485,7 +470,7 @@
       food:
         maxVol: 20
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 8
         - ReagentId: Vitamin
           Quantity: 1
@@ -505,7 +490,7 @@
       food:
         maxVol: 20
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 10
         - ReagentId: Vitamin
           Quantity: 1
@@ -525,7 +510,7 @@
       food:
         maxVol: 20
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 10
         - ReagentId: Vitamin
           Quantity: 1
@@ -545,7 +530,7 @@
       food:
         maxVol: 20
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 8
         - ReagentId: Vitamin
           Quantity: 2
@@ -574,7 +559,7 @@
       food:
         maxVol: 20
         reagents:
-        - ReagentId: Flavorol
+        - ReagentId: Nutriment
           Quantity: 5
         - ReagentId: Vitamin
           Quantity: 1
@@ -643,7 +628,7 @@
     - cotton
   - type: Sprite
     state: chevrechaud-cotton
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: Tag
     tags:
@@ -662,11 +647,14 @@
   - type: MothFood # Frontier
 
 - type: entity
-  name: brownies
   parent: FoodBakedBase
   id: FoodBakedBrownieBatch
+  name: brownies
   description: A pan of brownies.
   components:
+  - type: Item
+    size: Normal
+    storedOffset: 0,-3
   - type: FlavorProfile
     flavors:
       - sweet
@@ -715,11 +703,14 @@
     - Slice
 
 - type: entity
-  name: special brownies
   parent: FoodBakedBase
   id: FoodBakedCannabisBrownieBatch
+  name: special brownies
   description: A pan of "special" brownies.
   components:
+  - type: Item
+    size: Normal
+    storedOffset: 0,-3
   - type: FlavorProfile
     flavors:
       - sweet
@@ -744,9 +735,9 @@
     slice: FoodBakedCannabisBrownie
 
 - type: entity
-  name: special brownie
   parent: FoodBakedBase
   id: FoodBakedCannabisBrownie
+  name: special brownie
   description: A "special" brownie.
   components:
   - type: FlavorProfile
@@ -797,11 +788,17 @@
             Quantity: 1
 
 - type: entity
-  name: croissant
   parent: FoodBakedBase
   id: FoodBakedCroissant
+  name: croissant
   description: Buttery, flaky goodness.
   components:
+  - type: Item
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
+    storedOffset: -2,-4
   - type: FlavorProfile
     flavors:
       - bread
@@ -825,11 +822,16 @@
         Blunt: 0 # so the damage stats icon doesn't immediately give away the syndie ones
 
 - type: entity
-  name: cotton croissant
   parent: FoodBakedCroissant
   id: FoodBakedCroissantCotton
+  name: cotton croissant
   description: Buttery, flaky, fibery goodness.
   components:
+  - type: Item
+    size: Small
+    shape:
+    - 0,0,1,0
+    - 0,1,0,1
   - type: FlavorProfile
     flavors:
     - bread
@@ -837,7 +839,7 @@
     - cotton
   - type: Sprite
     state: croissant-cotton
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: Tag
     tags:
@@ -858,11 +860,15 @@
   - type: MothFood # Frontier
 
 - type: entity
-  name: grilled cheese sandwich
   parent: FoodBakedBase
   id: FoodBakedGrilledCheeseSandwich
+  name: grilled cheese sandwich
   description: Bread and cheese toasted with butter, perfect for a chilly day in space.
   components:
+  - type: Item
+    size: Small
+    shape:
+    - 0,0,1,0
   - type: FlavorProfile
     flavors:
       - cheesy
@@ -883,7 +889,7 @@
           Quantity: 3
 
 - type: entity
-  parent: FoodBakedBase
+  parent: FoodBakedGrilledCheeseSandwich
   id: FoodBakedGrilledCheeseSandwichCotton
   name: cotton grilled cheese sandwich
   description: Cotton bread slightly burnt in butter, with melted cheese. Moths find it difficult to resist this combination.
@@ -896,7 +902,7 @@
   - type: Sprite
     sprite: Objects/Consumable/Food/Baked/misc.rsi
     state: grilled-cheese-cotton
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: Tag
     tags:
