@@ -19,7 +19,7 @@
     sprite: Objects/Consumable/Food/bowl.rsi
     layers:
     - state: bowl
-    - map: ["enum.SolutionContainerLayers.Fill"]
+    - map: [ "enum.SolutionContainerLayers.Fill" ]
       state: fill-1
       visible: false
   - type: MixableSolution
@@ -28,6 +28,7 @@
     edible: Drink
     solution: food
     destroyOnEmpty: false
+    utensil: Spoon
   - type: DamageOnLand
     damage:
       types:

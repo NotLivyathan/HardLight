@@ -1,16 +1,20 @@
 - type: entity
   name: spray bottle
   id: SprayBottle
-  parent: [BaseItem, RecyclableItemPlasticSmall] # Frontier: added RecyclableItemPlasticSmall
+  parent: [ BaseItem, RecyclableItemPlasticSmall ] # Frontier: RecyclableItemPlasticSmall
   suffix: Empty
   description: A spray bottle with an unscrewable top.
   components:
-  - type: Drink
+  - type: Edible
+    edible: Drink
     solution: spray
-    ignoreEmpty: true
+    destroyOnEmpty: false
+    utensil: None
+    transferAmount: 10
     useSound:
       path: /Audio/Effects/spray3.ogg
-    transferAmount: 10
+      params:
+        variation: 0.2
   - type: Tag
     tags:
     - Spray
@@ -119,7 +123,7 @@
     rotation: 180
     layers:
     - state: chempuff
-      map: ["enum.VaporVisualLayers.Base"]
+      map: [ "enum.VaporVisualLayers.Base" ]
   - type: Physics
     bodyType: Dynamic
   - type: Fixtures
@@ -148,7 +152,7 @@
     layers:
     - state: chempuff
       scale: 2, 2
-      map: ["enum.VaporVisualLayers.Base"]
+      map: [ "enum.VaporVisualLayers.Base" ]
   - type: Fixtures
     fixtures:
       fix1:

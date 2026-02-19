@@ -1,6 +1,6 @@
 ﻿using Content.Shared.Administration.Logs;
-using Content.Shared.Body;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Organ;
 using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
@@ -19,7 +19,6 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Popups;
 using Content.Shared.Tools.EntitySystems;
-using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
@@ -57,7 +56,7 @@ public sealed partial class IngestionSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     // Body Component Dependencies
-    [Dependency] private readonly BodySystem _body = default!;
+    [Dependency] private readonly SharedBodySystem _body = default!;
     [Dependency] private readonly ReactiveSystem _reaction = default!;
     [Dependency] private readonly StomachSystem _stomach = default!;
 
@@ -69,8 +68,8 @@ public sealed partial class IngestionSystem : EntitySystem
         SubscribeLocalEvent<EdibleComponent, ComponentInit>(OnEdibleInit);
 
         // Interactions
-        SubscribeLocalEvent<EdibleComponent, UseInHandEvent>(OnUseEdibleInHand, after: [typeof(OpenableSystem), typeof(InventorySystem), typeof(ActivatableUISystem)]);
-        SubscribeLocalEvent<EdibleComponent, AfterInteractEvent>(OnEdibleInteract, after: [typeof(ToolOpenableSystem)]);
+        SubscribeLocalEvent<EdibleComponent, UseInHandEvent>(OnUseEdibleInHand, after: new[] { typeof(OpenableSystem), typeof(InventorySystem) });
+        SubscribeLocalEvent<EdibleComponent, AfterInteractEvent>(OnEdibleInteract, after: new[] { typeof(ToolOpenableSystem) });
 
         // Generic Eating Handlers
         SubscribeLocalEvent<EdibleComponent, BeforeIngestedEvent>(OnBeforeIngested);
@@ -119,7 +118,8 @@ public sealed partial class IngestionSystem : EntitySystem
     /// <param name="user">The entity who is trying to make this happen.</param>
     /// <param name="target">The entity who is being made to ingest something.</param>
     /// <param name="ingested">The entity that is trying to be ingested.</param>
-    /// <param name="ingest"> When set to true, it tries to ingest. When false, it only checks if we can.</param>
+    /// <param name="ingest">Bool that determines whethere this is a Try or a Can effectively.
+    /// When set to true, it tries to ingest, when false it checks if we can.</param>
     /// <returns>Returns true if we can ingest the item.</returns>
     private bool AttemptIngest(EntityUid user, EntityUid target, EntityUid ingested, bool ingest)
     {
@@ -177,10 +177,8 @@ public sealed partial class IngestionSystem : EntitySystem
     /// </summary>
     /// <param name="food">Entity being eaten</param>
     /// <param name="stomachs">Stomachs available to digest</param>
-    /// <param name="popup">Should we also display popup text if it exists?</param>
-    public bool IsDigestibleBy(EntityUid food, List<Entity<StomachComponent>> stomachs, out bool popup)
+    public bool IsDigestibleBy(EntityUid food, List<Entity<StomachComponent, OrganComponent>> stomachs)
     {
-        popup = false;
         var ev = new IsDigestibleEvent();
         RaiseLocalEvent(food, ref ev);
 
@@ -195,7 +193,7 @@ public sealed partial class IngestionSystem : EntitySystem
             foreach (var ent in stomachs)
             {
                 // We need one stomach that can digest our special food.
-                if (_whitelistSystem.IsWhitelistPass(ent.Comp.SpecialDigestible, food))
+                if (_whitelistSystem.IsWhitelistPass(ent.Comp1.SpecialDigestible, food))
                     return true;
             }
         }
@@ -204,15 +202,14 @@ public sealed partial class IngestionSystem : EntitySystem
             foreach (var ent in stomachs)
             {
                 // We need one stomach that can digest normal food.
-                if (ent.Comp.SpecialDigestible == null
-                    || !ent.Comp.IsSpecialDigestibleExclusive
-                    || _whitelistSystem.IsWhitelistPass(ent.Comp.SpecialDigestible, food))
+                if (ent.Comp1.SpecialDigestible == null
+                    || !ent.Comp1.IsSpecialDigestibleExclusive
+                    || _whitelistSystem.IsWhitelistPass(ent.Comp1.SpecialDigestible, food))
                     return true;
             }
         }
 
         // If we didn't find a stomach that can digest our food then it doesn't exist.
-        popup = true;
         return false;
     }
 
@@ -221,7 +218,7 @@ public sealed partial class IngestionSystem : EntitySystem
     /// </summary>
     /// <param name="food">Entity being eaten</param>
     /// <param name="stomach">Stomachs that is attempting to digest.</param>
-    public bool IsDigestibleBy(EntityUid food, Entity<StomachComponent> stomach)
+    public bool IsDigestibleBy(EntityUid food, Entity<StomachComponent, OrganComponent> stomach)
     {
         var ev = new IsDigestibleEvent();
         RaiseLocalEvent(food, ref ev);
@@ -233,9 +230,9 @@ public sealed partial class IngestionSystem : EntitySystem
             return true;
 
         if (ev.SpecialDigestion)
-            return _whitelistSystem.IsWhitelistPass(stomach.Comp.SpecialDigestible, food);
+            return _whitelistSystem.IsWhitelistPass(stomach.Comp1.SpecialDigestible, food);
 
-        if (stomach.Comp.SpecialDigestible == null || !stomach.Comp.IsSpecialDigestibleExclusive || _whitelistSystem.IsWhitelistPass(stomach.Comp.SpecialDigestible, food))
+        if (stomach.Comp1.SpecialDigestible == null || !stomach.Comp1.IsSpecialDigestibleExclusive || _whitelistSystem.IsWhitelistPass(stomach.Comp1.SpecialDigestible, food))
             return true;
 
         return false;
@@ -246,13 +243,13 @@ public sealed partial class IngestionSystem : EntitySystem
         var food = args.Ingested;
         var forceFed = args.User != entity.Owner;
 
-        if (!_body.TryGetOrgansWithComponent<StomachComponent>(entity!, out var stomachs))
+        if (!_body.TryGetBodyOrganEntityComps<StomachComponent>(entity!, out var stomachs))
             return;
 
         // Can we digest the specific item we're trying to eat?
-        if (!IsDigestibleBy(args.Ingested, stomachs, out var popup))
+        if (!IsDigestibleBy(args.Ingested, stomachs))
         {
-            if (!args.Ingest || !popup)
+            if (!args.Ingest)
                 return;
 
             if (forceFed)
@@ -311,7 +308,7 @@ public sealed partial class IngestionSystem : EntitySystem
         if (!CanConsume(args.User, entity, food, out var solution, out _))
             return;
 
-        if (!_body.TryGetOrgansWithComponent<StomachComponent>(entity!, out var stomachs))
+        if (!_body.TryGetBodyOrganEntityComps<StomachComponent>(entity!, out var stomachs))
             return;
 
         var forceFed = args.User != entity.Owner;
@@ -321,7 +318,7 @@ public sealed partial class IngestionSystem : EntitySystem
         foreach (var ent in stomachs)
         {
             var owner = ent.Owner;
-            if (!_solutionContainer.ResolveSolution(owner, StomachSystem.DefaultSolutionName, ref ent.Comp.Solution, out var stomachSol))
+            if (!_solutionContainer.ResolveSolution(owner, StomachSystem.DefaultSolutionName, ref ent.Comp1.Solution, out var stomachSol))
                 continue;
 
             if (stomachSol.AvailableVolume <= highestAvailable)
@@ -365,25 +362,22 @@ public sealed partial class IngestionSystem : EntitySystem
 
         var split = _solutionContainer.SplitSolution(solution.Value, transfer);
 
-        if (beforeEv.Refresh)
-            _solutionContainer.TryAddSolution(solution.Value, split);
-
         var ingestEv = new IngestingEvent(food, split, forceFed);
         RaiseLocalEvent(entity, ref ingestEv);
 
         _reaction.DoEntityReaction(entity, split, ReactionMethod.Ingestion);
 
         // Everything is good to go item has been successfuly eaten
-        var afterEv = new IngestedEvent(args.User, entity, split, forceFed, beforeEv.Transfer >= beforeEv.Max);
+        var afterEv = new IngestedEvent(args.User, entity, split, forceFed);
         RaiseLocalEvent(food, ref afterEv);
+
+        if (afterEv.Refresh)
+            _solutionContainer.TryAddSolution(solution.Value, split);
 
         _stomach.TryTransferSolution(stomachToUse.Value.Owner, split, stomachToUse);
 
         if (!afterEv.Destroy)
         {
-            if (beforeEv.Transfer >= beforeEv.Max)
-                return;
-
             args.Repeat = afterEv.Repeat;
             return;
         }
@@ -463,7 +457,7 @@ public sealed partial class IngestionSystem : EntitySystem
         {
             var targetName = Identity.Entity(args.Target, EntityManager);
             var userName = Identity.Entity(args.User, EntityManager);
-            _popup.PopupEntity(Loc.GetString("edible-force-feed-success", ("user", userName), ("verb", edible.Verb), ("flavors", flavors), ("satiated", args.Satiated)), entity, entity);
+            _popup.PopupEntity(Loc.GetString("edible-force-feed-success", ("user", userName), ("verb", edible.Verb), ("flavors", flavors)), entity, entity);
 
             _popup.PopupClient(Loc.GetString("edible-force-feed-success-user", ("target", targetName), ("verb", edible.Verb)), args.User, args.User);
 
@@ -473,7 +467,7 @@ public sealed partial class IngestionSystem : EntitySystem
         }
         else
         {
-            _popup.PopupPredicted(Loc.GetString(edible.Message, ("food", entity.Owner), ("flavors", flavors), ("satiated", args.Satiated)),
+            _popup.PopupPredicted(Loc.GetString(edible.Message, ("food", entity.Owner), ("flavors", flavors)),
                 Loc.GetString(edible.OtherMessage),
                 args.User,
                 args.User);

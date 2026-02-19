@@ -2,7 +2,7 @@
 - type: entity
   name: mop bucket
   id: MopBucket
-  parent: [BaseStructureDynamic, StructureWheeled]
+  parent: [ BaseStructureDynamic, StructureWheeled ]
   description: Holds water and the tears of the janitor.
   components:
   - type: Clickable
@@ -12,7 +12,7 @@
     layers:
     - state: mopbucket
     - state: mopbucket_water-1
-      map: ["enum.SolutionContainerLayers.Fill"]
+      map: [ "enum.SolutionContainerLayers.Fill" ]
       visible: false
     drawdepth: Objects
   - type: InteractionOutline
@@ -51,6 +51,14 @@
         whitelist:
           tags:
             - PlushieCarp
+      mopbucket_magicarpplush:
+        whitelist:
+          tags:
+          - PlushieCarpMagi
+      mopbucket_holocarpplush:
+        whitelist:
+          tags:
+          - PlushieCarpHolo
     sprite: Objects/Specific/Janitorial/janitorial.rsi
   - type: Transform
     noRot: true
@@ -65,14 +73,19 @@
             - PlushieSharkPink
             - PlushieSharkGrey
             - PlushieCarp
+            - PlushieCarpHolo
+            - PlushieCarpMagi
           components:
             - Rehydratable
         priority: 3 # Higher than drinking priority
   - type: ReactiveContainer
     solution: bucket
     container: item_slot
-  - type: Drink
+  - type: Edible
+    edible: Drink
     solution: bucket
+    destroyOnEmpty: false
+    utensil: Spoon
   - type: Appearance
   - type: SolutionContainerVisuals
     maxFillLevels: 3
@@ -94,7 +107,7 @@
         damage: 70
       behaviors:
       - !type:DoActsBehavior
-        acts: ["Destruction"]
+        acts: [ "Destruction" ]
   - type: DnaSubstanceTrace
   - type: Fixtures
     fixtures:
@@ -155,15 +168,15 @@
           visible: false
     - type: Rotatable
     - type: InteractionOutline
-    # Removing storage until OnInteractUsing logic resolved
-    #- type: Storage
-    #  popup: false
-    #  capacity: 80
-    #  blacklist: # there is exclusive item slots for that
-    #    tags:
-    #      - Mop
-    #      - TrashBag
-    #      - Bucket
+# Removing storage until OnInteractUsing logic resolved
+#    - type: Storage
+#      popup: false
+#      capacity: 80
+#      blacklist: # there is exclusive item slots for that
+#        tags:
+#          - Mop
+#          - TrashBag
+#          - Bucket
     - type: ItemSlots
       slots:
         mop_slot:
@@ -178,6 +191,11 @@
           whitelist:
             tags:
               - Plunger
+        goldenplunger_slot:
+          name: janitorial-trolley-slot-component-slot-name-goldenplunger
+          whitelist:
+            tags:
+            - GoldenPlunger
           priority: 8
         wetfloorsign_slot4:
           name: janitorial-trolley-slot-component-slot-name-sign
@@ -277,7 +295,7 @@
           behaviors:
             - !type:EmptyAllContainersBehaviour
             - !type:DoActsBehavior
-              acts: ["Destruction"]
+              acts: [ "Destruction" ]
             - !type:PlaySoundBehavior
               sound:
                 collection: MetalBreak
@@ -287,6 +305,10 @@
           whitelist:
             tags:
               - Plunger
+        cart_goldenplunger:
+          whitelist:
+            tags:
+            - GoldenPlunger
         cart_mop:
           whitelist:
             tags:
@@ -307,7 +329,7 @@
           whitelist:
             tags:
               - Spray
-        cart_sign1: # this is like stack of floor signs
+        cart_sign1: # This is like stack of floor signs
           minCount: 1
           whitelist:
             tags:
@@ -340,8 +362,11 @@
       interfaces:
         enum.StorageUiKey.Key:
           type: StorageBoundUserInterface
-    - type: Drink
+    - type: Edible
+      edible: Drink
       solution: bucket
+      destroyOnEmpty: false
+      utensil: Spoon
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -350,6 +375,7 @@
         trashbag_slot: !type:ContainerSlot {}
         bucket_slot: !type:ContainerSlot {}
         plunger_slot: !type:ContainerSlot {}
+        goldenplunger_slot: !type:ContainerSlot {}
         wetfloorsign_slot4: !type:ContainerSlot {}
         wetfloorsign_slot3: !type:ContainerSlot {}
         wetfloorsign_slot2: !type:ContainerSlot {}

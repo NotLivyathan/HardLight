@@ -17,14 +17,20 @@
   - type: SolutionContainerManager
   - type: Sprite
     state: produce
-  # Let cows eat raw produce like wheat and oats
-  - type: Edible
-    requiresSpecialDigestion: true
   - type: Produce
   - type: PotencyVisuals
   - type: Appearance
   - type: Extractable
     grindableSolutionName: food
+
+- type: entity
+  parent: ProduceBase
+  id: ProduceBaseRuminant
+  abstract: true
+  components:
+  # Let cows eat raw produce like wheat and oats
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: Tag
     tags:
     - Ruminant
@@ -58,7 +64,7 @@
   name: wheat bushel
   description: Sigh... wheat... a-grain?
   id: WheatBushel
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/wheat.rsi
@@ -81,7 +87,7 @@
   name: meatwheat bushel
   description: Some blood-drenched wheat stalks. You can crush them into what passes for meat if you squint hard enough.
   id: MeatwheatBushel
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/meatwheat.rsi
@@ -105,7 +111,7 @@
   name: oat bushel
   description: Eat oats, do squats.
   id: OatBushel
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/oat.rsi
@@ -129,7 +135,7 @@
   name: sugarcane
   description: Sickly sweet.
   id: Sugarcane
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/sugarcane.rsi
@@ -247,7 +253,7 @@
   name: nettle
   description: Stingy little prick.
   id: Nettle
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/nettle.rsi
@@ -2000,7 +2006,7 @@
   name: rice bushel
   description: Can be ground into rice, perfect for pudding or sake.
   id: RiceBushel
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/rice.rsi
@@ -2019,7 +2025,7 @@
   name: soybeans
   description: For those who can't stand seeing good old meat.
   id: FoodSoybeans
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/soybeans.rsi
@@ -2083,7 +2089,7 @@
   name: koibean
   description: These beans seem a little bit fishy.
   id: FoodKoibean
-  parent: ProduceBase
+  parent: ProduceBaseRuminant
   components:
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/koibean.rsi
