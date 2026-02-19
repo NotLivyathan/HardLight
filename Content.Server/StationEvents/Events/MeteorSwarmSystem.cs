@@ -1,8 +1,6 @@
 using System.Numerics;
-using Content.Server._Hardlight.StationEvents.Events;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking.Rules;
-using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.StationEvents.Components;
 using Content.Shared.GameTicking.Components;
@@ -13,6 +11,7 @@ using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Random;
+using Content.Server._Hardlight.StationEvents.Events; // HardLight
 
 namespace Content.Server.StationEvents.Events;
 
@@ -53,7 +52,7 @@ public sealed class MeteorSwarmSystem : GameRuleSystem<MeteorSwarmComponent>
             return;
 
         var station = RobustRandom.Pick(stations);
-        if (_station.GetLargestGrid(Comp<StationDataComponent>(station)) is not { } grid)
+        if (_station.GetLargestGrid(station) is not { } grid)
             return;
 
         var mapId = Transform(grid).MapID;
