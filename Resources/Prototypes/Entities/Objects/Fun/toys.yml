@@ -87,8 +87,7 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Items/Toys/ian.ogg
-  - type: Food
-    requiresSpecialDigestion: true
+  - type: Edible
     useSound:
       path: /Audio/Items/Toys/ian.ogg
   - type: FoodSequenceElement
@@ -743,7 +742,7 @@
   - type: FlavorProfile
     flavors:
       - plastic
-  - type: Food
+  - type: Edible
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/banana.rsi
   - type: SolutionContainerManager
@@ -857,7 +856,7 @@
       collection: RubberChicken
       params:
         variation: 0.125
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       collection: RubberChicken
