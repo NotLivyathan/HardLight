@@ -5,6 +5,8 @@ using Content.Server.Popups;
 using Content.Server.Stunnable;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
+using Content.Shared.Body.Components;
+using Content.Shared.Body.Systems;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Chemistry.Reagent;

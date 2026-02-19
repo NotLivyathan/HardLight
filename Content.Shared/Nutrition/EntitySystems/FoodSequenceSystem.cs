@@ -1,21 +1,17 @@
 using System.Numerics;
 using System.Text;
-using Content.Server.Nutrition.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.Nutrition;
 using Content.Shared.Nutrition.Components;
-using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Nutrition.Prototypes;
 using Content.Shared.Popups;
 using Content.Shared.Storage.Components;
 using Content.Shared.Tag;
-using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
-namespace Content.Server.Nutrition.EntitySystems;
+namespace Content.Shared.Nutrition.EntitySystems;
 
 public sealed class FoodSequenceSystem : SharedFoodSequenceSystem
 {
@@ -26,7 +22,7 @@ public sealed class FoodSequenceSystem : SharedFoodSequenceSystem
     [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     public override void Initialize()
     {
@@ -119,6 +115,7 @@ public sealed class FoodSequenceSystem : SharedFoodSequenceSystem
         //looking for a suitable FoodSequence prototype
         if (!element.Comp.Entries.TryGetValue(start.Comp.Key, out var elementProto))
             return false;
+
         if (!_proto.TryIndex(elementProto, out var elementIndexed))
             return false;
 
@@ -126,7 +123,7 @@ public sealed class FoodSequenceSystem : SharedFoodSequenceSystem
         if (start.Comp.FoodLayers.Count >= start.Comp.MaxLayers && !elementIndexed.Final || start.Comp.Finished)
         {
             if (user is not null)
-                _popup.PopupEntity(Loc.GetString("food-sequence-no-space"), start, user.Value);
+                _popup.PopupClient(Loc.GetString("food-sequence-no-space"), start, user.Value);
             return false;
         }
 
