@@ -1,5 +1,4 @@
 using Content.Server.Botany.Components;
-using Content.Server.Kitchen.Components;
 using Content.Server.Popups;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -18,6 +17,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Database;
+using Content.Shared.Kitchen.Components;
 using Content.Server._NF.Contraband.Systems; // Frontier
 
 namespace Content.Server.Botany.Systems;

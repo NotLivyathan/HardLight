@@ -31,13 +31,13 @@ using Content.Shared.Kitchen.Components;
 using Content.Shared.Labels.Components;
 using Content.Shared._NF.BindToStation; // Frontier
 using Content.Server.Station.Systems; // Frontier
-
-// HardLight
+// HardLight start
 using Content.Server.Stack;
 using Content.Shared.Stacks;
+using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
-using Robust.Shared;
+// HardLight end
 
 namespace Content.Server.Botany.Systems;
 
