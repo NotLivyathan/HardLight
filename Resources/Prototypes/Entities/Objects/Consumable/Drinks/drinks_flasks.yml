@@ -1,14 +1,41 @@
 - type: entity
-  parent: DrinkBase
-  id: FlaskBase
   abstract: true
+  parent: [ DrinkBaseMaterialStrongMetal, DrinkBase, DrinkBaseOpenable, DrinkVisualsOpenable ]
+  id: FlaskBase
   components:
-  - type: Drink
-  - type: PhysicalComposition
-    materialComposition:
-      Steel: 300
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+  - type: Sprite
+    sprite: Objects/Consumable/Drinks/flask.rsi
   - type: FitsInDispenser
     solution: drink
+  - type: Openable
+    sound:
+      collection: flaskOpenSounds
+    closeable: true
+    closeSound:
+      collection: flaskCloseSounds
+  - type: Engraveable # Frontier
+
+# Flasks
+
+- type: entity
+  parent: [ DrinkBaseMaterialStrongMetal, DrinkBase ]
+  id: DrinkFlaskOld
+  name: old flask
+  description: A decrepit old flask, its lid seems to be missing.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      drink:
+        maxVol: 30
+  - type: Sprite
+    sprite: Objects/Consumable/Drinks/flask_old.rsi
+  - type: FitsInDispenser
+    solution: drink
+  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -18,11 +45,11 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/shinyflask.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
   id: DrinkMREFlask
+  suffix: Full
   name: MRE flask
   description: An old military flask, filled with the finest contents for soldiers.
   components:
@@ -36,8 +63,8 @@
           Quantity: 50
   - type: TrashOnSolutionEmpty
     solution: drink
-  - type: StaticPrice
-    price: 20 # Frontier: 12.5<20
+  - type: StaticPrice # Frontier
+    price: 20
 
 - type: entity
   parent: FlaskBase
@@ -47,7 +74,6 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/detflask.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -57,7 +83,6 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/hosflask.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -67,7 +92,6 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/flask.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -77,17 +101,6 @@
   components:
     - type: Sprite
       sprite: Objects/Consumable/Drinks/barflask.rsi
-    - type: Engraveable # Frontier
-
-- type: entity
-  parent: FlaskBase
-  id: DrinkFlaskOld
-  name: flask
-  description: ''
-  components:
-  - type: Sprite
-    sprite: Objects/Consumable/Drinks/flask_old.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -97,7 +110,6 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/lithiumflask.rsi
-  - type: Engraveable # Frontier
 
 - type: entity
   parent: FlaskBase
@@ -107,8 +119,12 @@
   components:
   - type: Sprite
     sprite: Objects/Consumable/Drinks/vacuumflask.rsi
+  - type: Tool
+    qualities:
+    - Rolling # Perfectly cylindrical flask
+    speedModifier: 0.75
 
-- type: entity
+- type: entity # ???, # HardLight: Not sure where this came from.
   parent: FlaskBase
   id: Pitcher
   name: metal pitcher

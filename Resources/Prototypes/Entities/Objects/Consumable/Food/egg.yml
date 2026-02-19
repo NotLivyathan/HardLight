@@ -1,7 +1,7 @@
 # Base
 
 - type: entity
-  parent: [FoodInjectableBase, ItemHeftyBase]
+  parent: [ FoodInjectableBase, ItemHeftyBase ]
   id: FoodEggBase
   description: An egg!
   abstract: true
@@ -10,7 +10,7 @@
     tags:
       - Egg
       - Meat
-  - type: Food
+  - type: Edible
     trash:
     - Eggshells
   - type: Sprite
@@ -31,7 +31,7 @@
     sourceSolution: food
     ignoreEmpty: true
     popup: spike-solution-egg
-  # egg fragile
+  # Eggs are fragile
   - type: DamageOnHighSpeedImpact
     minimumSpeed: 0.1
     damage:
@@ -58,7 +58,7 @@
           # Wow double-yolk you're so lucky!
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-  # all below are for egg cooking/exploding
+  # All below are for egg cooking/exploding
   - type: AtmosExposed
   - type: Temperature
 
@@ -126,5 +126,5 @@
         - ReagentId: EggCooked
           Quantity: 6
   - type: Temperature
-    # preserve temperature from the boiling step
+    # Preserve temperature from the boiling step
     currentTemperature: 344

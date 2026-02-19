@@ -1,7 +1,7 @@
 - type: entity
-  parent: DrinkGlassBase
+  parent: [ DrinkBaseMaterialGlass, DrinkBase ]
   id: DrinkMeth
-  name: meth  # beer it is. coffee. beer? coff-ee? be-er? c-o... b-e
+  name: meth  # Beer it is. Coffee. Beer? Coff-ee? Be-er? C-o... B-e
   description: Just a whole glass of meth.
   suffix: DEBUG
   components:

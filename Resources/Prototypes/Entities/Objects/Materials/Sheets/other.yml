@@ -49,7 +49,7 @@
     state: paper_3
     layers:
     - state: paper_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Item
     heldPrefix: paper
   - type: Appearance
@@ -95,7 +95,7 @@
     state: plasma_3
     layers:
     - state: plasma_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Item
     heldPrefix: plasma
   - type: Appearance
@@ -161,7 +161,7 @@
     state: plastic_3
     layers:
     - state: plastic_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Item
     heldPrefix: plastic
   - type: Appearance
@@ -200,13 +200,13 @@
     count: 1
 
 - type: entity
-  parent: [SheetOtherBase, EdibleBase]
+  parent: [ SheetOtherBase, EdibleBase ]
   id: SheetUranium
   name: uranium
   suffix: Full
   components:
   - type: Material
-  - type: Food
+  - type: Edible
     transferAmount: 10
   - type: BadFood
   - type: PhysicalComposition
@@ -223,7 +223,7 @@
     state: uranium_3
     layers:
     - state: uranium_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Item
     heldPrefix: uranium

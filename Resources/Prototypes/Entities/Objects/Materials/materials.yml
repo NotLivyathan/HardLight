@@ -152,10 +152,10 @@
       - ClothMade
       - Gauze
       - RawMaterial
-      - TiderAnvilParts # HardLight: Added by Starlight, I believe. Obviously with the Tider Anvil.
+      - TiderAnvilParts # Starlight
       - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Construction
-    graph: WebObjects # not sure if I should either keep this here or just make another prototype. Will keep it here just in case.
+    graph: WebObjects # Not sure if I should either keep this here or just make another prototype. Will keep it here just in case.
     node: cloth
   - type: Item
     heldPrefix: cloth
@@ -233,13 +233,6 @@
     state: durathread
   - type: Stack
     count: 1
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        maxVol: 5
-        reagents: # Hell if I know what durathread is made out of.
-        - ReagentId: Fiber
-          Quantity: 6
 
 - type: entity
   parent: MaterialBase
@@ -271,7 +264,7 @@
     tags:
       - Wooden
       - RawMaterial
-      - TiderAnvilParts # HardLight: Added by Starlight, I believe. Obviously with the Tider Anvil.
+      - TiderAnvilParts # Starlight
       - DroneUsable # HardLight: I don't know what this is or where it came from, but for the time being, I'm keeping it.
   - type: Extractable
     grindableSolutionName: wood
@@ -471,8 +464,7 @@
       Cotton: 100
   - type: Item
     heldPrefix: cotton
-# HardLight: Commenting this for now because it might be needed later.
-#  - type: MothFood # Frontier
+  - type: MothFood # Frontier
 
 - type: entity
   parent: MaterialCotton
@@ -527,8 +519,7 @@
       - RawMaterial
   - type: Item
     heldPrefix: pyrotton
-# HardLight: Commenting this for now because it might be needed later.
-#  - type: MothFood # Frontier
+  - type: MothFood # Frontier
 
 - type: entity
   parent: MaterialPyrotton
@@ -769,7 +760,7 @@
     state: cotton_3
     layers:
     - state: cotton_3
-      map: ["base"]
+      map: [ "base" ]
   - type: Appearance
   - type: Edible
   - type: BadFood
