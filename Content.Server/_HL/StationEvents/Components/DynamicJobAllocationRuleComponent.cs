@@ -27,5 +27,5 @@ public sealed partial class DynamicJobAllocationRuleComponent : Component
     /// Maximum number of mercenary slots
     /// </summary>
     [DataField("mercenaryCap")]
-    public int MercenaryCap = 50;
+    public int MercenaryCap = 40;
 }
