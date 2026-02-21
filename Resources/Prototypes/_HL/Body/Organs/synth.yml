@@ -34,12 +34,12 @@
     scale: 0.65, 0.65
   - type: Organ
     slotId: brain
+  - type: Brain
+  - type: BorgBrain
   - type: Input
     context: "ghost"
-  - type: Brain
   - type: BlockMovement
   - type: Examiner
-  - type: BorgBrain
   - type: TypingIndicator
     proto: robot
   - type: Speech
@@ -60,7 +60,7 @@
 - type: entity
   id: SynthCameraGimbal
   parent: BaseItem
-  name: synth gimbal
+  name: camera gimbal
   description: "A small mechanical gimbal featuring several multi-spectrum cameras. Maybe don't put it in anything other than a Synth."
   components:
   - type: Organ
@@ -98,16 +98,16 @@
 - type: entity
   id: SynthAudioPack
   parent: BaseItem
-  name: synth audio pack
+  name: audio pack
   description: "A sensor pack designed to be installed in a Synth. This one contains audio sensors."
   components:
   - type: Organ
     slotId: ears
+  - type: Ears
   - type: Sprite
     sprite: _HL/Mobs/Species/Synth/organs.rsi
     state: synth_audio_pack
     scale: 0.7, 0.7
-  - type: Ears
 
 - type: entity
   id: OrganSynthLungs
@@ -117,12 +117,12 @@
   components:
   - type: Organ
     slotId: lungs
+  - type: Lung
   - type: Sprite
     state: synth_lungs
   - type: Item
     size: Small
     heldPrefix: synth lungs
-  - type: Lung
   - type: Metabolizer
     solutionOnBody: false
     solution: "Lung"
@@ -146,9 +146,9 @@
   name: synth heart
   description: "A Synth heart. It doesn't do anything interesting yet."
   components:
-  - type: Heart
   - type: Organ
     slotId: heart
+  - type: Heart
   - type: Sprite
     state: synth_heart
     scale: 0.8, 0.8
@@ -172,6 +172,7 @@
   components:
   - type: Organ
     slotId: stomach
+  - type: Stomach
   - type: Sprite
     state: synth_stomach
   - type: SolutionContainerManager
@@ -182,7 +183,6 @@
           Quantity: 5
       stomach:
         maxVol: 75
-  - type: Stomach
   # The stomach metabolizes stuff like foods and drinks.
   - type: Metabolizer
     maxReagents: 5
@@ -200,9 +200,9 @@
   name: synth liver
   description: "A Synth liver. It prevents poisoning from alcohol and can convert ethanol to nutriment."
   components:
-  - type: Liver
   - type: Organ
     slotId: liver
+  - type: Liver
   - type: Sprite
     state: synth_liver
     scale: 0.9, 0.9
@@ -220,7 +220,7 @@
 - type: entity
   id: SynthEnergyCoil
   parent: BaseItem
-  name: synth energy coil
+  name: energy coil
   description: "A Synth energy coil. It doesn't seem to do anything interesting yet."
   components:
   - type: Organ
