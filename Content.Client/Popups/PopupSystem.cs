@@ -38,6 +38,7 @@ namespace Content.Client.Popups
 
         private readonly Dictionary<WorldPopupData, WorldPopupLabel> _aliveWorldLabels = new();
         private readonly Dictionary<CursorPopupData, CursorPopupLabel> _aliveCursorLabels = new();
+        private ulong _nextPopupSequence; // HardLight: Incrementing sequence to maintain order of popups for stacking.
 
         public const float MinimumPopupLifetime = 0.7f;
         public const float MaximumPopupLifetime = 5f;
@@ -135,6 +136,7 @@ namespace Content.Client.Popups
             {
                 Text = message,
                 Type = type,
+                Sequence = ++_nextPopupSequence, // HardLight: Assign sequence for stacking order.
             };
 
             _aliveWorldLabels.Add(popupData, label);
@@ -183,6 +185,7 @@ namespace Content.Client.Popups
             {
                 Text = message,
                 Type = type,
+                Sequence = ++_nextPopupSequence, // HardLight: Assign sequence for stacking order.
             };
 
             _aliveCursorLabels.Add(popupData, label);
@@ -377,6 +380,7 @@ namespace Content.Client.Popups
             public string Text { get; set; } = string.Empty;
             public float TotalTime { get; set; }
             public int Repeats = 1;
+            public ulong Sequence { get; set; } // HardLight: Added sequence for stacking order.
         }
 
         public sealed class WorldPopupLabel(EntityCoordinates coordinates) : PopupLabel

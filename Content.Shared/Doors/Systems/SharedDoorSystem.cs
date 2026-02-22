@@ -233,10 +233,16 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (args.Handled || !args.Complex || !door.ClickOpen)
             return;
 
-        if (!TryToggleDoor(uid, door, args.User, predicted: true))
+        if (!TryToggleDoor(uid, door, args.User, predicted: true)
+            && CanAttemptPryFallback(door.State)) // HardLight
             _pryingSystem.TryPry(uid, args.User, out _);
 
         args.Handled = true;
+    }
+
+    private static bool CanAttemptPryFallback(DoorState state) // HardLight
+    {
+        return state is DoorState.Closed;
     }
 
     private void OnPryTimeModifier(EntityUid uid, DoorComponent door, ref GetPryTimeModifierEvent args)

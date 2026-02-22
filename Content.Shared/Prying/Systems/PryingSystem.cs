@@ -10,6 +10,7 @@ using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Serialization;
 using PryUnpoweredComponent = Content.Shared.Prying.Components.PryUnpoweredComponent;
+using Content.Shared.Interaction.Components; // HardLight
 
 namespace Content.Shared.Prying.Systems;
 
@@ -36,6 +37,14 @@ public sealed class PryingSystem : EntitySystem
     private void TryPryDoor(EntityUid uid, DoorComponent comp, InteractUsingEvent args)
     {
         if (args.Handled)
+            return;
+
+        // HardLight: Prevent prying while the door is already in the process of opening or closing.
+        if (comp.State is DoorState.Opening or DoorState.Closing)
+            return;
+
+        // HardLight: Prevent prying on normal interact if the user has the ComplexInteraction component.
+        if (HasComp<ComplexInteractionComponent>(args.User))
             return;
 
         args.Handled = TryPry(uid, args.User, out _, args.Used);

@@ -16,6 +16,13 @@ namespace Content.Client.Popups;
 /// </summary>
 public sealed class PopupOverlay : Overlay
 {
+    private const float PopupStackSpacing = 14f; // HardLight: Vertical spacing between stacked popups, in pixels.
+
+    // HardLight: Added stacking for cursor popups in order to prevent them overlapping each other.
+    // I got really tired of it. x2
+    private static readonly Comparison<PopupSystem.WorldPopupLabel> WorldPopupSequenceComparison =
+        static (a, b) => a.Sequence.CompareTo(b.Sequence);
+
     private readonly IConfigurationManager _configManager;
     private readonly IEntityManager _entManager;
     private readonly IPlayerManager _playerMgr;
@@ -25,6 +32,8 @@ public sealed class PopupOverlay : Overlay
     private readonly ExamineSystemShared _examine;
     private readonly SharedTransformSystem _transform;
     private readonly ShaderInstance _shader;
+    private readonly Dictionary<(MapId mapId, EntityUid entity, int x, int y), int> _stackCounts = new(); // HardLight: Tracks how many popups are stacked at each position.
+    private readonly List<PopupSystem.WorldPopupLabel> _orderedWorldPopups = new(); // HardLight: Ordered list of world popups for stacking.
 
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
 
@@ -85,7 +94,14 @@ public sealed class PopupOverlay : Overlay
             ourPos = viewPos.Position;
         }
 
-        foreach (var popup in _popup.WorldLabels)
+        // HardLight start: Added stacking for world popups; prevents them from overlapping each other.
+        _stackCounts.Clear();
+        _orderedWorldPopups.Clear();
+        _orderedWorldPopups.AddRange(_popup.WorldLabels);
+        _orderedWorldPopups.Sort(WorldPopupSequenceComparison);
+        // HardLight end
+
+        foreach (var popup in _orderedWorldPopups) // HardLight : _popup.WorldLabels<_orderedWorldPopups
         {
             var mapPos = _transform.ToMapCoordinates(popup.InitialPos);
 
@@ -100,7 +116,22 @@ public sealed class PopupOverlay : Overlay
                 continue;
 
             var pos = Vector2.Transform(mapPos.Position, matrix);
-            _controller.DrawPopup(popup, worldHandle, pos, scale);
+
+            // HardLight start: Calculate stacked position for world popups; prevents overlap when multiple popups spawn at the same position.
+            var stackEntity = popup.InitialPos.EntityId;
+            var stackX = (int) MathF.Round(mapPos.X * 10f);
+            var stackY = (int) MathF.Round(mapPos.Y * 10f);
+            var stackKey = (mapPos.MapId, stackEntity, stackX, stackY);
+
+            var stackLevel = 0;
+            if (_stackCounts.TryGetValue(stackKey, out var count))
+                stackLevel = count;
+
+            _stackCounts[stackKey] = stackLevel + 1;
+
+            var stackedPos = pos - new Vector2(0f, stackLevel * PopupStackSpacing * scale);
+            _controller.DrawPopup(popup, worldHandle, stackedPos, scale); // pos<stackedPos
+            // HardLight end
         }
     }
 }

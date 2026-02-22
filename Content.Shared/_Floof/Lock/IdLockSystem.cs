@@ -10,6 +10,7 @@ using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 using static Content.Shared._Floof.Lock.IdLockComponent.LockState;
+using Content.Shared.Interaction; // HardLight
 
 
 namespace Content.Shared._Floof.Lock;
@@ -28,6 +29,7 @@ public sealed class IdLockSystem : EntitySystem
     {
         SubscribeLocalEvent<IdLockComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<IdLockComponent, ExaminedEvent>(OnExamined);
+        SubscribeLocalEvent<IdLockComponent, InteractUsingEvent>(OnInteractUsing); // HardLight
         SubscribeLocalEvent<IdLockComponent, LockToggleAttemptEvent>(OnToggleNormalLock);
         SubscribeLocalEvent<IdLockComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
         SubscribeLocalEvent<LockComponent, IdLockSetEvent>(OnSetIdLock);
@@ -64,6 +66,21 @@ public sealed class IdLockSystem : EntitySystem
             args.PushMarkup(Loc.GetString("id-lock-examined-info"));
         }
     }
+
+    // HardLight start
+    private void OnInteractUsing(Entity<IdLockComponent> ent, ref InteractUsingEvent args)
+    {
+        if (args.Handled || !ent.Comp.Enabled || !_idCards.TryGetIdCard(args.Used, out var id))
+            return;
+
+        if (ent.Comp.State is Engaged)
+            TryUnlock(ent, id, args.User);
+        else
+            TryLock(ent, id, args.User);
+
+        args.Handled = true;
+    }
+    // HardLight end
 
     private void OnToggleNormalLock(Entity<IdLockComponent> ent, ref LockToggleAttemptEvent args)
     {
@@ -294,17 +311,25 @@ public sealed class IdLockSystem : EntitySystem
 
     private AccessLevel MatchId(Entity<IdCardComponent> id, Entity<IdLockComponent> lockable)
     {
+        // HardLight start
+        // When engaged, prioritize owner match so owners with master access tags don't get the slower master unlock time.
+        if (lockable.Comp.State is Engaged)
+        {
+            if (lockable.Comp.Info.OwnerName == id.Comp.FullName && lockable.Comp.Info.OwnerJobTitle == id.Comp.LocalizedJobTitle)
+                return AccessLevel.CanUnlock;
+
+            if (TryComp<AccessComponent>(id, out var engagedAccess) && lockable.Comp.MasterAccesses.Any(it => engagedAccess.Tags.Contains(it)))
+                return AccessLevel.Master;
+
+            return AccessLevel.None;
+        }
+        // HardLight end
+
+        // HardLight: ID always matches if the lock is inactive.
         if (TryComp<AccessComponent>(id, out var access) && lockable.Comp.MasterAccesses.Any(it => access.Tags.Contains(it)))
             return AccessLevel.Master;
 
-        // ID always matches if the lock is inactive.
-        if (lockable.Comp.State is not Engaged)
-            return AccessLevel.CanLock;
-
-        if (lockable.Comp.Info.OwnerName == id.Comp.FullName && lockable.Comp.Info.OwnerJobTitle == id.Comp.LocalizedJobTitle)
-            return AccessLevel.CanUnlock;
-
-        return AccessLevel.None;
+        return AccessLevel.CanLock; // HardLight: None<CanLock
     }
 
     [Flags]

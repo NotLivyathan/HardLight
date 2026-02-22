@@ -56,7 +56,8 @@ public sealed partial class IdLockComponent : Component
     public TimeSpan MasterUnlockTime = TimeSpan.FromSeconds(4);
 
     [DataField, AutoNetworkedField]
-    public SoundSpecifier? LockSound, UnlockSound;
+    public SoundSpecifier? LockSound = new SoundPathSpecifier("/Audio/Effects/double_beep.ogg"), // HardLight
+        UnlockSound = new SoundPathSpecifier("/Audio/Effects/double_beep.ogg"); // HardLight
 
     [DataDefinition, Serializable, NetSerializable]
     public partial struct LockInfo
