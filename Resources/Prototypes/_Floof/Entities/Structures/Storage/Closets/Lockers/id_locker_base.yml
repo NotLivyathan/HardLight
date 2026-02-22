@@ -19,7 +19,7 @@
   components:
   - type: IdLock
     revealInfo: true
-    masterAccesses: [ ColonialCommand, Captain, HeadOfPersonnel ] # HardLight: CentralCommand<ColonialCommand
+    masterAccesses: [ CentralCommand, Captain, HeadOfPersonnel ]
 
 # A base lockable entity whose ID lock has to be enabled first (typically via construction)
 - type: entity
