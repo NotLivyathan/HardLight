@@ -385,16 +385,6 @@ namespace Content.Server.VendingMachines
 //            args.Price += priceSets.Max();
 //
 //        }
-//
-//        private void OnEmpPulse(EntityUid uid, VendingMachineComponent component, ref EmpPulseEvent args) // Frontier: Upstream - #28984
-//        {
-//            if (!component.Broken && this.IsPowered(uid, EntityManager))
-//            {
-//                args.Affected = true;
-//                args.Disabled = true;
-//                component.NextEmpEject = _timing.CurTime;
-//            }
-//        }
 
         // Frontier start: Custom vending check
         /// <summary>

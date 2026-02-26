@@ -81,6 +81,10 @@ namespace Content.Client.UserInterface.Controls
             return mode;
         }
     }
+
+    /// <summary>
+    /// Helper functions for working with <see cref="FancyWindow"/>.
+    /// </summary>
     public static class FancyWindowExt
     {
         /// <summary>
