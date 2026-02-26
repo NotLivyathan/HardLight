@@ -1,7 +1,9 @@
 using Content.Server.Administration;
+using Content.Server.Body.Systems;
 using Content.Server.Cargo.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Administration;
+using Content.Shared.Body.Components;
 using Content.Shared.Cargo;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.Reagent;
@@ -14,8 +16,9 @@ using Robust.Shared.Containers;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using System.Linq;
 using Content.Shared.Research.Prototypes;
-using Content.Server._NF.Cargo.Components; // Frontier
+ using Content.Server._NF.Cargo.Components; // Frontier
 using Content.Server.Materials.Components; // Frontier
 
 namespace Content.Server.Cargo.Systems;
@@ -27,6 +30,7 @@ public sealed class PricingSystem : EntitySystem
 {
     [Dependency] private readonly IConsoleHost _consoleHost = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly BodySystem _bodySystem = default!;
     [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
 
@@ -94,7 +98,18 @@ public sealed class PricingSystem : EntitySystem
             return;
         }
 
-        args.Price += component.Price * (_mobStateSystem.IsAlive(uid, state) ? 1.0 : component.DeathPenalty) * (HasComp<LabGrownComponent>(uid) ? 1.0 : component.LabGrownPenalty); // Frontier: LabGrown, // HardLight: What even is this?
+        var partPenalty = 0.0;
+        if (TryComp<BodyComponent>(uid, out var body))
+        {
+            var partList = _bodySystem.GetBodyChildren(uid, body).ToList();
+            var totalPartsPresent = partList.Sum(_ => 1);
+            var totalParts = partList.Count;
+
+            var partRatio = totalPartsPresent / (double) totalParts;
+            partPenalty = component.Price * (1 - partRatio) * component.MissingBodyPartPenalty;
+        }
+
+        args.Price += (component.Price - partPenalty) * (_mobStateSystem.IsAlive(uid, state) ? 1.0 : component.DeathPenalty) * (HasComp<LabGrownComponent>(uid) ? 1.0 : component.LabGrownPenalty); // Frontier: LabGrown, // HardLight: What even is this?
     }
 
     private double GetSolutionPrice(Entity<SolutionContainerManagerComponent> entity)
@@ -207,7 +222,7 @@ public sealed class PricingSystem : EntitySystem
     /// This fires off an event to calculate the price.
     /// Calculating the price of an entity that somehow contains itself will likely hang.
     /// </remarks>
-    public double GetPrice(EntityUid uid, bool includeContents = true, Func<EntityUid, bool>? predicate = null) // Frontier - Add optional predicate
+    public double GetPrice(EntityUid uid, bool includeContents = true, Func<EntityUid, bool>? predicate = null) // Frontier: Added optional predicate
     {
         if (predicate is not null && !predicate(uid)) // Frontier
             return 0.0; // Frontier
@@ -239,7 +254,7 @@ public sealed class PricingSystem : EntitySystem
             {
                 foreach (var ent in container.ContainedEntities)
                 {
-                    price += GetPrice(ent, includeContents, predicate); // Frontier - Add includeContents, predicate
+                    price += GetPrice(ent, includeContents, predicate); // Frontier: Added includeContents, predicate
                 }
             }
         }
@@ -405,7 +420,7 @@ public sealed class PricingSystem : EntitySystem
         {
             if (predicate is null || predicate(child))
             {
-                var subPrice = GetPrice(child, true, predicate); // Frontier: add true, predicate
+                var subPrice = GetPrice(child, true, predicate); // Frontier: Added true, predicate
                 price += subPrice;
                 afterPredicate?.Invoke(child, subPrice);
             }

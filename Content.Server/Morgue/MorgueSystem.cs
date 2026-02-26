@@ -1,12 +1,12 @@
 using Content.Server.Storage.Components;
-using Content.Shared.Body.Components;
 using Content.Shared.Examine;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Morgue;
 using Content.Shared.Morgue.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
-using Robust.Shared.Containers;
-using Content.Shared.Storage.EntitySystems;
+using Robust.Shared.Containers; // ???
+using Content.Shared.Storage.EntitySystems; // ???
 
 namespace Content.Server.Morgue;
 
@@ -14,7 +14,7 @@ public sealed class MorgueSystem : EntitySystem
 {
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly SharedContainerSystem _container = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!; // ???
 
     public override void Initialize()
     {
@@ -51,6 +51,7 @@ public sealed class MorgueSystem : EntitySystem
     {
         if (!Resolve(uid, ref morgue, ref storage, ref app))
             return;
+        // ??? start, // HardLight: I'm guessing we added this.
         // Ship / map serialization edge case:
         // Occasionally an EntityStorageComponent may deserialize without its container initialized yet,
         // leaving storage.Contents as null -> NRE spam here. Guard and attempt late init; if still null just bail.
@@ -67,6 +68,7 @@ public sealed class MorgueSystem : EntitySystem
                 return;
             }
         }
+        // ??? end
 
         if (storage.Contents.ContainedEntities.Count == 0)
         {
@@ -78,7 +80,7 @@ public sealed class MorgueSystem : EntitySystem
 
         foreach (var ent in storage.Contents.ContainedEntities)
         {
-            if (!hasMob && HasComp<BodyComponent>(ent))
+            if (!hasMob && HasComp<MobStateComponent>(ent))
                 hasMob = true;
 
             if (HasComp<ActorComponent>(ent))
