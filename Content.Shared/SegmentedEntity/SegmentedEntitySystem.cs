@@ -1,5 +1,5 @@
 using Robust.Shared.Physics;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Explosion;
 using Content.Shared.Humanoid;
 using Content.Shared.Clothing.Components;
@@ -28,7 +28,7 @@ public sealed partial class LamiaSystem : EntitySystem
     [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
 
     private Queue<(SegmentedEntitySegmentComponent segment, EntityUid lamia)> _segments = new();
-    
+
     private ProtoId<TagPrototype> _lamiaHardsuitTag = "AllowLamiaHardsuit";
 
     public override void Initialize()
@@ -272,7 +272,7 @@ public sealed partial class LamiaSystem : EntitySystem
         var containerOwner = args.Container?.Owner ?? EntityUid.Invalid;
         if (!containerOwner.IsValid() || !Exists(containerOwner) || !HasComp<SharedEntityStorageComponent>(containerOwner))
             return;
-            
+
         DeleteSegments(component);
     }
 
@@ -291,7 +291,7 @@ public sealed partial class LamiaSystem : EntitySystem
         var containerOwner = args.Container?.Owner ?? EntityUid.Invalid;
         if (!containerOwner.IsValid() || !Exists(containerOwner) || !HasComp<SharedEntityStorageComponent>(containerOwner))
             return;
-            
+
         if (component.Segments.Count == 0 && !_containerSystem.IsEntityInContainer(uid))
         {
             SpawnSegments(uid, component);
