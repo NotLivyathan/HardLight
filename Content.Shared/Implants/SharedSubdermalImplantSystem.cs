@@ -45,6 +45,7 @@ public abstract class SharedSubdermalImplantSystem : EntitySystem
         }
 
         // Replace micro bomb with macro bomb
+        // TODO: This shouldn't be hardcoded here
         if (_container.TryGetContainer(component.ImplantedEntity.Value, ImplanterComponent.ImplantSlotId, out var implantContainer) && _tag.HasTag(uid, MacroBombTag))
         {
             foreach (var implant in implantContainer.ContainedEntities)
