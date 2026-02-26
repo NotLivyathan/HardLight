@@ -2,7 +2,7 @@ using Content.Server.Administration;
 using Content.Server.Cargo.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Administration;
-using Content.Shared.Cargo.Components;
+using Content.Shared.Cargo;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Materials;
@@ -25,7 +25,6 @@ namespace Content.Server.Cargo.Systems;
 /// </summary>
 public sealed class PricingSystem : EntitySystem
 {
-    [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly IConsoleHost _consoleHost = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
@@ -34,7 +33,7 @@ public sealed class PricingSystem : EntitySystem
     /// <inheritdoc/>
     public override void Initialize()
     {
-        SubscribeLocalEvent<MobPriceComponent, PriceCalculationEvent>(CalculateMobPrice); // Frontier
+        SubscribeLocalEvent<MobPriceComponent, PriceCalculationEvent>(CalculateMobPrice);
 
         _consoleHost.RegisterCommand("appraisegrid",
             "Calculates the total value of the given grids.",
@@ -89,9 +88,9 @@ public sealed class PricingSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (!TryComp<BodyComponent>(uid, out var body) || !TryComp<MobStateComponent>(uid, out var state))
+        if (!TryComp<MobStateComponent>(uid, out var state))
         {
-            Log.Error($"Tried to get the mob price of {ToPrettyString(uid)}, which has no {nameof(BodyComponent)} and no {nameof(MobStateComponent)}.");
+            Log.Error($"Tried to get the mob price of {ToPrettyString(uid)}, which has no {nameof(MobStateComponent)}.");
             return;
         }
 
@@ -114,7 +113,7 @@ public sealed class PricingSystem : EntitySystem
                     continue;
 
                 // TODO check ReagentData for price information?
-                price += (float)quantity * reagentProto.PricePerUnit;
+                price += (float) quantity * reagentProto.PricePerUnit;
             }
         }
 
@@ -133,7 +132,7 @@ public sealed class PricingSystem : EntitySystem
                     continue;
 
                 // TODO check ReagentData for price information?
-                price += (float)quantity * reagentProto.PricePerUnit;
+                price += (float) quantity * reagentProto.PricePerUnit;
             }
         }
 
@@ -175,10 +174,7 @@ public sealed class PricingSystem : EntitySystem
     /// </summary>
     public double GetEstimatedPrice(EntityPrototype prototype)
     {
-        var ev = new EstimatedPriceCalculationEvent()
-        {
-            Prototype = prototype,
-        };
+        var ev = new EstimatedPriceCalculationEvent(prototype);
 
         RaiseLocalEvent(ref ev);
 
@@ -203,29 +199,6 @@ public sealed class PricingSystem : EntitySystem
     }
 
     /// <summary>
-    /// Add a hardcoded price for an item to set how much it will cost to buy it from a vending machine, while allowing staticPrice to set its sell price.
-    /// </summary>
-    public double GetEstimatedVendPrice(EntityPrototype prototype)
-    {
-        var ev = new EstimatedPriceCalculationEvent()
-        {
-            Prototype = prototype,
-        };
-
-        RaiseLocalEvent(ref ev);
-
-        if (ev.Handled)
-            return ev.Price;
-
-        var price = ev.Price;
-        price += GetVendPrice(prototype);
-
-        // TODO: Proper container support.
-
-        return price;
-    }
-
-    /// <summary>
     /// Appraises an entity, returning it's price.
     /// </summary>
     /// <param name="uid">The entity to appraise.</param>
@@ -237,10 +210,9 @@ public sealed class PricingSystem : EntitySystem
     public double GetPrice(EntityUid uid, bool includeContents = true, Func<EntityUid, bool>? predicate = null) // Frontier - Add optional predicate
     {
         if (predicate is not null && !predicate(uid)) // Frontier
-            return 0.0;                               // Frontier
+            return 0.0; // Frontier
 
         var ev = new PriceCalculationEvent();
-        ev.Price = 0; // Structs doesnt initialize doubles when called by constructor.
         RaiseLocalEvent(uid, ref ev);
 
         if (ev.Handled)
@@ -296,15 +268,15 @@ public sealed class PricingSystem : EntitySystem
     {
         double price = 0;
 
-        if (prototype.Components.ContainsKey(_factory.GetComponentName(typeof(MaterialComponent))) &&
-            prototype.Components.TryGetValue(_factory.GetComponentName(typeof(PhysicalCompositionComponent)), out var composition))
+        if (prototype.Components.ContainsKey(Factory.GetComponentName<MaterialComponent>()) &&
+            prototype.Components.TryGetValue(Factory.GetComponentName<PhysicalCompositionComponent>(), out var composition))
         {
-            var compositionComp = (PhysicalCompositionComponent)composition.Component;
+            var compositionComp = (PhysicalCompositionComponent) composition.Component;
             var matPrice = GetMaterialPrice(compositionComp);
 
-            if (prototype.Components.TryGetValue(_factory.GetComponentName(typeof(StackComponent)), out var stackProto))
+            if (prototype.Components.TryGetValue(Factory.GetComponentName<StackComponent>(), out var stackProto))
             {
-                matPrice *= ((StackComponent)stackProto.Component).Count;
+                matPrice *= ((StackComponent) stackProto.Component).Count;
             }
 
             price += matPrice;
@@ -329,9 +301,9 @@ public sealed class PricingSystem : EntitySystem
     {
         var price = 0.0;
 
-        if (prototype.Components.TryGetValue(_factory.GetComponentName(typeof(SolutionContainerManagerComponent)), out var solManager))
+        if (prototype.Components.TryGetValue(Factory.GetComponentName<SolutionContainerManagerComponent>(), out var solManager))
         {
-            var solComp = (SolutionContainerManagerComponent)solManager.Component;
+            var solComp = (SolutionContainerManagerComponent) solManager.Component;
             price += GetSolutionPrice(solComp);
         }
 
@@ -356,12 +328,12 @@ public sealed class PricingSystem : EntitySystem
     {
         var price = 0.0;
 
-        if (prototype.Components.TryGetValue(_factory.GetComponentName(typeof(StackPriceComponent)), out var stackpriceProto) &&
-            prototype.Components.TryGetValue(_factory.GetComponentName(typeof(StackComponent)), out var stackProto) &&
-            !prototype.Components.ContainsKey(_factory.GetComponentName(typeof(MaterialComponent))))
+        if (prototype.Components.TryGetValue(Factory.GetComponentName<StackPriceComponent>(), out var stackpriceProto) &&
+            prototype.Components.TryGetValue(Factory.GetComponentName<StackComponent>(), out var stackProto) &&
+            !prototype.Components.ContainsKey(Factory.GetComponentName<MaterialComponent>()))
         {
-            var stackPrice = (StackPriceComponent)stackpriceProto.Component;
-            var stack = (StackComponent)stackProto.Component;
+            var stackPrice = (StackPriceComponent) stackpriceProto.Component;
+            var stack = (StackComponent) stackProto.Component;
             price += stack.Count * stackPrice.Price;
         }
 
@@ -384,9 +356,9 @@ public sealed class PricingSystem : EntitySystem
     {
         var price = 0.0;
 
-        if (prototype.Components.TryGetValue(_factory.GetComponentName(typeof(StaticPriceComponent)), out var staticProto))
+        if (prototype.Components.TryGetValue(Factory.GetComponentName<StaticPriceComponent>(), out var staticProto))
         {
-            var staticPrice = (StaticPriceComponent)staticProto.Component;
+            var staticPrice = (StaticPriceComponent) staticProto.Component;
             price += staticPrice.Price;
         }
 
@@ -441,40 +413,4 @@ public sealed class PricingSystem : EntitySystem
 
         return price;
     }
-}
-
-/// <summary>
-/// A directed by-ref event fired on an entity when something needs to know it's price. This value is not cached.
-/// </summary>
-[ByRefEvent]
-public record struct PriceCalculationEvent()
-{
-    /// <summary>
-    /// The total price of the entity.
-    /// </summary>
-    public double Price = 0;
-
-    /// <summary>
-    /// Whether this event was already handled.
-    /// </summary>
-    public bool Handled = false;
-}
-
-/// <summary>
-/// Raised broadcast for an entity prototype to determine its estimated price.
-/// </summary>
-[ByRefEvent]
-public record struct EstimatedPriceCalculationEvent()
-{
-    public required EntityPrototype Prototype;
-
-    /// <summary>
-    /// The total price of the entity.
-    /// </summary>
-    public double Price = 0;
-
-    /// <summary>
-    /// Whether this event was already handled.
-    /// </summary>
-    public bool Handled = false;
 }

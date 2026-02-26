@@ -47,10 +47,10 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server.Cargo.Systems;
-using Content.Server.Power.EntitySystems;
 using Content.Server.Weapons.Ranged.Components;
 using Content.Shared._Mono;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
+using Content.Shared.Cargo;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Systems;
 using Content.Shared.Damage.Components;
