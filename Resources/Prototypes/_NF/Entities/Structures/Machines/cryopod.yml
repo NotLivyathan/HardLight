@@ -1,34 +1,71 @@
 - type: entity
   id: MachineCryoSleepPod
-  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, BaseMachine]
+# HardLight: We don't really use these the way Frontier does, so I'm commenting everything out and parenting it to the normal cryosleep pod.
+#  parent: [BaseStructureDisableToolUse, BaseStructureIndestructible, BaseMachine]
+  parent: BaseStructure # HardLight
   name: cryo sleep chamber
   description: Cold pillow, guaranteed.
   components:
+# HardLight: We don't really use these the way Frontier does, so I'm commenting everything out and parenting it to the normal cryosleep pod.
+#  - type: Sprite
+#    sprite: _NF/Structures/Machines/cryopod.rsi
+#    snapCardinals: true # Frontier
+#    layers:
+#    - state: closed
+#  - type: Physics
+#    bodyType: Static
+#  - type: Fixtures
+#    fixtures:
+#      fix1:
+#        shape:
+#          !type:PhysShapeAabb
+#          bounds: "-0.45,-0.45,0.45,0.45"
+#        density: 190
+#        mask:
+#        - MachineMask
+#        layer:
+#        - MobLayer # To allow people to pass through
+#  - type: MaterialStorage
+#  - type: Appearance
+#  - type: Climbable
+#  - type: CryoSleep
+#  - type: ContainerContainer
+#    containers:
+#      body_container: !type:ContainerSlot
+  # HardLight start
+  - type: Anchorable
+    flags:
+    - Anchorable
+  - type: Rotatable
   - type: Sprite
+    noRot: true
     sprite: _NF/Structures/Machines/cryopod.rsi
-    snapCardinals: true # Frontier
     layers:
     - state: closed
+      map: ["base"]
+  - type: UserInterface
+    interfaces:
+      enum.CryostorageUIKey.Key:
+        type: CryostorageBoundUserInterface
+  - type: ActivatableUI
+    key: enum.CryostorageUIKey.Key
+  - type: AccessReader
+    breakOnAccessBreaker: false
+    access: [["Cryogenics"]]
+  - type: InteractionOutline
+  - type: Cryostorage
   - type: Physics
-    bodyType: Static
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.45,-0.45,0.45,0.45"
-        density: 190
-        mask:
-        - MachineMask
-        layer:
-        - MobLayer # To allow people to pass through
-  - type: MaterialStorage
-  - type: Appearance
-  - type: Climbable
-  - type: CryoSleep
+    canCollide: false
+  - type: DragInsertContainer
+    containerId: storage
+    entryDelay: 2
+  - type: ExitContainerOnMove
+    containerId: storage
   - type: ContainerContainer
     containers:
-      body_container: !type:ContainerSlot
+      storage: !type:ContainerSlot
+  - type: Appearance
+  # HardLight end
 
 # If cryopods get deleted, this one is considered as a safe fallback.
 - type: entity
