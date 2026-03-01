@@ -34,7 +34,9 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Server.Construction.Components;
 using Content.Shared._HL.Shipyard;
 // HardLight start
+using Content.Server.Store.Components;
 using Content.Shared._Common.Consent;
+using Content.Shared.Implants.Components;
 using Content.Shared.Light.Components;
 using Content.Shared.Mind.Components;
 using Content.Shared.SprayPainter.Components;
@@ -52,6 +54,15 @@ namespace Content.Server._NF.Shipyard.Systems;
 /// </summary>
 public sealed class ShipyardGridSaveSystem : EntitySystem
 {
+    // HardLight start: List of currency prototypes that should be stripped from ship saves.
+    private static readonly HashSet<string> NonPersistentShipSaveCurrencies = new(StringComparer.Ordinal)
+    {
+        "FrontierUplinkCoin",
+        "Telecrystal",
+        "Doubloon",
+    };
+    // HardLight end
+
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -527,6 +538,12 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         // Skip if terminating
         if (_entityManager.GetComponent<MetaDataComponent>(uid).EntityLifeStage >= EntityLifeStage.Terminating)
             return false;
+        // HardLight: Remove uplink currencies
+        if (IsNonPersistentShipSaveCurrency(uid))
+            return true;
+        // HardLight: Remove used disposable implanters
+        if (IsSpentDisposableImplanter(uid))
+            return true;
         if (_secretStashQuery.HasComp(uid) || _persistOnSaveQuery.HasComp(uid))
             return false; // preserve stash root outright
         if (_gridQuery.HasComp(uid))
@@ -560,6 +577,36 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         // Only unanchored entities are eligible for deletion. If it's unanchored (loose) or unanchored-in-container, delete.
         return true;
     }
+
+    // HardLight start
+    // Checks if the entity is a currency that matches any in the NonPersistentShipSaveCurrencies list.
+    private bool IsNonPersistentShipSaveCurrency(EntityUid uid)
+    {
+        if (!TryComp<CurrencyComponent>(uid, out var currency) || currency.Price.Count == 0)
+            return false;
+
+        foreach (var currencyId in currency.Price.Keys)
+        {
+            if (NonPersistentShipSaveCurrencies.Contains(currencyId))
+                return true;
+        }
+
+        return false;
+    }
+
+    // Checks if the entity is an implanter that is marked as implant-only and has no implant currently slotted.
+    private bool IsSpentDisposableImplanter(EntityUid uid)
+    {
+        if (!TryComp<ImplanterComponent>(uid, out var implanter))
+            return false;
+
+        // Disposable implanters are marked implant-only. Once used, they have no implant in the slot.
+        if (!implanter.ImplantOnly)
+            return false;
+
+        return implanter.ImplanterSlot.ContainerSlot?.ContainedEntity is not { Valid: true };
+    }
+    // HardLight end
 
     private bool TryQueueLoose(EntityUid ent, List<EntityUid> list, HashSet<EntityUid> processed)
     {
