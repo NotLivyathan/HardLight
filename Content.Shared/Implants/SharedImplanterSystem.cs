@@ -36,6 +36,7 @@ public abstract class SharedImplanterSystem : EntitySystem
         SubscribeLocalEvent<ImplanterComponent, ComponentInit>(OnImplanterInit);
         SubscribeLocalEvent<ImplanterComponent, EntInsertedIntoContainerMessage>(OnEntInserted);
         SubscribeLocalEvent<ImplanterComponent, ExaminedEvent>(OnExamine);
+        SubscribeLocalEvent<ImplanterComponent, MapInitEvent>(OnMapInit); // HardLight
 
         SubscribeLocalEvent<ImplanterComponent, UseInHandEvent>(OnUseInHand);
         SubscribeLocalEvent<ImplanterComponent, GetVerbsEvent<InteractionVerb>>(OnVerb);
@@ -58,7 +59,22 @@ public abstract class SharedImplanterSystem : EntitySystem
     {
         var implantData = EntityManager.GetComponent<MetaDataComponent>(args.Entity);
         component.ImplantData = (implantData.EntityName, implantData.EntityDescription);
+        ChangeOnImplantVisualizer(uid, component); // HardLight
     }
+
+    // HardLight start: Ensure the implant visualizer updates on map init.
+    private void OnMapInit(EntityUid uid, ImplanterComponent component, MapInitEvent args)
+    {
+        if (component.ImplanterSlot.ContainerSlot?.ContainedEntity is { Valid: true } implant)
+        {
+            var implantData = EntityManager.GetComponent<MetaDataComponent>(implant);
+            component.ImplantData = (implantData.EntityName, implantData.EntityDescription);
+        }
+
+        ChangeOnImplantVisualizer(uid, component);
+        Dirty(uid, component);
+    }
+    // HardLight end
 
     private void OnExamine(EntityUid uid, ImplanterComponent component, ExaminedEvent args)
     {
@@ -312,13 +328,7 @@ public abstract class SharedImplanterSystem : EntitySystem
         if (!TryComp<AppearanceComponent>(uid, out var appearance))
             return;
 
-        bool implantFound;
-
-        if (component.ImplanterSlot.HasItem)
-            implantFound = true;
-
-        else
-            implantFound = false;
+        var implantFound = component.ImplanterSlot.HasItem; // HardLight
 
         if (component.CurrentMode == ImplanterToggleMode.Inject && !component.ImplantOnly)
             _appearance.SetData(uid, ImplanterVisuals.Full, implantFound, appearance);
@@ -326,7 +336,7 @@ public abstract class SharedImplanterSystem : EntitySystem
         else if (component.CurrentMode == ImplanterToggleMode.Inject && component.ImplantOnly)
         {
             _appearance.SetData(uid, ImplanterVisuals.Full, implantFound, appearance);
-            _appearance.SetData(uid, ImplanterImplantOnlyVisuals.ImplantOnly, component.ImplantOnly,
+            _appearance.SetData(uid, ImplanterImplantOnlyVisuals.ImplantOnly, !implantFound, // HardLight: component.ImplantOnly<!implantFound
                 appearance);
         }
 

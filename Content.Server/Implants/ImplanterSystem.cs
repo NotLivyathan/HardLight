@@ -22,10 +22,27 @@ public sealed partial class ImplanterSystem : SharedImplanterSystem
         InitializeImplanted();
 
         SubscribeLocalEvent<ImplanterComponent, AfterInteractEvent>(OnImplanterAfterInteract);
+        SubscribeLocalEvent<ImplanterComponent, ComponentStartup>(OnStartup); // HardLight
 
         SubscribeLocalEvent<ImplanterComponent, ImplantEvent>(OnImplant);
         SubscribeLocalEvent<ImplanterComponent, DrawEvent>(OnDraw);
     }
+
+    // HardLight start: Ensure the implant visualizer updates on startup if the implanter starts with an implant.
+    private void OnStartup(EntityUid uid, ImplanterComponent component, ComponentStartup args)
+    {
+        if (component.Implant == null)
+            return;
+
+        var slot = component.ImplanterSlot.ContainerSlot;
+        if (slot == null || slot.ContainedEntity is { Valid: true })
+            return;
+
+        var implant = Spawn(component.Implant, Transform(uid).Coordinates);
+        _container.Insert(implant, slot);
+        Dirty(uid, component);
+    }
+    // HardLight end
 
     private void OnImplanterAfterInteract(EntityUid uid, ImplanterComponent component, AfterInteractEvent args)
     {
