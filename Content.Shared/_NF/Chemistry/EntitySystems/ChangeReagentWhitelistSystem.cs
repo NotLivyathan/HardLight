@@ -2,6 +2,7 @@
 using Content.Shared._NF.Chemistry.Components;
 using Content.Shared._NF.Chemistry.Events;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Verbs;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -16,6 +17,7 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
 {
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly InjectorSystem _injectorSystem = default!;
 
     [NetSerializable, Serializable]
     public enum ReagentWhitelistChangeUIKey : byte
@@ -67,7 +69,7 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
             return;
         }
 
-        injectorComp.ReagentWhitelist = new() { args.NewReagentProto };
+        _injectorSystem.SetReagentWhitelist((ent.Owner, injectorComp), new() { args.NewReagentProto });
     }
 
     private void OnReagentWhitelistReset(Entity<ReagentWhitelistChangeComponent> ent, ref ReagentWhitelistResetMessage args)
@@ -77,6 +79,6 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
             return;
         }
 
-        injectorComp.ReagentWhitelist = null;
+        _injectorSystem.ResetReagentWhitelist((ent.Owner, injectorComp));
     }
 }

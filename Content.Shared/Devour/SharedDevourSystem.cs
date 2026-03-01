@@ -82,9 +82,6 @@ public abstract class SharedDevourSystem : EntitySystem
     }
 }
 
-public sealed partial class DevourActionEvent : EntityTargetActionEvent { }
-
-[Serializable, NetSerializable]
 public sealed partial class DevourDoAfterEvent : SimpleDoAfterEvent { }
 
 [Serializable, NetSerializable]

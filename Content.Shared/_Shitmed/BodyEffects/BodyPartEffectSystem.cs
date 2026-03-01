@@ -1,5 +1,5 @@
-using Content.Shared._Shitmed.Body.Events;
-using Content.Shared.Body.Part;
+using Content.Shared._Shitmed.Body.Organ;
+using Content.Shared.Body;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Timing;
@@ -14,7 +14,7 @@ public partial class BodyPartEffectSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<BodyPartComponent, BodyPartComponentsModifyEvent>(OnPartComponentsModify);
+        SubscribeLocalEvent<OrganComponent, OrganComponentsModifyEvent>(OnPartComponentsModify);
     }
 
     // While I would love to kill this function, problem is that if we happen to have two parts that add the same
@@ -23,7 +23,7 @@ public partial class BodyPartEffectSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        var query = EntityQueryEnumerator<BodyPartEffectComponent, BodyPartComponent>();
+        var query = EntityQueryEnumerator<BodyPartEffectComponent, OrganComponent>();
         var now = _gameTiming.CurTime;
         while (query.MoveNext(out var uid, out var comp, out var part))
         {
@@ -35,26 +35,18 @@ public partial class BodyPartEffectSystem : EntitySystem
         }
     }
 
-    private void OnPartComponentsModify(Entity<BodyPartComponent> partEnt,
-        ref BodyPartComponentsModifyEvent ev)
+    private void OnPartComponentsModify(Entity<OrganComponent> partEnt,
+        ref OrganComponentsModifyEvent ev)
     {
-        if (partEnt.Comp.OnAdd != null)
-        {
-            if (ev.Add)
-                AddComponents(ev.Body, partEnt, partEnt.Comp.OnAdd);
-            else
-                RemoveComponents(ev.Body, partEnt, partEnt.Comp.OnAdd);
-        }
+        if (!TryComp<BodyPartEffectComponent>(partEnt, out var effectComp))
+            return;
 
-        if (partEnt.Comp.OnRemove != null)
-        {
-            if (ev.Add)
-                AddComponents(ev.Body, partEnt, partEnt.Comp.OnRemove);
-            else
-                RemoveComponents(ev.Body, partEnt, partEnt.Comp.OnRemove);
-        }
+        if (ev.Add)
+            AddComponents(ev.Body, partEnt, effectComp.Active, effectComp);
+        else
+            RemoveComponents(ev.Body, partEnt, effectComp.Active, effectComp);
 
-        Dirty(partEnt, partEnt.Comp);
+        Dirty(partEnt, effectComp);
     }
 
     private void AddComponents(EntityUid body,

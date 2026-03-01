@@ -1,6 +1,12 @@
 using Content.Shared.Database;
 using Content.Shared.EntityConditions;
 using Robust.Shared.Prototypes;
+// HardLight start
+using Content.Shared.Chemistry;
+using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Reagent;
+using Content.Shared.FixedPoint;
+// HardLight end
 
 namespace Content.Shared.EntityEffects;
 
@@ -58,5 +64,48 @@ public abstract partial class EntityEffectBase<T> : EntityEffect where T : Entit
             return;
 
         raiser.RaiseEffectEvent(target, type, scale, user);
+    }
+}
+
+// HardLight: Apparently necessary, so I'm putting this here for now.
+/// <summary>
+///     EntityEffectBaseArgs only contains the target of an effect.
+///     If a trigger wants to include more info (e.g. the quantity of the chemical triggering the effect), it can be extended (see EntityEffectReagentArgs).
+/// </summary>
+public record class EntityEffectBaseArgs
+{
+    public EntityUid TargetEntity;
+
+    public IEntityManager EntityManager = default!;
+
+    public EntityEffectBaseArgs(EntityUid targetEntity, IEntityManager entityManager)
+    {
+        TargetEntity = targetEntity;
+        EntityManager = entityManager;
+    }
+}
+
+public record class EntityEffectReagentArgs : EntityEffectBaseArgs
+{
+    public EntityUid? OrganEntity;
+
+    public Solution? Source;
+
+    public FixedPoint2 Quantity;
+
+    public ReagentPrototype? Reagent;
+
+    public ReactionMethod? Method;
+
+    public FixedPoint2 Scale;
+
+    public EntityEffectReagentArgs(EntityUid targetEntity, IEntityManager entityManager, EntityUid? organEntity, Solution? source, FixedPoint2 quantity, ReagentPrototype? reagent, ReactionMethod? method, FixedPoint2 scale) : base(targetEntity, entityManager)
+    {
+        OrganEntity = organEntity;
+        Source = source;
+        Quantity = quantity;
+        Reagent = reagent;
+        Method = method;
+        Scale = scale;
     }
 }

@@ -19,8 +19,7 @@ using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
-using Content.Server.Mobs.Components; // HardLight
-using Content.Server._Funkystation.Genetics.Mutations.Components; // Funkystation - Genetics
+using Content.Shared._Funkystation.Genetics.Mutations.Components; // Funkystation - Genetics, // HardLight: Merged with upstream; had to migrate ChemicalResistanceComponent to Content.Shared
 
 namespace Content.Shared.Metabolism;
 

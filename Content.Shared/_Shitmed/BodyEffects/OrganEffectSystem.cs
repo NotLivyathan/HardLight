@@ -1,7 +1,7 @@
 // We keep this clone of the other system since I don't know yet if I'll need organ specific functions in the future.
 // will delete or refactor as time goes on.
 using Content.Shared._Shitmed.Body.Organ;
-using Content.Shared.Body.Organ;
+using Content.Shared.Body;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
 using Robust.Shared.Timing;
@@ -49,21 +49,13 @@ public partial class OrganEffectSystem : EntitySystem
         if (!_net.IsServer) // TODO: Kill this once I figure out whats breaking the Diagnostic Cybernetics.
             return;
 
-        if (organEnt.Comp.OnAdd != null)
-        {
-            if (ev.Add)
-                AddComponents(ev.Body, organEnt, organEnt.Comp.OnAdd);
-            else
-                RemoveComponents(ev.Body, organEnt, organEnt.Comp.OnAdd);
-        }
+        if (!TryComp<OrganEffectComponent>(organEnt, out var effectComp))
+            return;
 
-        if (organEnt.Comp.OnRemove != null)
-        {
-            if (ev.Add)
-                AddComponents(ev.Body, organEnt, organEnt.Comp.OnRemove);
-            else
-                RemoveComponents(ev.Body, organEnt, organEnt.Comp.OnRemove);
-        }
+        if (ev.Add)
+            AddComponents(ev.Body, organEnt, effectComp.Active, effectComp);
+        else
+            RemoveComponents(ev.Body, organEnt, effectComp.Active, effectComp);
     }
 
     private void AddComponents(EntityUid body,

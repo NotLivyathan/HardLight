@@ -19,6 +19,7 @@ using Content.Shared.Storage.Components;
 using Content.Shared.Throwing;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Content.Shared.Damage.Systems; // HardLight: Merged with upstream; BeforeDamageChangedEvent is now located here.
 
 namespace Content.Shared.Goobstation.ChronoLegionnaire;
 

@@ -1,5 +1,6 @@
-using Content.Shared.Body.Part;
+using Content.Shared.Body;
 using Robust.Shared.GameStates;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Shitmed.Medical.Surgery.Conditions;
 
@@ -7,10 +8,7 @@ namespace Content.Shared._Shitmed.Medical.Surgery.Conditions;
 public sealed partial class SurgeryPartConditionComponent : Component
 {
     [DataField]
-    public BodyPartType Part;
-
-    [DataField]
-    public BodyPartSymmetry? Symmetry;
+    public ProtoId<OrganCategoryPrototype> Category;
 
     [DataField]
     public bool Inverse;

@@ -2,6 +2,7 @@
 using System.Numerics;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Effects;
 using Content.Shared.FixedPoint;
 using Content.Shared.Interaction;
@@ -110,9 +111,9 @@ public abstract class SharedXenoMeleeSystem : EntitySystem
                     RaiseLocalEvent(hit, attackedEv);
 
                     var modifiedDamage = DamageSpecifier.ApplyModifierSets(damage + hitEvent.BonusDamage + attackedEv.BonusDamage, hitEvent.ModifiersList);
-                    var change = _damageable.TryChangeDamage(hit, modifiedDamage, origin: xeno);
+                    _damageable.TryChangeDamage(hit, modifiedDamage, out var damageChange, origin: xeno);
 
-                    if (change?.GetTotal() > FixedPoint2.Zero)
+                    if (damageChange.GetTotal() > FixedPoint2.Zero)
                     {
                         _colorFlash.RaiseEffect(Color.Red, new List<EntityUid> { hit }, filter);
                     }

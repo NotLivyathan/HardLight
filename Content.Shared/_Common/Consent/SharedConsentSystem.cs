@@ -33,15 +33,15 @@ public abstract partial class SharedConsentSystem : EntitySystem
         SubscribeLocalEvent<ConsentComponent, GetVerbsEvent<ExamineVerb>>(OnGetExamineVerbs);
     }
 
-    public bool HasConsent(Entity<ConsentComponent?> ent, ProtoId<ConsentTogglePrototype> consentId)
+    public bool HasConsent(EntityUid ent, ProtoId<ConsentTogglePrototype> consentId)
     {
-        if (!Resolve(ent, ref ent.Comp))
+        if (!TryComp<ConsentComponent>(ent, out var consent))
         {
             // Entities that have never been controlled by a player consent to all mechanics.
             return true;
         }
 
-        return ent.Comp.ConsentSettings.Toggles.TryGetValue(consentId, out var val) && val == "on";
+        return consent.ConsentSettings.Toggles.TryGetValue(consentId, out var val) && val == "on";
     }
 
     private void OnGetExamineVerbs(Entity<ConsentComponent> ent, ref GetVerbsEvent<ExamineVerb> args)

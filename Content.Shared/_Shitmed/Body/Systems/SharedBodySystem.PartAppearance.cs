@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
-using Content.Shared.Body.Components;
-using Content.Shared.Body.Part;
-using Content.Shared._Shitmed.Body.Events;
+using Content.Shared.Body;
 using Content.Shared._Shitmed.Body.Part;
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
@@ -22,32 +20,24 @@ public partial class SharedBodySystem
 
         SubscribeLocalEvent<BodyPartAppearanceComponent, ComponentStartup>(OnPartAppearanceStartup);
         SubscribeLocalEvent<BodyPartAppearanceComponent, AfterAutoHandleStateEvent>(HandleState);
-        SubscribeLocalEvent<BodyComponent, BodyPartAddedEvent>(OnPartAttachedToBody);
-        SubscribeLocalEvent<BodyComponent, BodyPartRemovedEvent>(OnPartDroppedFromBody);
+        SubscribeLocalEvent<BodyComponent, OrganInsertedIntoEvent>(OnPartAttachedToBody);
+        SubscribeLocalEvent<BodyComponent, OrganRemovedFromEvent>(OnPartDroppedFromBody);
     }
 
     private void OnPartAppearanceStartup(EntityUid uid, BodyPartAppearanceComponent component, ComponentStartup args)
     {
-        if (!TryComp(uid, out BodyPartComponent? part)
-            || part.ToHumanoidLayers() is not { } relevantLayer)
+        if (!TryComp(uid, out OrganComponent? organ))
             return;
 
-        if (part.BaseLayerId != null)
-        {
-            component.ID = part.BaseLayerId;
-            component.Type = relevantLayer;
-            return;
-        }
+        var relevantLayer = component.Type;
 
-        if (part.Body is not { Valid: true } body
+        if (organ.Body is not { } body
             || !TryComp(body, out HumanoidAppearanceComponent? bodyAppearance))
             return;
 
         var customLayers = bodyAppearance.CustomBaseLayers;
         var spriteLayers = bodyAppearance.BaseLayers;
         component.Type = relevantLayer;
-
-        part.Species = bodyAppearance.Species;
 
         if (customLayers.ContainsKey(component.Type))
         {
@@ -66,7 +56,7 @@ public partial class SharedBodySystem
         }
 
         // I HATE HARDCODED CHECKS I HATE HARDCODED CHECKS I HATE HARDCODED CHECKS
-        if (part.PartType == BodyPartType.Head)
+        if (relevantLayer == HumanoidVisualLayers.Head)
             component.EyeColor = bodyAppearance.EyeColor;
 
         var markingsByLayer = new Dictionary<HumanoidVisualLayers, List<Marking>>();
@@ -139,9 +129,9 @@ public partial class SharedBodySystem
     private void HandleState(EntityUid uid, BodyPartAppearanceComponent component, ref AfterAutoHandleStateEvent args) =>
         ApplyPartMarkings(uid, component);
 
-    private void OnPartAttachedToBody(EntityUid uid, BodyComponent component, ref BodyPartAddedEvent args)
+    private void OnPartAttachedToBody(EntityUid uid, BodyComponent component, ref OrganInsertedIntoEvent args)
     {
-        if (!TryComp(args.Part, out BodyPartAppearanceComponent? partAppearance)
+        if (!TryComp(args.Organ, out BodyPartAppearanceComponent? partAppearance)
             || !TryComp(uid, out HumanoidAppearanceComponent? bodyAppearance))
             return;
 
@@ -151,23 +141,23 @@ public partial class SharedBodySystem
         UpdateAppearance(uid, partAppearance);
     }
 
-    private void OnPartDroppedFromBody(EntityUid uid, BodyComponent component, ref BodyPartRemovedEvent args)
+    private void OnPartDroppedFromBody(EntityUid uid, BodyComponent component, ref OrganRemovedFromEvent args)
     {
         if (TerminatingOrDeleted(uid)
-            || TerminatingOrDeleted(args.Part)
+            || TerminatingOrDeleted(args.Organ)
             || !TryComp(uid, out HumanoidAppearanceComponent? bodyAppearance))
             return;
 
         // We check for this conditional here since some entities may not have a profile... If they dont
         // have one, and their part is gibbed, the markings will not be removed or applied properly.
-        if (!HasComp<BodyPartAppearanceComponent>(args.Part))
-            EnsureComp<BodyPartAppearanceComponent>(args.Part);
+        if (!HasComp<BodyPartAppearanceComponent>(args.Organ))
+            EnsureComp<BodyPartAppearanceComponent>(args.Organ);
 
-        if (TryComp<BodyPartAppearanceComponent>(args.Part, out var partAppearance))
-            RemoveAppearance(uid, partAppearance, args.Part);
+        if (TryComp<BodyPartAppearanceComponent>(args.Organ, out var partAppearance))
+            RemoveAppearance(uid, partAppearance, args.Organ);
     }
 
-    protected void UpdateAppearance(EntityUid target,
+    private void UpdateAppearance(EntityUid target,
         BodyPartAppearanceComponent component)
     {
         // Floofstation - DO NOT TOUCH MARKINGS CLIENT-SIDE, YOU ARE DUPLICATING THEM!!!
@@ -203,7 +193,7 @@ public partial class SharedBodySystem
             Dirty(target, bodyAppearance);
     }
 
-    protected void RemoveAppearance(EntityUid entity, BodyPartAppearanceComponent component, EntityUid partEntity)
+    private void RemoveAppearance(EntityUid entity, BodyPartAppearanceComponent component, EntityUid partEntity)
     {
         if (!TryComp(entity, out HumanoidAppearanceComponent? bodyAppearance))
             return;
@@ -219,7 +209,25 @@ public partial class SharedBodySystem
         RemoveBodyMarkings(entity, component, bodyAppearance);
     }
 
-    protected abstract void ApplyPartMarkings(EntityUid target, BodyPartAppearanceComponent component);
+    private void ApplyPartMarkings(EntityUid target, BodyPartAppearanceComponent component)
+    {
+        UpdateAppearance(target, component);
+    }
 
-    protected abstract void RemoveBodyMarkings(EntityUid target, BodyPartAppearanceComponent partAppearance, HumanoidAppearanceComponent bodyAppearance);
+    private void RemoveBodyMarkings(EntityUid target, BodyPartAppearanceComponent partAppearance, HumanoidAppearanceComponent bodyAppearance)
+    {
+        var dirty = false;
+
+        foreach (var (_, markingList) in partAppearance.Markings)
+        {
+            foreach (var marking in markingList)
+            {
+                _humanoid.SetMarkingVisibility(target, bodyAppearance, marking.MarkingId, false);
+                dirty = true;
+            }
+        }
+
+        if (dirty)
+            Dirty(target, bodyAppearance);
+    }
 }

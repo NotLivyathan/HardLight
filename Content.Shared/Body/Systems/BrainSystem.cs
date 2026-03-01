@@ -1,56 +1,40 @@
-using Content.Server.Body.Components;
+using Content.Shared.Body.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Pointing;
-
-// Shitmed Change
+// Shitmed start
 using Content.Shared._Shitmed.Body.Organ;
-using Content.Server._Shitmed.DelayedDeath;
-using Content.Shared.Body.Systems;
+// Shitmed end
 
-namespace Content.Server.Body.Systems
+namespace Content.Shared.Body.Systems
 {
     public sealed class BrainSystem : EntitySystem
     {
         [Dependency] private readonly SharedMindSystem _mindSystem = default!;
-        [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
         public override void Initialize()
         {
             base.Initialize();
 
-            SubscribeLocalEvent<BrainComponent, OrganGotInsertedEvent>((uid, _, args) => HandleMind(args.Target, uid));
-        // Shitmed Change Start
+            SubscribeLocalEvent<BrainComponent, OrganGotInsertedEvent>((uid, brain, args) => HandleMind(args.Target, uid, brain));
+        // Shitmed start
             SubscribeLocalEvent<BrainComponent, OrganGotRemovedEvent>(HandleRemoval); // HardLight: Merged with upstream; OrganRemovedFromBodyEvent<OrganGotRemovedEvent
             SubscribeLocalEvent<BrainComponent, PointAttemptEvent>(OnPointAttempt);
         }
 
-        private void HandleRemoval(EntityUid uid, BrainComponent brain, ref OrganRemovedFromBodyEvent args)
+        private void HandleRemoval(EntityUid uid, BrainComponent brain, ref OrganGotRemovedEvent args)
         {
-            if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(args.OldBody))
+            if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(args.Target))
                 return;
 
             brain.Active = false;
-            if (!CheckOtherBrains(args.OldBody))
+            if (!CheckOtherBrains(args.Target))
             {
                 // Prevents revival, should kill the user within a given timespan too.
-                EnsureComp<DebrainedComponent>(args.OldBody);
-                HandleMind(uid, args.OldBody);
+                EnsureComp<DebrainedComponent>(args.Target);
+                HandleMind(uid, args.Target);
             }
         }
-
-        private void HandleAddition(EntityUid uid, BrainComponent brain, ref OrganAddedToBodyEvent args)
-        {
-            if (TerminatingOrDeleted(uid) || TerminatingOrDeleted(args.Body))
-                return;
-
-            if (!CheckOtherBrains(args.Body))
-            {
-                RemComp<DebrainedComponent>(args.Body);
-                HandleMind(args.Body, uid, brain);
-            }
-        }
-
 
         private void HandleMind(EntityUid newEntity, EntityUid oldEntity, BrainComponent? brain = null)
         {
@@ -81,7 +65,7 @@ namespace Content.Server.Body.Systems
                     hasOtherBrains = true;
                 else
                 {
-                    foreach (var (organ, _) in _bodySystem.GetBodyOrgans(entity, body))
+                    foreach (var organ in body.Organs?.ContainedEntities ?? [])
                     {
                         if (TryComp<BrainComponent>(organ, out var brain) && brain.Active)
                         {
@@ -95,7 +79,7 @@ namespace Content.Server.Body.Systems
             return hasOtherBrains;
         }
 
-        // Shitmed Change End
+        // Shitmed end
         private void OnPointAttempt(Entity<BrainComponent> ent, ref PointAttemptEvent args)
         {
             args.Cancel();

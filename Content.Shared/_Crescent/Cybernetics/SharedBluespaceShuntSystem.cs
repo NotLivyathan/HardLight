@@ -2,7 +2,7 @@ using Content.Shared.Actions;
 using Content.Shared.Coordinates;
 using Content.Shared.EventScheduler;
 using Content.Shared.Examine;
-using Content.Shared.Gibbing.Systems;
+using Content.Shared.Gibbing; // Merged with upstream; .Gibbing.Systems<.Gibbing
 using Content.Shared.Interaction;
 using Content.Shared.Inventory;
 using Content.Shared.Popups;

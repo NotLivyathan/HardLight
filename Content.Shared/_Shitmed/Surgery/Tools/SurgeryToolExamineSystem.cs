@@ -1,5 +1,4 @@
-using Content.Shared.Body.Organ;
-using Content.Shared.Body.Part;
+using Content.Shared.Body;
 using Content.Shared.Examine;
 using Content.Shared.Verbs;
 using Robust.Shared.Utility;
@@ -27,8 +26,6 @@ public sealed class SurgeryToolExamineSystem : EntitySystem
         SubscribeLocalEvent<TendingComponent, SurgeryToolExaminedEvent>(OnExamined);
         SubscribeLocalEvent<TweezersComponent, SurgeryToolExaminedEvent>(OnExamined);
 
-        SubscribeLocalEvent<BodyPartComponent, SurgeryToolExaminedEvent>(OnExamined);
-        SubscribeLocalEvent<OrganComponent, SurgeryToolExaminedEvent>(OnExamined);
     }
 
     private void OnGetVerbs(Entity<SurgeryToolComponent> ent, ref GetVerbsEvent<ExamineVerb> args)

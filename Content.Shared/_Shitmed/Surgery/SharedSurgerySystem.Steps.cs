@@ -1,13 +1,11 @@
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Bed.Sleep;
-using Content.Shared.Body.Part;
-using Content.Shared.Body.Organ;
-using Content.Shared.Body.Events;
-using Content.Shared._Shitmed.Body.Events;
+using Content.Shared.Body;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.DoAfter;
 using Content.Shared.IdentityManagement;
@@ -19,6 +17,7 @@ using Content.Shared._Shitmed.Medical.Surgery.Tools;
 //using Content.Shared.Mood;
 using Content.Shared.Inventory;
 using Content.Shared.Item;
+using Content.Shared._Shitmed.Body.Events;
 using Content.Shared._Shitmed.Body.Organ;
 using Content.Shared._Shitmed.Body.Part;
 using Content.Shared.Popups;
@@ -33,6 +32,16 @@ public abstract partial class SharedSurgerySystem
     private static readonly string[] BruteDamageTypes = { "Slash", "Blunt", "Piercing" };
     private static readonly string[] BurnDamageTypes = { "Heat", "Shock", "Cold", "Caustic" };
     private static readonly ProtoId<DamageTypePrototype> PoisonDamageId = "Poison";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryHead = "Head";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryTorso = "Torso";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryArmLeft = "ArmLeft";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryArmRight = "ArmRight";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryHandLeft = "HandLeft";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryHandRight = "HandRight";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryLegLeft = "LegLeft";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryLegRight = "LegRight";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryFootLeft = "FootLeft";
+    private static readonly ProtoId<OrganCategoryPrototype> CategoryFootRight = "FootRight";
     private void InitializeSteps()
     {
         SubscribeLocalEvent<SurgeryStepComponent, SurgeryStepEvent>(OnToolStep);
@@ -320,30 +329,35 @@ public abstract partial class SharedSurgerySystem
 
     private void OnCavityStep(Entity<SurgeryStepCavityEffectComponent> ent, ref SurgeryStepEvent args)
     {
-        if (!TryComp(args.Part, out BodyPartComponent? partComp) || partComp.PartType != BodyPartType.Torso)
+        const string CavitySlotId = "cavity";
+
+        if (!TryComp(args.Part, out OrganComponent? organComp)
+            || organComp.Category != "Torso"
+            || !_itemSlotsSystem.TryGetSlot(args.Part, CavitySlotId, out var cavitySlot))
             return;
 
         var activeHandEntity = _hands.EnumerateHeld(args.User).FirstOrDefault();
         if (activeHandEntity != default
             && ent.Comp.Action == "Insert"
-            && TryComp(activeHandEntity, out ItemComponent? itemComp)
-            && (itemComp.Size.Id == "Tiny"
-            || itemComp.Size.Id == "Small"))
-            _itemSlotsSystem.TryInsert(ent, partComp.ItemInsertionSlot, activeHandEntity, args.User);
+            && TryComp(activeHandEntity, out ItemComponent? heldItemComp)
+            && (heldItemComp.Size.Id == "Tiny"
+            || heldItemComp.Size.Id == "Small"))
+            _itemSlotsSystem.TryInsert(args.Part, CavitySlotId, activeHandEntity, args.User);
         else if (ent.Comp.Action == "Remove")
-            _itemSlotsSystem.TryEjectToHands(ent, partComp.ItemInsertionSlot, args.User);
+            _itemSlotsSystem.TryEjectToHands(args.Part, cavitySlot, args.User);
     }
 
     private void OnCavityCheck(Entity<SurgeryStepCavityEffectComponent> ent, ref SurgeryStepCompleteCheckEvent args)
     {
+        const string CavitySlotId = "cavity";
+
         // Normally this check would simply be partComp.ItemInsertionSlot.HasItem, but as mentioned before,
         // For whatever reason it's not instantiating the field on the clientside after the wizmerge.
-        if (!TryComp(args.Part, out BodyPartComponent? partComp)
-            || !TryComp(args.Part, out ItemSlotsComponent? itemComp)
+        if (!_itemSlotsSystem.TryGetSlot(args.Part, CavitySlotId, out var cavitySlot)
             || ent.Comp.Action == "Insert"
-            && !itemComp.Slots[partComp.ContainerName].HasItem
+            && cavitySlot.Item == null
             || ent.Comp.Action == "Remove"
-            && itemComp.Slots[partComp.ContainerName].HasItem)
+            && cavitySlot.Item != null)
             args.Cancelled = true;
     }
 
@@ -352,19 +366,19 @@ public abstract partial class SharedSurgerySystem
         if (!TryComp(args.Surgery, out SurgeryPartRemovedConditionComponent? removedComp))
             return;
 
+        if (!TryComp(args.Body, out BodyComponent? bodyComp) || bodyComp.Organs == null)
+            return;
+
         foreach (var tool in args.Tools)
         {
-            if (TryComp(tool, out BodyPartComponent? partComp)
-                && partComp.PartType == removedComp.Part
-                && (removedComp.Symmetry == null || partComp.Symmetry == removedComp.Symmetry))
+            if (TryComp(tool, out OrganComponent? organComp)
+                && organComp.Category == removedComp.Category)
             {
-                var slotName = removedComp.Symmetry != null
-                    ? $"{removedComp.Symmetry?.ToString().ToLower()} {removedComp.Part.ToString().ToLower()}"
-                    : removedComp.Part.ToString().ToLower();
-                _body.TryCreatePartSlot(args.Part, slotName, partComp.PartType, out var _);
-                _body.AttachPart(args.Part, slotName, tool);
+                if (!_containers.Insert(tool, bodyComp.Organs))
+                    continue;
+
                 EnsureComp<BodyPartReattachedComponent>(tool);
-                var ev = new BodyPartAttachedEvent((tool, partComp));
+                var ev = new BodyPartAttachedEvent((tool, organComp));
                 RaiseLocalEvent(args.Body, ref ev);
             }
         }
@@ -375,18 +389,11 @@ public abstract partial class SharedSurgerySystem
         if (!TryComp(args.Surgery, out SurgeryPartRemovedConditionComponent? removedComp))
             return;
 
-        var targetPart = _body.GetBodyChildrenOfType(args.Body, removedComp.Part, symmetry: removedComp.Symmetry).FirstOrDefault();
+        var targetPart = GetOrgansWithCategory(args.Body, removedComp.Category).FirstOrDefault();
 
         if (targetPart != default)
         {
-            // We reward players for properly affixing the parts by healing a little bit of damage, and enabling the part temporarily.
-            var ev = new BodyPartEnableChangedEvent(true);
-            RaiseLocalEvent(targetPart.Id, ref ev);
-            _damageable.TryChangeDamage(args.Body,
-                _body.GetHealingSpecifier(targetPart.Component) * 2,
-                canSever: false, // Just in case we heal a brute damage specifier and the logic gets fucky lol
-                targetPart: _body.GetTargetBodyPart(targetPart.Component.PartType, targetPart.Component.Symmetry));
-            RemComp<BodyPartReattachedComponent>(targetPart.Id);
+            RemComp<BodyPartReattachedComponent>(targetPart);
         }
     }
 
@@ -395,42 +402,46 @@ public abstract partial class SharedSurgerySystem
         if (!TryComp(args.Surgery, out SurgeryPartRemovedConditionComponent? removedComp))
             return;
 
-        var targetPart = _body.GetBodyChildrenOfType(args.Body, removedComp.Part, symmetry: removedComp.Symmetry).FirstOrDefault();
+        var targetPart = GetOrgansWithCategory(args.Body, removedComp.Category).FirstOrDefault();
 
         if (targetPart != default
-            && HasComp<BodyPartReattachedComponent>(targetPart.Id))
+            && HasComp<BodyPartReattachedComponent>(targetPart))
             args.Cancelled = true;
     }
 
     private void OnAddPartCheck(Entity<SurgeryAddPartStepComponent> ent, ref SurgeryStepCompleteCheckEvent args)
     {
         if (!TryComp(args.Surgery, out SurgeryPartRemovedConditionComponent? removedComp)
-            || !_body.GetBodyChildrenOfType(args.Body, removedComp.Part, symmetry: removedComp.Symmetry).Any())
+            || !GetOrgansWithCategory(args.Body, removedComp.Category).Any())
             args.Cancelled = true;
     }
 
     private void OnRemovePartStep(Entity<SurgeryRemovePartStepComponent> ent, ref SurgeryStepEvent args)
     {
-        if (!TryComp(args.Part, out BodyPartComponent? partComp)
-            || partComp.Body != args.Body)
+        if (!TryComp(args.Part, out OrganComponent? organComp)
+            || organComp.Body != args.Body)
             return;
 
         var ev = new AmputateAttemptEvent(args.Part);
         RaiseLocalEvent(args.Part, ref ev);
+
+        if (TryComp(args.Body, out BodyComponent? bodyComp) && bodyComp.Organs != null)
+            _containers.Remove(args.Part, bodyComp.Organs);
+
         _hands.TryPickupAnyHand(args.User, args.Part);
     }
 
     private void OnRemovePartCheck(Entity<SurgeryRemovePartStepComponent> ent, ref SurgeryStepCompleteCheckEvent args)
     {
-        if (!TryComp(args.Part, out BodyPartComponent? partComp)
-            || partComp.Body == args.Body)
+        if (!TryComp(args.Part, out OrganComponent? organComp)
+            || organComp.Body == args.Body)
             args.Cancelled = true;
     }
 
     private void OnAddOrganStep(Entity<SurgeryAddOrganStepComponent> ent, ref SurgeryStepEvent args)
     {
-        if (!TryComp(args.Part, out BodyPartComponent? partComp)
-            || partComp.Body != args.Body
+        if (!TryComp(args.Body, out BodyComponent? bodyComp)
+            || bodyComp.Organs == null
             || !TryComp(args.Surgery, out SurgeryOrganConditionComponent? organComp)
             || organComp.Organ == null)
             return;
@@ -443,16 +454,12 @@ public abstract partial class SharedSurgerySystem
         foreach (var tool in args.Tools)
         {
             if (HasComp(tool, firstOrgan.Component.GetType())
-                && TryComp<OrganComponent>(tool, out var insertedOrgan)
-                && _body.InsertOrgan(args.Part, tool, insertedOrgan.SlotId, partComp, insertedOrgan))
+                && TryComp<OrganComponent>(tool, out _))
             {
+                if (!_containers.Insert(tool, bodyComp.Organs))
+                    continue;
+
                 EnsureComp<OrganReattachedComponent>(tool);
-                if (_body.TrySetOrganUsed(tool, true, insertedOrgan)
-                    && insertedOrgan.OriginalBody != args.Body)
-                {
-                    var ev = new SurgeryStepDamageChangeEvent(args.User, args.Body, args.Part, ent);
-                    RaiseLocalEvent(ent, ref ev);
-                }
                 break;
             }
         }
@@ -462,8 +469,8 @@ public abstract partial class SharedSurgerySystem
     {
         if (!TryComp<SurgeryOrganConditionComponent>(args.Surgery, out var organComp)
             || organComp.Organ is null
-            || !TryComp(args.Part, out BodyPartComponent? partComp)
-            || partComp.Body != args.Body)
+            || !TryComp(args.Body, out BodyComponent? bodyComp)
+            || bodyComp.Organs == null)
             return;
 
         // For now we naively assume that every entity will only have one of each organ type.
@@ -471,7 +478,7 @@ public abstract partial class SharedSurgerySystem
         // to know if they need 2 hearts, 2 lungs, etc.
         foreach (var reg in organComp.Organ.Values)
         {
-            if (!_body.TryGetBodyPartOrgans(args.Part, reg.Component.GetType(), out var _))
+            if (!GetOrgansWithComponentType(args.Body, reg.Component.GetType()).Any())
             {
                 args.Cancelled = true;
             }
@@ -487,9 +494,9 @@ public abstract partial class SharedSurgerySystem
 
         foreach (var reg in removedOrganComp.Organ.Values)
         {
-            _body.TryGetBodyPartOrgans(args.Part, reg.Component.GetType(), out var organs);
-            if (organs != null && organs.Count > 0)
-                RemComp<OrganReattachedComponent>(organs[0].Id);
+            var organs = GetOrgansWithComponentType(args.Body, reg.Component.GetType());
+            if (organs.Count > 0)
+                RemComp<OrganReattachedComponent>(organs[0]);
         }
 
     }
@@ -503,10 +510,9 @@ public abstract partial class SharedSurgerySystem
 
         foreach (var reg in removedOrganComp.Organ.Values)
         {
-            _body.TryGetBodyPartOrgans(args.Part, reg.Component.GetType(), out var organs);
-            if (organs != null
-                && organs.Count > 0
-                && organs.Any(organ => HasComp<OrganReattachedComponent>(organ.Id)))
+            var organs = GetOrgansWithComponentType(args.Body, reg.Component.GetType());
+            if (organs.Count > 0
+                && organs.Any(organ => HasComp<OrganReattachedComponent>(organ)))
                 args.Cancelled = true;
         }
     }
@@ -519,11 +525,11 @@ public abstract partial class SharedSurgerySystem
 
         foreach (var reg in organComp.Organ.Values)
         {
-            _body.TryGetBodyPartOrgans(args.Part, reg.Component.GetType(), out var organs);
-            if (organs != null && organs.Count > 0)
+            var organs = GetOrgansWithComponentType(args.Body, reg.Component.GetType());
+            if (organs.Count > 0 && TryComp(args.Body, out BodyComponent? bodyComp) && bodyComp.Organs != null)
             {
-                _body.RemoveOrgan(organs[0].Id, organs[0].Organ);
-                _hands.TryPickupAnyHand(args.User, organs[0].Id);
+                _containers.Remove(organs[0], bodyComp.Organs);
+                _hands.TryPickupAnyHand(args.User, organs[0]);
             }
         }
     }
@@ -532,15 +538,13 @@ public abstract partial class SharedSurgerySystem
     {
         if (!TryComp<SurgeryOrganConditionComponent>(args.Surgery, out var organComp)
             || organComp.Organ == null
-            || !TryComp(args.Part, out BodyPartComponent? partComp)
-            || partComp.Body != args.Body)
+            || !TryComp(args.Body, out BodyComponent? bodyComp)
+            || bodyComp.Organs == null)
             return;
 
         foreach (var reg in organComp.Organ.Values)
         {
-            if (_body.TryGetBodyPartOrgans(args.Part, reg.Component.GetType(), out var organs)
-                && organs != null
-                && organs.Count > 0)
+            if (GetOrgansWithComponentType(args.Body, reg.Component.GetType()).Any())
             {
                 args.Cancelled = true;
                 return;
@@ -761,24 +765,24 @@ public abstract partial class SharedSurgerySystem
         EntityUid step, bool doPopup, out string? popup, out StepInvalidReason reason,
         out Dictionary<EntityUid, float>? validTools)
     {
-        var type = BodyPartType.Other;
-        if (TryComp(part, out BodyPartComponent? partComp))
+        SlotFlags slot;
+        if (TryComp(part, out OrganComponent? organComp) && organComp.Category != null)
         {
-            type = partComp.PartType;
+            slot = organComp.Category switch
+            {
+                var category when category == CategoryHead => SlotFlags.HEAD,
+                var category when category == CategoryTorso => SlotFlags.OUTERCLOTHING | SlotFlags.INNERCLOTHING,
+                var category when category == CategoryArmLeft || category == CategoryArmRight => SlotFlags.OUTERCLOTHING | SlotFlags.INNERCLOTHING,
+                var category when category == CategoryHandLeft || category == CategoryHandRight => SlotFlags.GLOVES,
+                var category when category == CategoryLegLeft || category == CategoryLegRight => SlotFlags.OUTERCLOTHING | SlotFlags.LEGS,
+                var category when category == CategoryFootLeft || category == CategoryFootRight => SlotFlags.FEET,
+                _ => SlotFlags.NONE
+            };
         }
-
-        var slot = type switch
+        else
         {
-            BodyPartType.Head => SlotFlags.HEAD,
-            BodyPartType.Torso => SlotFlags.OUTERCLOTHING | SlotFlags.INNERCLOTHING,
-            BodyPartType.Arm => SlotFlags.OUTERCLOTHING | SlotFlags.INNERCLOTHING,
-            BodyPartType.Hand => SlotFlags.GLOVES,
-            BodyPartType.Leg => SlotFlags.OUTERCLOTHING | SlotFlags.LEGS,
-            BodyPartType.Foot => SlotFlags.FEET,
-            BodyPartType.Tail => SlotFlags.NONE,
-            BodyPartType.Other => SlotFlags.NONE,
-            _ => SlotFlags.NONE
-        };
+            slot = SlotFlags.NONE;
+        }
 
         var check = new SurgeryCanPerformStepEvent(user, body, GetTools(user), slot);
         RaiseLocalEvent(step, ref check);

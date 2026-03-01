@@ -1,5 +1,5 @@
 using Content.Shared.Administration.Logs;
-using Content.Shared.Body.Components;
+using Content.Shared.Body;
 using Content.Shared.DoAfter;
 using Content.Shared.DragDrop;
 using Content.Shared.Mobs.Components;

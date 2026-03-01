@@ -90,14 +90,14 @@ public sealed class SliceableFoodSystem : EntitySystem
         // HardLight start: Check if the food is stackable and if so, get the count of items in the stack.
         // This is used to determine how much solution to put in each slice and to update the stack count after slicing.
         var stackCount = 1;
-        if (TryComp<StackComponent>(uid, out var stack))
+        if (TryComp<StackComponent>(entity.Owner, out var stack))
             stackCount = stack.Count;
 
         if (!TryComp<UtensilComponent>(usedItem, out var utensil) || (utensil.Types & UtensilType.Knife) == 0)
             return false;
 
         var sourceSolution = stackCount > 1 ? new Solution(solution) : solution;
-        var sliceVolume = solution.Volume / FixedPoint2.New(entity.Comp2.TotalCount);
+        var sliceVolume = sourceSolution.Volume / FixedPoint2.New(entity.Comp2.TotalCount);
         for (int i = 0; i < entity.Comp2.TotalCount; i++)
         {
             var sliceUid = Slice(entity, user);
@@ -119,7 +119,7 @@ public sealed class SliceableFoodSystem : EntitySystem
         // HardLight start: If the food is stackable and has more than 1 item in the stack, reduce the stack count by 1 instead of deleting the entity.
         if (stackCount > 1 && stack != null)
         {
-            _stackSystem.SetCount(uid, stack.Count - 1, stack);
+            _stackSystem.SetCount(entity.Owner, stack.Count - 1, stack);
             return true;
         }
         // HardLight end
@@ -152,8 +152,8 @@ public sealed class SliceableFoodSystem : EntitySystem
         }
 
         // DeltaV - Begin deep frier related code
-        var slicedEv = new FoodSlicedEvent(user, uid, sliceUid);
-        RaiseLocalEvent(uid, ref slicedEv);
+        var slicedEv = new FoodSlicedEvent(user, entity.Owner, sliceUid);
+        RaiseLocalEvent(entity.Owner, ref slicedEv);
         // DeltaV - End deep frier related code
 
         return sliceUid;

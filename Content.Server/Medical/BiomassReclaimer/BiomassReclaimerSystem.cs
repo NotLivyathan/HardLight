@@ -26,6 +26,7 @@ using Content.Shared.Nutrition.Components;
 using Content.Shared.Popups;
 using Content.Shared.Power;
 using Content.Shared.Throwing;
+using Content.Shared.Stacks;
 using Robust.Server.Player;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
@@ -219,12 +220,16 @@ namespace Content.Server.Medical.BiomassReclaimer
                 component.SpawnedEntities = butcherableComponent.SpawnedEntities;
             }
 
-            var expectedYield = physics.FixturesMass * component.YieldPerUnitMass;
+            var stackCount = 1;
+            if (TryComp<StackComponent>(toProcess, out var stack))
+                stackCount = stack.Count;
+
+            var expectedYield = physics.FixturesMass * component.YieldPerUnitMass * stackCount;
             if (HasComp<ProduceComponent>(toProcess))
                 expectedYield *= component.ProduceYieldMultiplier;
             component.CurrentExpectedYield += expectedYield;
 
-            component.ProcessingTimer = physics.FixturesMass * component.ProcessingTimePerUnitMass;
+            component.ProcessingTimer = physics.FixturesMass * component.ProcessingTimePerUnitMass * stackCount;
 
             var inventory = _inventory.GetHandOrInventoryEntities(toProcess);
             foreach (var item in inventory)

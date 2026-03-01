@@ -4,6 +4,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Events;
 using Content.Shared.Chemistry.Prototypes;
+using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
@@ -50,6 +51,16 @@ public sealed partial class InjectorSystem : EntitySystem
         SubscribeLocalEvent<InjectorComponent, InjectorDoAfterEvent>(OnInjectDoAfter);
         SubscribeLocalEvent<InjectorComponent, MeleeHitEvent>(OnAttack);
         SubscribeLocalEvent<InjectorComponent, GetVerbsEvent<AlternativeVerb>>(AddVerbs);
+    }
+
+    public void SetReagentWhitelist(Entity<InjectorComponent> injector, List<ProtoId<ReagentPrototype>>? reagentWhitelist)
+    {
+        injector.Comp.ReagentWhitelist = reagentWhitelist;
+    }
+
+    public void ResetReagentWhitelist(Entity<InjectorComponent> injector)
+    {
+        injector.Comp.ReagentWhitelist = null;
     }
 
     #region Events Handling

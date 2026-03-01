@@ -16,10 +16,8 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Robust.Shared.Audio.Systems;
-// Shitmed start
-using Content.Shared._Shitmed.Targeting;
-using System.Linq;
-// Shitmed end
+using Content.Shared._Shitmed.Targeting; // Shitmed
+using System.Linq; // Shitmed
 
 namespace Content.Shared.Medical.Healing;
 
@@ -162,17 +160,18 @@ public sealed class HealingSystem : EntitySystem
         return false;
     }
 
-    // HardLight start
-    private DamageSpecifier ScaleDamageSpecifier(DamageSpecifier spec, float scale)
-    {
-        var scaled = new DamageSpecifier();
-        foreach (var kvp in spec.DamageDict)
-        {
-            scaled.DamageDict[kvp.Key] = kvp.Value * scale;
-        }
-        return scaled;
-    }
-    // HardLight end
+// HardLight: Commenting this out for now since it'll need to be refactored to work with the new systems.
+//    // HardLight start
+//    private DamageSpecifier ScaleDamageSpecifier(DamageSpecifier spec, float scale)
+//    {
+//        var scaled = new DamageSpecifier();
+//        foreach (var kvp in spec.DamageDict)
+//        {
+//            scaled.DamageDict[kvp.Key] = kvp.Value * scale;
+//        }
+//        return scaled;
+//    }
+//    // HardLight end
 
     // Shitmed start
     private bool IsPartDamaged(EntityUid user, EntityUid target)
@@ -228,7 +227,7 @@ public sealed class HealingSystem : EntitySystem
 
         var anythingToDo =
             HasDamage(targetDamage, component) ||
-            IsPartDamaged(user, target) || // Shitmed Change
+            IsPartDamaged(user, target) || // Shitmed
             component.ModifyBloodLevel > 0 // Special case if healing item can restore lost blood...
                 && TryComp<BloodstreamComponent>(target, out var bloodstream)
                 && _solutionContainerSystem.ResolveSolution(target, bloodstream.BloodSolutionName, ref bloodstream.BloodSolution, out var bloodSolution)
@@ -284,7 +283,7 @@ public sealed class HealingSystem : EntitySystem
             return 1;
 
         var percentDamage = (float)(damageable.TotalDamage / amount);
-        //basically make it scale from 1 to the multiplier.
+        // Basically make it scale from 1 to the multiplier.
         var modifier = percentDamage * (healing.Comp.SelfHealPenaltyMultiplier - 1) + 1;
         return Math.Max(modifier, 1);
     }

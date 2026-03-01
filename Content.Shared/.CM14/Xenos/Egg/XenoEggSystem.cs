@@ -9,7 +9,7 @@ using Content.Shared.CM14.Xenos.Construction;
 //using Content.Shared.CM14.Xenos.Weeds;
 using Content.Shared.Actions;
 using Content.Shared.Buckle.Components;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;

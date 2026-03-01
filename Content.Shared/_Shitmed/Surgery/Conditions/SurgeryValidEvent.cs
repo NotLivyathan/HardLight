@@ -1,4 +1,5 @@
-using Content.Shared.Body.Part;
+using Content.Shared.Body;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared._Shitmed.Medical.Surgery.Conditions;
 
@@ -6,4 +7,4 @@ namespace Content.Shared._Shitmed.Medical.Surgery.Conditions;
 ///     Raised on the entity that is receiving surgery.
 /// </summary>
 [ByRefEvent]
-public record struct SurgeryValidEvent(EntityUid Body, EntityUid Part, bool Cancelled = false, BodyPartType PartType = default, BodyPartSymmetry? Symmetry = default);
+public record struct SurgeryValidEvent(EntityUid Body, EntityUid Part, bool Cancelled = false, ProtoId<OrganCategoryPrototype>? Category = default);

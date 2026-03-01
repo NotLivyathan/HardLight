@@ -6,7 +6,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using Content.Shared._Goobstation.Clothing.Components;
-using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Robust.Shared.Timing;
 
 namespace Content.Shared._Goobstation.Clothing.Systems;
