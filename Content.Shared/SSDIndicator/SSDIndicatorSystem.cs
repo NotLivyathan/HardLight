@@ -87,7 +87,7 @@ public sealed class SSDIndicatorSystem : EntitySystem
                 ssd.FallAsleepTime <= _timing.CurTime &&
                 !TerminatingOrDeleted(uid))
             {
-                _statusEffects.TryAddStatusEffect(uid, SleepingSystem.StatusEffectForcedSleeping);
+                _statusEffects.TrySetStatusEffectDuration(uid, StatusEffectSSDSleeping, null);
                 ssd.ForcedSleepAdded = true;
             }
         }
