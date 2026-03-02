@@ -205,7 +205,7 @@ binds:
   mod1: Alt
 - function: OpenCharacterMenu
   type: State
-  key: C
+  key: U
 - function: OpenEmotesMenu
   type: State
   key: Y
@@ -277,9 +277,9 @@ binds:
   type: State
   key: V
   mod1: Shift
-- function: ToggleStanding # EE
-  type: State
-  key: R
+#- function: ToggleStanding # EE
+#  type: State
+#  key: R
 - function: ToggleCrawlingUnder # EE
   type: State
   mod1: Shift
@@ -547,6 +547,9 @@ binds:
 - function: Arcade3
   type: State
   key: Z
+- function: ToggleKnockdown
+  type: State
+  key: C
 - function: OpenAbilitiesMenu
   type: State
   key: K
