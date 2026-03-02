@@ -21,10 +21,7 @@
 - type: statusEffect
   id: AllCaps
 
-- type: statusEffect
-  id: SeeingRainbows
-
-- type: statusEffect
+- type: statusEffect # HardLight
   id: AbyssalWhispers
 
 - type: statusEffect
