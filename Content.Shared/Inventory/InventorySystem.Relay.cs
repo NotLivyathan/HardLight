@@ -24,6 +24,7 @@ using Content.Shared.Strip.Components;
 using Content.Shared.Temperature;
 using Content.Shared.Verbs;
 using Content.Shared.Weapons.Ranged.Events;
+using Content.Shared.Wieldable;
 using Content.Shared.Zombies;
 
 namespace Content.Shared.Inventory;
@@ -58,9 +59,11 @@ public partial class InventorySystem
         SubscribeLocalEvent<InventoryComponent, GetSlowedOverSlipperyModifierEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, ModifySlowOnDamageSpeedEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, ExtinguishEvent>(RefRelayInventoryEvent);
-        SubscribeLocalEvent<InventoryComponent, CloningAttemptEvent>(RefRelayInventoryEvent); //HL
-        SubscribeLocalEvent<InventoryComponent, DefibrillationAttemptEvent>(RefRelayInventoryEvent); //HL
-        SubscribeLocalEvent<InventoryComponent, AnalyzeUnrevivableAttemptEvent>(RefRelayInventoryEvent); //HL
+        SubscribeLocalEvent<InventoryComponent, WieldAttemptEvent>(RefRelayInventoryEvent);
+        SubscribeLocalEvent<InventoryComponent, UnwieldAttemptEvent>(RefRelayInventoryEvent);
+        SubscribeLocalEvent<InventoryComponent, CloningAttemptEvent>(RefRelayInventoryEvent); // HardLight
+        SubscribeLocalEvent<InventoryComponent, DefibrillationAttemptEvent>(RefRelayInventoryEvent); // HardLight
+        SubscribeLocalEvent<InventoryComponent, AnalyzeUnrevivableAttemptEvent>(RefRelayInventoryEvent); // HardLight
 
         // Eye/vision events
         SubscribeLocalEvent<InventoryComponent, CanSeeAttemptEvent>(RelayInventoryEvent);

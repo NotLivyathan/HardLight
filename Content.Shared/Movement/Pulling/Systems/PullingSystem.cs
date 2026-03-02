@@ -16,11 +16,12 @@ using Content.Shared.Damage.Systems; // Goobstation
 using Content.Shared.Database;
 using Content.Shared.Effects; // Goobstation
 using Content.Shared.Hands;
+using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Input;
 using Content.Shared.Interaction;
-using Content.Shared.Inventory.VirtualItem; // Goobstation
+using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Item;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components; // Goobstation
@@ -47,6 +48,7 @@ using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Random; // Goobstation
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Shared.Movement.Pulling.Systems;
 
@@ -67,18 +69,17 @@ public sealed class PullingSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly HeldSpeedModifierSystem _clothingMoveSpeed = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
-    // Goobstation start
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly SharedStaminaSystem _stamina = default!; // HardLight: Merged with upstream; StaminaSystem<SharedStaminaSystem
-    [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly INetManager _netManager = default!;
-    [Dependency] private readonly SharedVirtualItemSystem _virtualSystem = default!;
-    [Dependency] private readonly GrabThrownSystem _grabThrown = default!;
-    [Dependency] private readonly SharedCombatModeSystem _combatMode = default!;
-    [Dependency] private readonly ThrowingSystem _throwing = default!;
-    [Dependency] private readonly ContestsSystem _contests = default!; // Goobstation - Grab Intent
-    // Goobstation end
+    [Dependency] private readonly SharedVirtualItemSystem _virtual = default!;
+    [Dependency] private readonly IRobustRandom _random = default!; // Goobstation
+    [Dependency] private readonly SharedStaminaSystem _stamina = default!; // Goobstation, // HardLight: Merged with upstream; StaminaSystem<SharedStaminaSystem
+    [Dependency] private readonly SharedColorFlashEffectSystem _color = default!; // Goobstation
+    [Dependency] private readonly SharedAudioSystem _audio = default!; // Goobstation
+    [Dependency] private readonly INetManager _netManager = default!; // Goobstation
+    [Dependency] private readonly SharedVirtualItemSystem _virtualSystem = default!; // Goobstation
+    [Dependency] private readonly GrabThrownSystem _grabThrown = default!; // Goobstation
+    [Dependency] private readonly SharedCombatModeSystem _combatMode = default!; // Goobstation
+    [Dependency] private readonly ThrowingSystem _throwing = default!; // Goobstation
+    [Dependency] private readonly ContestsSystem _contests = default!; // Goobstation
 
     public override void Initialize()
     {
@@ -108,12 +109,46 @@ public sealed class PullingSystem : EntitySystem
         SubscribeLocalEvent<PullerComponent, VirtualItemThrownEvent>(OnVirtualItemThrown); // Goobstation - Grab Intent
         SubscribeLocalEvent<PullerComponent, AddCuffDoAfterEvent>(OnAddCuffDoAfterEvent); // Goobstation - Grab Intent
 
+        SubscribeLocalEvent<HandsComponent, PullStartedMessage>(HandlePullStarted);
+        SubscribeLocalEvent<HandsComponent, PullStoppedMessage>(HandlePullStopped);
+
         SubscribeLocalEvent<PullableComponent, StrappedEvent>(OnBuckled);
         SubscribeLocalEvent<PullableComponent, BuckledEvent>(OnGotBuckled);
 
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.ReleasePulledObject, InputCmdHandler.FromDelegate(OnReleasePulledObject, handle: false))
             .Register<PullingSystem>();
+    }
+
+    private void HandlePullStarted(EntityUid uid, HandsComponent component, PullStartedMessage args)
+    {
+        if (args.PullerUid != uid)
+            return;
+
+        if (TryComp(args.PullerUid, out PullerComponent? pullerComp) && !pullerComp.NeedsHands)
+            return;
+
+        if (!_virtual.TrySpawnVirtualItemInHand(args.PulledUid, uid))
+        {
+            DebugTools.Assert("Unable to find available hand when starting pulling??");
+        }
+    }
+
+    private void HandlePullStopped(EntityUid uid, HandsComponent component, PullStoppedMessage args)
+    {
+        if (args.PullerUid != uid)
+            return;
+
+        // Try find hand that is doing this pull.
+        // and clear it.
+        foreach (var held in _handsSystem.EnumerateHeld((uid, component)))
+        {
+            if (!TryComp(held, out VirtualItemComponent? virtualItem) || virtualItem.BlockingEntity != args.PulledUid)
+                continue;
+
+            _handsSystem.TryDrop((args.PullerUid, component), held);
+            break;
+        }
     }
 
     // Goobstation - Grab Intent
