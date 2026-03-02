@@ -143,7 +143,6 @@
     - RatvarianLanguage
     - PressureImmunity
     - Muted
-    - ForcedSleep
     - TemporaryBlindness
     - Pacified
     - StaminaModifier
@@ -151,7 +150,6 @@
     - PsionicallyInsulated #Nyano - Summary: PCs can be made insulated from psionic powers.
     - Flashed
     - RadiationProtection
-    - Drowsiness
     - Adrenaline
   - type: Body
     prototype: Human
