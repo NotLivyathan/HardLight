@@ -1,0 +1,6 @@
+- type: shader
+  id: DisplacedUnshaded
+  kind: source
+  path: "/Textures/_HL/Shaders/displacement_unshaded.swsl"
+  params:
+    displacementSize: 127

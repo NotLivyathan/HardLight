@@ -6,7 +6,7 @@ using Content.Client.Inventory;
 using Content.Shared.Clothing;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.EntitySystems;
-using Content.Shared.DisplacementMap;
+//using Content.Shared.DisplacementMap; // HardLight
 using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
@@ -332,6 +332,10 @@ public sealed class ClientClothingSystem : ClothingSystem
 
             if (displacementData is not null)
             {
+                string? shaderOverride = null; // HardLight
+                if (layerData.Shader == SpriteSystem.UnshadedId.Id) // HardLight
+                    shaderOverride = DisplacementMapSystem.UnshadedDisplacementShader; // HardLight
+
                 // Frontier: revise race check
                 //Checking that the state is not tied to the current race. In this case we don't need to use the displacement maps.
                 //if (layerData.State is not null && inventory.SpeciesId is not null && layerData.State.EndsWith(inventory.SpeciesId))
@@ -340,7 +344,7 @@ public sealed class ClientClothingSystem : ClothingSystem
                     continue;
                 // End Frontier: revise race check
 
-                if (_displacement.TryAddDisplacement(displacementData, sprite, index, key, out var displacementKey))
+                if (_displacement.TryAddDisplacement(displacementData, (equipee, sprite), index, key, out var displacementKey, shaderOverride)) // HardLight: Added equipee & shaderOverride
                 {
                     revealedLayers.Add(displacementKey);
                     index++;

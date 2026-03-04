@@ -7,6 +7,8 @@ namespace Content.Client.DisplacementMap;
 
 public sealed class DisplacementMapSystem : EntitySystem
 {
+    public const string UnshadedDisplacementShader = "DisplacedUnshaded"; // HardLight
+
     [Dependency] private readonly ISerializationManager _serialization = default!;
     [Dependency] private readonly SpriteSystem _sprite = default!;
 
@@ -23,15 +25,18 @@ public sealed class DisplacementMapSystem : EntitySystem
         Entity<SpriteComponent> sprite,
         int index,
         object key,
-        out string displacementKey)
+        out string displacementKey,
+        string? shaderOverride = null) // HardLight
     {
+
         displacementKey = $"{key}-displacement";
 
         if (key.ToString() is null)
             return false;
 
-        if (data.ShaderOverride != null)
-            sprite.Comp.LayerSetShader(index, data.ShaderOverride);
+        var shader = shaderOverride ?? data.ShaderOverride; // HardLight
+        if (shader != null) // HardLight
+            sprite.Comp.LayerSetShader(index, shader); // HardLight
 
         _sprite.RemoveLayer(sprite.AsNullable(), displacementKey, false);
 
