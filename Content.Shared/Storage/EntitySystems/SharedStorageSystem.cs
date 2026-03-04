@@ -1115,12 +1115,12 @@ public abstract class SharedStorageSystem : EntitySystem
             return false;
         }
 
-        if (TryComp<StorageComponent>(insertEnt, out var insertStorage)
-            && GetMaxItemSize((insertEnt, insertStorage)) >= maxSize)
-        {
-            reason = "comp-storage-too-big";
-            return false;
-        }
+//        if (TryComp<StorageComponent>(insertEnt, out var insertStorage)
+//            && GetMaxItemSize((insertEnt, insertStorage)) >= maxSize)
+//        {
+//            reason = "comp-storage-too-big";
+//            return false;
+//        }
 
         if (!ignoreLocation && !storageComp.StoredItems.ContainsKey(insertEnt))
         {

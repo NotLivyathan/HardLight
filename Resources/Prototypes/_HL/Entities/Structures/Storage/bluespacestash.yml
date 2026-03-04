@@ -33,12 +33,9 @@
       tags:
       - Admin
       components:
-      - StorageFill
       - PresetIdCard
       - IdCard
       - Access
       - Store
-      - Cash
-      - Headset
       - DnaSequenceInjector
   - type: HLPersistOnShipSave

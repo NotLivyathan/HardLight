@@ -235,6 +235,8 @@
       shader: unshaded
   - type: Item
     size: Ginormous
+    shape: # HardLight
+    - 0,0,7,5
     inhandVisuals: # Frontier
       left: # Frontier
       - state: inhand-left # Frontier
@@ -245,7 +247,10 @@
       - state: inhand-right-unlit # Frontier
         shader: unshaded # Frontier
   - type: Storage
-    maxItemSize: Huge
+    maxItemSize: Ginormous # HardLight
+    blacklist: # HardLight
+      tags:
+      - Backpack
     grid:
     - 0,0,19,9
   - type: UserInterface # HardLight
@@ -258,7 +263,7 @@
     damageCoefficient: 0
   - type: ClothingSpeedModifier # HardLight
     walkModifier: 0.9
-    sprintModifier: 0.7
+    sprintModifier: 0.8
   - type: HeldSpeedModifier
   - type: ChameleonClothing # HardLight
     slot: [back]
@@ -274,6 +279,7 @@
     tags:
     - ScurretWearable
     - WhitelistChameleon # HardLight
+    - Backpack # HardLight
 
 - type: entity
   parent: [ NFClothingDuffel, BaseColcommContraband ] # Frontier: ClothingBackpackDuffel<NFClothingDuffel

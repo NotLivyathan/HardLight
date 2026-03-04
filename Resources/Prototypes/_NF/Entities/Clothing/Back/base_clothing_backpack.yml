@@ -5,12 +5,15 @@
   - type: Storage
     maxItemSize: Large
     defaultStorageOrientation: Vertical
+    blacklist: # HardLight
+      tags:
+      - Backpack
     grid:
     - 0,0,6,3
   - type: Item
     size: Huge
-    shape:
-    - 0,0,7,5
+    # shape:
+    # - 0,0,7,5
 
 - type: entity
   parent: [BaseSubfloorAnchorStorage, ClothingBackpackDuffel]
@@ -19,12 +22,15 @@
   - type: Storage
     maxItemSize: Huge
     defaultStorageOrientation: Vertical
+    blacklist: # HardLight
+      tags:
+      - Backpack
     grid:
-    - 0,0,7,4
+    - 0,0,8,4 # HardLight: Was 0,0,7,4
   - type: Item
     size: Huge
     shape:
-    - 0,0,7,5
+    - 0,0,4,3 # HardLight: Was 0,0,7,5
 
 - type: entity
   abstract: true
@@ -33,12 +39,20 @@
   components:
   ## One 4x4 pocket, four 2x2 pockets
   - type: Storage
+    maxItemSize: Large # HardLight
+    blacklist: # HardLight
+      tags:
+      - Backpack
     grid:
     - 0,0,1,1
     - 0,3,1,4
     - 3,0,6,3
     - 8,0,9,1
     - 8,3,9,4
+  - type: Item # HardLight
+    size: Huge
+    shape:
+    - 0,0,2,2
 
   # Alternative layouts
   ## Two 2x1 pockets, one 2x3 pocket and one 6x3 pocket

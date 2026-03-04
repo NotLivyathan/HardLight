@@ -647,12 +647,16 @@
       - state: holding-equipped-BACKPACK-unlit
         shader: unshaded
   - type: Storage # HardLight
+    maxItemSize: Huge
+    blacklist:
+      tags:
+      - Backpack
     grid:
-    - 0,1,2,3
-    - 0,5,2,7
-    - 4,1,10,7
-    - 12,1,14,3
-    - 12,5,14,7
+    - 0,0,2,2
+    - 0,4,2,6
+    - 4,0,10,6
+    - 12,0,14,2
+    - 12,4,14,6
   - type: UserInterface # HardLight
     interfaces:
       enum.StorageUiKey.Key:
@@ -665,6 +669,9 @@
     slot: [back]
     default: ClothingBackpackMessengerHolding
   - type: Item
+    size: Huge # HardLight
+    shape: # HardLight
+    - 0,0,4,4
     inhandVisuals:
       left:
       - state: inhand-left
@@ -678,6 +685,7 @@
     tags:
     - ScurretWearable
     - WhitelistChameleon
+    - Backpack
 
 ## Antagonists / Contraband
 - type: entity

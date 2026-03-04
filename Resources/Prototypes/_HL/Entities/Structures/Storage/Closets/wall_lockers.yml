@@ -21,7 +21,7 @@
     stateDoorOpen: bluespace_open
     stateDoorClosed: icon
   - type: StaticPrice
-    price: 500000
+    price: 250000 # HardLight: Equates to 10% of this value on ship load, meaning one locker would cost $25k per load.
   - type: CargoSellBlacklist
   - type: Storage
     maxItemSize: Huge
@@ -31,13 +31,10 @@
       tags:
       - Admin
       components:
-      - StorageFill
       - PresetIdCard
       - IdCard
       - Access
       - Store
-      - Cash
-      - Headset
       - DnaSequenceInjector
   - type: Construction
     graph: LockerWallBluespace

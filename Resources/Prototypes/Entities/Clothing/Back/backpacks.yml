@@ -9,7 +9,7 @@
     sprite: Clothing/Back/Backpacks/backpack.rsi
     state: icon
   - type: Item
-    size: Ginormous
+    size: Huge # HardLight: Ginormous<Huge
   - type: Clothing
     quickEquip: false
     slots:
@@ -18,6 +18,9 @@
     grid:
     - 0,0,6,3
     maxItemSize: Huge
+    blacklist: # HardLight
+      tags:
+      - Backpack
   - type: ContainerContainer
     containers:
       storagebase: !type:Container
@@ -32,6 +35,7 @@
   - type: ExplosionResistance
     damageCoefficient: 0.9
   - type: AllowsSleepInside # Frontier
+  - type: Dumpable # HardLight: Frontier component
   - type: Tag
     tags:
     - WhitelistChameleon
@@ -326,6 +330,9 @@
         shader: unshaded # Frontier
   - type: Storage
     maxItemSize: Huge
+    blacklist: # HardLight
+      tags:
+      - Backpack
     grid:
     - 0,0,13,9 # HardLight: Was 0,0,19,9
   - type: UserInterface # HardLight
@@ -345,6 +352,7 @@
     tags:
     - ScurretWearable
     - WhitelistChameleon # HardLight
+    - Backpack # HardLight
 
 - type: entity
   parent: NFClothingBackpack # Frontier: ClothingBackpack<NFClothingBackpackClown

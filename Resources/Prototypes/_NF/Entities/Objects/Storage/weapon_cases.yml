@@ -154,6 +154,9 @@
       - Armor
       tags:
       - Cartridge
+    blacklist: # HardLight
+      tags:
+      - Backpack
 
 - type: entity
   name: weapon case
@@ -181,3 +184,6 @@
       tags:
       - Flammable
       - FireHelmet
+    blacklist: # HardLight
+      tags:
+      - Backpack
