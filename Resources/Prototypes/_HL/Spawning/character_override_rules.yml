@@ -1,0 +1,20 @@
+## Component example
+- type: spawnCharacterOverrideRule
+  id: LivyathanComponentOnSpawn
+  match: Livyathan
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Livyathan
+  components:
+  - type: HLLivyathan
+
+## Entity example
+- type: spawnCharacterOverrideRule
+  id: MobDragonLivyathanOnSpawn
+  match: LivyathanDragon
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Livyathan
+  entity: MobDragonLivyathan
