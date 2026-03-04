@@ -1,7 +1,7 @@
 using Robust.Shared.Prototypes;
 using Content.Shared.Polymorph;
 
-namespace Content.Server._HL.Spawning.Prototypes;
+namespace Content.Shared._HL.Spawning.Prototypes;
 
 [Prototype("spawnCharacterOverrideRule")]
 [Serializable]
