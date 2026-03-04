@@ -52,9 +52,12 @@
 - type: entity
   parent: ClothingBackpackDuffelHolding
   id: ClothingBackpackDuffelHoldingSleepsack
-  name: Body Bag of Holding
+  name: body bag of holding # HardLight: Made it lowercase.
   description: A padded duffelbag that opens into a localized, air-permeable pocket of bluespace. Specifically designed to carry humanoids comfortably.
   components:
   - type: Storage
     grid:
       - 0,0,20,5 # 1 wider than ClothingBackpackDuffelHolding, capable of fitting the StorableSpecies pseudoitem
+  - type: Tag # HardLight
+    tags:
+    - Backpack

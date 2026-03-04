@@ -223,8 +223,8 @@
 - type: entity
   parent: NFClothingDuffel # Frontier: ClothingBackpackDuffelNFClothingDuffel
   id: ClothingBackpackDuffelHolding
-  name: duffelbag of holding
-  description: A duffelbag that opens into a localized pocket of bluespace.
+  name: duffel bag of holding # HardLight: duffelbag<duffel bag
+  description: A duffel bag that opens into a localized pocket of bluespace. # HardLight: duffelbag<duffel bag
   components:
   - type: Sprite
     sprite: _NF/Clothing/Back/Duffels/holding.rsi # Frontier
@@ -247,10 +247,22 @@
   - type: Storage
     maxItemSize: Huge
     grid:
-    - 0,0,19,9 # Frontier: Was 0,0,19,9 - FRONTIER MADE IT 0,0,7,7 AND THAT'S DUMB - Loki
-  - type: ClothingSpeedModifier
-    sprintModifier: 1 # makes its stats identical to other variants of bag of holding
+    - 0,0,19,9
+  - type: UserInterface # HardLight
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: ExplosionResistance # HardLight
+    damageCoefficient: 0
+  - type: ClothingSpeedModifier # HardLight
+    walkModifier: 0.9
+    sprintModifier: 0.7
   - type: HeldSpeedModifier
+  - type: ChameleonClothing # HardLight
+    slot: [back]
+    default: ClothingBackpackDuffelHolding
   - type: Clothing # Frontier
     sprite: _NF/Clothing/Back/Duffels/holding.rsi # Frontier
     clothingVisuals: # Frontier
@@ -261,6 +273,7 @@
   - type: Tag
     tags:
     - ScurretWearable
+    - WhitelistChameleon # HardLight
 
 - type: entity
   parent: [ NFClothingDuffel, BaseColcommContraband ] # Frontier: ClothingBackpackDuffel<NFClothingDuffel

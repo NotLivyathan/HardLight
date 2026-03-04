@@ -327,10 +327,24 @@
   - type: Storage
     maxItemSize: Huge
     grid:
-    - 0,0,19,9 # Frontier: Was 0,0,19,9 - FRONTIER MADE IT 0,0,7,7 AND THAT'S DUMB - Loki
+    - 0,0,13,9 # HardLight: Was 0,0,19,9
+  - type: UserInterface # HardLight
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: ExplosionResistance # HardLight
+    damageCoefficient: 0
+  - type: ClothingSpeedModifier # HardLight
+    sprintModifier: 0.9
+  - type: ChameleonClothing # HardLight
+    slot: [back]
+    default: ClothingBackpackHolding
   - type: Tag
     tags:
     - ScurretWearable
+    - WhitelistChameleon # HardLight
 
 - type: entity
   parent: NFClothingBackpack # Frontier: ClothingBackpack<NFClothingBackpackClown

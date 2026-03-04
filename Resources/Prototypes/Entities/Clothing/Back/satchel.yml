@@ -185,8 +185,21 @@
         shader: unshaded # Frontier
   - type: Storage
     maxItemSize: Huge
-    grid:
-    - 0,0,19,9 # Frontier: Was 0,0,19,9 - FRONTIER MADE IT 0,0,7,7 AND THAT'S DUMB - Loki
+    grid: # HardLight: Was 0,0,19,9
+    - 0,0,2,7
+    - 4,0,10,7
+    - 12,0,14,7
+  - type: UserInterface # HardLight
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: ExplosionResistance # HardLight
+    damageCoefficient: 0
+  - type: ChameleonClothing # HardLight
+    slot: [back]
+    default: ClothingBackpackSatchelHolding
   - type: Clothing # Frontier
     sprite: _NF/Clothing/Back/Satchels/holding.rsi # Frontier
     clothingVisuals: # Frontier
@@ -197,3 +210,4 @@
   - type: Tag
     tags:
     - ScurretWearable
+    - WhitelistChameleon # HardLight

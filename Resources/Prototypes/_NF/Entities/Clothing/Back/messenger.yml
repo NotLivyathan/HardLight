@@ -646,6 +646,24 @@
       - state: holding-equipped-BACKPACK
       - state: holding-equipped-BACKPACK-unlit
         shader: unshaded
+  - type: Storage # HardLight
+    grid:
+    - 0,1,2,3
+    - 0,5,2,7
+    - 4,1,10,7
+    - 12,1,14,3
+    - 12,5,14,7
+  - type: UserInterface # HardLight
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: ExplosionResistance # HardLight
+    damageCoefficient: 0
+  - type: ChameleonClothing # HardLight
+    slot: [back]
+    default: ClothingBackpackMessengerHolding
   - type: Item
     inhandVisuals:
       left:
@@ -656,6 +674,10 @@
       - state: inhand-right
       - state: inhand-right-unlit
         shader: unshaded
+  - type: Tag # HardLight
+    tags:
+    - ScurretWearable
+    - WhitelistChameleon
 
 ## Antagonists / Contraband
 - type: entity
