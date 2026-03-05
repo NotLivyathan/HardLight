@@ -858,6 +858,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "GeneticAnalyzer",
             "Ghost",
             "GhostRole",
+            "HumanoidAppearance",
             "IdCard",
             "IdCardConsole",
             "MarketModifier",
