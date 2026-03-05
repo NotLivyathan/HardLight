@@ -1,16 +1,18 @@
 using System.Linq;
 using Content.Shared._Floof.Lock.Events;
+using Content.Shared.Access; // HardLight
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
+using Content.Shared.Interaction; // HardLight
 using Content.Shared.Lock;
 using Content.Shared.Popups;
 using Content.Shared.Verbs;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Prototypes; // HardLight
 using Robust.Shared.Utility;
 using static Content.Shared._Floof.Lock.IdLockComponent.LockState;
-using Content.Shared.Interaction; // HardLight
 
 
 namespace Content.Shared._Floof.Lock;
@@ -18,6 +20,8 @@ namespace Content.Shared._Floof.Lock;
 
 public sealed class IdLockSystem : EntitySystem
 {
+    private static readonly ProtoId<AccessLevelPrototype> CentralCommandAccess = "CentralCommand";
+
     [Dependency] private readonly AccessReaderSystem _access = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly LockSystem _locks = default!;
@@ -174,7 +178,8 @@ public sealed class IdLockSystem : EntitySystem
     /// </summary>
     public bool TryLock(Entity<IdLockComponent> ent, Entity<IdCardComponent> id, EntityUid user)
     {
-        if (CheckAccess(id, ent, out var reason) == AccessLevel.None)
+        var level = CheckAccess(id, ent, out var reason); // HardLight
+        if (!level.HasFlag(AccessLevel.CanLock)) // HardLight
         {
             if (reason != null)
                 _popups.PopupClient(Loc.GetString(reason), user, user);
@@ -195,7 +200,8 @@ public sealed class IdLockSystem : EntitySystem
     /// </summary>
     public bool TryUnlock(Entity<IdLockComponent> ent, Entity<IdCardComponent> id, EntityUid user)
     {
-        if (CheckAccess(id, ent, out var reason) is var level && level == AccessLevel.None)
+        var level = CheckAccess(id, ent, out var reason); // HardLight
+        if (!level.HasFlag(AccessLevel.CanUnlock) && !level.HasFlag(AccessLevel.CanTemporarilyUnlock)) // HardLight
         {
             if (reason != null)
                 _popups.PopupClient(Loc.GetString(reason), user, user);
@@ -240,7 +246,7 @@ public sealed class IdLockSystem : EntitySystem
     /// </summary>
     public void DoLock(Entity<IdLockComponent> ent, Entity<IdCardComponent> id, EntityUid user)
     {
-        if (CheckAccess(id, ent, out var reason) == AccessLevel.None)
+        if (!CheckAccess(id, ent, out _).HasFlag(AccessLevel.CanLock)) // HardLight: var reason<HasFlag & None<CanLock
             return;
 
         ent.Comp.State = Engaged;
@@ -312,21 +318,30 @@ public sealed class IdLockSystem : EntitySystem
     private AccessLevel MatchId(Entity<IdCardComponent> id, Entity<IdLockComponent> lockable)
     {
         // HardLight start
-        // When engaged, prioritize owner match so owners with master access tags don't get the slower master unlock time.
+        // First check if the ID matches the owner, then check for master access.
+        // This allows owners with master access to bypass the longer master unlock time.
+        var hasCentcom = false;
+        var hasMasterAccess = false;
+        if (TryComp<AccessComponent>(id, out var access))
+        {
+            hasCentcom = access.Tags.Contains(CentralCommandAccess);
+            hasMasterAccess = lockable.Comp.MasterAccesses.Any(tag => access.Tags.Contains(tag));
+        }
+
         if (lockable.Comp.State is Engaged)
         {
             if (lockable.Comp.Info.OwnerName == id.Comp.FullName && lockable.Comp.Info.OwnerJobTitle == id.Comp.LocalizedJobTitle)
                 return AccessLevel.CanUnlock;
 
-            if (TryComp<AccessComponent>(id, out var engagedAccess) && lockable.Comp.MasterAccesses.Any(it => engagedAccess.Tags.Contains(it)))
+            if (hasCentcom || hasMasterAccess) // HardLight
                 return AccessLevel.Master;
 
             return AccessLevel.None;
         }
         // HardLight end
 
-        // HardLight: ID always matches if the lock is inactive.
-        if (TryComp<AccessComponent>(id, out var access) && lockable.Comp.MasterAccesses.Any(it => access.Tags.Contains(it)))
+        // HardLight: Master override
+        if (hasCentcom || hasMasterAccess)
             return AccessLevel.Master;
 
         return AccessLevel.CanLock; // HardLight: None<CanLock
