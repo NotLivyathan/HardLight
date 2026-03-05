@@ -29,13 +29,7 @@
     grid:
     - 0,0,25,20
     maxItemSize: Ginormous
-    blacklist:
-      tags:
-      - Admin
-      components:
-      - PresetIdCard
-      - IdCard
-      - Access
-      - Store
-      - DnaSequenceInjector
+    # blacklist:
+    #   tags:
+    #   - Admin
   - type: HLPersistOnShipSave

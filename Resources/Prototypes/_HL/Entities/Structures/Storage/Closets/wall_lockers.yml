@@ -24,18 +24,12 @@
     price: 250000 # HardLight: Equates to 10% of this value on ship load, meaning one locker would cost $25k per load.
   - type: CargoSellBlacklist
   - type: Storage
-    maxItemSize: Huge
+    maxItemSize: Ginormous
     grid:
-    - 0,0,19,9
-    blacklist:
-      tags:
-      - Admin
-      components:
-      - PresetIdCard
-      - IdCard
-      - Access
-      - Store
-      - DnaSequenceInjector
+    - 0,0,15,9
+    # blacklist:
+    #   tags:
+    #   - Admin
   - type: Construction
     graph: LockerWallBluespace
     node: done
