@@ -18,6 +18,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Utility;
 using Content.Shared.Emag.Components;
 using Robust.Shared.Audio; // Frontier - DEMAG
+using Content.Shared._Floof.Lock; // HardLight
 
 namespace Content.Shared.Lock;
 
@@ -86,7 +87,7 @@ public sealed class LockSystem : EntitySystem
         if (!component.Locked)
             return;
 
-        if (!args.Silent)
+        if (!args.Silent && !IsIdLockEngaged(uid)) // HardLight: Added && !IsIdLockEngaged(uid)
             _sharedPopupSystem.PopupClient(Loc.GetString("entity-storage-component-locked-message"), uid, args.User);
 
         args.Cancelled = true;
@@ -328,8 +329,20 @@ public sealed class LockSystem : EntitySystem
         if (!_emag.CompareFlag(args.Type, EmagType.Access))
             return;
 
-        if (component.Locked)
+        // Never force-lock while a locked wires panel is open, or the panel can become uncloseable.
+        if (HasComp<LockedWiresPanelComponent>(uid) &&
+            TryComp<WiresPanelComponent>(uid, out var panel) &&
+            panel.Open)
+        {
+            args.Handled = true;
             return;
+        }
+
+        if (component.Locked || !component.BreakOnAccessBreaker)
+        {
+            args.Handled = true;
+            return;
+        }
 
         _audio.PlayPredicted(component.LockSound, uid, args.UserUid);
 
@@ -422,7 +435,7 @@ public sealed class LockSystem : EntitySystem
         if (TryComp<LockComponent>(uid, out var lockComp) && lockComp.Locked != component.RequireLocked)
         {
             args.Cancel();
-            if (lockComp.Locked)
+            if (lockComp.Locked && !IsIdLockEngaged(uid)) // HardLight: Added && !IsIdLockEngaged(uid)
             {
                 _sharedPopupSystem.PopupClient(Loc.GetString("entity-storage-component-locked-message"), uid, args.User);
             }
@@ -430,6 +443,16 @@ public sealed class LockSystem : EntitySystem
             _audio.PlayPredicted(component.AccessDeniedSound, uid, args.User);
         }
     }
+
+    // HardLight start: Helper to check if the ID lock is engaged.
+    // Prevents generic lock popups when the ID lock is doing its own specific popup.
+    private bool IsIdLockEngaged(EntityUid uid)
+    {
+        return TryComp<IdLockComponent>(uid, out var idLock)
+               && idLock.Enabled
+               && idLock.State == IdLockComponent.LockState.Engaged;
+    }
+    // HardLight end
 
     private void LockToggled(EntityUid uid, ActivatableUIRequiresLockComponent component, LockToggledEvent args)
     {
