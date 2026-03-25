@@ -1,6 +1,6 @@
 meta:
   format: 7
-  category: Map
+  category: Grid
   engineVersion: 267.3.0
   forkId: ""
   forkVersion: ""
@@ -1150,6 +1150,7 @@ entities:
     - type: GasTileOverlay
     - type: RadiationGridResistance
     - type: BecomesStation
+    - type: InitRepairSnapshot
       id: Deterrence
     - type: IFF
       color: '#FFFFFFFF'

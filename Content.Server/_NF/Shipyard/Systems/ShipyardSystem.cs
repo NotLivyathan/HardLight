@@ -58,6 +58,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     private bool _enabled;
     private float _baseSaleRate;
     private readonly Dictionary<EntityUid, TimeSpan> _lastLoadCharge = new(); // Per-player load charge cooldown
+    private readonly Dictionary<EntityUid, TimeSpan> _shipyardActionDelayUntil = new(); // HardLight
+    private static readonly TimeSpan ShipyardActionDelay = TimeSpan.FromSeconds(1); // HardLight
 
     // The type of error from the attempted sale of a ship.
     public enum ShipyardSaleError
@@ -117,6 +119,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _shipyardActionDelayUntil.Clear(); // HardLight
+        _lastLoadCharge.Clear(); // HardLight
         CleanupShipyard();
     }
 

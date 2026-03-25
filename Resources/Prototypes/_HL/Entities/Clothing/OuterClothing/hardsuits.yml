@@ -201,8 +201,63 @@
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSyndicateNavy
 
+#Colonial Naval Infantry/Marines Hardsuit
+- type: entity
+  parent: [ClothingOuterHardsuitBase, BaseColcommContraband, ContrabandClothing]
+  id: ClothingOuterHardsuitColonialNavalInfantry
+  name: Colonial Navy M21 infantry hardsuit
+  description: A moderately armored mobile hardsuit used by the Colonial Navy. It features a distinctive pale-blue and black color scheme, and is equipped with a reinforced helmet for enhanced protection.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHS.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHS.rsi
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHelmetHardsuitColonialNavalInfantry
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.35
+        Slash: 0.25
+        Piercing: 0.2
+        Heat: 0.25
+        Radiation: 0.4
+        Caustic: 0.4
+  - type: ClothingSpeedModifier
+    walkModifier: 0.75
+    sprintModifier: 0.75
+
 # Faction Hardsuit Helmets
 # All inherit from Blood-red hardsuit helmet (ClothingHeadHelmetHardsuitSyndie) with modifications
+
+#Colonial Naval Infantry/Marines Hardsuit Helmet
+- type: entity
+  parent: NFClothingHeadHardsuitWithLightBaseNfsd
+  id: ClothingHeadHelmetHardsuitColonialNavalInfantry
+  categories: [ HideSpawnMenu ]
+  name: Colonial Navy M21 infantry hardsuit helmet
+  description: A reinforced hardsuit helmet used by the Colonial Navy.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHSHelm.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHSHelm.rsi
+  - type: PointLight
+    color: "#5162FF"
+  - type: PressureProtection
+    highPressureMultiplier: 0.35
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.85
+        Slash: 0.85
+        Piercing: 0.85
+        Heat: 0.85
+        Radiation: 0.95
+        Caustic: 0.9
 
 # Arcadia Hardsuit Helmet
 - type: entity

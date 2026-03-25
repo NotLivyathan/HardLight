@@ -6,7 +6,7 @@
   - type: SpawnPoint
     job_id: ServiceQuadBorg
   - type: Sprite
-    sprite: Floof/Mobs/Silicon/quad.rsi
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
     scale: 0.7, 0.7
     layers:
     - state: quadspriteserv
@@ -28,7 +28,7 @@
   - type: SpawnPoint
     job_id: MedicalQuadBorg
   - type: Sprite
-    sprite: Floof/Mobs/Silicon/quad.rsi
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
     scale: 0.7, 0.7
     layers:
     - state: quadspritemed
@@ -50,7 +50,7 @@
   - type: SpawnPoint
     job_id: SalvageQuadBorg
   - type: Sprite
-    sprite: Floof/Mobs/Silicon/quad.rsi
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
     scale: 0.7, 0.7
     layers:
     - state: quadspritesalv
@@ -72,7 +72,7 @@
   - type: SpawnPoint
     job_id: SecurityQuadBorg
   - type: Sprite
-    sprite: Floof/Mobs/Silicon/quad.rsi
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
     scale: 0.7, 0.7
     layers:
     - state: quadsprite
@@ -94,7 +94,7 @@
   - type: SpawnPoint
     job_id: EngineeringQuadBorg
   - type: Sprite
-    sprite: Floof/Mobs/Silicon/quad.rsi
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
     scale: 0.7, 0.7
     layers:
     - state: engieborg

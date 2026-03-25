@@ -45,6 +45,7 @@ entities:
       parent: invalid
     - type: BecomesStation
       id: Wasp
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:

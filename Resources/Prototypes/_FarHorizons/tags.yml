@@ -3,3 +3,87 @@
 
 - type: Tag
   id: GasTurbineStator
+
+- type: Tag
+  id: ProtogenCybernetics
+
+- type: Tag
+  id: Protogen
+
+- type: Tag
+  id: Vulpkanin
+
+- type: Tag
+  id: Dwarf
+
+- type: Tag
+  id: Human
+
+- type: Tag
+  id: Moth
+
+- type: Tag
+  id: Reptilian
+
+- type: Tag
+  id: Shadekin
+
+- type: Tag
+  id: SlimePerson
+
+- type: Tag
+  id: Thaven
+
+- type: Tag
+  id: Vox
+
+- type: Tag
+  id: Organic
+
+- type: Tag
+  id: RamChip
+
+- type: Tag
+  id: TrueProtogen
+
+- type: Tag
+  id: ProtoArachnid
+
+- type: Tag
+  id: ProtoAvali
+
+- type: Tag
+  id: ProtoDawi
+
+- type: Tag
+  id: ProtoDionae
+
+- type: Tag
+  id: ProtoFeline
+
+- type: Tag
+  id: ProtoHumie
+
+- type: Tag
+  id: ProtoMoth
+
+- type: Tag
+  id: ProtoReptile
+
+- type: Tag
+  id: ProtoResomi
+
+- type: Tag
+  id: ProtoThaven
+
+- type: Tag
+  id: ProtoVox
+
+- type: Tag
+  id: ProtoVulp
+
+- type: Tag
+  id: ProtoKin
+
+- type: Tag
+  id: ProtoSlimePerson

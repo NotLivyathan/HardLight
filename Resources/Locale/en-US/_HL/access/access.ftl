@@ -10,4 +10,4 @@ id-card-access-level-nanotrasen-admiral = Nanotrasen Admiral
 id-card-access-level-interdyne = Interdyne
 id-card-access-level-interdyne-head = Interdyne Head
 id-card-access-level-directorate = Directorate
-id-card-access-level-intelligence = Intelligence
+id-card-access-level-naval = Naval

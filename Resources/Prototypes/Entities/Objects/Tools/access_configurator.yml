@@ -142,7 +142,7 @@
     - Interdyne # Hardlight
     - InterdyneHead # Hardlight
     - Directorate # Hardlight
-    - Intelligence # Hardlight
+    - Naval # Hardlight
     privilegedIdSlot:
       name: id-card-console-privileged-id
       ejectSound: /Audio/Machines/id_swipe.ogg

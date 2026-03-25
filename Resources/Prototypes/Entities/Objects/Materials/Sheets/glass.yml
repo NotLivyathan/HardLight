@@ -54,6 +54,27 @@
   - type: BlindHealing
     damageContainers:
       - Silicon
+  # FH Start - Protogen Healing
+  - type: ConditionalHealing
+    healingDefinitions:
+      - allowedTags: [Protogen, ProtoArachnid, ProtoAvali, ProtoDawi, ProtoDionae, ProtoFeline, ProtoHumie, ProtoMoth, ProtoReptile, ProtoResomi, ProtoSlimePerson, ProtoThaven, ProtoVox, ProtoVulp, ProtoKin]
+        healing:
+          damageContainers:
+            - Biological
+          damage: {}
+          delay: 2
+          adjustEyeDamage: -1 # 1 glass = 1 weld
+          healingBeginSound:
+            path: "/Audio/Items/Medical/ointment_begin.ogg"
+            params:
+              volume: 1.0
+              variation: 0.125
+          healingEndSound:
+            path: "/Audio/Items/Medical/ointment_end.ogg"
+            params:
+              volume: 1.0
+              variation: 0.125
+  # FH End - Protogen Healing
 
 - type: entity
   parent: SheetGlassBase

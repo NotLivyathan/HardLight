@@ -33,12 +33,13 @@
     - Rodentia # DeltaV
     - Feroxi # Flooftier
     - Resomi
-    - Protogen # Monolith
+    - Protogen # FarHorizons
     - Shadekin
     - Avali
     - Kitsune # DeltaV
     - Skrell
     - Thaven # Impstation
+    - Tajaran  # Floof - Tajaran Update b7660b9
 
 - type: guideEntry
   id: Arachnid
@@ -113,6 +114,11 @@
   name: species-name-harpy
   text: "/ServerInfo/Guidebook/Mobs/_DV/Harpy.xml" # DeltaV
 
+- type: guideEntry # Floof - Tajaran Update b7660b9
+  id: Tajaran
+  name: species-name-tajaran
+  text: "/ServerInfo/Guidebook/Mobs/Tajaran.xml"
+
 - type: guideEntry
   id: Rodentia
   name: species-name-rodentia
@@ -122,11 +128,6 @@
   id: Avali
   name: species-name-avali
   text: "/ServerInfo/Guidebook/Mobs/Avali.xml"
-
-- type: guideEntry
-  id: Protogen
-  name: species-name-protogen
-  text: "/ServerInfo/Guidebook/Mobs/Protogen.xml"
 
 - type: guideEntry
   id: Shadekin

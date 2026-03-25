@@ -1404,9 +1404,9 @@
       
 - type: entity
   parent: AirlockCentralCommand
-  id: AirlockCCIntelligenceLocked
-  suffix: Intelligence, Locked
+  id: AirlockCCNavalLocked
+  suffix: Naval, Locked
   components:
   - type: ContainerFill
     containers:
-      board: [ DoorElectronicsCCIntelligence ]
+      board: [ DoorElectronicsCCNaval ]

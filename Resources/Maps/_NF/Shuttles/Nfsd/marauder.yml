@@ -539,6 +539,7 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Marauder
+    - type: InitRepairSnapshot
     - type: NavMap
     - type: ImplicitRoof
 - proto: ActionToggleLight

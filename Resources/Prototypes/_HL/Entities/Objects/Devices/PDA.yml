@@ -363,20 +363,20 @@
 
 - type: entity
   parent: CentcomPDA
-  id: IntelPDA
-  name: special forces PDA
-  description: This thing looks way more advanced then anything you've seen- It looks like it holds the secrets to everything.
+  id: NavalPDA
+  name: naval PDA
+  description: A rugged naval-issue PDA with a dark blue casing.
   components:
   - type: Pda
-    id: IntelIDCard
+    id: NavalIDCard
   - type: Tag #  Ignore Chameleon tags
     tags:
     - Admin
     - DoorBumpOpener
   - type: PdaBorderColor
-    borderColor: "#010101"
-    accentHColor: "#6E0F14"
-    accentVColor: "#6E0F14"
+    borderColor: "#1A1A2E"
+    accentHColor: "#2A4A7F"
+    accentVColor: "#1E3A5F"
   - type: Icon
     sprite: _NF/Objects/Devices/pda.rsi # Frontier
     state: pda-sof

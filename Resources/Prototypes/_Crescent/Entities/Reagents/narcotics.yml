@@ -275,8 +275,21 @@
       metabolismRate: 0.1
       effects:
       - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Dreadtalon
+          shouldHave: false
         damage:
           types:
             Radiation: 0.5
+            Poison: 0.5
+            Cellular: 0.5
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Dreadtalon
+        damage:
+          types:
+            Radiation: -0.5
             Poison: 0.5
             Cellular: 0.5

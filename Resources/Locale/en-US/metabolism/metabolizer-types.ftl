@@ -15,3 +15,4 @@ metabolizer-type-avali = Avali
 metabolizer-type-resomi = Resomi
 # HardLight
 metabolizer-type-synth = Synth
+metabolizer-type-dreadtalon = Dreadtalon

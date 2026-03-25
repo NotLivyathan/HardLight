@@ -498,6 +498,7 @@
     - MechBoardsPlus
     - MonoAdvancedShuttleComponents # Hardlight
     - CivShuttleWeapons # HL
+    - ReactorCircuitboards # HL
   - type: EmagLatheRecipes
     emagDynamicPacks: # Frontier: empty list
     - SecurityBoards # Frontier
@@ -568,8 +569,6 @@
     - GygaxMechParts
     - MechWeapons
     - RipleyUpgrade
-    # Crescent - Cyberware
-    - CombatCybernetics
     # Starlight - Implants
     - SLCybernetics
   - type: EmagLatheRecipes
@@ -817,6 +816,9 @@
     # Shitmed Change
     - SMSurgery
     - SMCybernetics
+  - type: EmagLatheRecipes
+    emagDynamicPacks:
+    - CombatCybernetics
   - type: Machine
     board: MedicalTechFabCircuitboard
   - type: StealTarget

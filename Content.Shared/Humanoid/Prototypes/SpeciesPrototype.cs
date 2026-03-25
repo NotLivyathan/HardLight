@@ -1,5 +1,6 @@
 using Content.Shared.Dataset;
 using Content.Shared.Humanoid.Markings;
+using Content.Shared.Preferences.Loadouts;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 
@@ -135,6 +136,20 @@ public sealed partial class SpeciesPrototype : IPrototype
     /// </summary>
     [DataField]
     public Color ForcedMarkingColor { get; private set; } = new();
+
+    // Far Horizons Start - Subspecies system
+    [DataField]
+    public ProtoId<SpeciesPrototype>? SubspeciesOf = null;
+
+    [DataField]
+    public LocId? SubspeciesName = null;
+
+    [DataField]
+    public bool HasSubspecies = false;
+
+    [DataField]
+    public ProtoId<RoleLoadoutPrototype>? Loadout = null;
+    // Far Horizons End
 }
 
 public enum SpeciesNaming : byte

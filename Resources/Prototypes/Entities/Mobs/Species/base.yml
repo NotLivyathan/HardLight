@@ -247,6 +247,7 @@
   - type: PseudoItem # Hardlight change, technically cribbed from Den
     shape:
       - 0,0,20,5 # 1 too wide to fit inside ClothingBackpackDuffelHolding, so only bags designed to carry people can actually fit them inside
+  - type: AutoImplanter # Far Horizons - Autoimplanter System
 
 - type: entity
   save: false

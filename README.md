@@ -35,6 +35,8 @@ Content under these subdirectories originate from their respective forks and may
 | `Nyanotrasen` | Nyanotrasen | https://github.com/Nyanotrasen/Nyanotrasen | MIT |
 | `_StarLight` | StarLight | https://github.com/ss14Starlight/space-station-14 | MIT |
 | `_RMC14` | RMC-14 | https://github.com/RMC-14/RMC-14 | MIT |
+| `_FarHorizons` | Far-Horizons | https://github.com/Far-Horizons-SS14/Far-Horizons-SS14.git | MIT |
+| `_Crescent` | Hullrot | https://github.com/Sector-Crescent/Hullrot.git | AGPL 3.0|
 
 Additional repos that we have ported features from without subdirectories are listed below.
 

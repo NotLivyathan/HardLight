@@ -37,7 +37,13 @@ public sealed class PlantAnalyzerSystem : EntitySystem
             return;
 
         if (ent.Comp.DoAfter != null)
-            return;
+        {
+            // If the referenced DoAfter already finished or was cancelled, clear the stale reference.
+            if (!_doAfterSystem.IsRunning(ent.Comp.DoAfter.Value))
+                ent.Comp.DoAfter = null;
+            else
+                return;
+        }
 
         if (HasComp<SeedComponent>(args.Target) || TryComp<PlantHolderComponent>(args.Target, out var plantHolder) && plantHolder.Seed != null || TryComp<BotanySwabComponent>(args.Target, out var swabComp) && swabComp.SeedData != null)
         {
@@ -412,7 +418,10 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                 WeedTolerance = seedData.WeedTolerance,
                 Mutations = GetMutationFlags(seedData)
             };
-
+            for(int i=0;i<ret.SeedChem.Length;i++) 
+            {            
+                ret.SeedChem[i] += seedData.Chemicals[ret.SeedChem[i]].Max;
+            }
             ret.AdvancedInfo = advancedInfo;
         }
         return ret;

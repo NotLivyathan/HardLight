@@ -8,7 +8,7 @@
   id: LizardShoutEasternDragon
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _White/Mobs/Customization/snouts.rsi
     state: eastern_dragon
@@ -19,7 +19,7 @@
   id: LizardShoutEasternDragonUsiki
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _White/Mobs/Customization/snouts.rsi
     state: eastern_dragon

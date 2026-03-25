@@ -57,9 +57,9 @@
 
 - type: jobIcon
   parent: JobIcon
-  id: JobIconIntel
+  id: JobIconNaval
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi # place holder
     state: ColComm # place holder
-  jobName: job-name-intelligence
+  jobName: job-name-naval
   allowSelection: false

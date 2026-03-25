@@ -1,0 +1,19 @@
+- type: guideEntry
+  id: Protogen
+  name: species-name-protogen
+  text: "/ServerInfo/_FarHorizons/Guidebook/Mobs/Protogen.xml"
+  children:
+  - ProtoArachnid
+  - ProtoAvali
+  - ProtoDionae
+  - ProtoDawi
+  - ProtoFeline
+  - ProtoHumie
+  - ProtoSlimePerson
+  - ProtoMoth
+  - ProtoReptile
+  - ProtoResomi
+  - ProtoKin
+  - ProtoVox
+  - ProtoVulp
+  - ProtoThaven

@@ -76,9 +76,10 @@ namespace Content.Server.Database
         {
             await using var db = await GetDb();
 
-            await SetSelectedCharacterSlotAsync(userId, index, db.DbContext);
-
-            await db.DbContext.SaveChangesAsync();
+            await db.DbContext.Preference
+                .Where(p => p.UserId == userId.UserId)
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(p => p.SelectedCharacterSlot, index));
         }
 
         public async Task SaveCharacterSlotAsync(NetUserId userId, ICharacterProfile? profile, int slot)
@@ -246,6 +247,14 @@ namespace Content.Server.Database
                 loadouts[role.RoleName] = loadout;
             }
 
+            // Far Horizons Start - Subspecies
+            RoleLoadout? speciesLoadout = null;
+            if (loadouts.Remove(HumanoidCharacterProfile.SpeciesLoadoutDatabaseKey, out var speciesLoadoutValue))
+            {
+                speciesLoadout = speciesLoadoutValue;
+            }
+            // Far Horizons End
+
             // Get the company with fallback to default "None"
             var company = profile.Company ?? "None";
 
@@ -286,7 +295,8 @@ namespace Content.Server.Database
                 antags.ToHashSet(),
                 traits.ToHashSet(),
                 loadouts,
-                company);
+                company,
+                speciesLoadout); // Far Horizons
         }
 
         private static Profile ConvertProfiles(HumanoidCharacterProfile humanoid, int slot, Profile? profile = null)
@@ -346,7 +356,13 @@ namespace Content.Server.Database
 
             profile.Loadouts.Clear();
 
-            foreach (var (role, loadouts) in humanoid.Loadouts)
+            // Far Horizons-Start - Include species loadout in serialized loadouts
+            Dictionary<string, RoleLoadout> allLoadouts = new(humanoid.Loadouts);
+            if (humanoid.SpeciesLoadout != null)
+                allLoadouts[HumanoidCharacterProfile.SpeciesLoadoutDatabaseKey] = humanoid.SpeciesLoadout;
+            // Far Horizons-End
+
+            foreach (var (role, loadouts) in allLoadouts) // Far Horizons
             {
                 var dz = new ProfileRoleLoadout()
                 {
@@ -585,20 +601,28 @@ namespace Content.Server.Database
         {
             await using var db = await GetDb();
 
+            var consolidatedUpdates = updates
+                .GroupBy(u => (u.User.UserId, u.Tracker))
+                .Select(g => g.Last())
+                .ToArray();
+
+            if (consolidatedUpdates.Length == 0)
+                return;
+
             // Ideally I would just be able to send a bunch of UPSERT commands, but EFCore is a pile of garbage.
             // So... In the interest of not making this take forever at high update counts...
             // Bulk-load play time objects for all players involved.
             // This allows us to semi-efficiently load all entities we need in a single DB query.
             // Then we can update & insert without further round-trips to the DB.
 
-            var players = updates.Select(u => u.User.UserId).Distinct().ToArray();
+            var players = consolidatedUpdates.Select(u => u.User.UserId).Distinct().ToArray();
             var dbTimes = (await db.DbContext.PlayTime
                     .Where(p => players.Contains(p.PlayerId))
                     .ToArrayAsync())
                 .GroupBy(p => p.PlayerId)
                 .ToDictionary(g => g.Key, g => g.ToDictionary(p => p.Tracker, p => p));
 
-            foreach (var (user, tracker, time) in updates)
+            foreach (var (user, tracker, time) in consolidatedUpdates)
             {
                 if (dbTimes.TryGetValue(user.UserId, out var userTimes)
                     && userTimes.TryGetValue(tracker, out var ent))
@@ -954,7 +978,7 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({playerDbId}, {id}) ON 
                 try
                 {
                     await using var db = await GetDb();
-                    
+
                     // Get all unique player IDs referenced in these logs
                     var playerIds = logs
                         .SelectMany(log => log.Players)

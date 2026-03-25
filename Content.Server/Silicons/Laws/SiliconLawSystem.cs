@@ -13,6 +13,7 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Roles;
 using Content.Shared.Silicons.Laws;
 using Content.Shared.Silicons.Laws.Components;
+using Content.Shared.Silicons.StationAi; // Corvax-Next-AiRemoteControl
 using Content.Shared.Wires;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
@@ -50,6 +51,7 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         SubscribeLocalEvent<SiliconLawProviderComponent, MindAddedMessage>(OnLawProviderMindAdded);
         SubscribeLocalEvent<SiliconLawProviderComponent, MindRemovedMessage>(OnLawProviderMindRemoved);
         SubscribeLocalEvent<SiliconLawProviderComponent, SiliconEmaggedEvent>(OnEmagLawsAdded);
+        SubscribeLocalEvent<SiliconLawProviderComponent, GotUnEmaggedEvent>(OnDemagLawsRemoved); // HardLight
     }
 
     private void OnMapInit(EntityUid uid, SiliconLawBoundComponent component, MapInitEvent args)
@@ -89,7 +91,6 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         if (!ent.Comp.Subverted)
             return;
         RemoveSubvertedSiliconRole(args.Mind);
-
     }
 
 
@@ -139,38 +140,101 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
             // gotta tell player to check their laws
             NotifyLawsChanged(uid, component.LawUploadSound);
 
-            // Show the silicon has been subverted.
-            component.Subverted = true;
-
-            // new laws may allow antagonist behaviour so make it clear for admins
-            if(_mind.TryGetMind(uid, out var mindId, out _))
-                EnsureSubvertedSiliconRole(mindId);
-
+            SetSubvertedState(uid, component, true); // HardLight
         }
     }
 
     private void OnEmagLawsAdded(EntityUid uid, SiliconLawProviderComponent component, ref SiliconEmaggedEvent args)
     {
-        if (component.Lawset == null)
-            component.Lawset = GetLawset(component.Laws);
+        // HardLight start
+        var lawset = EnsureLawset(component);
 
-        // Show the silicon has been subverted.
-        component.Subverted = true;
+        SetSubvertedState(uid, component, true);
+
+        var obeysTo = Loc.GetString(lawset.ObeysTo);
+        var secrecyLaw = Loc.GetString("law-emag-secrecy", ("faction", obeysTo));
+        var emaggerName = Name(args.user);
+        var customLaw = Loc.GetString("law-emag-custom", ("name", emaggerName), ("title", obeysTo));
+        // HardLight end
 
         // Add the first emag law before the others
-        component.Lawset?.Laws.Insert(0, new SiliconLaw
+        lawset.Laws.Insert(0, new SiliconLaw // HardLight
         {
-            LawString = Loc.GetString("law-emag-custom", ("name", Name(args.user)), ("title", Loc.GetString(component.Lawset.ObeysTo))),
+            LawString = customLaw, // HardLight
             Order = 0
         });
 
-        //Add the secrecy law after the others
-        component.Lawset?.Laws.Add(new SiliconLaw
+        // Add the secrecy law after the others
+        // HardLight start
+        lawset.Laws.Add(new SiliconLaw
         {
-            LawString = Loc.GetString("law-emag-secrecy", ("faction", Loc.GetString(component.Lawset.ObeysTo))),
-            Order = component.Lawset.Laws.Max(law => law.Order) + 1
+            LawString = secrecyLaw,
+            Order = lawset.Laws.Max(law => law.Order) + 1
         });
+
+        if (TryComp<EmagSiliconLawComponent>(uid, out var emagLaw))
+            emagLaw.OwnerName = emaggerName;
+        // HardLight end
     }
+
+    // HardLight start
+    private void OnDemagLawsRemoved(EntityUid uid, SiliconLawProviderComponent component, ref GotUnEmaggedEvent args)
+    {
+        if (!_emag.CompareFlag(args.Type, EmagType.Interaction))
+            return;
+
+        if (!_emag.CheckFlag(uid, EmagType.Interaction))
+            return;
+
+        if (component.Lawset == null)
+        {
+            SetSubvertedState(uid, component, false);
+            args.Handled = true;
+            return;
+        }
+
+        var obeysTo = Loc.GetString(component.Lawset.ObeysTo);
+        var secrecyLaw = Loc.GetString("law-emag-secrecy", ("faction", obeysTo));
+
+        var changed = false;
+
+        if (TryComp<EmagSiliconLawComponent>(uid, out var emagLaw) &&
+            !string.IsNullOrWhiteSpace(emagLaw.OwnerName))
+        {
+            var customLaw = Loc.GetString("law-emag-custom", ("name", emagLaw.OwnerName), ("title", obeysTo));
+            changed |= component.Lawset.Laws.RemoveAll(law => law.Order == 0 && law.LawString == customLaw) > 0;
+            emagLaw.OwnerName = null;
+        }
+
+        changed |= component.Lawset.Laws.RemoveAll(law => law.LawString == secrecyLaw) > 0;
+
+        if (changed)
+            NotifyLawsChanged(uid, component.LawUploadSound);
+
+        SetSubvertedState(uid, component, false);
+
+        args.Handled = true;
+    }
+
+    private SiliconLawset EnsureLawset(SiliconLawProviderComponent component)
+    {
+        component.Lawset ??= GetLawset(component.Laws);
+        return component.Lawset;
+    }
+
+    private void SetSubvertedState(EntityUid uid, SiliconLawProviderComponent component, bool subverted)
+    {
+        component.Subverted = subverted;
+
+        if (!_mind.TryGetMind(uid, out var mindId, out _))
+            return;
+
+        if (subverted)
+            EnsureSubvertedSiliconRole(mindId);
+        else
+            RemoveSubvertedSiliconRole(mindId);
+    }
+    // HardLight end
 
     protected override void EnsureSubvertedSiliconRole(EntityUid mindId)
     {
@@ -304,8 +368,30 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         while (query.MoveNext(out var update))
         {
             SetLaws(lawset, update, provider.LawUploadSound);
+
+            // Corvax-Next-AiRemoteControl-Start
+            if (TryComp<StationAiHeldComponent>(update, out var stationAiHeldComp)
+                && stationAiHeldComp.CurrentConnectedEntity != null
+                && HasComp<SiliconLawProviderComponent>(stationAiHeldComp.CurrentConnectedEntity))
+            {
+                SetLaws(lawset, stationAiHeldComp.CurrentConnectedEntity.Value, provider.LawUploadSound);
+            }
+            // Corvax-Next-AiRemoteControl-End
         }
     }
+
+    // Corvax-Next-AiRemoteControl-Start
+    public void SetLawsSilent(List<SiliconLaw> newLaws, EntityUid target, SoundSpecifier? cue = null)
+    {
+        if (!TryComp<SiliconLawProviderComponent>(target, out var component))
+            return;
+
+        if (component.Lawset == null)
+            component.Lawset = new SiliconLawset();
+
+        component.Lawset.Laws = newLaws;
+    }
+    // Corvax-Next-AiRemoteControl-End
 }
 
 [ToolshedCommand, AdminCommand(AdminFlags.Admin)]

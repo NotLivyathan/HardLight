@@ -13,7 +13,7 @@
   access:
   - CentralCommand
   - Directorate
-  - Intelligence
+  - Naval
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant, DeathRattleImplantColcomm ]

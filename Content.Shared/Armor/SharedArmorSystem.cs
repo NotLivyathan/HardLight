@@ -1,5 +1,6 @@
-﻿using Content.Shared.Damage;
+using Content.Shared.Damage;
 using Content.Shared.Examine;
+using Content.Shared.Interaction.Components; // Far Horizons
 using Content.Shared.Inventory;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Verbs;
@@ -32,6 +33,11 @@ public abstract class SharedArmorSystem : EntitySystem
     /// <param name="args">The event, contains the running count of armor percentage as a coefficient</param>
     private void OnCoefficientQuery(Entity<ArmorComponent> ent, ref InventoryRelayedEvent<CoefficientQueryEvent> args)
     {
+        // Far Horizons-Start - Protogen armor bypass
+        if (args.Args.IgnoreUnremovable && HasComp<UnremoveableComponent>(ent.Owner))
+            return;
+        // Far Horizons-End
+
         foreach (var armorCoefficient in ent.Comp.Modifiers.Coefficients)
         {
             args.Args.DamageModifiers.Coefficients[armorCoefficient.Key] = args.Args.DamageModifiers.Coefficients.TryGetValue(armorCoefficient.Key, out var coefficient) ? coefficient * armorCoefficient.Value : armorCoefficient.Value;
@@ -54,6 +60,9 @@ public abstract class SharedArmorSystem : EntitySystem
         if (!args.CanInteract || !args.CanAccess || !component.ShowArmorOnExamine)
             return;
 
+        if (component.Modifiers == null)
+            return;
+
         var examineMarkup = GetArmorExamine(component.Modifiers);
 
         var ev = new ArmorExamineEvent(examineMarkup);
@@ -69,8 +78,14 @@ public abstract class SharedArmorSystem : EntitySystem
         var msg = new FormattedMessage();
         msg.AddMarkupOrThrow(Loc.GetString("armor-examine"));
 
+        if (armorModifiers == null)
+            return msg;
+
         foreach (var coefficientArmor in armorModifiers.Coefficients)
         {
+            if (string.IsNullOrEmpty(coefficientArmor.Key))
+                continue;
+
             msg.PushNewline();
 
             var armorType = Loc.GetString("armor-damage-type-" + coefficientArmor.Key.ToLower());
@@ -82,6 +97,9 @@ public abstract class SharedArmorSystem : EntitySystem
 
         foreach (var flatArmor in armorModifiers.FlatReduction)
         {
+            if (string.IsNullOrEmpty(flatArmor.Key))
+                continue;
+
             msg.PushNewline();
 
             var armorType = Loc.GetString("armor-damage-type-" + flatArmor.Key.ToLower());

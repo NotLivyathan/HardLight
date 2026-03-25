@@ -24,7 +24,7 @@
     range: 500
   - type: Gun
     fireRate: 0.1
-    recoil: 2500 # 100x
+    recoil: 0 # 100x
     minAngle: 0
     maxAngle: 0
     burstCooldown: 20
@@ -73,6 +73,7 @@
   - type: RadarBlip
     radarColor: "#D90000"
     scale: 4
+    shape: square
     visibleFromOtherGrids: true
   - type: ShipGunType
     shipType: Ballistic

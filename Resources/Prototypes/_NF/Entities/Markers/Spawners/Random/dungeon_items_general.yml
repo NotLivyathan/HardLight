@@ -534,7 +534,7 @@
     chance: 1
     offset: 0.0
     rarePrototypes:
-    - VendingMachineMagivend
+    # - VendingMachineMagivend # Hardlight: Removed. No Real Wizards allowed.
     - VendingMachineArcadia
     - VendingMachineRMCDrobe
     - VendingMachineBountyVendPunk

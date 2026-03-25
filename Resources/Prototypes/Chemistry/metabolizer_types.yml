@@ -56,3 +56,7 @@
 - type: metabolizerType # HardLight
   id: Synth
   name: metabolizer-type-synth
+
+- type: metabolizerType # HardLight
+  id: Dreadtalon
+  name: metabolizer-type-dreadtalon

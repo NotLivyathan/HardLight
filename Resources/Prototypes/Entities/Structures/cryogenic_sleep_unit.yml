@@ -8,9 +8,10 @@
 #  - type: Anchorable
 #    flags:
 #    - Anchorable
+  - type: Transform
+    noRot: false
   - type: Rotatable
   - type: Sprite
-    noRot: true
     sprite: Structures/cryostorage.rsi
     layers:
     - state: sleeper_0

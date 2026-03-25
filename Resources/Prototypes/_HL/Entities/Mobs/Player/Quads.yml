@@ -30,6 +30,8 @@
         - BorgModuleTool
         - BorgModuleDiagnosis
         - BorgModuleTreatment
+  - type: SurgerySpeedModifier #shitmed
+    speedModifier: 1.75
   - type: ItemSlots
     slots:
       cell_slot:
@@ -37,7 +39,7 @@
         startingItem: PowerCellMedium
   - type: RandomMetadata
     nameSegments: [NFNamesBorg]
-    
+
 - type: entity
   id: PlayerBorgQuadsalv
   parent: BorgChassisQuadsalv
@@ -77,7 +79,7 @@
         startingItem: PowerCellMedium
   - type: RandomMetadata
     nameSegments: [NFNamesBorg]
-    
+
 - type: entity
   id: PlayerBorgQuad
   parent: BorgChassisQuadSec
@@ -99,3 +101,75 @@
         startingItem: PowerCellMedium
   - type: RandomMetadata
     nameSegments: [NFNamesBorg]
+
+- type: entity
+  id: BorgChassisQuadMoss
+  parent: BorgChassisQuadserv
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: quadspritemoss
+      map: ["movement"]
+    - state: quadspriteservl
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: quadspriteservr
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: quadspritemoss_moving
+    noMovementLayers:
+      movement:
+        state: quadspritemoss
+  # HardLight start: Added encryption key slots in addition to intrinsic radio channels.
+  - type: EncryptionKeyHolder
+    keySlots: 10
+    preserveExistingChannels: true
+    intrinsicChannels:
+    - Binary
+    - Science
+    - Service
+    - Common
+  - type: IntrinsicRadioTransmitter
+    intrinsicChannels:
+    - Binary
+    - Science
+    - Service
+    - Common
+  - type: ActiveRadio
+    intrinsicChannels:
+    - Binary
+    - Science
+    - Service
+    - Common
+  # HardLight end
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: quadspritemoss
+    stateOn: quadspritemossballz
+    movementStateOff: quadspritemoss_moving
+    movementStateOn: quadspritemoss_movingballz
+    
+- type: entity
+  id: PlayerBorgQuadMoss
+  parent: BorgChassisQuadMoss
+  name: Pending
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium

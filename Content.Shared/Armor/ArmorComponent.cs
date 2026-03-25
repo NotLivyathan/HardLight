@@ -1,4 +1,4 @@
-﻿using Content.Shared.Damage;
+using Content.Shared.Damage;
 using Content.Shared.Inventory;
 using Robust.Shared.GameStates;
 using Robust.Shared.Utility;
@@ -53,8 +53,13 @@ public sealed class CoefficientQueryEvent : EntityEventArgs, IInventoryRelayEven
     /// </summary>
     public DamageModifierSet DamageModifiers { get; set; } = new DamageModifierSet();
 
-    public CoefficientQueryEvent(SlotFlags slots)
+    // Far Horizons-Start - Protogen Armor Bypass
+    public bool IgnoreUnremovable = false;
+
+    public CoefficientQueryEvent(SlotFlags slots, bool ignoreUnremovable = false)
     {
         TargetSlots = slots;
+        IgnoreUnremovable = ignoreUnremovable;
     }
+    // Far Horizons-End
 }

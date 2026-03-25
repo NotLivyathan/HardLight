@@ -45,6 +45,7 @@ entities:
       parent: invalid
     - type: BecomesStation
       id: Empress
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:

@@ -164,7 +164,8 @@ namespace Content.Shared.Preferences
             HashSet<ProtoId<AntagPrototype>> antagPreferences,
             HashSet<ProtoId<TraitPrototype>> traitPreferences,
             Dictionary<string, RoleLoadout> loadouts,
-            string company = "None")
+            string company = "None",
+            RoleLoadout? speciesLoadout = null) // Far Horizons
         {
             Name = name;
             FlavorText = flavortext;
@@ -182,6 +183,7 @@ namespace Content.Shared.Preferences
             _traitPreferences = traitPreferences;
             _loadouts = loadouts;
             Company = company;
+            SpeciesLoadout = speciesLoadout; // Far Horizons
         }
 
         /// <summary>Copy constructor but with overridable references (to prevent useless copies)</summary>
@@ -213,7 +215,8 @@ namespace Content.Shared.Preferences
                 new HashSet<ProtoId<AntagPrototype>>(other.AntagPreferences),
                 new HashSet<ProtoId<TraitPrototype>>(other.TraitPreferences),
                 new Dictionary<string, RoleLoadout>(other.Loadouts),
-                other.Company)
+                other.Company,
+                other.SpeciesLoadout) // Far Horizons
         {
         }
 
@@ -235,10 +238,25 @@ namespace Content.Shared.Preferences
         {
             species ??= SharedHumanoidAppearanceSystem.DefaultSpecies;
 
-            return new()
+            // Far Horizons Start - Subspecies
+            var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
+            var speciesProto = prototypeManager.Index<SpeciesPrototype>(species);
+
+            var profile = new HumanoidCharacterProfile()
             {
                 Species = species,
+                Appearance = HumanoidCharacterAppearance.DefaultWithSpecies(species),
             };
+
+            RoleLoadout? loadout = null;
+            if (speciesProto.Loadout != null)
+            {
+                loadout = new(speciesProto.Loadout.Value);
+                loadout.SetDefault(profile, null, prototypeManager);
+            }
+
+            return profile.WithSpeciesLoadout(loadout);
+            // Far Horizons End
         }
 
         // TODO: This should eventually not be a visual change only.
@@ -284,7 +302,7 @@ namespace Content.Shared.Preferences
             }
 
             var name = GetName(species, gender);
-            return new HumanoidCharacterProfile()
+            var profile = new HumanoidCharacterProfile() // Far Horizons
             {
                 Name = name,
                 Sex = sex,
@@ -293,6 +311,17 @@ namespace Content.Shared.Preferences
                 Species = species,
                 Appearance = HumanoidCharacterAppearance.Random(species, sex),
             };
+
+            // Far Horizons Start - Subspecies
+            RoleLoadout? speciesLoadout = null;
+            if (speciesPrototype != null && speciesPrototype.Loadout != null)
+            {
+                speciesLoadout = new(speciesPrototype.Loadout.Value);
+                speciesLoadout.SetDefault(profile, null, prototypeManager);
+            }
+
+            return profile.WithSpeciesLoadout(speciesLoadout);
+            // Far Horizons End
         }
 
         public HumanoidCharacterProfile WithName(string name)
@@ -498,6 +527,7 @@ namespace Content.Shared.Preferences
             if (!_traitPreferences.SequenceEqual(other._traitPreferences)) return false;
             if (FlavorText != other.FlavorText) return false;
             if (!Appearance.MemberwiseEquals(other.Appearance)) return false;
+            if (!SpeciesLoadoutEquals(SpeciesLoadout, other.SpeciesLoadout)) return false; // Far Horizons
 
             // Compare loadouts
             if (Loadouts.Count != other.Loadouts.Count)
@@ -696,6 +726,17 @@ namespace Content.Shared.Preferences
             {
                 _loadouts.Remove(value);
             }
+
+            // Far Horizons-Start - Species loadout validation
+            if (speciesPrototype.Loadout == null)
+                SpeciesLoadout = null;
+            else
+            {
+                SpeciesLoadout ??= new RoleLoadout(speciesPrototype.Loadout.Value);
+                SpeciesLoadout.Role = speciesPrototype.Loadout.Value;
+                SpeciesLoadout.SetDefault(this, session, prototypeManager);
+            }
+            // Far Horizons-End
         }
 
         /// <summary>
@@ -756,6 +797,7 @@ namespace Content.Shared.Preferences
             hashCode.Add(BankBalance); // Frontier
             hashCode.Add((int)SpawnPriority);
             hashCode.Add((int)PreferenceUnavailable);
+            hashCode.Add(SpeciesLoadout); // Far Horizons
             return hashCode.ToHashCode();
         }
 

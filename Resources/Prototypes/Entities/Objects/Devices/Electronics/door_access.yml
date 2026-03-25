@@ -347,8 +347,8 @@
     
 - type: entity
   parent: DoorElectronics
-  id: DoorElectronicsCCIntelligence
-  suffix: Intelligence, Locked
+  id: DoorElectronicsCCNaval
+  suffix: Naval, Locked
   components:
   - type: AccessReader
-    access: [["Intelligence"]]
+    access: [["Naval"]]

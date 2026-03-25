@@ -1,0 +1,388 @@
+- type: entity
+  name: DreadTalon
+  id: dreadtalonbase
+  parent: MobSpaceBasic
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: dreadtalon
+  - type: CombatMode
+    canDisarm: false
+  - type: InputMover
+  - type: MobMover
+  - type: GhostTakeoverAvailable
+  - type: TypingIndicator
+    proto: alien
+  - type: Tag
+    tags:
+      - CannotSuicide
+      - DoorBumpOpener
+      - FootstepSound
+  - type: NoSlip
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: dreadtalon
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+  - type: ReplacementAccent
+    accent: genericAggressive
+  - type: Vocal
+    sounds:
+      Unsexed: Bear
+  - type: InteractionPopup
+    successChance: 0.25
+    interactSuccessString: petting-success-bear
+    interactFailureString: petting-failure-bear
+    interactSuccessSound:
+      path: /Audio/Animals/sloth_squeak.ogg
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.25
+        density: 1000
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepSmallThud
+  - type: PlateletFactories
+    intervalSeconds: 1
+    healPerSecond: .1
+    critMultiplier: .01
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Dreadtalon
+    radiationDamageTypes: []
+  - type: RadiationHealing
+    healPerRad: 1
+  - type: Tool
+    speedModifier: 5
+    qualities:
+      - Prying
+  - type: Prying
+    pryPowered: true
+    force: true
+    useSound:
+      path: /Audio/Items/crowbar.ogg
+  - type: Reactive
+    groups:
+      Flammable: [Touch]
+      Extinguish: [Touch]
+  - type: MobState
+  - type: Deathgasp
+  - type: MobStateActions
+    actions:
+      Critical:
+      - ActionCritSuccumb
+      - ActionCritFakeDeath
+      - ActionCritLastWords
+  - type: BankAccount
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 5
+  - type: Physics
+    bodyType: KinematicController
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      320: Dead
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      150: 0.5
+  - type: Stamina
+    critThreshold: 200
+  - type: Bloodstream
+    bloodReagent: UnstableMutagen
+    bloodMaxVolume: 650
+  - type: LayingDown
+  - type: Hands
+  - type: Body
+    prototype: Dreadtalon
+  - type: ThermalVision # Starlight
+  - type: Access
+  - type: Puller
+    needsHands: false
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+     collection: AlienClaw
+    animation: WeaponArcBite
+    wideAnimation: WeaponArcClaw
+    damage:
+      types:
+        Slash: 33
+        Radiation: 10
+  - type: CumProducer
+    maxVol: 250
+    reagentId: Radium
+    reVol: 50
+    reHunger: 1
+  - type: JumpAbility
+    action: ActionVulpkaninGravityJump
+    canCollide: true
+    jumpDistance: 6
+    jumpSound:
+      path: /Audio/Weapons/punchmiss.ogg
+      params:
+        pitch: 1.33
+        volume: -5
+        variation: 0.05
+  - type: JumpCollisionKnockback
+    throwForce: 50
+        
+- type: entity
+  name: Hierotitan
+  id: BananaTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: bananatalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: bananatalonglow
+      shader: unshaded
+  - type: ReplacementAccent
+    accent: nocontractions
+  - type: EncryptionKeyHolder
+    keySlots: 10
+    preserveExistingChannels: true
+    intrinsicChannels:
+    - Common
+  - type: IntrinsicRadioTransmitter
+    intrinsicChannels:
+    - Common
+  - type: ActiveRadio
+    intrinsicChannels:
+    - Common
+  - type: AccessReader
+    access: [["Security"], ["Command"], ["Research"], ["Mercenary"]]
+  - type: Inventory
+    templateId: friendxeno
+  - type: NpcFactionMember
+    factions:
+    - PetsNT
+  - type: ComplexInteraction
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: bananatalon
+        BaseUnshaded: bananatalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: QuantumDreadTalon
+  id: BlueTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: Bluetalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: bluetalonglow
+      shader: unshaded
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      450: Dead
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: Bluetalon
+        BaseUnshaded: bluetalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: LavalandDreadTalon
+  id: LavaTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: lavatalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: lavatalonglow
+      shader: unshaded
+  - type: MeleeWeapon
+    damage:
+      types:
+        Heat: 25
+        Radiation: 10
+        Slash: 5
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: lavatalon
+        BaseUnshaded: lavatalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: PlasmaDreadTalon
+  id: PlasmaTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: plastalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: plastalonglow
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: plastalon
+        BaseUnshaded: plastalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: Grav DreadTalon
+  id: GravTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: singutalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: singutalonglow
+      shader: unshaded
+  - type: MeleeWeapon
+    damage:
+      types:
+        Blunt: 25
+        Radiation: 25
+        Structural: 200
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      500: Dead
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: singutalon
+        BaseUnshaded: singutalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: SM DreadTalon
+  id: SuperTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: supertalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: supertalonglow
+      shader: unshaded
+  - type: MeleeWeapon
+    damage:
+      types:
+        Slash: 35
+        Radiation: 15
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      350: Critical
+      600: Dead
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: supertalon
+        BaseUnshaded: supertalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+        
+- type: entity
+  name: radioactive DreadTalon
+  id: TriTalon
+  parent: dreadtalonbase
+  description: It looks friendly. Why don't you give it a hug?
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _HL/Mobs/Aliens/dreadtalon.rsi
+    scale: 0.7, 0.7
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: tritalon
+    - map: [ "enum.DamageStateVisualLayers.BaseUnshaded" ]
+      state: tritalonglow
+      shader: unshaded
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: tritalon
+        BaseUnshaded: tritalonglow
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead

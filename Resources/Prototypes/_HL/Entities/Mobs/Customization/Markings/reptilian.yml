@@ -2,7 +2,7 @@
   id: ReptilianChestUnderbellyFeminine
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Reptilian]
+  speciesRestriction: [Skrell, Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/underbellyfemale.rsi
     state: body_underbelly
@@ -11,7 +11,7 @@
   id: ReptilianChestFemaleAlternate
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Reptilian]
+  speciesRestriction: [Skrell, Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/chest_female_alternate.rsi
     state: chest
@@ -24,7 +24,7 @@
   id: ReptilianTailNaga
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Reptilian, Human]
+  speciesRestriction: [Skrell, Reptilian, Human, ProtoReptile]
   sprites:
     - sprite: _HL/Mobs/Customization/Reptilian/naga.rsi
       state: naga_primary
@@ -35,7 +35,7 @@
   id: ReptilianTailNagaStriped
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Reptilian, Human]
+  speciesRestriction: [Skrell, Reptilian, Human, ProtoReptile]
   sprites:
     - sprite: _HL/Mobs/Customization/Reptilian/naga.rsi
       state: naga_striped_primary
@@ -48,7 +48,7 @@
   id: ReptilianTailNagaRattlesnake
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Reptilian, Human]
+  speciesRestriction: [Skrell, Reptilian, Human, ProtoReptile]
   sprites:
     - sprite: _HL/Mobs/Customization/Reptilian/naga.rsi
       state: naga_rattlesnake_primary
@@ -63,7 +63,7 @@
   id: XenoSpineGorjira
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_spines.rsi
     state: xeno_gorjira
@@ -72,7 +72,7 @@
   id: XenoSpineOsteospines
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_spines.rsi
     state: xeno_osteospines
@@ -81,7 +81,7 @@
   id: XenoSpineSpinosaurus
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_spines.rsi
     state: xeno_spinosaurus
@@ -90,7 +90,7 @@
   id: XenoSpineXenomorph
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_spines.rsi
     state: xeno_xenomorph
@@ -101,7 +101,7 @@
   id: XenoTailCurl
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_tails.rsi
     state: xeno_curl
@@ -110,7 +110,7 @@
   id: XenoTailSpike
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_tails.rsi
     state: xeno_spike
@@ -119,7 +119,7 @@
   id: XenoTailSpined
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Reptilian]
+  speciesRestriction: [Reptilian, ProtoReptile]
   sprites:
   - sprite: _HL/Mobs/Customization/Reptilian/xeno_tails.rsi
     state: xeno_spined

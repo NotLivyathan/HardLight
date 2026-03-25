@@ -20,6 +20,10 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
 using Content.Shared.Body.Systems; // Shitmed Change
+using Content.Server._FarHorizons.Medical.ConditionalHealing; // Far Horizons
+using Content.Shared._FarHorizons.Medical.ConditionalHealing; // Far Horizons
+using Content.Shared.Eye.Blinding.Components; // Far Horizons
+using Content.Shared.Eye.Blinding.Systems; // Far Horizons
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Audio;
@@ -44,6 +48,8 @@ public sealed class HealingSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
+    [Dependency] private readonly ConditionalHealingSystem _conditionalHealing = default!; // Far Horizons
+    [Dependency] private readonly BlindableSystem _blindable = default!; // Far Horizons
 
     public override void Initialize()
     {
@@ -57,17 +63,25 @@ public sealed class HealingSystem : EntitySystem
     {
         var dontRepeat = false;
 
-        if (!TryComp(args.Used, out HealingComponent? healing))
-            return;
-
         if (args.Handled || args.Cancelled)
             return;
+
+        if (!TryComp(args.Used, out HealingComponent? healing))
+        {
+            // Far Horizons, handle fake components from conditional healing
+            if(args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, entity) is not ConditionalHealingData healingData)
+                return;
+            healing = ConditionalHealingSystem.MakeComponent(healingData);
+        }
 
         if (healing.DamageContainers is not null &&
             entity.Comp.DamageContainerID is not null &&
             !healing.DamageContainers.Contains(entity.Comp.DamageContainerID))
         {
-            return;
+            // Far Horizons, handle fake components from conditional healing
+            if(args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, entity) is not ConditionalHealingData fallbackData)
+                return;
+            healing = ConditionalHealingSystem.MakeComponent(fallbackData);
         }
 
         // Heal some bloodloss damage.
@@ -90,6 +104,11 @@ public sealed class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0)
             _bloodstreamSystem.TryModifyBloodLevel(entity.Owner, healing.ModifyBloodLevel);
 
+        // Far Horizons
+        // Restores vision
+        if (healing.AdjustEyeDamage != 0 && TryComp(entity, out BlindableComponent? blindable))
+            _blindable.AdjustEyeDamage((entity, blindable), healing.AdjustEyeDamage);
+
         // HardLight Change start
         // Determines if the entity is a Synth and scales damage recovery accordingly.
         var damageToApply = healing.Damage;
@@ -101,8 +120,8 @@ public sealed class HealingSystem : EntitySystem
         var healed = _damageable.TryChangeDamage(entity.Owner, damageToApply, true, origin: args.User, canSever: false); // Shitmed Change
 
         // HardLight Change end
-        
-        if (healed == null && healing.BloodlossModifier != 0)
+
+        if (healed == null && healing.BloodlossModifier != 0 && healing.AdjustEyeDamage != 0) // Far Horizons - added eye healing
             return;
 
         var total = healed?.GetTotal() ?? FixedPoint2.Zero;
@@ -147,7 +166,7 @@ public sealed class HealingSystem : EntitySystem
         var healingDict = healing.Damage.DamageDict;
         foreach (var type in healingDict)
         {
-            if (damageableDict[type.Key].Value > 0)
+            if (damageableDict.TryGetValue(type.Key, out var damage) && damage.Value > 0)
             {
                 return true;
             }
@@ -204,7 +223,7 @@ public sealed class HealingSystem : EntitySystem
             args.Handled = true;
     }
 
-    private bool TryHeal(EntityUid uid, EntityUid user, EntityUid target, HealingComponent component)
+    public bool TryHeal(EntityUid uid, EntityUid user, EntityUid target, HealingComponent component) // Far Horizons
     {
         if (!TryComp<DamageableComponent>(target, out var targetDamage))
             return false;

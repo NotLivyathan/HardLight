@@ -545,7 +545,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         var physics = _physQuery.CompOrNull(uid) ?? EnsureComp<PhysicsComponent>(uid);
         Physics.SetBodyStatus(uid, physics, BodyStatus.InAir);
 
-        var targetVelocity = gunVelocity + direction.Normalized() * speed;
+        var targetVelocity = -gunVelocity + direction.Normalized() * speed;
         Physics.SetLinearVelocity(uid, targetVelocity, body: physics);
         // Mono
         if (offset != 0f)
@@ -621,9 +621,11 @@ public abstract partial class SharedGunSystem : EntitySystem
         Angle? angle = null,
         bool playSound = true)
     {
+        if (!TryComp(entity, out TransformComponent? xform))
+            return;
+
         // TODO: Sound limit version.
         var offsetPos = Random.NextVector2(EjectOffset);
-        var xform = Transform(entity);
 
         var coordinates = xform.Coordinates;
         coordinates = coordinates.Offset(offsetPos);

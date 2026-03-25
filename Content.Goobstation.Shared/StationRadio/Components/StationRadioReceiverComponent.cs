@@ -1,3 +1,4 @@
+using System;
 using Robust.Shared.GameStates;
 
 namespace Content.Goobstation.Shared.StationRadio.Components;
@@ -8,7 +9,7 @@ public sealed partial class StationRadioReceiverComponent : Component
     /// <summary>
     /// The sound entity being played
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [NonSerialized]
     public EntityUid? SoundEntity;
 
     /// <summary>

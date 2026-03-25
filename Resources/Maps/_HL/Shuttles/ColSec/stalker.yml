@@ -1,6 +1,6 @@
 meta:
   format: 7
-  category: Map
+  category: Grid
   engineVersion: 267.3.0
   forkId: ""
   forkVersion: ""
@@ -479,6 +479,7 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Stalker
+    - type: InitRepairSnapshot
     - type: IFF
       color: '#FFFFFFFF'
   - uid: 733

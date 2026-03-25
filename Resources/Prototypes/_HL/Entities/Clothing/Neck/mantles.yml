@@ -136,3 +136,15 @@
     sprite: _HL/Clothing/Neck/mantles/colcommmantle.rsi
   - type: Clothing
     sprite: _HL/Clothing/Neck/mantles/colcommmantle.rsi
+
+# S.I.N Mantle
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckMantleSIN
+  name: S.I.N Mantle
+  description: A handcrafted mantle for those of high standing within S.I.N.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Neck/mantles/sinmantle.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Neck/mantles/sinmantle.rsi

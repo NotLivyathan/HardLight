@@ -1671,3 +1671,266 @@ Entries:
       message: Fixes Station Captain spawn on Fland
   id: 180
   time: '2026-03-09T01:35:09.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added monolith changes to blips and shuttle combat
+    - type: Fix
+      message: 'Fixed radars. '
+  id: 181
+  time: '2026-03-12T03:55:30.0000000+00:00'
+- author: Sully669
+  changes:
+    - type: Add
+      message: more interdyne equipment
+  id: 182
+  time: '2026-03-12T03:56:39.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        Governor Override Collars (which allow IC editing of Quadborg laws) have
+        been added as part of the Research Director's kit.
+    - type: Fix
+      message: >-
+        Demags should no longer cause Cyborg panels to become permanently stuck
+        open and now correctly remove emagged laws.
+  id: 183
+  time: '2026-03-12T03:57:09.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Add
+      message: >-
+        Flowers that can be Chameleoned for a perfect, ever-long lasting head
+        accessory that will never wilt.
+  id: 184
+  time: '2026-03-12T04:11:20.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Fix
+      message: Plant analyzers no longer brick after failing a DoAfter check.
+    - type: Fix
+      message: Air Alarms now save their device lists.
+    - type: Fix
+      message: >-
+        Plumbing devices should now load properly when a ship is loaded.  The
+        code is ugly but it works.
+  id: 185
+  time: '2026-03-12T04:11:45.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Tweak
+      message: Tweaked WT-550 top mags and ammo acceptance to take the mags.
+  id: 186
+  time: '2026-03-12T04:14:00.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Add
+      message: Added the C.C.S Herzyn to Sec and ColSec Shipyards
+  id: 187
+  time: '2026-03-14T00:55:57.0000000+00:00'
+- author: IrkallaEpsilon
+  changes:
+    - type: Fix
+      message: 5.56 mm mags now are again at their regular 30 round capacity.
+    - type: Fix
+      message: 5.7x28mm toploader mag capacity reduced to 26 as initially intended.
+  id: 188
+  time: '2026-03-14T00:56:16.0000000+00:00'
+- author: Generic-Eagle
+  changes:
+    - type: Add
+      message: Added a new maints hallway to Eaglerock, among other changes.
+  id: 189
+  time: '2026-03-14T00:57:57.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Tweak
+      message: >-
+        Shuttle speed is now capped at 50m/s instead of 75, owing to Hardlight
+        having a smaller 'play area' than Frontier or Monolith.
+    - type: Fix
+      message: Weapons fired while moving will now obey physics.
+    - type: Fix
+      message: >-
+        Mining Pulser projectile speed has been increased so you can't shoot
+        yourself with them.
+  id: 190
+  time: '2026-03-15T18:56:45.0000000+00:00'
+- author: Sully669
+  changes:
+    - type: Fix
+      message: Fixed interactions showing target/origin as their uid
+  id: 191
+  time: '2026-03-15T18:57:20.0000000+00:00'
+- author: Sully669
+  changes:
+    - type: Fix
+      message: fixed broken access for genetics and journalism
+  id: 192
+  time: '2026-03-15T18:57:41.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Tweak
+      message: Adjusted radio music volume
+  id: 193
+  time: '2026-03-17T07:19:03.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Tweak
+      message: >-
+        The Nuclear Fabricator Machine Board can now be made in the circuit
+        imprinter with proper research.
+    - type: Add
+      message: >-
+        The Small Nuclear Reactor, Small Turbine, and TEG can now be bought at
+        Cargo.
+  id: 194
+  time: '2026-03-17T07:19:38.0000000+00:00'
+- author: Toaster-Box
+  changes:
+    - type: Tweak
+      message: Reprogrammed our medical Borgs to do surgery like doctors can
+  id: 195
+  time: '2026-03-17T07:50:22.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Add
+      message: Edison Power Plant devices.
+    - type: Add
+      message: AME Fuel Jar generator
+    - type: Add
+      message: Bluespace SMES
+    - type: Add
+      message: Power Transmission Sales Port
+    - type: Add
+      message: Fancy new SMES interface.
+    - type: Add
+      message: Other stuff I forget about, it's 4 AM, sue me.
+  id: 196
+  time: '2026-03-17T07:58:00.0000000+00:00'
+- author: Notarin
+  changes:
+    - type: Add
+      message: Added Andromeda Engineering & Development company.
+  id: 197
+  time: '2026-03-17T07:19:20.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Add
+      message: Added Edison equipment to Eaglerock
+  id: 198
+  time: '2026-03-20T22:28:21.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Add
+      message: >-
+        Part 1 of the Mega-Update to the MercVend. Giving it a large majority of
+        new utility, armors, weapons, etc. To its catalog for reasonable-ish
+        prices.
+    - type: Add
+      message: >-
+        Magazines that were otherwise nearly unobtainable or rare as hell to the
+        list of printable mags at their respective lathes.
+    - type: Fix
+      message: PMC C-20r to make a return as a C2 King of end-game SMGs.
+    - type: Fix
+      message: Forktail to finally be admeme again. Rejoice admins.
+  id: 199
+  time: '2026-03-20T22:29:09.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Fix
+      message: >-
+        Fixes the MagiVend so it never spawns on Expeds anymore. As the man
+        above intended.
+  id: 200
+  time: '2026-03-20T22:30:05.0000000+00:00'
+- author: leonon42
+  changes:
+    - type: Add
+      message: The plant analyzer UI window can now scroll up and down
+  id: 201
+  time: '2026-03-20T22:31:35.0000000+00:00'
+- author: leonon42
+  changes:
+    - type: Add
+      message: >-
+        Plant analyzers can now show the maximum quantity of a reagent they can
+        produce per fruit when using advanced scanning mode
+  id: 202
+  time: '2026-03-20T22:38:01.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        A handful of new markings are now available for Synths—made by
+        GravastarDragon!
+    - type: Tweak
+      message: Synth eye placement has been slightly adjusted.
+  id: 203
+  time: '2026-03-20T22:42:35.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Fix
+      message: >-
+        Fixes the SRD by adding the - type: InitRepairSnapshot component to
+        ships
+  id: 204
+  time: '2026-03-20T23:10:38.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Tweak
+      message: Pulled Changes and fixes from Sandwich
+  id: 205
+  time: '2026-03-20T23:11:06.0000000+00:00'
+- author: LoboFrontale
+  changes:
+    - type: Fix
+      message: Mantis now spawns with the proper loadout!
+  id: 206
+  time: '2026-03-20T23:26:07.0000000+00:00'
+- author: Killer Tamashi
+  changes:
+    - type: Add
+      message: >-
+        Added FarHorizon's Protogens & Protogen Subspecies! (Check PR for
+        details)
+    - type: Add
+      message: Added Subspecies Selection System
+    - type: Add
+      message: Added Species Loadout System
+    - type: Add
+      message: Added Automatic Roundstart Implant Injection
+    - type: Remove
+      message: Removed Monolith's Protogens
+  id: 207
+  time: '2026-03-21T22:34:56.0000000+00:00'
+- author: Iisazel
+  changes:
+    - type: Add
+      message: Added more brass ammo calibers
+  id: 208
+  time: '2026-03-23T18:17:11.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        Passengers are no longer able to purchase or load ships from shipyard
+        consoles.
+  id: 209
+  time: '2026-03-23T18:17:57.0000000+00:00'
+- author: IrkallaEpsilon
+  changes:
+    - type: Fix
+      message: Feroxi and Rodentia can be psykers
+  id: 210
+  time: '2026-03-24T00:44:14.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Add
+      message: You can now make Sap from juicing Tower-Cap Logs
+    - type: Add
+      message: Syrup has had its nutritional value restored.
+  id: 211
+  time: '2026-03-24T05:07:07.0000000+00:00'

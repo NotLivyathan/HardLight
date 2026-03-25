@@ -18,3 +18,80 @@
   logins:
   - Livyathan
   entity: MobDragonLivyathan
+  
+- type: spawnCharacterOverrideRule
+  id: Bananatalononspawn
+  match: RaAmpwave
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - RaAmpwave
+  entity: BananaTalon
+  
+- type: spawnCharacterOverrideRule
+  id: Featheredonspawn
+  match: FeatheredMenace
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - FeatheredMenace
+  entity: XenoQuadfeathered
+
+- type: spawnCharacterOverrideRule
+  id: Glitzonspawn
+  match: RUINtheDRAGON
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - RUINtheDRAGON
+  entity: BorgChassisGl1tz
+  
+- type: spawnCharacterOverrideRule
+  id: Dogborgonspawn
+  match: Rhealis 
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - MyNameIsRune 
+  entity: BorgChassisDog
+  
+- type: spawnCharacterOverrideRule
+  id: Petalborgonspawn
+  match: Petalpool
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Petalpool
+  entity: BorgChassisPetal
+  
+- type: spawnCharacterOverrideRule
+  id: mossborgonspawn
+  match: MystiCanine
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - MystiCanine
+  entity: PlayerBorgQuadMoss
+
+## Component example
+- type: spawnCharacterOverrideRule
+  id: abyssbloodverzi
+  match: Verzical The Watcher
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - VexonOrkali
+  components:
+  - type: DamagedByFlashing
+    flashDamage:
+        types:
+           Heat: 120
+  - type: Bloodstream
+    bloodReagent: AbyssalBlood
+    bloodMaxVolume: 650
+    bloodlossDamage:
+      types:
+        Bloodloss: 0.5
+    bloodlossHealDamage:
+      types:
+        Bloodloss: -1
