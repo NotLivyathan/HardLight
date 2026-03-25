@@ -136,8 +136,7 @@
     components:
     - BorgChassis
   components:
-  - type: GlassJaw
-    critDecrease: 50
+  - type: OsteogenesisImperfecta # HardLight
 
 - type: trait
   id: Hemophilia

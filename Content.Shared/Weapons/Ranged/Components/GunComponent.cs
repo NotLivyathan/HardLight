@@ -290,6 +290,27 @@ public sealed partial class GunComponent : Component
     /// </summary>
     [DataField]
     public float Recoil = 25f;
+
+    // HardLight start
+    /// <summary>
+    /// Cooldown state for handling-rule failure popups.
+    /// Stored on the weapon like normal GunRequiresWield popup state.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan HandlingLastPopup;
+
+    [DataField, AutoNetworkedField]
+    public TimeSpan HandlingPopupCooldown = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// Cooldown state for failed wield-attempt popups.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan WieldFailLastPopup;
+
+    [DataField, AutoNetworkedField]
+    public TimeSpan WieldFailPopupCooldown = TimeSpan.FromSeconds(1);
+    // HardLight end
 }
 
 [Flags]

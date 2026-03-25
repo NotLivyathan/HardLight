@@ -638,13 +638,15 @@ public abstract partial class SharedDoorSystem : EntitySystem
         if (!door.BumpOpen)
             return;
 
-        if (door.State is not (DoorState.Closed or DoorState.Denying))
+        // HardLight: Ignore bump attempts while denying to avoid repeated predicted re-checks
+        // from contact churn retriggering deny visuals.
+        if (door.State != DoorState.Closed) // HardLight: Added !=
             return;
 
         var otherUid = args.OtherEntity;
 
         if (Tags.HasTag(otherUid, DoorBumpTag))
-            TryOpen(uid, door, otherUid, quiet: door.State == DoorState.Denying, predicted: true);
+            TryOpen(uid, door, otherUid, quiet: false, predicted: true); // HardLight: door.State == DoorState.Denying<false
     }
     #endregion
 

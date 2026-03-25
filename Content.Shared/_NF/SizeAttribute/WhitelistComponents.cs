@@ -12,8 +12,19 @@ public sealed partial class TallWhitelistComponent : Component
     [DataField("scale")]
     public float Scale = 1f;
 
+    // HardLight start
+    [DataField("borgScale")]
+    public float? BorgScale;
+
+    [DataField("borgFixtureRadius")]
+    public float? BorgFixtureRadius;
+    // HardLight end
+
     [DataField("density")]
-    public float Density = 1f;
+    public float Density = 0f; // HardLight: 1f<0f
+
+    [DataField("densityMultiplier")] // HardLight
+    public float DensityMultiplier = 1f;
 
     [DataField("cosmeticOnly")]
     public bool CosmeticOnly = true;
@@ -41,8 +52,19 @@ public sealed partial class ShortWhitelistComponent : Component
     [DataField("scale")]
     public float Scale = 1f;
 
+    // HardLight start
+    [DataField("borgScale")]
+    public float? BorgScale;
+
+    [DataField("borgFixtureRadius")]
+    public float? BorgFixtureRadius;
+    // HardLight end
+
     [DataField("density")]
-    public float Density = 1f;
+    public float Density = 0f; // HardLight: 1f<0f
+
+    [DataField("densityMultiplier")] // HardLight
+    public float DensityMultiplier = 1f;
 
     [DataField("cosmeticOnly")]
     public bool CosmeticOnly = true;

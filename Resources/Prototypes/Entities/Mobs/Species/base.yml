@@ -209,6 +209,10 @@
       enum.SurgeryUIKey.Key:
         type: SurgeryBui
   - type: Puller
+  - type: CrawlUnderObjects # HardLight
+    sneakSpeedModifier: 0.55
+    squeezeRadiusScale: 0.9
+    unsqueezedRadiusScale: 1.0
   - type: Speech
     speechSounds: Alto
   - type: DamageForceSay
