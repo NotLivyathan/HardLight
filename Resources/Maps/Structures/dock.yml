@@ -87,6 +87,7 @@ entities:
       bodyType: Dynamic
     - type: Fixtures
       fixtures: {}
+    - type: ForceAnchor
     - type: OccluderTree
     - type: SpreaderGrid
     - type: Shuttle
