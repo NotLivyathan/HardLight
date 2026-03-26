@@ -385,7 +385,7 @@ public sealed class RCDSystem : EntitySystem
         var tile = _mapSystem.GetTileRef(gridUid, mapGrid, location);
         var position = _mapSystem.TileIndicesFor(gridUid, mapGrid, location);
 
-        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, args.Event.Direction, args.Event.Target, args.Event.User))
+        if (!IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position, args.Event.Direction, args.Event.Target, args.Event.User))
             args.Cancel();
     }
 
@@ -414,7 +414,7 @@ public sealed class RCDSystem : EntitySystem
         var position = _mapSystem.TileIndicesFor(gridUid, mapGrid, location);
 
         // Ensure the RCD operation is still valid
-        if (!IsRCDOperationStillValid(uid, component, gridUid.Value, mapGrid, tile, position, args.Direction, args.Target, args.User))
+        if (!IsRCDOperationStillValid(uid, component, gridUid, mapGrid, tile, position, args.Direction, args.Target, args.User))
             return;
 
         // Finalize the operation (this should handle prediction properly)
@@ -534,7 +534,7 @@ public sealed class RCDSystem : EntitySystem
         if (prototype.Mode == RcdMode.ConstructTile)
         {
             // Check rule: Tile placement is valid
-            if (!_floors.CanPlaceTile(gridUid, mapGrid, tile.GridIndices, null, out var reason)) // Frontier: add null
+            if (!_floors.CanPlaceTile(gridUid, mapGrid, tile.GridIndices, out var reason))
             {
                 if (popMsgs)
                     _popup.PopupClient(reason, uid, user);
@@ -542,7 +542,7 @@ public sealed class RCDSystem : EntitySystem
                 return false;
             }
 
-            var tileDef = _turf.GetContentTileDefinition(tile);
+            var tileDef = tile.GetContentTileDefinition();
 
             // Check rule: Respect baseTurf and baseWhitelist
             if (prototype.Prototype != null && _tileDefMan.TryGetDefinition(prototype.Prototype, out var replacementDef))
