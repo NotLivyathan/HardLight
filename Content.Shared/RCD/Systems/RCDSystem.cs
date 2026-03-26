@@ -534,7 +534,7 @@ public sealed class RCDSystem : EntitySystem
         if (prototype.Mode == RcdMode.ConstructTile)
         {
             // Check rule: Tile placement is valid
-            if (!_floors.CanPlaceTile(gridUid, mapGrid, null, out var reason)) // Frontier: add null
+            if (!_floors.CanPlaceTile(gridUid, mapGrid, tile.GridIndices, null, out var reason)) // Frontier: add null
             {
                 if (popMsgs)
                     _popup.PopupClient(reason, uid, user);

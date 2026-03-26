@@ -128,13 +128,14 @@ public sealed class FloorTileSystem : EntitySystem
             {
                 var gridUid = location.EntityId;
 
-                if (!CanPlaceTile(gridUid, mapGrid, currentTileDefinition, out var reason))
+                var tile = _map.GetTileRef(gridUid, mapGrid, location);
+
+                if (!CanPlaceTile(gridUid, mapGrid, tile.GridIndices, out var reason))
                 {
                     _popup.PopupClient(reason, args.User, args.User);
                     return;
                 }
 
-                var tile = _map.GetTileRef(gridUid, mapGrid, location);
                 var baseTurf = (ContentTileDefinition) _tileDefinitionManager[tile.Tile.TypeId];
 
                 if (CanPlaceOn(currentTileDefinition, baseTurf.ID))
@@ -199,12 +200,12 @@ public sealed class FloorTileSystem : EntitySystem
         _audio.PlayPredicted(placeSound, location, user);
     }
 
-    public bool CanPlaceTile(EntityUid gridUid, MapGridComponent component, ContentTileDefinition? currentTileDefinition, [NotNullWhen(false)] out string? reason) // Frontier: add currentTileDefinition
+    public bool CanPlaceTile(EntityUid gridUid, MapGridComponent component, Vector2i gridIndices, [NotNullWhen(false)] out string? reason)
     {
-        var ev = new FloorTileAttemptEvent();
+        var ev = new FloorTileAttemptEvent(gridIndices);
         RaiseLocalEvent(gridUid, ref ev);
 
-        if ((TryComp<ProtectedGridComponent>(gridUid, out var prot) && prot.PreventFloorPlacement || ev.Cancelled) && currentTileDefinition?.ID == "Lattice") // Frontier: HasComp<TryComp, add PreventFloorPlaceement check
+        if (ev.Cancelled)
         {
             reason = Loc.GetString("invalid-floor-placement");
             return false;
