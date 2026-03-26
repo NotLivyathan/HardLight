@@ -16,7 +16,7 @@
     slots:
     - Belt
   - type: TriggerOnUse
-  - type: TimerTrigger
+  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 3
   - type: Damageable
     damageContainer: Inorganic

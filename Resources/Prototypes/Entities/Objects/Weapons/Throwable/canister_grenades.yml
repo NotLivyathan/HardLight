@@ -69,7 +69,7 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Grenades/metalfoam.rsi
-  - type: TimerTrigger
+  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 5
   - type: SmokeOnTrigger
     keysIn:
@@ -95,7 +95,7 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Items/smoke_grenade_prime.ogg
-  - type: TimerTrigger
+  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 3
   - type: ReleaseGasOnTrigger
     keysIn:
@@ -104,8 +104,15 @@
     air:
       volume: 1000
       moles: # Target is 3117.84 mols total for filling 30 tiles (goal is 101.325 kPa @ 20C)
-        Oxygen: 654.7464 # oxygen
-        Nitrogen: 2463.0936 # nitrogen
+        - 654.7464 # oxygen
+        - 2463.0936 # nitrogen
+        - 0 # CO2
+        - 0 # Plasma
+        - 0 # Tritium
+        - 0 # Water vapor
+        - 0 # Ammonia
+        - 0 # N2O
+        - 0 # Frezon
       temperature: 293.15
   - type: StaticPrice
     price: 350
@@ -115,10 +122,12 @@
         enabled:
           True: { state: active }
           False: { state: spent }
-  - type: RemoveComponentsOnTrigger # should prevent it from being re-triggered
-    keysIn:
-    - timer
-    triggerOnce: true
-    components:
-    - type: TriggerOnUse
-    - type: TimerTrigger
+  # HardLight start: Not a component we have yet. Commenting out until we port the necessary refactors.
+  # - type: RemoveComponentsOnTrigger # should prevent it from being re-triggered
+  #   keysIn:
+  #   - timer
+  #   triggerOnce: true
+  #   components:
+  #   - type: TriggerOnUse
+  #   - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
+  # HardLight end
