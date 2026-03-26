@@ -30,13 +30,14 @@ public sealed class SimpleFloorPlanPopulatorSystem : BaseWorldSystem
         var enumerator = _map.GetAllTilesEnumerator(uid, grid);
         while (enumerator.MoveNext(out var tile))
         {
-            tiles.Add(tile.Value);
+            if (tile is {} tileRef)
+                tiles.Add(tileRef);
         }
 
         foreach (var tile in tiles)
         {
-            var coords = grid.GridTileToLocal(tile.Value.GridIndices);
-            var selector = tile.Value.Tile.GetContentTileDefinition(_tileDefinition).ID;
+            var coords = grid.GridTileToLocal(tile.GridIndices);
+            var selector = tile.Tile.GetContentTileDefinition(_tileDefinition).ID;
             if (!component.Caches.TryGetValue(selector, out var cache))
                 continue;
 
