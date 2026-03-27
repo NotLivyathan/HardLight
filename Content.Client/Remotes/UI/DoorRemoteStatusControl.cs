@@ -17,7 +17,7 @@ public sealed class DoorRemoteStatusControl(Entity<DoorRemoteComponent> ent) : C
 
         if (_label == null)
         {
-            _label = new RichTextLabel { StyleClasses = { StyleClass.ItemStatus } };
+            _label = new RichTextLabel { StyleClasses = { StyleNano.StyleClassItemStatus } }; // HardLight: StyleClass.ItemStatus<StyleNano.StyleClassItemStatus; undo if we port upstream's #29903.
             AddChild(_label);
         }
         else if (!ent.Comp.IsStatusControlUpdateRequired)
