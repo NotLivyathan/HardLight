@@ -123,8 +123,8 @@ public abstract class SharedDoorRemoteSystem : EntitySystem
                 {
                     _electrify.SetElectrified((args.Target.Value, electrifiedComp), !electrifiedComp.Enabled);
                     var soundToPlay = electrifiedComp.Enabled
-                        ? electrifiedComp.AirlockElectrifyDisabled
-                        : electrifiedComp.AirlockElectrifyEnabled;
+                        ? eletrifiedComp.AirlockElectrifyEnabled
+                        : eletrifiedComp.AirlockElectrifyDisabled;
                     _audio.PlayLocal(soundToPlay, args.Target.Value, args.User);
                     _adminLogger.Add(LogType.Action,
                         LogImpact.Medium,
