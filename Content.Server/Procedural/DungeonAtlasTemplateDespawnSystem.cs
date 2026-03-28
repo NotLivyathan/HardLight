@@ -8,7 +8,7 @@ namespace Content.Server.Procedural;
 /// </summary>
 public sealed class DungeonAtlasTemplateDespawnSystem : EntitySystem
 {
-    private static readonly TimeSpan DespawnDelay = TimeSpan.FromMinutes(30);
+    public static readonly TimeSpan DespawnDelay = TimeSpan.FromMinutes(30); // HardLight: private<public
 
     public override void Initialize()
     {
