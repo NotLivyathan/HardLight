@@ -1,5 +1,6 @@
 using System.Numerics;
 using Content.Server._NF.Shipyard.Systems;
+using Content.Server.Bed.Cryostorage; // HardLight
 using Content.Server.DoAfter;
 using Content.Server.EUI;
 using Content.Server.Ghost;
@@ -50,7 +51,7 @@ public sealed partial class CryoSleepSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly ShipyardSystem _shipyard = default!; // For the FoundOrganics method
     [Dependency] private readonly GhostSystem _ghost = default!;
-    [Dependency] private readonly MapSystem _map = default!;
+    [Dependency] private readonly CryostorageSystem _cryostorage = default!; // HardLight
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
@@ -78,11 +79,7 @@ public sealed partial class CryoSleepSystem : EntitySystem
 
     private EntityUid GetStorageMap()
     {
-        if (Deleted(_storageMap))
-        {
-            _storageMap = _map.CreateMap(out var map);
-            _map.SetPaused(map, true);
-        }
+        _storageMap = _cryostorage.GetOrCreatePausedMap(); // HardLight
 
         return _storageMap.Value;
     }
@@ -339,7 +336,8 @@ public sealed partial class CryoSleepSystem : EntitySystem
                 if (id != null)
                     ResetCryosleepState(id.Value);
 
-                if (!Deleted(bodyId) && Transform(bodyId).ParentUid == _storageMap)
+                var pausedMap = _cryostorage.GetPausedMap(); // HardLight
+                if (!Deleted(bodyId) && pausedMap != null && Transform(bodyId).ParentUid == pausedMap) // HardLight
                     QueueDel(bodyId);
             });
         }
@@ -394,6 +392,7 @@ public sealed partial class CryoSleepSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent args)
     {
         _storedBodies.Clear();
+        _storageMap = null; // HardLight
     }
 
     private struct StoredBody
