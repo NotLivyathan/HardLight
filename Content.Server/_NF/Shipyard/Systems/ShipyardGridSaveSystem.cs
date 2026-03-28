@@ -842,6 +842,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "VendingMachineTankDispenserEVAPOI",
             "VendingMachineVendomatPOI",
             "VendingMachineYouToolPOI",
+            "ShipShield"
         };
 
         // Component-level exclusions for non-ship entities.
