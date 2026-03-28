@@ -316,16 +316,17 @@ public sealed partial class SalvageSystem
 
             if (remaining < TimeSpan.Zero)
             {
-                // HARDLIGHT: Mission ended; FTL all shuttles out immediately before cleanup.
+                if (comp.ReturnTriggered) // HardLight
+                    continue;
+
+                comp.ReturnTriggered = true; // HardLight
+
+                // HardLight: Mission ended; FTL all shuttles out immediately before cleanup.
                 FTLAllShuttlesHome(uid, comp, 10f); // 10s travel time on forced end
 
-                // Clean up console state; map deletion scheduled after shuttles depart.
+                // Clean up console state; delete only after no shuttles remain on expedition map. // HardLight: Reworded
                 CleanupExpeditionConsoleState(uid);
-                uid.SpawnTimer(TimeSpan.FromSeconds(15f), () =>
-                {
-                    if (Exists(uid))
-                        QueueDel(uid);
-                });
+                QueueExpeditionDeletionWhenEmpty(uid); // HardLight
             }
         }
 
@@ -495,8 +496,37 @@ public sealed partial class SalvageSystem
                 dropLocation = _random.NextVector2(minRange, maxRange);
             }
 
-            _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(targetMapUid.Value, dropLocation), 0f, hyperspaceTime ?? _shuttle.DefaultTravelTime, TravelTime);
+            _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(targetMapUid.Value, dropLocation), 0f, 0f, hyperspaceTime ?? _shuttle.DefaultTravelTime); // HardLight: Added 0f; removed TravelTime
             Log.Info($"Expedition end: FTLing shuttle {shuttleUid} home from expedition {expeditionMapUid}");
         }
+    }
+
+    /// <summary>
+    /// HardLight: Deletes the expedition map once all shuttles have actually left it.
+    /// Uses retries to avoid deleting the map while FTL startup is delayed.
+    /// </summary>
+    private void QueueExpeditionDeletionWhenEmpty(EntityUid expeditionMapUid, int attempt = 0)
+    {
+        if (!Exists(expeditionMapUid) || !TryComp<SalvageExpeditionComponent>(expeditionMapUid, out _))
+            return;
+
+        var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
+        while (shuttleQuery.MoveNext(out _, out _, out var shuttleXform))
+        {
+            if (shuttleXform.MapUid == expeditionMapUid)
+            {
+                if (attempt >= 24)
+                {
+                    Log.Warning($"Expedition {expeditionMapUid} still has shuttles after cleanup retries; skipping forced map deletion to avoid deleting active players.");
+                    return;
+                }
+
+                expeditionMapUid.SpawnTimer(TimeSpan.FromSeconds(5), () => QueueExpeditionDeletionWhenEmpty(expeditionMapUid, attempt + 1));
+                return;
+            }
+        }
+
+        QueueDel(expeditionMapUid);
+        Log.Info($"Deleted expedition map {expeditionMapUid} after all shuttles left.");
     }
 }
