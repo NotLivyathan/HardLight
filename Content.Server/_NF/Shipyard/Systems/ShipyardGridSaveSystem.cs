@@ -842,7 +842,9 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             "VendingMachineTankDispenserEVAPOI",
             "VendingMachineVendomatPOI",
             "VendingMachineYouToolPOI",
-            "ShipShield"
+            // Everything else
+            "ReactorGasPipe", // Nuclear reactors duplicate invisible inlet/outlet pipes on save.
+            "ShipShield", // Ship shield emitters duplicate ship shield visuals on save.
         };
 
         // Component-level exclusions for non-ship entities.
