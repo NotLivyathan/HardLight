@@ -20,6 +20,7 @@ public abstract class SharedCryostorageSystem : EntitySystem
 {
     [Dependency] private   readonly IConfigurationManager _configuration = default!;
     [Dependency] private   readonly SharedMapSystem _map = default!;
+    [Dependency] private   readonly MetaDataSystem _metaData = default!; // HardLight
     [Dependency] private   readonly ISharedPlayerManager _player = default!;
     [Dependency] private   readonly MobStateSystem _mobState = default!;
     [Dependency] private   readonly SharedAppearanceSystem _appearance = default!;
@@ -169,8 +170,27 @@ public abstract class SharedCryostorageSystem : EntitySystem
             return;
 
         PausedMap = _map.CreateMap();
+        _metaData.SetEntityName(PausedMap.Value, "Cryospace"); // HardLight
         _map.SetPaused(PausedMap.Value, true);
     }
+
+    // HardLight start
+    // Call this to get the paused map, creating it if it doesn't exist.
+    public EntityUid GetOrCreatePausedMap()
+    {
+        EnsurePausedMap();
+        return PausedMap!.Value;
+    }
+
+    // Call this to get the paused map, or null if it doesn't exist.
+    public EntityUid? GetPausedMap()
+    {
+        if (PausedMap != null && Exists(PausedMap.Value))
+            return PausedMap.Value;
+
+        return null;
+    }
+    // HardLight end
 
     public bool IsInPausedMap(Entity<TransformComponent?> entity)
     {

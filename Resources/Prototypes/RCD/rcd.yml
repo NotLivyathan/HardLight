@@ -333,6 +333,22 @@
   fx: EffectRCDConstruct1
   allowMultiDirection: true
 
+# HL - Lighting
+- type: rcd
+  id: PuckLight
+  category: Lighting
+  sprite:
+    sprite: /Textures/_HL/Structures/pucklight.rsi
+    state: base
+  mode: ConstructObject
+  prototype: PoweredPuckLight
+  cost: 2
+  delay: 1
+  collisionMask: TabletopMachineMask
+  collisionBounds: "0.25,0.25,-0.25,-0.25"
+  rotation: Fixed
+  fx: EffectRCDConstruct1
+
 # Electrical
 - type: rcd
   id: LVCable

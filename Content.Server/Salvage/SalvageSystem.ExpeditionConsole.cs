@@ -15,18 +15,18 @@ using Content.Server.Salvage.Expeditions; // Frontier
 using Content.Shared.Mind.Components; // Frontier
 using Content.Shared.Mobs.Components; // Frontier
 using Robust.Shared.Physics; // Frontier
-using Content.Server.Chat.Systems; // HARDLIGHT: For ChatSystem (server-side)
-using Content.Shared.Salvage; // HARDLIGHT: For SalvageMissionType
-using System.Threading; // HARDLIGHT: For CancellationTokenSource
+using Content.Server.Chat.Systems; // HardLight: For ChatSystem (server-side)
+using Content.Shared.Salvage; // HardLight: For SalvageMissionType
+using System.Threading; // HardLight: For CancellationTokenSource
 using RobustTimer = Robust.Shared.Timing.Timer; // Replace obsolete SpawnTimer usage with Timer.Spawn
-using System.Numerics; // HARDLIGHT: For Vector2
-using Robust.Shared.Map; // HARDLIGHT: For EntityCoordinates
-using Content.Server.Shuttles.Components; // HARDLIGHT: For ShuttleComponent
-using System.Linq; // HARDLIGHT: For ToList() and Take()
-using Content.Shared.Shuttles.Systems; // HARDLIGHT: For FTLState
-using Robust.Shared.Player; // HARDLIGHT: For Filter
-using Content.Shared.Timing; // HARDLIGHT: For StartEndTime
-using Robust.Shared.GameObjects; // HARDLIGHT: For SpawnTimer extension method
+using System.Numerics; // HardLight: For Vector2
+using Robust.Shared.Map; // HardLight: For EntityCoordinates
+using Content.Server.Shuttles.Components; // HardLight: For ShuttleComponent
+using System.Linq; // HardLight: For ToList() and Take()
+using Content.Shared.Shuttles.Systems; // HardLight: For FTLState
+using Robust.Shared.Player; // HardLight: For Filter
+using Content.Shared.Timing; // HardLight: For StartEndTime
+using Robust.Shared.GameObjects; // HardLight: For SpawnTimer extension method
 
 namespace Content.Server.Salvage;
 
@@ -35,7 +35,7 @@ public sealed partial class SalvageSystem
     public static readonly EntProtoId CoordinatesDisk = new("CoordinatesDisk");
 
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!; // Frontier
-    [Dependency] private readonly ChatSystem _chatSystem = default!; // HARDLIGHT
+    [Dependency] private readonly ChatSystem _chatSystem = default!; // HardLight
 
     private const float ShuttleFTLMassThreshold = 50f; // Frontier
     private const float ShuttleFTLRange = 150f; // Frontier
@@ -164,7 +164,7 @@ public sealed partial class SalvageSystem
         Log.Info($"Mission {args.Index} successfully claimed on independent console {ToPrettyString(uid)}");
     }
 
-    // HARDLIGHT: manual refresh handler to re-link console with station expedition data
+    // HardLight: manual refresh handler to re-link console with station expedition data
     private void OnSalvageRefreshMessage(EntityUid uid, SalvageExpeditionConsoleComponent component, RefreshSalvageConsoleMessage args)
     {
         Log.Info($"Manual salvage console refresh requested for {ToPrettyString(uid)}");
@@ -264,16 +264,35 @@ public sealed partial class SalvageSystem
         if (expedition.Stage < ExpeditionStage.Running)
             return false;
 
-        TriggerExpeditionFTLHome(expeditionMapUid, expedition);
+        // HardLight start
+        const int departTime = 20;
+        Log.Info($"Console-triggered early expedition finish on {expeditionMapUid}; FTL in {departTime} seconds");
+        RobustTimer.Spawn(TimeSpan.FromSeconds(departTime), () =>
+        {
+            if (!Exists(expeditionMapUid) || !TryComp(expeditionMapUid, out SalvageExpeditionComponent? expComp))
+                return;
+
+            TriggerExpeditionFTLHome(expeditionMapUid, expComp);
+        });
+        // HardLight end
         return true;
     }
 
     /// <summary>
-    /// HARDLIGHT: Triggers the FTL home process for shuttles on an expedition map
+    /// HardLight: Triggers the FTL home process for shuttles on an expedition map
     /// This is the same logic used in normal expedition timeout but extracted for early finish
     /// </summary>
     private void TriggerExpeditionFTLHome(EntityUid expeditionMapUid, SalvageExpeditionComponent expedition)
     {
+        // Prevent duplicate triggering if expedition is already ending
+        if (expedition.ReturnTriggered)
+        {
+            Log.Debug($"Expedition return already triggered for {expeditionMapUid}; ignoring duplicate early-finish request.");
+            return;
+        }
+
+        expedition.ReturnTriggered = true;
+
         const float ftlTime = 20f; // 20 seconds FTL time for early finish
         var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
 
@@ -327,22 +346,13 @@ public sealed partial class SalvageSystem
             }
 
             // FTL the shuttle home
-            _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(mapUid.Value, dropLocation), 0f, ftlTime, TravelTime);
+            _shuttle.FTLToCoordinates(shuttleUid, shuttle, new EntityCoordinates(mapUid.Value, dropLocation), 0f, 0f, ftlTime); // Added 0f; removed TravelTime
             Log.Info($"Early finish: FTLing shuttle {shuttleUid} home from expedition {expeditionMapUid}");
         }
 
         // Clean up console state and schedule expedition deletion
         CleanupExpeditionConsoleState(expeditionMapUid);
-
-        // Delete the expedition map after shuttles have departed
-        RobustTimer.Spawn(TimeSpan.FromSeconds(ftlTime + 5f), () =>
-        {
-            if (Exists(expeditionMapUid))
-            {
-                QueueDel(expeditionMapUid);
-                Log.Info($"Deleted expedition map {expeditionMapUid} after early finish");
-            }
-        });
+        QueueExpeditionDeletionWhenEmpty(expeditionMapUid);
     }
 
     private void OnSalvageConsoleInit(Entity<SalvageExpeditionConsoleComponent> console, ref ComponentInit args)
@@ -357,7 +367,7 @@ public sealed partial class SalvageSystem
 
     private void UpdateConsoles(Entity<SalvageExpeditionDataComponent> component)
     {
-        // HARDLIGHT: This method is obsolete with independent console system
+        // HardLight: This method is obsolete with independent console system
         // Each console manages its own state independently
         Log.Debug("UpdateConsoles called but consoles are now independent - no action needed");
     }
@@ -392,7 +402,7 @@ public sealed partial class SalvageSystem
             data.CanFinish = false;
         }
 
-        // HARDLIGHT: Only generate missions if truly needed and not already generating
+        // HardLight: Only generate missions if truly needed and not already generating
         // This prevents the race condition that causes UI issues
         bool shouldGenerateMissions = data.Missions.Count == 0 &&
                                      data.ActiveMission == 0 &&
@@ -419,14 +429,14 @@ public sealed partial class SalvageSystem
         Log.Debug($"Updated console {ToPrettyString(uid)} with {state.Missions.Count} missions (Active: {data.ActiveMission}, Cooldown: {data.Cooldown})");
     }
 
-    // HARDLIGHT: Direct mission spawning for console-specific expeditions
+    // HardLight: Direct mission spawning for console-specific expeditions
     private void SpawnMissionForConsole(SalvageMissionParams missionParams, EntityUid shuttleGrid, EntityUid consoleUid)
     {
-        // HARDLIGHT: Fully independent console system - no station dependencies
+        // HardLight: Fully independent console system - no station dependencies
         Log.Info($"Spawning independent mission for console {consoleUid} on shuttle {shuttleGrid}");
 
         // Directly spawn the mission using the existing job system
-        // HARDLIGHT: For independent console system, use shuttle as station and pass console reference
+        // HardLight: For independent console system, use shuttle as station and pass console reference
         var missionStation = shuttleGrid; // Always use shuttle grid for independent consoles
         var cancelToken = new CancellationTokenSource();
         var job = new SpawnSalvageMissionJob(

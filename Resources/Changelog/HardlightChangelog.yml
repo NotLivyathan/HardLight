@@ -1968,3 +1968,105 @@ Entries:
         nullspace and crash the server.
   id: 215
   time: '2026-03-25T23:21:19.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        Galio plushies have been delivered via Nanotrasen mail services, which
+        for some reason is a thing ColComm supports.
+  id: 216
+  time: '2026-03-26T21:18:22.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: Chat text can now be highlighted for ease of readability.
+  id: 217
+  time: '2026-03-26T21:19:09.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Tweak
+      message: IPCs now have binary built in
+  id: 218
+  time: '2026-03-26T21:19:27.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Fix
+      message: .45 Magnum magazines properly reflect their ammo fill
+  id: 219
+  time: '2026-03-26T21:21:13.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Add
+      message: PMC Energy Shotgun to the Merc Vend
+    - type: Tweak
+      message: Energy Shotguns to cost 100 instead of 120 per Disabler Shot
+    - type: Tweak
+      message: Energy Shotguns Disabler Shot to **NOT** slowly kill people now.
+  id: 220
+  time: '2026-03-27T16:45:40.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Add
+      message: >-
+        Puck lights, new lighting option! (Takes bulbs, need to remove tile to
+        change bulb/unanchor and move)
+    - type: Add
+      message: Ported steel bordered catwalks from Monolith
+    - type: Tweak
+      message: New docks! Now with 14.258 percent more dock!
+  id: 221
+  time: '2026-03-28T18:26:55.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Fix
+      message: High pressure vents are now buildable.
+    - type: Fix
+      message: The PTK can now break rocks again.
+  id: 222
+  time: '2026-03-28T18:27:40.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Tweak
+      message: Can now use subtle OOC and subtle while unconscious
+  id: 223
+  time: '2026-03-28T18:28:00.0000000+00:00'
+- author: Sully669
+  changes:
+    - type: Add
+      message: Added Interdyne equipment
+    - type: Tweak
+      message: added biohazard resistance to interdyne gas mask
+    - type: Fix
+      message: removed contraband level from interdyne uniforms
+  id: 224
+  time: '2026-03-28T18:36:28.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        Frontier and upstream cryospaces have been combined to reduce maps
+        generated in normal play.
+    - type: Fix
+      message: Ship shields should now function as expected when toggled.
+    - type: Fix
+      message: Ship shields should no longer save indefinitely and bloat ship files.
+    - type: Fix
+      message: >-
+        Dungeon generation should result in much less lag and stuttering while
+        the atlases are active.
+    - type: Fix
+      message: Ships should no longer create lingering maps when loaded.
+    - type: Fix
+      message: >-
+        Ending an expedition early should no longer have the potential to delete
+        characters and ships.
+    - type: Fix
+      message: >-
+        Ending an expedition early should now correctly sync the FTL audio
+        instead of starting earlier than it should.
+    - type: Fix
+      message: >-
+        Expedition maps should no longer delete on early departure until all
+        ships that were on the map have left it.
+  id: 225
+  time: '2026-03-28T19:03:35.0000000+00:00'

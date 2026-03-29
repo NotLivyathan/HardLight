@@ -1,0 +1,5 @@
+# - type: localizedDataset # HardLight: Not something we currently have, unfortunately. Sorry, Galio.
+#   id: PlushiesGalio
+#   values:
+#     prefix: plushie-galio-
+#     count: 7
