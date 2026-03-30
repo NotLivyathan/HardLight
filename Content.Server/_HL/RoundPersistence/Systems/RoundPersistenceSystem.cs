@@ -1,7 +1,13 @@
 using System.Linq;
+using System.Numerics;
+using System.Threading;
+using Content.Server.CharacterInfo; // For CharacterInfo updates
+using Content.Server.CrewManifest;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
-using Content.Server._NF.RoundNotifications.Events;
+using Content.Server.Mind; // For MindSystem
+using Content.Server.Roles; // For RoleSystem
+using Content.Server.Roles.Jobs; // For JobSystem
 using Content.Server.Salvage;
 using Content.Server.Salvage.Expeditions;
 using Content.Server.Shuttles.Components;
@@ -10,23 +16,27 @@ using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
-using Content.Server.CrewManifest;
-using Content.Server._NF.ShuttleRecords.Components;
-using Content.Server._NF.ShuttleRecords;
 using Content.Server._HL.RoundPersistence.Components;
+using Content.Server._NF.RoundNotifications.Events;
+using Content.Server._NF.ShuttleRecords;
+using Content.Server._NF.ShuttleRecords.Components;
+using Content.Shared.CrewManifest;
+using Content.Shared.GameTicking;
+using Content.Shared.HL.CCVar; // HardLight CCVar namespace
+using Content.Shared.Objectives; // For ObjectiveInfo
+using Content.Shared.Objectives.Components; // For ObjectiveComponent
+using Content.Shared.Roles;
 using Content.Shared.Salvage;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Salvage.Expeditions.Modifiers;
-using Content.Shared._NF.ShuttleRecords.Components;
-using Content.Shared._NF.ShuttleRecords;
-using RobustTimer = Robust.Shared.Timing.Timer;
-using Content.Shared.StationRecords;
-using Content.Shared.CrewManifest;
-using Content.Shared.HL.CCVar; // HardLight CCVar namespace
-using Content.Shared.GameTicking;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Station.Components;
+using Content.Shared.StationRecords;
+using Content.Shared._NF.ShuttleRecords;
+using Content.Shared._NF.ShuttleRecords.Components;
 using Robust.Server.GameObjects;
+using Robust.Server.Player; // For IPlayerManager
+using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
@@ -34,17 +44,8 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
-using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
-using System.Numerics;
-using System.Threading;
-using Robust.Server.Player; // For IPlayerManager
-using Content.Server.CharacterInfo; // For CharacterInfo updates
-using Content.Server.Mind; // For MindSystem
-using Content.Server.Roles.Jobs; // For JobSystem
-using Content.Server.Roles; // For RoleSystem
-using Content.Shared.Objectives; // For ObjectiveInfo
-using Content.Shared.Objectives.Components; // For ObjectiveComponent
+using RobustTimer = Robust.Shared.Timing.Timer;
 
 namespace Content.Server.HL.RoundPersistence.Systems;
 
@@ -89,7 +90,7 @@ public sealed class RoundPersistenceSystem : EntitySystem
     {
         base.Initialize();
 
-        //_sawmill = Logger.GetSawmill("round-persistence");
+        // _sawmill = Logger.GetSawmill("round-persistence");
 
         // Listen for round events
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -121,7 +122,7 @@ public sealed class RoundPersistenceSystem : EntitySystem
             UpdateExpeditionUIs();
         }, _timerCts.Token);
 
-        //_sawmill.Info("Round persistence system initialized");
+        // _sawmill.Info("Round persistence system initialized");
     }
 
     /// <summary>
@@ -170,12 +171,8 @@ public sealed class RoundPersistenceSystem : EntitySystem
                 // Clear mind role entities (antag roles are BaseMindRoleComponent-derived)
                 if (mind.MindRoles.Count > 0)
                 {
-                    foreach (var roleEnt in mind.MindRoles.ToArray())
-                    {
-                        if (Exists(roleEnt))
-                            QueueDel(roleEnt);
-                    }
-                    mind.MindRoles.Clear();
+                    // Use role-system API so role type/event hooks are updated correctly.
+                    _roles.MindRemoveRole<BaseMindRoleComponent>((mindUid, mind));
                 }
 
                 // Reset role type to neutral
