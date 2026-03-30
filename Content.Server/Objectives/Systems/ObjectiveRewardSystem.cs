@@ -8,6 +8,7 @@ using Content.Shared.Database;
 using Content.Server.Administration.Logs;
 using Content.Server.Objectives.Components;
 using Content.Server._NF.Bank;
+using Content.Shared.Chat; // HardLight
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Objectives.Systems;
@@ -132,11 +133,13 @@ public sealed class ObjectiveRewardSystem : EntitySystem
             return;
 
         var amountText = Content.Shared._NF.Bank.BankSystemExtensions.ToSpesoString(amount);
+        var highlightedAmount = $"[color=white]+{amountText}[/color]";
         var message = isRoundEnd
-            ? $"Objective complete: {objectiveTitle} (+{amountText})."
-            : $"Objective payout: {objectiveTitle} (+{amountText}).";
+            ? $"Objective complete: {objectiveTitle} ({highlightedAmount})."
+            : $"Objective payout: {objectiveTitle} ({highlightedAmount}).";
 
-        _chat.DispatchServerMessage(session, message);
+        var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", message));
+        _chat.ChatMessageToOne(ChatChannel.Server, message, wrappedMessage, EntityUid.Invalid, false, session.Channel);
     }
 
     // HardLight: Deposits reward money to an in-world bank account, with a profile-based fallback.
