@@ -514,7 +514,7 @@
   sprite: /Textures/Tiles/tech_maint_dark.png
   footstepSounds:
     collection: FootstepHull
-  itemDrop: FloorTileItemTechmaintDark
+  itemDrop: FloorTileItemTechmaint # HardLight: FloorTileItemTechmaintDark<FloorTileItemTechmaint
 
 - type: tile
   id: FloorReinforced
@@ -1155,7 +1155,7 @@
   footstepSounds:
     collection: FootstepTile
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorGrass
@@ -1168,7 +1168,7 @@
     collection: FootstepGrass
   itemDrop: FloorTileItemGrass
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorGrassJungle
@@ -1181,7 +1181,7 @@
     collection: FootstepGrass
   itemDrop: FloorTileItemGrassJungle
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorGrassDark
@@ -1200,7 +1200,7 @@
     collection: FootstepGrass
   itemDrop: FloorTileItemGrassDark # Delta V
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorGrassLight
@@ -1218,7 +1218,7 @@
   footstepSounds:
     collection: FootstepGrass
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorDirt
@@ -1237,7 +1237,7 @@
     collection: FootstepAsteroid
   itemDrop: FloorTileItemDirt # Delta V
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 # Asteroid
 
@@ -1265,7 +1265,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorAsteroidSand
@@ -1291,7 +1291,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorAsteroidSandDug
@@ -1332,8 +1332,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
-
+  # weather: true
 - type: tile
   id: FloorAsteroidSandRed
   parent: FloorAsteroidSandRedBorderless
@@ -1359,7 +1358,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorAsteroidIronsandBorderless
@@ -1387,7 +1386,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorAsteroidIronsand
@@ -1413,7 +1412,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
+  # weather: true
 
 - type: tile
   id: FloorAsteroidSandUnvariantized
@@ -1439,8 +1438,7 @@
   footstepSounds:
     collection: FootstepAsteroid
   heatCapacity: 10000
-  weather: true
-
+  # weather: true
 - type: tile
   id: FloorAsteroidIronsandUnvariantized
   parent: FloorAsteroidIronsandUnvariantizedBorderless
@@ -1674,7 +1672,7 @@
   baseTurf: Plating
   isSubfloor: false
   deconstructTools: [ Cutting ]
-  itemDrop: FloorTileItemDarkAstroGrass
+  itemDrop: FloorTileItemAstroGrass # HardLight: FloorTileItemDarkAstroGrass<FloorTileItemAstroGrass
 
 - type: tile
   parent: FloorGrassLight
@@ -1683,7 +1681,7 @@
   baseTurf: Plating
   isSubfloor: false
   deconstructTools: [ Cutting ]
-  itemDrop: FloorTileItemLightAstroGrass
+  itemDrop: FloorTileItemAstroGrass # HardLight: FloorTileItemLightAstroGrass<FloorTileItemAstroGrass
 
 # Ice
 - type: tile
@@ -1712,7 +1710,7 @@
   isSubfloor: false
   deconstructTools: [ Prying ]
   itemDrop: FloorTileItemAstroAsteroidSand
-  weather: false
+  # weather: false
 
 - type: tile
   id: FloorAstroAsteroidSandBorderless
@@ -1721,7 +1719,7 @@
   isSubfloor: false
   deconstructTools: [ Prying ]
   itemDrop: FloorTileItemAstroAsteroidSand
-  weather: false
+  # weather: false
 
 - type: tile
   parent: FloorDesert
@@ -1730,8 +1728,8 @@
   baseTurf: Plating
   isSubfloor: false
   deconstructTools: [ Prying ]
-  itemDrop: FloorTileItemDesertAstroSand
-  weather: false
+  itemDrop: FloorTileItemAstroAsteroidSand # HardLight: FloorTileItemDesertAstroSand<FloorTileItemAstroAsteroidSand
+  # weather: false
 
 - type: tile
   id: FloorAstroIronsand
@@ -1740,8 +1738,8 @@
   baseTurf: Plating
   isSubfloor: false
   deconstructTools: [ Prying ]
-  itemDrop: FloorTileItemAstroIronsand
-  weather: false
+  itemDrop: FloorTileItemAstroAsteroidSand # HardLight: FloorTileItemAstroIronsand<FloorTileItemAstroAsteroidSand
+  # weather: false
 
 - type: tile
   id: FloorAstroIronsandBorderless
@@ -1750,8 +1748,8 @@
   baseTurf: Plating
   isSubfloor: false
   deconstructTools: [ Prying ]
-  itemDrop: FloorTileItemAstroIronsandBorderless
-  weather: false
+  itemDrop: FloorTileItemAstroAsteroidSand # HardLight: FloorTileItemAstroIronsandBorderless<FloorTileItemAstroAsteroidSand
+  # weather: false
 
 - type: tile
   id: FloorWoodLarge
@@ -1799,7 +1797,7 @@
   footstepSounds:
     collection: FootstepTile
   itemDrop: FloorTileItemXenoSteel
-  allowRotationMirror: true
+  # allowRotationMirror: true
 
 - type: tile
   id: FloorXenoSteelCorner
@@ -1809,7 +1807,7 @@
   footstepSounds:
     collection: FootstepTile
   itemDrop: FloorTileItemXenoSteelCorner
-  allowRotationMirror: true
+  # allowRotationMirror: true
 
 - type: tile
   id: FloorDarkSquiggly
@@ -1823,7 +1821,7 @@
   - 1.0
   - 1.0
   itemDrop: FloorTileItemDarkSquiggly
-  allowRotationMirror: true
+  # allowRotationMirror: true
 
 - type: tile
   id: FloorXenoMaint

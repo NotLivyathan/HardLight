@@ -65,7 +65,7 @@
         damage: 45
       behaviors:
       - !type:TriggerBehavior
-        keyOut: timer
+        # keyOut: timer # HardLight
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
 

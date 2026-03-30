@@ -5,7 +5,7 @@
   isSubfloor: true
   footstepSounds:
     collection: FootstepAsteroid
-  weather: true
+  # weather: true
   indestructible: true
 
 - type: tile
@@ -121,7 +121,7 @@
   isSubfloor: true
   friction: 0.05
   heatCapacity: 10000
-  weather: true
+  # weather: true
   mobAcceleration: 0.1
   indestructible: true
 

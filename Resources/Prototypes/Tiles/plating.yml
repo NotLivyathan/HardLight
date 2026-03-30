@@ -1,4 +1,4 @@
-﻿- type: tile
+- type: tile
   id: BasePlating
   abstract: true
   friction: 1.5
@@ -94,7 +94,7 @@
   baseTurf: Space
   isSubfloor: true
   deconstructTools: [ Cutting ]
-  weather: true
+  # weather: true
   footstepSounds:
     collection: FootstepCatwalk
   friction: 1.5
