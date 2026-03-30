@@ -1440,11 +1440,17 @@
     - state: xenoborg_engi
     - state: icon-xenoborg-access-breaker
   - type: ItemBorgModule
+    # HardLight start
+    # hands:
+    # - item: DoorRemoteXenoborg
+    # - item: AccessBreaker
+    # - item: AccessConfiguratorXenoborg
     moduleId: XenoborgDoorControl
     items:
     - DoorRemoteXenoborg
     - AccessBreaker
     - AccessConfiguratorXenoborg
+    # HardLight end
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: xenoborg-door-remote-module }
 
