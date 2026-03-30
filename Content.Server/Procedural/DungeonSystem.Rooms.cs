@@ -4,7 +4,6 @@ using Content.Shared.Maps;
 using Content.Shared.Procedural;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Whitelist;
-using Robust.Shared.EntitySerialization; // HardLight
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Utility;
@@ -16,93 +15,6 @@ public sealed partial class DungeonSystem
     // Temporary caches.
     private readonly HashSet<EntityUid> _entitySet = new();
     private readonly List<DungeonRoomPrototype> _availableRooms = new();
-    private readonly Dictionary<(ResPath Path, Vector2i Offset, Vector2i Size), CachedRoomTemplate> _roomTemplateCache = new(); // HardLight
-
-    // HardLight start: Refactor room template caching to avoid repeated expensive map loading and deserialization on every room spawn.
-    private sealed class CachedRoomTemplate
-    {
-        public readonly List<CachedRoomTile> Tiles = new();
-        public readonly List<CachedRoomEntity> Entities = new();
-        public readonly List<CachedRoomDecal> Decals = new();
-    }
-
-    private readonly record struct CachedRoomTile(Vector2 LocalPosition, Tile Tile, string? TileDefId);
-    private readonly record struct CachedRoomEntity(Vector2 LocalPosition, Angle Rotation, bool Anchored, string PrototypeId);
-    private readonly record struct CachedRoomDecal(Vector2 LocalPosition, string Id, Color? Color, Angle Angle, int ZIndex, bool Cleanable);
-
-    private CachedRoomTemplate GetOrCreateRoomTemplateData(DungeonRoomPrototype room)
-    {
-        var key = (room.AtlasPath, room.Offset, room.Size);
-
-        if (_roomTemplateCache.TryGetValue(key, out var cached))
-            return cached;
-
-        var opts = new MapLoadOptions
-        {
-            DeserializationOptions = DeserializationOptions.Default with { PauseMaps = true },
-            ExpectedCategory = FileCategory.Map
-        };
-
-        if (!_loader.TryLoadGeneric(room.AtlasPath, out var res, opts) || !res.Maps.TryFirstOrNull(out var map))
-            throw new Exception($"Failed to load dungeon template atlas {room.AtlasPath}.");
-
-        var templateMapUid = map.Value.Owner;
-        var templateGrid = Comp<MapGridComponent>(templateMapUid);
-        var bounds = new Box2(room.Offset, room.Offset + room.Size);
-        var roomCenter = (room.Offset + room.Size / 2f) * templateGrid.TileSize;
-        var tileOffset = -roomCenter + templateGrid.TileSizeHalfVector;
-
-        cached = new CachedRoomTemplate();
-
-        // Cache tiles in room-local coordinates so we can transform quickly at spawn time.
-        for (var x = 0; x < room.Size.X; x++)
-        {
-            for (var y = 0; y < room.Size.Y; y++)
-            {
-                var indices = new Vector2i(x + room.Offset.X, y + room.Offset.Y);
-                var tileRef = _maps.GetTileRef(templateMapUid, templateGrid, indices);
-                string? tileDefId = null;
-
-                if (_maps.TryGetTileDef(templateGrid, indices, out var tileDef))
-                    tileDefId = tileDef.ID;
-
-                var localPos = (Vector2) indices + tileOffset;
-                cached.Tiles.Add(new CachedRoomTile(localPos, tileRef.Tile, tileDefId));
-            }
-        }
-
-        foreach (var templateEnt in _lookup.GetEntitiesIntersecting(templateMapUid, bounds, LookupFlags.Uncontained))
-        {
-            var protoId = _metaQuery.GetComponent(templateEnt).EntityPrototype?.ID;
-            if (string.IsNullOrWhiteSpace(protoId))
-                continue;
-
-            var templateXform = _xformQuery.GetComponent(templateEnt);
-            cached.Entities.Add(new CachedRoomEntity(
-                templateXform.LocalPosition - roomCenter,
-                templateXform.LocalRotation,
-                templateXform.Anchored,
-                protoId));
-        }
-
-        if (TryComp<DecalGridComponent>(templateMapUid, out var loadedDecals))
-        {
-            foreach (var (_, decal) in _decals.GetDecalsIntersecting(templateMapUid, bounds, loadedDecals))
-            {
-                var localPos = decal.Coordinates + templateGrid.TileSizeHalfVector - roomCenter;
-                cached.Decals.Add(new CachedRoomDecal(localPos, decal.Id, decal.Color, decal.Angle, decal.ZIndex, decal.Cleanable));
-            }
-        }
-
-        foreach (var loadedMap in res.Maps)
-        {
-            QueueDel(loadedMap.Owner);
-        }
-
-        _roomTemplateCache[key] = cached;
-        return cached;
-    }
-    // HardLight end
 
     /// <summary>
     /// Gets a random dungeon room matching the specified area, whitelist and size.
@@ -209,54 +121,74 @@ public sealed partial class DungeonSystem
         HashSet<Vector2i>? reservedTiles = null,
         bool clearExisting = false)
     {
-        var template = GetOrCreateRoomTemplateData(room); // HardLight
+        // Ensure the underlying template exists.
+        var roomMap = GetOrCreateTemplate(room);
+        var templateMapUid = _mapManager.GetMapEntityId(roomMap);
+        var templateGrid = Comp<MapGridComponent>(templateMapUid);
+        var roomDimensions = room.Size;
 
         var finalRoomRotation = roomTransform.Rotation();
 
+        var roomCenter = (room.Offset + room.Size / 2f) * grid.TileSize;
+        var tileOffset = -roomCenter + grid.TileSizeHalfVector;
         _tiles.Clear();
 
         // Load tiles
-        // HardLight start: Refactor room template caching to avoid repeated expensive map loading and deserialization on every room spawn.
-        foreach (var tile in template.Tiles)
+        for (var x = 0; x < roomDimensions.X; x++)
         {
-            var tilePos = Vector2.Transform(tile.LocalPosition, roomTransform);
-            var rounded = tilePos.Floored();
-
-            if (!clearExisting && reservedTiles?.Contains(rounded) == true)
-                continue;
-
-            if (room.IgnoreTile is not null && room.IgnoreTile == tile.TileDefId)
-                continue;
-
-            _tiles.Add((rounded, tile.Tile));
-
-            if (!clearExisting)
-                continue;
-
-            var anchored = _maps.GetAnchoredEntities((gridUid, grid), rounded);
-            foreach (var ent in anchored)
+            for (var y = 0; y < roomDimensions.Y; y++)
             {
-                QueueDel(ent);
+                var indices = new Vector2i(x + room.Offset.X, y + room.Offset.Y);
+                var tileRef = _maps.GetTileRef(templateMapUid, templateGrid, indices);
+
+                var tilePos = Vector2.Transform(indices + tileOffset, roomTransform);
+                var rounded = tilePos.Floored();
+
+                if (!clearExisting && reservedTiles?.Contains(rounded) == true)
+                    continue;
+
+                if (room.IgnoreTile is not null)
+                {
+                    if (_maps.TryGetTileDef(templateGrid, indices, out var tileDef) && room.IgnoreTile == tileDef.ID)
+                        continue;
+                }
+
+                _tiles.Add((rounded, tileRef.Tile));
+
+                if (clearExisting)
+                {
+                    var anchored = _maps.GetAnchoredEntities((gridUid, grid), rounded);
+                    foreach (var ent in anchored)
+                    {
+                        QueueDel(ent);
+                    }
+                }
             }
         }
-        // HardLight end
+
+        var bounds = new Box2(room.Offset, room.Offset + room.Size);
 
         _maps.SetTiles(gridUid, grid, _tiles);
 
         // Load entities
-        foreach (var templateEnt in template.Entities) // HardLight
+        // TODO: I don't think engine supports full entity copying so we do this piece of shit.
+
+        foreach (var templateEnt in _lookup.GetEntitiesIntersecting(templateMapUid, bounds, LookupFlags.Uncontained))
         {
-            var childPos = Vector2.Transform(templateEnt.LocalPosition, roomTransform); // HardLight: templateXform<templateEnt; removed roomCenter
+            var templateXform = _xformQuery.GetComponent(templateEnt);
+            var childPos = Vector2.Transform(templateXform.LocalPosition - roomCenter, roomTransform);
 
             if (!clearExisting && reservedTiles?.Contains(childPos.Floored()) == true)
                 continue;
 
-            var childRot = templateEnt.Rotation + finalRoomRotation; // HardLight: templateXform.LocalRotation<templateEnt.Rotation
+            var childRot = templateXform.LocalRotation + finalRoomRotation;
+            var protoId = _metaQuery.GetComponent(templateEnt).EntityPrototype?.ID;
 
-            var ent = Spawn(templateEnt.PrototypeId, new EntityCoordinates(gridUid, childPos)); // HardLight: protoId<templateEnt.PrototypeId
+            // TODO: Copy the templated entity as is with serv
+            var ent = Spawn(protoId, new EntityCoordinates(gridUid, childPos));
 
             var childXform = _xformQuery.GetComponent(ent);
-            var anchored = templateEnt.Anchored; // HardLight: templateXform<templateEnt
+            var anchored = templateXform.Anchored;
             _transform.SetLocalRotation(ent, childRot, childXform);
 
             // If the templated entity was anchored then anchor us too.
@@ -267,16 +199,16 @@ public sealed partial class DungeonSystem
         }
 
         // Load decals
-        if (template.Decals.Count > 0) // HardLight
+        if (TryComp<DecalGridComponent>(templateMapUid, out var loadedDecals))
         {
             EnsureComp<DecalGridComponent>(gridUid);
 
-            foreach (var decal in template.Decals) // HardLight
+            foreach (var (_, decal) in _decals.GetDecalsIntersecting(templateMapUid, bounds, loadedDecals))
             {
                 // Offset by 0.5 because decals are offset from bot-left corner
                 // So we convert it to center of tile then convert it back again after transform.
                 // Do these shenanigans because 32x32 decals assume as they are centered on bottom-left of tiles.
-                var position = Vector2.Transform(decal.LocalPosition, roomTransform); // HardLight: Coordinates<LocalPosition; removed grid.TileSizeHalfVector, roomCenter, & roomTransform
+                var position = Vector2.Transform(decal.Coordinates + grid.TileSizeHalfVector - roomCenter, roomTransform);
                 position -= grid.TileSizeHalfVector;
 
                 if (!clearExisting && reservedTiles?.Contains(position.Floored()) == true)

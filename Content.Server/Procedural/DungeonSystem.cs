@@ -21,7 +21,6 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Robust.Shared.Spawners; // HardLight
 using Robust.Shared.Utility;
 
 namespace Content.Server.Procedural;
@@ -85,13 +84,10 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
         }
 
         _dungeonJobs.Clear();
-        _roomTemplateCache.Clear(); // HardLight
     }
 
     private void OnRoundStart(RoundStartingEvent ev)
     {
-        _roomTemplateCache.Clear(); // HardLight
-
         var query = AllEntityQuery<DungeonAtlasTemplateComponent>();
 
         while (query.MoveNext(out var uid, out _))
@@ -102,10 +98,10 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
         if (!_configManager.GetCVar(CCVars.ProcgenPreload))
             return;
 
-        // Prebuild room template cache up front to avoid runtime hitches. // HardLight: Reworded
+        // Force all templates to be setup.
         foreach (var room in _prototype.EnumeratePrototypes<DungeonRoomPrototype>())
         {
-            GetOrCreateRoomTemplateData(room); // HardLight: GetOrCreateTemplate<GetOrCreateRoomTemplateData
+            GetOrCreateTemplate(room);
         }
     }
 
@@ -126,8 +122,6 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
         {
             return;
         }
-
-        _roomTemplateCache.Clear(); // HardLight
 
         foreach (var proto in rooms.Modified.Values)
         {
@@ -150,7 +144,22 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
         foreach (var proto in rooms.Modified.Values)
         {
             var roomProto = (DungeonRoomPrototype) proto;
-            GetOrCreateRoomTemplateData(roomProto); // HardLight
+            var query = AllEntityQuery<DungeonAtlasTemplateComponent>();
+            var found = false;
+
+            while (query.MoveNext(out var comp))
+            {
+                if (!roomProto.AtlasPath.Equals(comp.Path))
+                    continue;
+
+                found = true;
+                break;
+            }
+
+            if (!found)
+            {
+                GetOrCreateTemplate(roomProto);
+            }
         }
     }
 
@@ -163,11 +172,7 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
         {
             // Exists
             if (comp.Path.Equals(proto.AtlasPath))
-            {
-                var despawn = EnsureComp<TimedDespawnComponent>(uid); // HardLight
-                despawn.Lifetime = (float) DungeonAtlasTemplateDespawnSystem.DespawnDelay.TotalSeconds; // HardLight
                 return Transform(uid).MapID;
-            }
         }
 
         var opts = new MapLoadOptions
@@ -181,9 +186,6 @@ public sealed partial class DungeonSystem : SharedDungeonSystem
 
         comp = AddComp<DungeonAtlasTemplateComponent>(map.Value.Owner);
         comp.Path = proto.AtlasPath;
-
-        var templateDespawn = EnsureComp<TimedDespawnComponent>(map.Value.Owner); // HardLight
-        templateDespawn.Lifetime = (float) DungeonAtlasTemplateDespawnSystem.DespawnDelay.TotalSeconds; // HardLight
         return map.Value.Comp.MapId;
     }
 
