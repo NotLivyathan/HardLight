@@ -1,11 +1,12 @@
 using Content.Shared.Trigger;
+using Content.Shared.Trigger.Components.Triggers;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
 using Robust.Shared.Animations;
 
-namespace Content.Client.Explosion;
+namespace Content.Client.Trigger.Systems;
 
-public sealed partial class TriggerSystem
+public sealed class ProximityTriggerAnimationSystem : EntitySystem
 {
     [Dependency] private readonly AnimationPlayerSystem _player = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
@@ -18,7 +19,7 @@ public sealed partial class TriggerSystem
 
     private const string AnimKey = "proximity";
 
-    private static readonly Animation _flasherAnimation = new Animation
+    private static readonly Animation FlasherAnimation = new Animation
     {
         Length = TimeSpan.FromSeconds(0.6f),
         AnimationTracks = {
@@ -42,8 +43,10 @@ public sealed partial class TriggerSystem
         }
     };
 
-    private void InitializeProximity()
+    public override void Initialize()
     {
+        base.Initialize();
+
         SubscribeLocalEvent<TriggerOnProximityComponent, ComponentInit>(OnProximityInit);
         SubscribeLocalEvent<TriggerOnProximityComponent, AppearanceChangeEvent>(OnProxAppChange);
         SubscribeLocalEvent<TriggerOnProximityComponent, AnimationCompletedEvent>(OnProxAnimation);
@@ -94,7 +97,7 @@ public sealed partial class TriggerSystem
                 break;
             case ProximityTriggerVisuals.Active:
                 if (_player.HasRunningAnimation(uid, player, AnimKey)) return;
-                _player.Play(uid, player, _flasherAnimation, AnimKey);
+                _player.Play((uid, player), FlasherAnimation, AnimKey);
                 break;
             case ProximityTriggerVisuals.Off:
             default:

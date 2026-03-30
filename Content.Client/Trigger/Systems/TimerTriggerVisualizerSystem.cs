@@ -1,11 +1,10 @@
+using Content.Client.Trigger.Components;
 using Content.Shared.Trigger;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
-using Robust.Shared.GameObjects;
 
-namespace Content.Client.Trigger;
+namespace Content.Client.Trigger.Systems;
 
 public sealed class TimerTriggerVisualizerSystem : VisualizerSystem<TimerTriggerVisualsComponent>
 {
@@ -17,25 +16,26 @@ public sealed class TimerTriggerVisualizerSystem : VisualizerSystem<TimerTrigger
         SubscribeLocalEvent<TimerTriggerVisualsComponent, ComponentInit>(OnComponentInit);
     }
 
-    private void OnComponentInit(EntityUid uid, TimerTriggerVisualsComponent comp, ComponentInit args)
+    private void OnComponentInit(Entity<TimerTriggerVisualsComponent> ent, ref ComponentInit args)
     {
-        comp.PrimingAnimation = new Animation
+        ent.Comp.PrimingAnimation = new Animation
         {
             Length = TimeSpan.MaxValue,
             AnimationTracks = {
-                new AnimationTrackSpriteFlick() {
+                new AnimationTrackSpriteFlick()
+                {
                     LayerKey = TriggerVisualLayers.Base,
-                    KeyFrames = { new AnimationTrackSpriteFlick.KeyFrame(comp.PrimingSprite, 0f) }
+                    KeyFrames = { new AnimationTrackSpriteFlick.KeyFrame(ent.Comp.PrimingSprite, 0f) }
                 }
             },
         };
 
-        if (comp.PrimingSound != null)
+        if (ent.Comp.PrimingSound != null)
         {
-            comp.PrimingAnimation.AnimationTracks.Add(
+            ent.Comp.PrimingAnimation.AnimationTracks.Add(
                 new AnimationTrackPlaySound()
                 {
-                    KeyFrames = { new AnimationTrackPlaySound.KeyFrame(_audioSystem.ResolveSound(comp.PrimingSound), 0) }
+                    KeyFrames = { new AnimationTrackPlaySound.KeyFrame(_audioSystem.ResolveSound(ent.Comp.PrimingSound), 0) }
                 }
             );
         }
