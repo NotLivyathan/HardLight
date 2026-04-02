@@ -159,6 +159,7 @@
   - EnergyCautery
   - AdvancedRetractor
   - BorgModuleAdvancedSurgery
+  - AdvancedJetInjector # HardLight: Not sure where else to put it.
 
 - type: technology
   id: CyberneticEnhancements

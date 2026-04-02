@@ -5,9 +5,10 @@
     Brutepack: 5
     Ointment: 5
     Bloodpack: 5
-    Gauze: 5 # Frontier
+    Gauze: 5
     ChemistryBottleEpinephrine: 3
     Syringe: 5
+    JetInjector: 2
     BoxBottle: 3
     ClothingEyesHudMedical: 2
     ClothingEyesEyepatchHudMedical: 2
@@ -17,5 +18,5 @@
     LightImplanter: 10 # Frontier
     BoxFolderMedicalDoctor: 4294967295 # Frontier - infinite
     MedTekCartridge: 3 # Frontier
-  # contrabandInventory: # Frontier
-  #   FoodApple: 1 # Frontier
+  contrabandInventory:
+    FoodApple: 1
