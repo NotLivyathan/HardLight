@@ -16,6 +16,7 @@ using Content.Shared.Medical;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Systems;
 using Content.Shared.NameModifier.EntitySystems;
+using Content.Shared.Nutrition;
 using Content.Shared.Overlays;
 using Content.Shared.Radio;
 using Content.Shared.Slippery;
@@ -57,9 +58,10 @@ public partial class InventorySystem
         SubscribeLocalEvent<InventoryComponent, GetSlowedOverSlipperyModifierEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, ModifySlowOnDamageSpeedEvent>(RefRelayInventoryEvent);
         SubscribeLocalEvent<InventoryComponent, ExtinguishEvent>(RefRelayInventoryEvent);
-        SubscribeLocalEvent<InventoryComponent, CloningAttemptEvent>(RefRelayInventoryEvent); //HL
-        SubscribeLocalEvent<InventoryComponent, DefibrillationAttemptEvent>(RefRelayInventoryEvent); //HL
-        SubscribeLocalEvent<InventoryComponent, AnalyzeUnrevivableAttemptEvent>(RefRelayInventoryEvent); //HL
+        SubscribeLocalEvent<InventoryComponent, IngestionAttemptEvent>(RefRelayInventoryEvent);
+        SubscribeLocalEvent<InventoryComponent, CloningAttemptEvent>(RefRelayInventoryEvent); // HardLight
+        SubscribeLocalEvent<InventoryComponent, DefibrillationAttemptEvent>(RefRelayInventoryEvent); // HardLight
+        SubscribeLocalEvent<InventoryComponent, AnalyzeUnrevivableAttemptEvent>(RefRelayInventoryEvent); // HardLight
 
         // Eye/vision events
         SubscribeLocalEvent<InventoryComponent, CanSeeAttemptEvent>(RelayInventoryEvent);

@@ -1,9 +1,10 @@
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
+using Content.Shared.Nutrition;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Slippery;
 using Content.Shared.StatusEffect;
-using Content.Shared.Body.Systems; // Shitmed Change
+using Content.Shared.Body.Systems; // Shitmed
 
 namespace Content.Shared.Damage.Systems;
 
@@ -11,7 +12,7 @@ public abstract class SharedGodmodeSystem : EntitySystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
 
-    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed Change
+    [Dependency] private readonly SharedBodySystem _bodySystem = default!; // Shitmed
 
     public override void Initialize()
     {
@@ -20,6 +21,7 @@ public abstract class SharedGodmodeSystem : EntitySystem
         SubscribeLocalEvent<GodmodeComponent, BeforeDamageChangedEvent>(OnBeforeDamageChanged);
         SubscribeLocalEvent<GodmodeComponent, BeforeStatusEffectAddedEvent>(OnBeforeStatusEffect);
         SubscribeLocalEvent<GodmodeComponent, BeforeStaminaDamageEvent>(OnBeforeStaminaDamage);
+        SubscribeLocalEvent<GodmodeComponent, IngestibleEvent>(BeforeEdible);
         SubscribeLocalEvent<GodmodeComponent, SlipAttemptEvent>(OnSlipAttempt);
     }
 
@@ -39,6 +41,11 @@ public abstract class SharedGodmodeSystem : EntitySystem
     }
 
     private void OnBeforeStaminaDamage(EntityUid uid, GodmodeComponent component, ref BeforeStaminaDamageEvent args)
+    {
+        args.Cancelled = true;
+    }
+
+    private void BeforeEdible(Entity<GodmodeComponent> ent, ref IngestibleEvent args)
     {
         args.Cancelled = true;
     }
