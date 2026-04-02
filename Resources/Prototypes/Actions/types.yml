@@ -89,6 +89,7 @@
     event: !type:ActivateImplantEvent
 
 - type: entity
+  parent: BaseImplantAction
   id: ActionActivateFreedomImplant
   name: Break Free
   description: Activating your freedom implant will free you from any hand restraints
@@ -135,6 +136,7 @@
     event: !type:ActivateImplantEvent
 
 - type: entity
+  parent: BaseImplantAction
   id: ActionActivateScramImplant
   name: SCRAM!
   description: Randomly teleports you within a large distance.
@@ -152,6 +154,7 @@
     event: !type:UseScramImplantEvent
 
 - type: entity
+  parent: BaseImplantAction
   id: ActionActivateDnaScramblerImplant
   name: Scramble DNA
   description:  Randomly changes your name and appearance.
