@@ -40,6 +40,14 @@
       "directions": 4
     },
 	{
+      "name": "abyssquad",
+      "directions": 4
+    },
+	{
+      "name": "abyssquadballz",
+      "directions": 4
+    },
+	{
       "name": "XenoQuadballz",
       "directions": 4
     },
@@ -83,6 +91,66 @@
     },
 	{
       "name": "quadspritemoss_movingballz",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "abyssquad_moving",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "abyssquad_movingballz",
       "directions": 4,
       "delays": [
         [

@@ -27,7 +27,7 @@
     - HandGrenade
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC2ContrabandUnredeemable, RecyclableItemSteelMedium] # Frontier: BaseSecurityContraband<BaseC2ContrabandUnredeemable added RecyclableItemSteelMedium
+  parent: [ FragileGrenadeBase, ScatteringGrenadeBase, BaseC2ContrabandUnredeemable, RecyclableItemSteelMedium ] # Frontier: BaseSecurityContraband<BaseC2ContrabandUnredeemable; RecyclableItemSteelMedium
   id: ClusterBang
   name: clusterbang
   description: Can be used only with flashbangs. Explodes several times.
@@ -55,7 +55,7 @@
     sprite: Objects/Weapons/Grenades/clusterbang.rsi
     layers:
     - state: icon
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
     whitelist:
       tags:
@@ -79,7 +79,7 @@
       path: "/Audio/Machines/door_lock_off.ogg"
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ VolatileGrenadeBase, ScatteringGrenadeBase, BaseC3SyndicateContraband ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClusterGrenade
   name: clustergrenade
   description: Why use one grenade when you can use three at once!
@@ -88,7 +88,7 @@
     sprite: Objects/Weapons/Grenades/clusterbomb.rsi
     layers:
     - state: icon
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
     fillPrototype: ExGrenade
     distance: 4
@@ -106,7 +106,7 @@
       path: "/Audio/Machines/door_lock_off.ogg"
 
 - type: entity
-  parent: [ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ FragileGrenadeBase, ScatteringGrenadeBase, BaseC3SyndicateContraband ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: ClusterBananaPeel
   name: cluster banana peel
   description: Splits into 6 explosive banana peels after throwing, guaranteed fun!
@@ -130,7 +130,7 @@
       path: "/Audio/Items/bikehorn.ogg"
 
 - type: entity
-  parent: [SoapSyndie, ScatteringGrenadeBase, BaseC3SyndicateContraband] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
+  parent: [ SoapSyndie, ScatteringGrenadeBase, BaseC3SyndicateContraband ] # Frontier: BaseSyndicateContraband<BaseC3SyndicateContraband
   id: SlipocalypseClusterSoap
   name: slipocalypse clustersoap
   description: Spreads small pieces of syndicate soap over an area upon landing on the floor.
@@ -158,7 +158,7 @@
       path: "/Audio/Effects/flash_bang.ogg"
 
 - type: entity
-  parent: ScatteringGrenadeBase
+  parent: [ FragileGrenadeBase, ScatteringGrenadeBase ]
   id: GrenadeFoamDart
   name: foam dart grenade
   description: Releases a bothersome spray of foam darts that cause severe welching.
@@ -167,9 +167,9 @@
     sprite: Objects/Weapons/Grenades/foamdart.rsi
     layers:
     - state: icon
-      map: ["Base"]
+      map: [ "Base" ]
     - state: primed
-      map: ["enum.TriggerVisualLayers.Base"]
+      map: [ "enum.TriggerVisualLayers.Base" ]
   - type: ScatteringGrenade
     fillPrototype: NFBulletFoam # Frontier: use NF variant
     capacity: 30

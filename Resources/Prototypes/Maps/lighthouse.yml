@@ -8,8 +8,8 @@
     Lighthouse:
       stationProto: StandardNanotrasenStation
       components:
-      - type: StationEmergencyShuttle
-        emergencyShuttlePath: /Maps/Shuttles/emergency.yml
+      #- type: StationEmergencyShuttle
+      #  emergencyShuttlePath: /Maps/Shuttles/emergency.yml
       - type: StationNameSetup
         mapNameTemplate: '{0} Lighthouse {1}'
         nameGenerator:

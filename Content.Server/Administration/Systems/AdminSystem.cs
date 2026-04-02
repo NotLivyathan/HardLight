@@ -141,6 +141,23 @@ public sealed class AdminSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// HardLight: Rebuilds cached entries for connected players and sends a single full-list update to all active admins.
+    /// Useful for batch state changes where many players are updated at once.
+    /// </summary>
+    public void RefreshAndBroadcastPlayerList()
+    {
+        foreach (var session in _playerManager.Sessions)
+        {
+            _playerList[session.UserId] = GetPlayerInfo(session.Data, session);
+        }
+
+        foreach (var admin in _adminManager.ActiveAdmins)
+        {
+            SendFullPlayerList(admin);
+        }
+    }
+
     public PlayerInfo? GetCachedPlayerInfo(NetUserId? netUserId)
     {
         if (netUserId == null)

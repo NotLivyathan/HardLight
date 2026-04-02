@@ -20,6 +20,8 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
 
+    public readonly record struct ReparentTarget(EntityUid EntityUid, EntityUid MapUid, Vector2 MapPosition);
+
     public override void Initialize()
     {
         base.Initialize();
@@ -75,7 +77,9 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
     {
         if (TryComp<VehicleComponent>(xform.ParentUid, out var vehicle) && vehicle.Driver == uid)
         {
-            var vehicleXform = Transform(xform.ParentUid);
+            if (!TryComp<TransformComponent>(xform.ParentUid, out var vehicleXform))
+                return (uid, xform);
+
             if (vehicleXform.MapUid != null)
             {
                 return (xform.ParentUid, vehicleXform);
@@ -83,7 +87,9 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
         }
         if (TryComp<MechPilotComponent>(uid, out var mechPilot))
         {
-            var mechXform = Transform(mechPilot.Mech);
+            if (!TryComp<TransformComponent>(mechPilot.Mech, out var mechXform))
+                return (uid, xform);
+
             if (mechXform.MapUid != null)
             {
                 return (mechPilot.Mech, mechXform);
@@ -96,10 +102,11 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
     /// Returns a list of entities to reparent on a grid.
     /// Useful if you need to do your own bookkeeping.
     /// </summary>
-    public List<(Entity<TransformComponent> Entity, EntityUid MapUid, Vector2 MapPosition)> GetEntitiesToReparent(EntityUid grid)
+    public List<ReparentTarget> GetEntitiesToReparent(EntityUid grid)
     {
-        List<(Entity<TransformComponent> Entity, EntityUid MapUid, Vector2 MapPosition)> reparentEntities = new();
+        List<ReparentTarget> reparentEntities = new();
         HashSet<EntityUid> handledMindContainers = new();
+        HashSet<EntityUid> queuedEntities = new();
 
         // Get player characters
         var mobQuery = AllEntityQuery<HumanoidAppearanceComponent, BankAccountComponent, TransformComponent>();
@@ -112,9 +119,9 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
 
             var (targetUid, targetXform) = GetParentToReparent(mobUid, xform);
 
-            reparentEntities.Add(((targetUid, targetXform), targetXform.MapUid!.Value, _transform.GetWorldPosition(targetXform)));
+            TryAddReparentTarget(targetUid, targetXform, ref reparentEntities, queuedEntities);
 
-            HandlePulledEntity(targetUid, ref reparentEntities);
+            HandlePulledEntity(targetUid, ref reparentEntities, queuedEntities);
         }
 
         // Get silicon
@@ -128,9 +135,9 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
 
             var (targetUid, targetXform) = GetParentToReparent(borgUid, xform);
 
-            reparentEntities.Add(((targetUid, targetXform), targetXform.MapUid!.Value, _transform.GetWorldPosition(targetXform)));
+            TryAddReparentTarget(targetUid, targetXform, ref reparentEntities, queuedEntities);
 
-            HandlePulledEntity(targetUid, ref reparentEntities);
+            HandlePulledEntity(targetUid, ref reparentEntities, queuedEntities);
         }
 
         // Get occupied MindContainers (non-humanoids, pets, etc.)
@@ -150,9 +157,9 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
 
             var (targetUid, targetXform) = GetParentToReparent(mobUid, xform);
 
-            reparentEntities.Add(((targetUid, targetXform), targetXform.MapUid!.Value, _transform.GetWorldPosition(targetXform)));
+            TryAddReparentTarget(targetUid, targetXform, ref reparentEntities, queuedEntities);
 
-            HandlePulledEntity(targetUid, ref reparentEntities);
+            HandlePulledEntity(targetUid, ref reparentEntities, queuedEntities);
         }
 
         return reparentEntities;
@@ -161,7 +168,7 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
     /// <summary>
     /// Tries to get what the passed entity is pulling, if anything, and adds it to the passed list.
     /// </summary>
-    private void HandlePulledEntity(Entity<PullerComponent?> entity, ref List<(Entity<TransformComponent> Entity, EntityUid MapUid, Vector2 MapPosition)> listToReparent)
+    private void HandlePulledEntity(Entity<PullerComponent?> entity, ref List<ReparentTarget> listToReparent, HashSet<EntityUid> queuedEntities)
     {
         if (!Resolve(entity, ref entity.Comp))
             return;
@@ -169,13 +176,28 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
         if (entity.Comp.Pulling is not EntityUid pulled)
             return;
 
-        var pulledXform = Transform(pulled);
+        if (!TryComp<TransformComponent>(pulled, out var pulledXform))
+            return;
 
         if (pulledXform.MapUid is not EntityUid pulledMapUid)
             return;
 
-        // Note: this entry may be duplicated.
-        listToReparent.Add(((pulled, pulledXform), pulledMapUid, _transform.GetWorldPosition(pulledXform)));
+        TryAddReparentTarget(pulled, pulledXform, ref listToReparent, queuedEntities);
+    }
+
+    private void TryAddReparentTarget(
+        EntityUid uid,
+        TransformComponent xform,
+        ref List<ReparentTarget> listToReparent,
+        HashSet<EntityUid> queuedEntities)
+    {
+        if (!queuedEntities.Add(uid))
+            return;
+
+        if (xform.MapUid is not EntityUid mapUid)
+            return;
+
+        listToReparent.Add(new ReparentTarget(uid, mapUid, _transform.GetWorldPosition(xform)));
     }
 
     // Deletes a grid, reparenting every humanoid and player character that's on it.
@@ -191,15 +213,18 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
 
         foreach (var target in reparentEntities)
         {
-            if (!TryComp<MetaDataComponent>(target.Entity.Owner, out _))
+            if (!TryComp<MetaDataComponent>(target.EntityUid, out var meta) || meta.EntityLifeStage >= EntityLifeStage.Terminating)
+                continue;
+
+            if (!TryComp<TransformComponent>(target.EntityUid, out var xform))
                 continue;
 
             // If the item has already been moved to nullspace, skip it.
-            if (Transform(target.Entity).MapID == MapId.Nullspace)
+            if (xform.MapID == MapId.Nullspace)
                 continue;
 
             // Move the target and all of its children (for bikes, mechs, etc.)
-            _transform.DetachEntity(target.Entity.Owner, target.Entity.Comp);
+            _transform.DetachEntity(target.EntityUid, xform);
         }
 
         // Deletion has to happen before grid traversal re-parents players.
@@ -208,14 +233,17 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
 
         foreach (var target in reparentEntities)
         {
-            if (!TryComp<MetaDataComponent>(target.Entity.Owner, out _))
+            if (!TryComp<MetaDataComponent>(target.EntityUid, out var meta) || meta.EntityLifeStage >= EntityLifeStage.Terminating)
+                continue;
+
+            if (!TryComp<TransformComponent>(target.EntityUid, out var xform))
                 continue;
 
             // If the item has already been moved out of nullspace, skip it.
-            if (Transform(target.Entity).MapID != MapId.Nullspace)
+            if (xform.MapID != MapId.Nullspace)
                 continue;
 
-            _transform.SetCoordinates(target.Entity.Owner, new EntityCoordinates(target.MapUid, target.MapPosition));
+            _transform.SetCoordinates(target.EntityUid, xform, new EntityCoordinates(target.MapUid, target.MapPosition));
         }
     }
 }

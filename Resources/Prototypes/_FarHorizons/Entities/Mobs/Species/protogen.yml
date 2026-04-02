@@ -8,7 +8,7 @@
   abstract: true
   components:
   - type: Carriable # Frontier: Carrying system from nyanotrasen.
-  - type: PotentialPsionic #Nyano - Summary: makes potentially psionic. 
+  - type: PotentialPsionic #Nyano - Summary: makes potentially psionic.
   - type: Sprite
     layers:
     - map: [ "enum.HumanoidVisualLayers.TailBehind" ]  # HL Modification
@@ -234,7 +234,7 @@
   - type: Inventory
     speciesId: protovulp #to be replaced with proto[species] when new sprites are made
     templateId: protogen
-    displacements: 
+    displacements:
       head:
         sizeMaps:
           32:
@@ -285,7 +285,7 @@
   - type: Inventory
     speciesId: protovulp #to be replaced with proto[species] when new sprites are made
     templateId: protogen
-    displacements: 
+    displacements:
       jumpsuit:
         sizeMaps:
           32:
@@ -835,7 +835,7 @@
   id: BaseMobProtoKin
   abstract: true
   components:
-    - type: PotentialPsionic #Nyano - Summary: makes potentially psionic. 
+    - type: PotentialPsionic #Nyano - Summary: makes potentially psionic.
     - type: Repairable # So welder is just a special little snowflake in the code. I tried making healing with welder work through ConditionalHealing component, but it would require too many changes in too many places. So we will keep on the trend and have brute healing defined here. /shrug
       doAfterDelay: 1 # Faster than normal so using welding to heal isn't absolute ass for protogens
       allowSelfRepair: true
@@ -845,7 +845,7 @@
           Brute: -30 # 5 for each type with reduction applied
     - type: Hunger
     - type: Thirst
-    - type: HumanoidAppearance 
+    - type: HumanoidAppearance
       species: ProtoKin
       hideLayersOnEquip:
       - Hair
@@ -1079,7 +1079,7 @@
     - Breasts
     # HL end
   - type: Fixtures
-    fixtures: 
+    fixtures:
       fix1:
         shape:
           !type:PhysShapeCircle
@@ -1262,7 +1262,7 @@
     - Resomi
     - Protogen
   - type: NightVision
-    
+
 - type: entity
   parent: BaseSpeciesDummy
   id: MobProtoResomiDummy
@@ -2356,7 +2356,7 @@
     - type: HumanoidAppearance
       species: ProtoAvali
     - type: Inventory
-      speciesId: Avali
+      speciesId: avali
       templateId: protogen
       displacements:
         jumpsuit:

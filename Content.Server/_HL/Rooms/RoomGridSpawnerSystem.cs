@@ -203,14 +203,17 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         return markerUid != default;
     }
 
-    private static Box2 GetAreaBounds(RoomGridSpawnAreaComponent markerComp, TransformComponent markerXform)
+    private Box2 GetAreaBounds(RoomGridSpawnAreaComponent markerComp, TransformComponent markerXform)
     {
         var widthTiles = Math.Max(1, (int)MathF.Round(markerComp.Width));
         var heightTiles = Math.Max(1, (int)MathF.Round(markerComp.Height));
 
-        var center = markerXform.LocalPosition;
-        var centerX = (int)MathF.Round(center.X);
-        var centerY = (int)MathF.Round(center.Y);
+        var centerTile = markerXform.GridUid != null && _gridQuery.TryComp(markerXform.GridUid, out var grid)
+            ? _map.LocalToTile(markerXform.GridUid.Value, grid, markerXform.Coordinates)
+            : new Vector2i((int)MathF.Floor(markerXform.LocalPosition.X), (int)MathF.Floor(markerXform.LocalPosition.Y));
+
+        var centerX = centerTile.X;
+        var centerY = centerTile.Y;
 
         var left = centerX - widthTiles / 2;
         var bottom = centerY - heightTiles / 2;
@@ -360,8 +363,8 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
     {
         var half = (size - 1) / 2;
         var center = bounds.Center;
-        var originX = (int)MathF.Round(center.X) - half;
-        var originY = (int)MathF.Round(center.Y) - half;
+        var originX = (int)MathF.Floor(center.X) - half;
+        var originY = (int)MathF.Floor(center.Y) - half;
 
         var grid = new GridData
         {

@@ -234,7 +234,10 @@ namespace Content.Shared.SubFloor
     [Serializable, NetSerializable]
     public enum SubfloorLayers : byte
     {
-        FirstLayer
+        FirstLayer,
+        // HL - Add another layer, because... reasons (Pucklight commit)
+        // Caaaarl you duplicated the subfloor layer
+        //SecondLayer
     }
 }
 // Re-enable warnings if they were disabled elsewhere

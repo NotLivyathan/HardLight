@@ -16,6 +16,15 @@
     canDisarm: false
   - type: InputMover
   - type: MobMover
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-dreadtalon-name
+    description: ghost-role-information-dreadtalon-description
+    rules: ghost-role-information-dreadtalon-rules
+    raffle:
+      settings: default
   - type: GhostTakeoverAvailable
   - type: TypingIndicator
     proto: alien
@@ -144,7 +153,7 @@
         variation: 0.05
   - type: JumpCollisionKnockback
     throwForce: 50
-        
+
 - type: entity
   name: Hierotitan
   id: BananaTalon
@@ -192,7 +201,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: QuantumDreadTalon
   id: BlueTalon
@@ -224,7 +233,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: LavalandDreadTalon
   id: LavaTalon
@@ -257,7 +266,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: PlasmaDreadTalon
   id: PlasmaTalon
@@ -284,7 +293,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: Grav DreadTalon
   id: GravTalon
@@ -322,7 +331,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: SM DreadTalon
   id: SuperTalon
@@ -359,7 +368,7 @@
         Base: crit
       Dead:
         Base: dead
-        
+
 - type: entity
   name: radioactive DreadTalon
   id: TriTalon

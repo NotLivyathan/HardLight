@@ -1,0 +1,8 @@
+- type: entity
+  parent: BaseBarSign
+  id: BarSignVa11halla
+  name: VA-11 HALL-A
+  description: A small, neon lit bar tucked in the corner of a megastation. Mix drinks and change lives.
+  components:
+  - type: BarSign
+    current: Va11HallA

@@ -37,7 +37,7 @@
   category: Floors
   sprite: /Textures/Interface/Radial/RCD/plating.png
   mode: ConstructTile
-  prototype: Plating
+  prototype: PlatingRCD
   cost: 1
   delay: 1
   collisionMask: InteractImpassable
@@ -58,7 +58,7 @@
   rules:
     - CanBuildOnEmptyTile
   fx: EffectRCDConstruct1
-  
+
 - type: rcd
   id: FloorXenoborg
   name: tiles-xenoborg-floor
@@ -72,7 +72,7 @@
   rules:
     - CanBuildOnEmptyTile
   fx: EffectRCDConstruct1
-  
+
 - type: rcd
   id: FloorXeno
   name: tiles-xeno-floor
@@ -86,7 +86,7 @@
   rules:
     - CanBuildOnEmptyTile
   fx: EffectRCDConstruct1
-  
+
 - type: rcd
   id: FloorXenoSteel
   name: tiles-xeno-steel
@@ -100,7 +100,7 @@
   rules:
     - CanBuildOnEmptyTile
   fx: EffectRCDConstruct1
-  
+
 - type: rcd
   id: FloorXenoMaint
   name: tiles-xeno-maint
@@ -142,7 +142,7 @@
   collisionMask: FullTileMask
   rotation: Fixed
   fx: EffectRCDConstruct2
-  
+
 - type: rcd
   id: WallShuttle
   category: Walls
@@ -154,7 +154,7 @@
   collisionMask: FullTileMask
   rotation: Fixed
   fx: EffectRCDConstruct2
-  
+
 - type: rcd
   id: WallReinforced
   category: Walls
@@ -166,7 +166,7 @@
   collisionMask: FullTileMask
   rotation: Fixed
   fx: EffectRCDConstruct2
-  
+
 - type: rcd
   id: WallXenoborg
   category: Walls
@@ -235,6 +235,7 @@
     - IsWindow
   rotation: User
   fx: EffectRCDConstruct1
+  allowMultiDirection: true
 
 - type: rcd
   id: ReinforcedWindow
@@ -264,6 +265,7 @@
     - IsWindow
   rotation: User
   fx: EffectRCDConstruct2
+  allowMultiDirection: true
 
 # Airlocks
 - type: rcd
@@ -315,6 +317,7 @@
   collisionBounds: "-0.23,-0.49,0.23,-0.36"
   rotation: User
   fx: EffectRCDConstruct1
+  allowMultiDirection: true
 
 - type: rcd
   id: BulbLight
@@ -327,6 +330,23 @@
   collisionMask: TabletopMachineMask
   collisionBounds: "-0.23,-0.49,0.23,-0.36"
   rotation: User
+  fx: EffectRCDConstruct1
+  allowMultiDirection: true
+
+# HL - Lighting
+- type: rcd
+  id: PuckLight
+  category: Lighting
+  sprite:
+    sprite: /Textures/_HL/Structures/pucklight.rsi
+    state: base
+  mode: ConstructObject
+  prototype: PoweredPuckLight
+  cost: 2
+  delay: 1
+  collisionMask: TabletopMachineMask
+  collisionBounds: "0.25,0.25,-0.25,-0.25"
+  rotation: Fixed
   fx: EffectRCDConstruct1
 
 # Electrical
@@ -382,9 +402,9 @@
   fx: EffectRCDConstruct0
 
 
-# HARD LIGHT
+# HardLight
 
-# AIRLOCKs
+# Airlocks
 - type: rcd
   id: AtmosDeviceFanDirectional
   category: Airlocks
@@ -398,3 +418,4 @@
   collisionMask: FullTileMask
   rotation: User
   fx: EffectRCDConstruct3
+  allowMultiDirection: true

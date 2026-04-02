@@ -298,6 +298,8 @@
       collection: VulpkaninBarks
     Whine:
       collection: VulpkaninWhines
+    Purr: # Hardlight
+      collection: FelinidPurrs
     Howl:
       collection: VulpkaninHowls
     Gasp:
@@ -358,6 +360,8 @@
       collection: VulpkaninWhines
     Howl:
       collection: VulpkaninHowls
+    Purr: # Hardlight
+      collection: FelinidPurrs
     Gasp:
       collection: FemaleGasp
     DefaultDeathgasp:

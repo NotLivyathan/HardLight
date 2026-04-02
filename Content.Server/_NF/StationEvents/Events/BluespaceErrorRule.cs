@@ -247,7 +247,13 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
                 var playerMobs = _linkedLifecycleGrid.GetEntitiesToReparent(gridUid);
                 foreach (var mob in playerMobs)
                 {
-                    _transform.DetachEntity(mob.Entity.Owner, mob.Entity.Comp);
+                    if (!TryComp<MetaDataComponent>(mob.EntityUid, out var meta) || meta.EntityLifeStage >= EntityLifeStage.Terminating)
+                        continue;
+
+                    if (!TryComp<TransformComponent>(mob.EntityUid, out var xform) || xform.MapID == MapId.Nullspace)
+                        continue;
+
+                    _transform.DetachEntity(mob.EntityUid, xform);
                 }
 
                 var gridValue = _pricing.AppraiseGrid(gridUid, null);
@@ -257,7 +263,13 @@ public sealed class BluespaceErrorRule : StationEventSystem<BluespaceErrorRuleCo
 
                 foreach (var mob in playerMobs)
                 {
-                    _transform.SetCoordinates(mob.Entity.Owner, new EntityCoordinates(mob.MapUid, mob.MapPosition));
+                    if (!TryComp<MetaDataComponent>(mob.EntityUid, out var meta) || meta.EntityLifeStage >= EntityLifeStage.Terminating)
+                        continue;
+
+                    if (!TryComp<TransformComponent>(mob.EntityUid, out var xform) || xform.MapID != MapId.Nullspace)
+                        continue;
+
+                    _transform.SetCoordinates(mob.EntityUid, xform, new EntityCoordinates(mob.MapUid, mob.MapPosition));
                 }
 
                 foreach (var (account, rewardCoeff) in component.RewardAccounts)

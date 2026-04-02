@@ -1,6 +1,9 @@
+using Robust.Shared.Serialization;
+
 namespace Content.Shared._HL.Rooms;
 
-public enum RoomGridSpawnerVisuals
+[Serializable, NetSerializable]
+public enum RoomGridSpawnerVisuals : byte
 {
     InUse
 }

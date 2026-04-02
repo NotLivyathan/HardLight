@@ -1,7 +1,14 @@
 using System.Linq;
+using System.Numerics;
+using System.Threading;
+using Content.Server.Administration.Systems;
+using Content.Server.CharacterInfo; // For CharacterInfo updates
+using Content.Server.CrewManifest;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
-using Content.Server._NF.RoundNotifications.Events;
+using Content.Server.Mind; // For MindSystem
+using Content.Server.Roles; // For RoleSystem
+using Content.Server.Roles.Jobs; // For JobSystem
 using Content.Server.Salvage;
 using Content.Server.Salvage.Expeditions;
 using Content.Server.Shuttles.Components;
@@ -10,23 +17,28 @@ using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
-using Content.Server.CrewManifest;
-using Content.Server._NF.ShuttleRecords.Components;
-using Content.Server._NF.ShuttleRecords;
 using Content.Server._HL.RoundPersistence.Components;
+using Content.Server._NF.RoundNotifications.Events;
+using Content.Server._NF.ShuttleRecords;
+using Content.Server._NF.ShuttleRecords.Components;
+using Content.Shared.CrewManifest;
+using Content.Shared.GameTicking;
+using Content.Shared.HL.CCVar; // HardLight CCVar namespace
+using Content.Shared.Mind;
+using Content.Shared.Objectives; // For ObjectiveInfo
+using Content.Shared.Objectives.Components; // For ObjectiveComponent
+using Content.Shared.Roles;
 using Content.Shared.Salvage;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Salvage.Expeditions.Modifiers;
-using Content.Shared._NF.ShuttleRecords.Components;
-using Content.Shared._NF.ShuttleRecords;
-using RobustTimer = Robust.Shared.Timing.Timer;
-using Content.Shared.StationRecords;
-using Content.Shared.CrewManifest;
-using Content.Shared.HL.CCVar; // HardLight CCVar namespace
-using Content.Shared.GameTicking;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Station.Components;
+using Content.Shared.StationRecords;
+using Content.Shared._NF.ShuttleRecords;
+using Content.Shared._NF.ShuttleRecords.Components;
 using Robust.Server.GameObjects;
+using Robust.Server.Player; // For IPlayerManager
+using Robust.Shared.Configuration;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
@@ -34,17 +46,8 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
-using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
-using System.Numerics;
-using System.Threading;
-using Robust.Server.Player; // For IPlayerManager
-using Content.Server.CharacterInfo; // For CharacterInfo updates
-using Content.Server.Mind; // For MindSystem
-using Content.Server.Roles.Jobs; // For JobSystem
-using Content.Server.Roles; // For RoleSystem
-using Content.Shared.Objectives; // For ObjectiveInfo
-using Content.Shared.Objectives.Components; // For ObjectiveComponent
+using RobustTimer = Robust.Shared.Timing.Timer;
 
 namespace Content.Server.HL.RoundPersistence.Systems;
 
@@ -68,6 +71,7 @@ public sealed class RoundPersistenceSystem : EntitySystem
     [Dependency] private SalvageSystem _salvageSystem = default!;
     [Dependency] private ShuttleSystem _shuttle = default!;
     [Dependency] private IPlayerManager _players = default!;
+    [Dependency] private AdminSystem _admin = default!;
     [Dependency] private MindSystem _minds = default!;
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private RoleSystem _roles = default!;
@@ -85,13 +89,19 @@ public sealed class RoundPersistenceSystem : EntitySystem
     /// </summary>
     private CancellationTokenSource _timerCts = new();
 
+    /// <summary>
+    /// Prevents duplicate antag cleanup if both round-end and restart events fire.
+    /// </summary>
+    private bool _roundBoundaryCleanupDone;
+
     public override void Initialize()
     {
         base.Initialize();
 
-        //_sawmill = Logger.GetSawmill("round-persistence");
+        _sawmill = Logger.GetSawmill("round-persistence");
 
         // Listen for round events
+        SubscribeLocalEvent<RoundEndMessageEvent>(OnRoundEndMessage);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundStartedEvent>(OnRoundStarted);
 
@@ -121,7 +131,15 @@ public sealed class RoundPersistenceSystem : EntitySystem
             UpdateExpeditionUIs();
         }, _timerCts.Token);
 
-        //_sawmill.Info("Round persistence system initialized");
+        // _sawmill.Info("Round persistence system initialized");
+    }
+
+    /// <summary>
+    /// Called when the end-of-round message is shown (evac/round-end reached).
+    /// </summary>
+    private void OnRoundEndMessage(RoundEndMessageEvent ev)
+    {
+        RunAntagCleanupIfNeeded();
     }
 
     /// <summary>
@@ -129,6 +147,8 @@ public sealed class RoundPersistenceSystem : EntitySystem
     /// </summary>
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        RunAntagCleanupIfNeeded();
+
         if (!_cfg.GetCVar(HLCCVars.RoundPersistenceEnabled))
             return;
 
@@ -136,60 +156,87 @@ public sealed class RoundPersistenceSystem : EntitySystem
 
         EnsurePersistentEntity();
         SaveAllCriticalData();
-
-        // Clear antagonist roles and objectives to prevent duplicate payouts across restarts
-        ClearAntagonistRolesAndObjectives();
-
-        // Push character info updates so clients immediately see cleared objectives/roles
-        RefreshCharacterInfoForAllPlayers();
     }
 
     /// <summary>
     /// Clears antagonist roles and objectives from all minds during restart cleanup.
     /// Prevents players from getting paid multiple times for the same objective after a restart.
     /// </summary>
-    private void ClearAntagonistRolesAndObjectives()
+    private bool ClearAntagonistRolesAndObjectives()
     {
+        var processedMinds = 0;
+        var clearedMinds = 0;
+
         try
         {
-            var mindQuery = EntityQueryEnumerator<Content.Shared.Mind.MindComponent>();
-            var clearedCount = 0;
+            var mindQuery = EntityQueryEnumerator<MindComponent>();
+            var anyCleared = false;
 
-            while (mindQuery.MoveNext(out var mindUid, out var mind))
+            while (mindQuery.MoveNext(out EntityUid mindId, out MindComponent? mind))
             {
+                if (mind == null)
+                    continue;
+
+                processedMinds++;
+
+                var clearedAnything = false;
+
                 // Clear objectives using MindSystem API to fully detach and clean state
                 if (mind.Objectives.Count > 0)
                 {
                     // Remove from highest index to lowest to preserve indices
                     for (var i = mind.Objectives.Count - 1; i >= 0; i--)
                     {
-                        _minds.TryRemoveObjective(mindUid, mind, i);
+                        clearedAnything |= _minds.TryRemoveObjective(mindId, mind, i);
                     }
                 }
 
-                // Clear mind role entities (antag roles are BaseMindRoleComponent-derived)
+                // Remove only antagonist mind roles so regular roles are preserved.
                 if (mind.MindRoles.Count > 0)
                 {
-                    foreach (var roleEnt in mind.MindRoles.ToArray())
+                    var antagRoles = new List<EntityUid>();
+                    foreach (var roleUid in mind.MindRoles)
                     {
-                        if (Exists(roleEnt))
-                            QueueDel(roleEnt);
+                        if (!TryComp<MindRoleComponent>(roleUid, out var roleComp))
+                            continue;
+
+                        if (roleComp.Antag || roleComp.ExclusiveAntag)
+                            antagRoles.Add(roleUid);
                     }
-                    mind.MindRoles.Clear();
+
+                    foreach (var roleUid in antagRoles)
+                    {
+                        EntityManager.DeleteEntity(roleUid);
+                        clearedAnything = true;
+                    }
                 }
 
-                // Reset role type to neutral
-                mind.RoleType = "Neutral";
+                if (clearedAnything)
+                {
+                    // Force station-aligned role state after antag cleanup and notify the player.
+                    mind.RoleType = "Neutral";
+                    mind.Subtype = null;
+                    Dirty(mindId, mind);
+                    _roles.RoleUpdateMessage(mind);
 
-                Dirty(mindUid, mind);
-                clearedCount++;
+                    clearedMinds++;
+                    anyCleared = true;
+                }
             }
 
-            //_sawmill.Info($"Cleared antagonist roles/objectives for {clearedCount} minds during restart cleanup");
+            if (anyCleared)
+            {
+                // Batch-refresh and broadcast once since round-boundary cleanup affects many players at once.
+                _admin.RefreshAndBroadcastPlayerList();
+            }
+
+            return anyCleared;
         }
         catch (Exception e)
         {
-            //_sawmill.Error($"Error clearing antagonist roles/objectives on restart: {e}");
+            _sawmill.Error(
+                $"Round-boundary antag cleanup failed (round={_gameTicker.RoundId}, processed={processedMinds}, cleared={clearedMinds}): {e.GetType().Name}: {e.Message}");
+            return false;
         }
     }
 
@@ -238,10 +285,10 @@ public sealed class RoundPersistenceSystem : EntitySystem
 
             //_sawmill.Info($"Pushed CharacterInfo updates to {sessions.Count} players after antag/objective cleanup");
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // Swallow errors to avoid breaking round startup; optional logging can be enabled.
-            _sawmill.Error($"Error refreshing character info after cleanup: {e}");
+            _sawmill.Error("Error refreshing character info after cleanup.");
         }
     }
 
@@ -250,17 +297,35 @@ public sealed class RoundPersistenceSystem : EntitySystem
     /// </summary>
     private void OnRoundStarted(RoundStartedEvent ev)
     {
+        // New round begins; allow the next round-boundary cleanup to run.
+        _roundBoundaryCleanupDone = false;
+
         if (!_cfg.GetCVar(HLCCVars.RoundPersistenceEnabled))
             return;
 
         //_sawmill.Info("Round started, will restore data when stations are created");
 
-        // Also ensure antagonists/objectives are cleared at the start of the new round
-        // in case cleanup timing missed any minds created late during restart.
-        ClearAntagonistRolesAndObjectives();
-        RefreshCharacterInfoForAllPlayers();
 
+    }
 
+    /// <summary>
+    /// Clears antag state and refreshes character info once per round boundary.
+    /// </summary>
+    private void RunAntagCleanupIfNeeded()
+    {
+        if (_roundBoundaryCleanupDone)
+            return;
+
+        _roundBoundaryCleanupDone = true;
+
+        // Clear antagonist roles and objectives to prevent duplicate payouts across round transitions.
+        var changedAnyMind = ClearAntagonistRolesAndObjectives();
+
+        if (changedAnyMind)
+        {
+            // Push character info updates so clients immediately see cleared objectives/roles.
+            RefreshCharacterInfoForAllPlayers();
+        }
     }
 
     /// <summary>
@@ -549,12 +614,6 @@ public sealed class RoundPersistenceSystem : EntitySystem
             }
 
             // Get crew manifest
-            var (_, manifestEntries) = _crewManifest.GetCrewManifest(stationUid);
-            if (manifestEntries != null)
-            {
-                persistedRecords.CrewManifest = manifestEntries.Entries.ToList();
-            }
-
             persistence.StationRecords[stationName] = persistedRecords;
         }
     }
