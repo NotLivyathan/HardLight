@@ -1,5 +1,7 @@
 # PUT YOUR TAGS IN ALPHABETICAL ORDER
 
+## A ##
+
 - type: Tag
   id: AccessBreakerImmune
 
@@ -38,6 +40,8 @@
 
 - type: Tag
   id: ATVKeys
+
+## B ##
 
 - type: Tag
   id: Backpack
@@ -256,6 +260,9 @@
   id: Briefcase
 
 - type: Tag
+  id: BrigmedicBeltEquip
+
+- type: Tag
   id: BrimFlatcapBrown
 
 - type: Tag
@@ -268,16 +275,16 @@
   id: Bucket
 
 - type: Tag
-  id: Burger
-
-- type: Tag
   id: BulletFoam
 
 - type: Tag
-  id: Burnt
+  id: Bun
 
 - type: Tag
-  id: Bun
+  id: Burger
+
+- type: Tag
+  id: Burnt
 
 - type: Tag
   id: BypassDropChecks
@@ -285,14 +292,16 @@
 - type: Tag
   id: BypassInteractionRangeChecks
 
+## C ##
+
 - type: Tag
   id: CableCoil
 
 - type: Tag
-  id: Candle
+  id: Cake
 
 - type: Tag
-  id: Cake
+  id: Candle
 
 - type: Tag
   id: CaneBlade
@@ -313,6 +322,9 @@
   id: CaptainSabre
 
 - type: Tag
+  id: Carp
+
+- type: Tag
   id: Carpet
 
 - type: Tag
@@ -322,31 +334,34 @@
   id: CarrotFries
 
 - type: Tag
-  id: Carp
-
-- type: Tag
   id: Cartridge
 
 - type: Tag
   id: Cartridge145x114mm
 
 - type: Tag
-  id: CartridgeCap
+  id: Cartridge45_magnumFMJ
 
 - type: Tag
   id: Cartridge635x40mmCaseless
 
 - type: Tag
+  id: Cartridge8x65mmSKR # Mono
+
+- type: Tag
+  id: CartridgeCap
+
+- type: Tag
   id: CartridgeCHIMP
 
 - type: Tag
-  id: Cartridge45_magnumFMJ
+  id: CartridgeMachineGun # Mono
 
 - type: Tag
   id: CartridgeRocket
 
 - type: Tag
-  id: Cartridge8x65mmSKR # mono
+  id: CartridgeShell # Mono
 
 # Allows you to walk over tile entities such as lava without steptrigger
 - type: Tag
@@ -354,9 +369,6 @@
 
 - type: Tag
   id: CentrifugeCompatible
-
-- type: Tag
-  id: Chicken
 
 - type: Tag
   id: Cheese
@@ -367,6 +379,9 @@
 
 - type: Tag
   id: ChemDispensable # container that can go into the chem dispenser
+
+- type: Tag
+  id: Chicken
 
 - type: Tag
   id: ChiliBowl
@@ -423,18 +438,18 @@
   id: ComputerTelevisionCircuitboard
 
 - type: Tag
-  id: ConveyorAssembly
-
-- type: Tag
   id: ConstructionMaterial
 
 - type: Tag
-  id: CoreTattoo
+  id: ConveyorAssembly
 
 - type: Tag
   id: CoordinatesDisk
 
-- type: Tag #Ohioans die happy
+- type: Tag
+  id: CoreTattoo
+
+- type: Tag # Ohioans die happy
   id: Corn
 
 - type: Tag
@@ -512,6 +527,8 @@
 - type: Tag
   id: CubanCarp
 
+## D ##
+
 - type: Tag
   id: DeathAcidifier
 
@@ -525,7 +542,7 @@
   id: Dice
 
 - type: Tag
-  id: DiscreteHealthAnalyzer #So construction recipes don't eat medical PDAs
+  id: DiscreteHealthAnalyzer # So construction recipes don't eat medical PDAs
 
 - type: Tag
   id: DNASolutionScannable
@@ -578,6 +595,8 @@
 - type: Tag
   id: Duck
 
+## E ##
+
 - type: Tag
   id: Ectoplasm
 
@@ -597,6 +616,14 @@
   id: ExplosivePassable
 
 - type: Tag
+  id: Eyes
+
+## F ##
+
+- type: Tag
+  id: FakeNukeDisk
+
+- type: Tag
   id: Figurine
 
 - type: Tag
@@ -609,13 +636,13 @@
   id: FireAxe
 
 - type: Tag
-  id: FirelockElectronics
-
-- type: Tag
   id: FireExtinguisher
 
 - type: Tag
   id: FireHelmet
+
+- type: Tag
+  id: FirelockElectronics
 
 - type: Tag
   id: Flare
@@ -652,6 +679,8 @@
 
 - type: Tag
   id: Fruit
+
+## G ##
 
 - type: Tag
   id: Galaxythistle
@@ -700,12 +729,6 @@
   id: GrenadeFlashBang
 
 - type: Tag
-  id: HudMedical
-
-- type: Tag
-  id: HudSecurity
-
-- type: Tag
   id: GuideEmbeded
 
 - type: Tag
@@ -717,6 +740,8 @@
 - type: Tag
   id: GunUpgradeReloadSpeed
 
+## H ##
+
 - type: Tag
   id: Hamster
 
@@ -727,13 +752,13 @@
   id: HamtrCentralControlModule
 
 - type: Tag
-  id: HamtrPeripheralsControlModule
-
-- type: Tag
   id: HamtrLArm
 
 - type: Tag
   id: HamtrLLeg
+
+- type: Tag
+  id: HamtrPeripheralsControlModule
 
 - type: Tag
   id: HamtrRArm
@@ -761,6 +786,9 @@
 
 - type: Tag
   id: Head
+
+- type: Tag
+  id: Heart
 
 - type: Tag
   id: HelmetEVA
@@ -799,16 +827,13 @@
   id: HonkerCentralControlModule
 
 - type: Tag
-  id: HonkerPeripheralsControlModule
-
-- type: Tag
-  id: HonkerTargetingControlModule
-
-- type: Tag
   id: HonkerLArm
 
 - type: Tag
   id: HonkerLLeg
+
+- type: Tag
+  id: HonkerPeripheralsControlModule
 
 - type: Tag
   id: HonkerRArm
@@ -817,10 +842,21 @@
   id: HonkerRLeg
 
 - type: Tag
+  id: HonkerTargetingControlModule
+
+- type: Tag
   id: Hotsauce
 
 - type: Tag
+  id: HudMedical
+
+- type: Tag
+  id: HudSecurity
+
+- type: Tag
   id: HydroponicsToolClippers
+
+## I ##
 
 - type: Tag
   id: Ice
@@ -832,13 +868,13 @@
   id: Igniter
 
 - type: Tag
-  id: Ingredient
-
-- type: Tag #Drop this innate tool instead of deleting it.
-  id: InnateDontDelete
+  id: Ingot
 
 - type: Tag
-  id: Ingot
+  id: Ingredient
+
+- type: Tag # Drop this innate tool instead of deleting it.
+  id: InnateDontDelete
 
 - type: Tag
   id: InstantDoAfters
@@ -852,8 +888,12 @@
 - type: Tag
   id: InvalidForSurvivorAntag
 
+## J ##
+
 - type: Tag
   id: JawsOfLife
+
+## K ##
 
 - type: Tag
   id: Kangaroo
@@ -868,10 +908,15 @@
   id: KeyedInstrument
 
 - type: Tag
+  id: Kidneys
+
+- type: Tag
   id: KitchenKnife
 
 - type: Tag
   id: Knife
+
+## L ##
 
 - type: Tag
   id: LavaBrig
@@ -886,6 +931,11 @@
   id: Lime
 
 - type: Tag
+  id: Liver
+
+## M ##
+
+- type: Tag
   id: Machete
 
 - type: Tag
@@ -894,31 +944,31 @@
 # Magazines ordered by slot then caliber
 
 - type: Tag
-  id: MagazineCalico
+  id: Magazine12_gaugeBuckshot
 
 - type: Tag
-  id: Magazine635x40mmCaseless
-
-- type: Tag
-  id: Magazine762x39mmPan
+  id: Magazine40mm
 
 - type: Tag
   id: Magazine45_magnumPistolFMJ
 
 - type: Tag
-  id: Magazine635x40mmCaselessPistol
-
-- type: Tag
-  id: Magazine12_gaugeBuckshot
-
-- type: Tag
   id: Magazine45_magnumSubMachineGunFMJ
 
 - type: Tag
-  id: Magazine8x65mmSKR # mono
+  id: Magazine635x40mmCaseless
 
 - type: Tag
-  id: Magazine40mm
+  id: Magazine635x40mmCaselessPistol
+
+- type: Tag
+  id: Magazine762x39mmPan
+
+- type: Tag
+  id: Magazine8x65mmSKR # Mono
+
+- type: Tag
+  id: MagazineCalico
 
 # Magazines end
 
@@ -962,9 +1012,6 @@
   id: MindTransferTarget
 
 - type: Tag
-  id: Multitool
-
-- type: Tag
   id: Mineshaft
 
 - type: Tag
@@ -986,18 +1033,21 @@
   id: MopBasic
 
 - type: Tag
-  id: Mouse
-
-- type: Tag
   id: MothershipCoreGhostrole # spawn whitelist : SpawnPointGhostRoleMothershipCore
-
 
 - type: Tag
   id: MothershipModule # Cyborg module category for evil xenoborg core
 
+- type: Tag
+  id: Mouse
+
+- type: Tag
+  id: Multitool
 
 - type: Tag
   id: Mushroom  # ConstructionGraph: Soil
+
+## N ##
 
 - type: Tag
   id: NoBlockAnchoring
@@ -1015,13 +1065,15 @@
   id: Nugget # for chicken nuggets
 
 - type: Tag
-  id: FakeNukeDisk
-
-- type: Tag
   id: NukeOpsUplink
+
+## O ##
 
 - type: Tag
   id: Ointment
+
+- type: Tag
+  id: Openable
 
 - type: Tag
   id: OperatingTable
@@ -1045,34 +1097,21 @@
   id: OreUranium # CargoBounty: BountySalvageOreUranium
 
 - type: Tag
-  id: Openable
-
-- type: Tag
   id: Organ
 
-- type: Tag
-  id: Eyes
-
-- type: Tag
-  id: Liver
-
-- type: Tag
-  id: Heart
-
-- type: Tag
-  id: Kidneys
+## P ##
 
 - type: Tag
   id: Packet
 
 - type: Tag
-  id: ParadoxCloneObjectiveBlacklist # objective entities with this tag don't get copied to paradox clones
+  id: Pancake
 
 - type: Tag
   id: Paper
 
 - type: Tag
-  id: Pancake
+  id: ParadoxCloneObjectiveBlacklist # objective entities with this tag don't get copied to paradox clones
 
 - type: Tag
   id: Payload # for grenade/bomb crafting
@@ -1182,8 +1221,12 @@
 - type: Tag
   id: ProximitySensor
 
+## Q ##
+
 - type: Tag
   id: QuantumSpinInverter
+
+## R ##
 
 - type: Tag
   id: Radio
@@ -1192,7 +1235,7 @@
   id: RawMaterial
 
 - type: Tag
-  id: ReactorPart #FarHorizons
+  id: ReactorPart # Far Horizons
 
 # Give this to something that doesn't need any special recycler behavior and just needs deleting.
 - type: Tag
@@ -1214,13 +1257,13 @@
   id: RipleyCentralControlModule
 
 - type: Tag
-  id: RipleyPeripheralsControlModule
-
-- type: Tag
   id: RipleyLArm
 
 - type: Tag
   id: RipleyLLeg
+
+- type: Tag
+  id: RipleyPeripheralsControlModule
 
 - type: Tag
   id: RipleyRArm
@@ -1236,6 +1279,8 @@
 
 - type: Tag
   id: RollingPin
+
+## S ##
 
 - type: Tag
   id: SaltShaker
@@ -1254,9 +1299,6 @@
 
 - type: Tag
   id: SecBeltEquip
-
-- type: Tag
-  id: BrigmedicBeltEquip
 
 - type: Tag
   id: SecurePlasmaWindoor
@@ -1284,6 +1326,9 @@
 
 - type: Tag
   id: Shiv
+
+- type: Tag
+  id: ShoesRequiredStepTriggerImmune
 
 - type: Tag
   id: Shovel
@@ -1319,10 +1364,10 @@
   id: SmallMech
 
 - type: Tag
-  id: SnapPop
+  id: Smokable
 
 - type: Tag
-  id: Smokable
+  id: SnapPop
 
 - type: Tag
   id: SnowyLabs
@@ -1340,16 +1385,19 @@
   id: Spear
 
 - type: Tag
-  id: SpeedLoaderCap
-
-- type: Tag
   id: SpeedLoader45_magnumFMJ
 
 - type: Tag
   id: SpeedLoader9x19mmFMJ
 
 - type: Tag
+  id: SpeedLoaderCap
+
+- type: Tag
   id: SpeedLoaderRifle
+
+- type: Tag
+  id: Spellbook
 
 - type: Tag
   id: SpiderCraft
@@ -1408,17 +1456,16 @@
 - type: Tag
   id: SyringeGunAmmo
 
-- type: Tag
-  id: Spellbook
+## T ##
 
 - type: Tag
   id: TabletopBoard
 
 - type: Tag
-  id: Taco
+  id: TabletopPiece
 
 - type: Tag
-  id: TabletopPiece
+  id: Taco
 
 - type: Tag
   id: Taser
@@ -1465,6 +1512,8 @@
 - type: Tag
   id: TurretControlElectronics # Used in the construction of sentry turret control panels
 
+## U ##
+
 - type: Tag
   id: Unimplantable
 
@@ -1473,6 +1522,8 @@
 
 - type: Tag
   id: UraniumGlassShard
+
+## V ##
 
 - type: Tag
   id: Vegetable
@@ -1485,6 +1536,8 @@
 
 - type: Tag
   id: VoiceTrigger
+
+## W ##
 
 - type: Tag
   id: Wall
@@ -1564,6 +1617,8 @@
 - type: Tag
   id: WriteIgnoreStamps
 
+## X ##
+
 - type: Tag
   id: XenoborgGhostrole # spawn whitelist : SpawnPointGhostRoleXenoborg
 
@@ -1584,13 +1639,3 @@
 
 # ALPHABETICAL
 
-
-- type: Tag
-  id: ShoesRequiredStepTriggerImmune
-# Mono
-
-- type: Tag
-  id: CartridgeMachineGun
-
-- type: Tag
-  id: CartridgeShell
