@@ -1,6 +1,6 @@
 using System.Linq;
 using Content.Server.Body.Components;
-using Content.Server.EntityEffects.Effects;
+using Content.Shared.EntityEffects.Effects;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Popups;
 using Content.Shared.Alert;
@@ -190,7 +190,7 @@ public sealed class BloodstreamSystem : EntitySystem
                 // Reset the drunk and stutter time to zero
                 bloodstream.StatusTime = TimeSpan.Zero;
             }
-            
+
             // Generic blood restoration system - restore original blood when no blood-changing effects remain
             if (bloodstream.OriginalBloodReagent != null && bloodstream.BloodReagent != bloodstream.OriginalBloodReagent)
             {
@@ -211,7 +211,7 @@ public sealed class BloodstreamSystem : EntitySystem
     private void BuildBloodAffectingReagentsCache()
     {
         _bloodAffectingReagents.Clear();
-        
+
         foreach (var reagentProto in _prototypeManager.EnumeratePrototypes<ReagentPrototype>())
         {
             // Check all metabolism effects for ChangeBloodReagent
@@ -234,7 +234,7 @@ public sealed class BloodstreamSystem : EntitySystem
     private bool ShouldRestoreBlood(EntityUid uid, BloodstreamComponent bloodstream)
     {
         // Get the entity's chemical solution
-        if (!_solutionContainerSystem.ResolveSolution(uid, bloodstream.ChemicalSolutionName, 
+        if (!_solutionContainerSystem.ResolveSolution(uid, bloodstream.ChemicalSolutionName,
             ref bloodstream.ChemicalSolution, out var chemSolution))
             return true; // No chemicals = safe to restore
 
@@ -244,7 +244,7 @@ public sealed class BloodstreamSystem : EntitySystem
             if (quantity > FixedPoint2.Zero && _bloodAffectingReagents.Contains(reagentId.Prototype))
                 return false; // Found active blood-changing reagent
         }
-        
+
         return true; // No blood-affecting reagents found
     }
 
