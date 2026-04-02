@@ -1,4 +1,5 @@
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.Prototypes;
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Examine;
@@ -13,6 +14,7 @@ namespace Content.Shared.Fluids;
 
 public abstract partial class SharedPuddleSystem
 {
+    [Dependency] private readonly InjectorSystem _injectorSystem = default!;
     [Dependency] protected readonly OpenableSystem Openable = default!;
 
     protected virtual void InitializeSpillable()
@@ -55,14 +57,29 @@ public abstract partial class SharedPuddleSystem
         if (entity.Comp.SpillDelay == null)
         {
             var target = args.Target;
+            var user = args.User;
             verb.Act = () =>
             {
                 var puddleSolution = _solutionContainerSystem.SplitSolution(soln.Value, solution.Volume);
                 TrySpillAt(Transform(target).Coordinates, puddleSolution, out _);
 
-                if (TryComp<InjectorComponent>(entity, out var injectorComp))
+                // TODO: Make this an event subscription once spilling puddles is predicted.
+                // Injectors should not be hardcoded here.
+                if (TryComp<InjectorComponent>(entity, out var injectorComp)
+                    && _prototypeManager.Resolve(injectorComp.ActiveModeProtoId, out var activeMode)
+                    && !activeMode.Behavior.HasFlag(InjectorBehavior.Draw))
                 {
-                    injectorComp.ToggleState = InjectorToggleMode.Draw;
+                    foreach (var mode in injectorComp.AllowedModes)
+                    {
+                        if (!_prototypeManager.Resolve(mode, out var protoMode))
+                            continue;
+
+                        if (protoMode.Behavior.HasAnyFlag(InjectorBehavior.Draw | InjectorBehavior.Dynamic))
+                        {
+                            _injectorSystem.ToggleMode((entity, injectorComp), user, protoMode);
+                            break;
+                        }
+                    }
                     Dirty(entity, injectorComp);
                 }
             };
