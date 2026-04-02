@@ -190,6 +190,7 @@
   description: An ultrabright flashbulb with a proximity trigger, useful for making an area security-only.
   components:
     - type: EmitSoundOnTrigger
+      predicted: true
       sound:
         path: /Audio/Weapons/flash.ogg
     - type: FlashOnTrigger
@@ -228,17 +229,17 @@
       guides:
       - Security
     # - Antagonists # Frontier: guidebook entry removed
-    
+
 - type: entity
   name: bluespace flasher
   parent: [BaseMachine, BaseC2ContrabandUnredeemable] # Frontier: BaseSecurityContraband<BaseC2ContrabandUnredeemable
   id: BluespaceFlasher
-  description: A bluespace crystal set to a proximity trigger, useful for making an area as off limits to Shadekin. 
+  description: A bluespace crystal set to a proximity trigger, useful for making an area as off limits to Shadekin.
   components:
     - type: EmitSoundOnTrigger
       sound:
         path: /Audio/Effects/Lightning/lightningbolt.ogg
-    - type: SpawnOnTrigger 
+    - type: SpawnOnTrigger
       proto: EffectFlashBluespace
     - type: BluespacePulseOnTrigger
       radius: 10

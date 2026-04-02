@@ -14,7 +14,7 @@ namespace Content.Shared.Item.ItemToggle.Components;
 public sealed partial class ItemToggleComponent : Component
 {
     /// <summary>
-    ///     The item's toggle state.
+    /// The item's toggle state.
     /// </summary>
     [DataField, AutoNetworkedField]
     public bool Activated = false;
@@ -32,7 +32,7 @@ public sealed partial class ItemToggleComponent : Component
     [DataField]
     public bool OnUse = true;
 
-    // Frontier: allow alt-verbs
+    // Frontier start: Allow alt-verbs
     /// <summary>
     /// If this is set to true, the item can be toggled by pressing alt+Z.
     /// </summary>
@@ -44,45 +44,57 @@ public sealed partial class ItemToggleComponent : Component
     /// </summary>
     [DataField]
     public int AltPriority;
-    // End Frontier
+    // Frontier end
 
     /// <summary>
-    ///     The localized text to display in the verb to activate.
+    /// The localized text to display in the verb to activate.
     /// </summary>
     [DataField]
     public string VerbToggleOn = "item-toggle-activate";
 
     /// <summary>
-    ///     The localized text to display in the verb to de-activate.
+    /// The localized text to display in the verb to de-activate.
     /// </summary>
     [DataField]
     public string VerbToggleOff = "item-toggle-deactivate";
 
     /// <summary>
-    ///     Whether the item's toggle can be predicted by the client.
+    /// Whether the item's toggle can be predicted by the client.
     /// </summary>
     /// /// <remarks>
     /// If server-side systems affect the item's toggle, like charge/fuel systems, then the item is not predictable.
     /// </remarks>
-    [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public bool Predictable = true;
 
     /// <summary>
-    ///     The noise this item makes when it is toggled on.
+    /// The noise this item makes when it is toggled on.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public SoundSpecifier? SoundActivate;
 
     /// <summary>
-    ///     The noise this item makes when it is toggled off.
+    /// The noise this item makes when it is toggled off.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public SoundSpecifier? SoundDeactivate;
 
     /// <summary>
-    ///     The noise this item makes when it is toggled on.
+    /// The popup to show to someone activating this item.
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
+    [DataField, AutoNetworkedField]
+    public LocId? PopupActivate;
+
+    /// <summary>
+    /// The popup to show to someone deactivating this item.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public LocId? PopupDeactivate;
+
+    /// <summary>
+    /// The noise this item makes when it is toggled on.
+    /// </summary>
+    [DataField, AutoNetworkedField]
     public SoundSpecifier? SoundFailToActivate;
 }
 
