@@ -1,9 +1,8 @@
 using Content.Server._NF.Traits.Assorted; // Frontier
-using Content.Server.Body.Components;
 using Content.Server.Medical.Components;
 using Content.Server.PowerCell;
 using Content.Server.Temperature.Components;
-using Content.Shared._Shitmed.Targeting;
+using Content.Shared._Shitmed.Targeting; // Shitmed
 // Shitmed Change
 using Content.Shared.Body.Part;
 using Content.Shared.Body.Systems;
@@ -19,7 +18,7 @@ using Content.Shared.Medical;
 using Content.Shared.MedicalScanner;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
-using Content.Shared.Traits.Assorted;
+using Content.Shared.Body.Components;
 using Content.Shared._DV.Traits.Assorted; // DeltaV
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
