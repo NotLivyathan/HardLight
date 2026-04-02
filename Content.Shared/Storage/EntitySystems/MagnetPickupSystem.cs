@@ -16,18 +16,17 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-using Content.Shared.Storage.Components; // Frontier: Server<Shared
 using Content.Shared.Examine;
 using Content.Shared.Hands.Components;
 using Content.Shared.Inventory;
-using Content.Shared.Item.ItemToggle; // DeltaV
+using Content.Shared.Item; // Frontier
+using Content.Shared.Item.ItemToggle; // Delta V
+using Content.Shared.Storage.Components; // Frontier
 using Content.Shared.Verbs; // Frontier
 using Content.Shared.Whitelist;
-using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-using Content.Shared.Item; // Frontier
 
 namespace Content.Shared.Storage.EntitySystems;
 
@@ -39,7 +38,7 @@ public sealed class MagnetPickupSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     // [Dependency] private readonly InventorySystem _inventory = default!; // Frontier
-    [Dependency] private readonly ItemToggleSystem _toggle = default!; // DeltaV
+    [Dependency] private readonly ItemToggleSystem _toggle = default!; // Delta V
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedStorageSystem _storage = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
@@ -134,7 +133,7 @@ public sealed class MagnetPickupSystem : EntitySystem
         var query = EntityQueryEnumerator<MagnetPickupComponent, StorageComponent, TransformComponent, MetaDataComponent>();
         while (query.MoveNext(out var uid, out var comp, out var storage, out var xform, out var meta))
         {
-            // Frontier: combine DeltaV/White Dream's magnet toggle with old system
+            // Frontier: combine Delta V/White Dream's magnet toggle with old system
             if (comp.MagnetCanBeEnabled)
             {
                 if (!comp.MagnetEnabled)
@@ -147,13 +146,13 @@ public sealed class MagnetPickupSystem : EntitySystem
             }
             // End Frontier
 
-            // Begin DeltaV Removals: Allow ore bags to work inhand
+            // Begin Delta V Removals: Allow ore bags to work inhand
             //if (!_inventory.TryGetContainingSlot((uid, xform, meta), out var slotDef))
             //    continue;
 
             //if ((slotDef.SlotFlags & comp.SlotFlags) == 0x0)
             //    continue;
-            // End DeltaV Removals
+            // End Delta V Removals
 
             // Frontier: run conservative space estimations, cut down on space checks
             var slotCount = _storage.GetCumulativeItemAreas((uid, storage)); // Frontier

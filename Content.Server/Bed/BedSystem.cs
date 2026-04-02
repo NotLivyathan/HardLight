@@ -1,6 +1,4 @@
-using Content.Server.Actions;
 using Content.Server.Bed.Components;
-using Content.Server.Body.Systems;
 using Content.Server.Construction;
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
@@ -8,6 +6,7 @@ using Content.Shared._EinsteinEngines.Silicon.Components;
 using Content.Shared.Bed;
 using Content.Shared.Bed.Sleep;
 using Content.Shared.Body.Components;
+using Content.Shared.Body.Events;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Damage;
 using Content.Shared.Emag.Components;
