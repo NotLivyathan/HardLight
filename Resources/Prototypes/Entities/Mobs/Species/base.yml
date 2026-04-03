@@ -316,8 +316,8 @@
         Asphyxiation: -1.0
   - type: FireVisuals
     alternateState: Standing
-  - type: LayingDown
-  - type: OfferItem # _HL
+  - type: StunVisuals
+  - type: OfferItem # HardLight
 
   - type: Carriable # Goobstation
   - type: Genetics # Funkystation - Genetics
