@@ -40,12 +40,12 @@ namespace Content.Client.Input
             common.AddFunction(ContentKeyFunctions.InspectEntity);
             common.AddFunction(ContentKeyFunctions.ToggleRoundEndSummaryWindow);
 
-            // DeltaV - Begin NanoChat keybinds
+            // Delta V start: Begin NanoChat keybinds
             common.AddFunction(ContentKeyFunctions.NanoChatNavigateUp);
             common.AddFunction(ContentKeyFunctions.NanoChatNavigateDown);
             common.AddFunction(ContentKeyFunctions.NanoChatNavigateUpUnread);
             common.AddFunction(ContentKeyFunctions.NanoChatNavigateDownUnread);
-            // DeltaV - End NanoChat keybinds
+            // Delta V end
 
             // Not in engine, because engine cannot check for sanbox/admin status before starting placement.
             common.AddFunction(ContentKeyFunctions.EditorCopyObject);
@@ -62,6 +62,7 @@ namespace Content.Client.Input
             human.AddFunction(EngineKeyFunctions.MoveLeft);
             human.AddFunction(EngineKeyFunctions.MoveRight);
             human.AddFunction(EngineKeyFunctions.Walk);
+            human.AddFunction(ContentKeyFunctions.ToggleKnockdown);
             human.AddFunction(ContentKeyFunctions.SwapHands);
             human.AddFunction(ContentKeyFunctions.SwapHandsPrevious); // Frontier
             human.AddFunction(ContentKeyFunctions.Drop);
@@ -82,7 +83,6 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.SmartEquipWallet); // Frontier
             human.AddFunction(ContentKeyFunctions.OpenBackpack);
             human.AddFunction(ContentKeyFunctions.OpenBelt);
-            human.AddFunction(ContentKeyFunctions.ToggleStanding); // EE
             human.AddFunction(ContentKeyFunctions.ToggleCrawlingUnder); // EE
             human.AddFunction(ContentKeyFunctions.OpenWallet); // Frontier
             human.AddFunction(ContentKeyFunctions.MouseMiddle);
@@ -109,9 +109,7 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.TargetRightLeg);
             human.AddFunction(ContentKeyFunctions.TargetRightFoot);
             // Shitmed Change End
-            // Hardlight change start
-            human.AddFunction(ContentKeyFunctions.OfferItem);
-            // Hardlight change end
+            human.AddFunction(ContentKeyFunctions.OfferItem); // HardLight
 
             // actions should be common (for ghosts, mobs, etc)
             common.AddFunction(ContentKeyFunctions.OpenActionsMenu);
