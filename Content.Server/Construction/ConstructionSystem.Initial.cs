@@ -504,7 +504,7 @@ namespace Content.Server.Construction
 
             HandsComponent? hands = null; // Goobstation
             if (!_actionBlocker.CanInteract(user, null)
-                || (senderSession != null && EntityManager.TryGetComponent(user, out hands) && hands.ActiveHandEntity == null)) // Goobstation - dont check hands for constructor
+                || (senderSession != null && EntityManager.TryGetComponent(user, out hands) && _handsSystem.GetActiveItem((user, hands)) == null)) // Goobstation - dont check hands for constructor
             {
                 Cleanup();
                 return false;
@@ -531,7 +531,7 @@ namespace Content.Server.Construction
             {
                 var valid = false;
 
-                if (hands?.ActiveHandEntity is not { Valid: true } holding) // Goobstation - don't check for constructor machine
+                if (_handsSystem?.GetActiveItem((user, hands))  is not { Valid: true } holding) // HardLight: Added ?
                 {
                     Cleanup();
                     return false;

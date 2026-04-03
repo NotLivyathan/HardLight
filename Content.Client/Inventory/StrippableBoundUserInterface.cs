@@ -1,11 +1,13 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Examine;
+using Content.Client.Hands.Systems;
 using Content.Client.Strip;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Hands.Controls;
 using Content.Client.Verbs.UI;
+using Content.Shared._EE.Strip.Components; // EE
 using Content.Shared.Cuffs;
 using Content.Shared.Cuffs.Components;
 using Content.Shared.Ensnaring.Components;
@@ -24,7 +26,6 @@ using Robust.Shared.Input;
 using Robust.Shared.Map;
 using static Content.Client.Inventory.ClientInventorySystem;
 using static Robust.Client.UserInterface.Control;
-using Content.Shared._EE.Strip.Components; // EE
 
 namespace Content.Client.Inventory
 {
@@ -35,6 +36,7 @@ namespace Content.Client.Inventory
         [Dependency] private readonly IUserInterfaceManager _ui = default!;
 
         private readonly ExamineSystem _examine;
+        private readonly HandsSystem _hands;
         private readonly InventorySystem _inv;
         private readonly SharedCuffableSystem _cuffable;
         private readonly StrippableSystem _strippable;
@@ -54,6 +56,7 @@ namespace Content.Client.Inventory
         public StrippableBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
             _examine = EntMan.System<ExamineSystem>();
+            _hands = EntMan.System<HandsSystem>();
             _inv = EntMan.System<InventorySystem>();
             _cuffable = EntMan.System<SharedCuffableSystem>();
             _strippable = EntMan.System<StrippableSystem>();
@@ -107,28 +110,28 @@ namespace Content.Client.Inventory
             {
                 // good ol hands shit code. there is a GuiHands comparer that does the same thing... but these are hands
                 // and not gui hands... which are different...
-                foreach (var hand in handsComp.Hands.Values)
+                foreach (var (id, hand) in handsComp.Hands)
                 {
                     if (hand.Location != HandLocation.Right)
                         continue;
 
-                    AddHandButton(hand);
+                    AddHandButton((Owner, handsComp), id, hand);
                 }
 
-                foreach (var hand in handsComp.Hands.Values)
+                foreach (var (id, hand) in handsComp.Hands)
                 {
                     if (hand.Location != HandLocation.Middle)
                         continue;
 
-                    AddHandButton(hand);
+                    AddHandButton((Owner, handsComp), id, hand);
                 }
 
-                foreach (var hand in handsComp.Hands.Values)
+                foreach (var (id, hand) in handsComp.Hands)
                 {
                     if (hand.Location != HandLocation.Left)
                         continue;
 
-                    AddHandButton(hand);
+                    AddHandButton((Owner, handsComp), id, hand);
                 }
             }
 
@@ -158,13 +161,14 @@ namespace Content.Client.Inventory
             _strippingMenu.SetSize = new Vector2(220, snare?.IsEnsnared == true ? 550 : 530);
         }
 
-        private void AddHandButton(Hand hand)
+        private void AddHandButton(Entity<HandsComponent> ent, string handId, Hand hand)
         {
-            var button = new HandButton(hand.Name, hand.Location);
+            var button = new HandButton(handId, hand.Location);
 
             button.Pressed += SlotPressed;
 
-            if (EntMan.TryGetComponent<VirtualItemComponent>(hand.HeldEntity, out var virt))
+            var heldEntity = _hands.GetHeldItem(ent.AsNullable(), handId);
+            if (EntMan.TryGetComponent<VirtualItemComponent>(heldEntity, out var virt))
             {
                 button.Blocked = true;
                 if (EntMan.TryGetComponent<CuffableComponent>(Owner, out var cuff) && _cuffable.GetAllCuffs(cuff).Contains(virt.BlockingEntity))
@@ -172,7 +176,7 @@ namespace Content.Client.Inventory
             }
 
             // Goobstation: use virtual entity if hidden
-            UpdateEntityIcon(button, EntMan.HasComponent<StripMenuHiddenComponent>(hand.HeldEntity) ? _virtualHiddenEntity : hand.HeldEntity);
+            UpdateEntityIcon(button, EntMan.HasComponent<StripMenuHiddenComponent>(heldEntity) ? _virtualHiddenEntity : heldEntity);
             // End Goobstation
             _strippingMenu!.HandsContainer.AddChild(button);
         }
