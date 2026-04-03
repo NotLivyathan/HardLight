@@ -133,7 +133,7 @@
     - state: cloth_3
       map: ["base"]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -205,7 +205,7 @@
   - type: Construction
     graph: Durathread
     node: MaterialDurathread
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
@@ -436,7 +436,7 @@
     - state: cotton_3
       map: ["base"]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -491,7 +491,7 @@
     - state: pyrotton_3
       map: ["base"]
   - type: Appearance
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
@@ -553,7 +553,7 @@
   - type: FlavorProfile
     flavors:
       - banana
-  - type: Food
+  - type: Edible
     trash:
     - TrashBananiumPeel
   - type: BadFood
@@ -607,7 +607,7 @@
   - type: Stack
     count: 50
     stackType: WebSilk
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
   - type: FlavorProfile
     flavors:
@@ -737,8 +737,8 @@
   - type: ConstructionMaterials # Frontier
   - type: Material # Frontier
   - type: PhysicalComposition # Frontier
-    materialComposition: # Frontier
-      Bones: 100 # Frontier
+    materialComposition:
+      Bones: 100
   - type: Stack
     stackType: Bones
     baseLayer: base
@@ -752,15 +752,15 @@
     - state: cotton_3
       map: ["base"]
   - type: Appearance
-  - type: Food
+  - type: Edible
   - type: BadFood
-  # - type: SolutionContainerManager # Frontier: no eating bones
-  #   solutions: # Frontier
-  #     food: # Frontier
-  #       maxVol: 5 # Frontier
-  #       reagents: # Frontier
-  #       - ReagentId: Vitamin # Frontier
-  #         Quantity: 3 # Frontier
+  # - type: SolutionContainerManager # Frontier: No eating bones, # HardLight: Why no eat bone.
+  #   solutions:
+  #     food:
+  #       maxVol: 5
+  #       reagents:
+  #       - ReagentId: Vitamin
+  #         Quantity: 3
   - type: Item
     heldPrefix: bones
 

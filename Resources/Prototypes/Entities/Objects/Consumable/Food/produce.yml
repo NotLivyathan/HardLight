@@ -21,13 +21,16 @@
   - type: StackSignature
   - type: StackSpawnSelf
   # let cows eat raw produce like wheat and oats
-  - type: Food
-    requiredStomachs: 2
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: Produce
   - type: PotencyVisuals
   - type: Appearance
   - type: Extractable
     grindableSolutionName: food
+  - type: Tag
+    tags:
+    - Ruminant
 
 # For produce that can be immediately eaten
 
@@ -77,6 +80,7 @@
   - type: Tag
     tags:
     - Wheat
+    - Ruminant
 
 - type: entity
   name: meatwheat bushel
@@ -197,6 +201,7 @@
   - type: Tag
     tags:
     - Vegetable
+    - Ruminant
 
 - type: entity
   name: tower-cap log
@@ -357,7 +362,7 @@
   - type: FlavorProfile
     flavors:
       - banana
-  - type: Food
+  - type: Edible
     trash:
     - TrashBananaPeel
   - type: SolutionContainerManager
@@ -399,7 +404,7 @@
     flavors:
       - banana
       - nothing
-  - type: Food
+  - type: Edible
     trash:
     - TrashMimanaPeel
   - type: SolutionContainerManager
@@ -471,6 +476,7 @@
     - Recyclable
     - Trash
     - BananaPeel
+    - Ruminant
   - type: SolutionContainerManager
     solutions:
       food:
@@ -503,7 +509,7 @@
           Quantity: 1
         - ReagentId: Carbon
           Quantity: 2
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
 
 - type: entity
@@ -1208,7 +1214,7 @@
   - type: FlavorProfile
     flavors:
       - corn
-  - type: Food
+  - type: Edible
     trash:
     - FoodCornTrash
   - type: SolutionContainerManager
@@ -1919,9 +1925,9 @@
     sprite: Objects/Specific/Hydroponics/gatfruit.rsi
   - type: Produce
     seedId: gatfruit
-  - type: Food
+  - type: Edible
     trash:
-    - NFWeaponRevolverRitland45Anom  # Hardlight: A Ritland with no FUCvalue
+    - NFWeaponRevolverRitland45Anom  # HardLight: A Ritland with no FUCvalue
   - type: Tag
     tags:
     - Fruit # It's in the name
@@ -1954,7 +1960,7 @@
     heldPrefix: produce
   - type: Produce
     seedId: realCapfruit
-  - type: Food
+  - type: Edible
     trash:
     - NFRevolverCapGun # Frontier: RevolverCapGun<NFRevolverCapGun
   - type: Tag
@@ -1973,7 +1979,7 @@
   components:
   - type: Produce
     seedId: fakeCapfruit
-  - type: Food
+  - type: Edible
     trash:
     - NFRevolverCapGunFakeGrown # Frontier: add Grown
 
@@ -2378,7 +2384,7 @@
   - type: FlavorProfile
     flavors:
       - bungo
-  - type: Food
+  - type: Edible
     trash:
     - FoodBungoPit
   - type: SolutionContainerManager
@@ -2613,6 +2619,8 @@
   - type: FlavorProfile
     flavors:
       - cotton
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
       food:
@@ -2642,6 +2650,8 @@
   - type: FlavorProfile
     flavors:
       - pyrotton
+  - type: Edible
+    requiresSpecialDigestion: true
   - type: SolutionContainerManager
     solutions:
       food:
@@ -2673,7 +2683,7 @@
   - type: FlavorProfile
     flavors:
       - cherry
-  - type: Food
+  - type: Edible
     trash:
     - TrashCherryPit
   - type: SolutionContainerManager
@@ -2747,7 +2757,7 @@
     heldPrefix: produce
   - type: Produce
     seedId: anomalyBerry
-  - type: Food
+  - type: Edible
     trash:
     - EffectAnomalyFloraBulb # Random loot
   - type: SolutionContainerManager
