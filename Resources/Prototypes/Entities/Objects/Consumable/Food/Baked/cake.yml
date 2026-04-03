@@ -9,7 +9,7 @@
   - type: FlavorProfile
     flavors:
       - sweet
-  - type: Food
+  - type: Edible
   - type: Sprite
     sprite: Objects/Consumable/Food/Baked/cake.rsi
   - type: SolutionContainerManager
@@ -51,7 +51,7 @@
   - type: FlavorProfile
     flavors:
       - sweet
-  - type: Food
+  - type: Edible
   - type: SolutionContainerManager
     solutions:
       food:
@@ -839,7 +839,7 @@
         reagents:
         - ReagentId: Flavorol # Frontier: Nutriment<Flavorol
           Quantity: 48
-  - type: Food
+  - type: Edible
     transferAmount: 12
   - type: Item
     size: Normal
@@ -863,7 +863,7 @@
         reagents:
         - ReagentId: Flavorol # Frontier: Nutriment<Flavorol
           Quantity: 4
-  - type: Food
+  - type: Edible
     transferAmount: 3
   - type: PointLight
     color: "#FFFF00"

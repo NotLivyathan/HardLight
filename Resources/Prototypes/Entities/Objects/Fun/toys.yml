@@ -41,7 +41,7 @@
       Cloth: 100
   - type: StaticPrice
     price: 5
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       collection: ToySqueak
@@ -216,7 +216,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/mousesqueek.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/mousesqueek.ogg
@@ -317,7 +317,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Voice/Arachnid/arachnid_laugh.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Voice/Arachnid/arachnid_laugh.ogg
@@ -355,7 +355,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/weh.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/weh.ogg
@@ -427,7 +427,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/arf.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/arf.ogg
@@ -515,7 +515,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/muffled_weh.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/muffled_weh.ogg
@@ -571,7 +571,7 @@
   - type: EmitSoundOnTrigger
     sound:
       path: /Audio/Items/Toys/hew.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/hew.ogg
@@ -635,7 +635,7 @@
       wideAnimationRotation: 180
       soundHit:
         path: /Audio/Items/Toys/toy_rustle.ogg
-    - type: Food
+    - type: Edible
       requiresSpecialDigestion: true
       useSound:
         path: /Audio/Items/Toys/toy_rustle.ogg
@@ -817,7 +817,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Effects/bite.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Effects/bite.ogg
@@ -935,7 +935,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/rattle.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/rattle.ogg
@@ -977,7 +977,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/mousesqueek.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/mousesqueek.ogg
@@ -1026,7 +1026,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Items/Toys/quack.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/mousesqueek.ogg
@@ -1057,7 +1057,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Voice/Vox/shriek1.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Voice/Vox/shriek1.ogg
@@ -1106,7 +1106,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Weapons/Xeno/alien_spitacid.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/mousesqueek.ogg
@@ -1150,7 +1150,7 @@
   - type: EmitSoundOnCollide
     sound:
       path: /Audio/Voice/Human/malescream_4.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Voice/Human/malescream_1.ogg
@@ -1220,7 +1220,7 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Voice/Moth/moth_chitter.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Voice/Moth/moth_chitter.ogg
@@ -1317,7 +1317,7 @@
   - type: MeleeWeapon
     soundHit:
       path: /Audio/Items/Toys/ian.ogg
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       path: /Audio/Items/Toys/ian.ogg
@@ -1971,7 +1971,7 @@
   - type: FlavorProfile
     flavors:
       - plastic
-  - type: Food
+  - type: Edible
   - type: Sprite
     sprite: Objects/Specific/Hydroponics/banana.rsi
   - type: SolutionContainerManager
@@ -2085,7 +2085,7 @@
       collection: RubberChicken
       params:
         variation: 0.125
-  - type: Food
+  - type: Edible
     requiresSpecialDigestion: true
     useSound:
       collection: RubberChicken
