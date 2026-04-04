@@ -1004,13 +1004,10 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
     private bool CanSeeHiddenSolution(Entity<ExaminableSolutionComponent> entity, EntityUid examiner)
     {
         // If not held-only then it's always visible.
-        if (entity.Comp.HeldOnly && !Hands.IsHolding(examiner, entity, out _))
-            return false;
+        if (!entity.Comp.HeldOnly)
+            return true;
 
-        if (!entity.Comp.ExaminableWhileClosed && Openable.IsClosed(entity.Owner, predicted: true))
-            return false;
-
-        return true;
+        return Hands.IsHolding(examiner, entity, out _);
     }
 
     private void OnMapInit(Entity<SolutionContainerManagerComponent> entity, ref MapInitEvent args)
