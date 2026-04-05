@@ -150,7 +150,7 @@ public abstract partial class SharedHandsSystem
     }
 
     /// <summary>
-    ///     Get any empty hand. Prioritizes the currently active hand.
+    /// Get any empty hand. Prioritizes the currently active hand.
     /// </summary>
     public bool TryGetEmptyHand(Entity<HandsComponent?> ent, [NotNullWhen(true)] out string? emptyHand)
     {
@@ -168,6 +168,26 @@ public abstract partial class SharedHandsSystem
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Does this entity have any empty hands, and how many?
+    /// </summary>
+    public int GetEmptyHandCount(Entity<HandsComponent?> entity)
+    {
+        if (!Resolve(entity, ref entity.Comp, false) || entity.Comp.Count == 0)
+            return 0;
+
+        var hands = 0;
+
+        foreach (var hand in EnumerateHands(entity))
+        {
+            if (!HandIsEmpty(entity, hand))
+                continue;
+            hands++;
+        }
+
+        return hands;
     }
 
     /// <summary>

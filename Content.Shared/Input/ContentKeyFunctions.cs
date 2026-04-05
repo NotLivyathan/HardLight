@@ -5,6 +5,7 @@ namespace Content.Shared.Input
     [KeyFunctions]
     public static class ContentKeyFunctions
     {
+        public static readonly BoundKeyFunction ToggleKnockdown = "ToggleKnockdown";
         public static readonly BoundKeyFunction UseItemInHand = "ActivateItemInHand";
         public static readonly BoundKeyFunction AltUseItemInHand = "AltActivateItemInHand";
         public static readonly BoundKeyFunction ActivateItemInWorld = "ActivateItemInWorld";
@@ -24,12 +25,12 @@ namespace Content.Shared.Input
         public static readonly BoundKeyFunction CycleChatChannelForward = "CycleChatChannelForward";
         public static readonly BoundKeyFunction CycleChatChannelBackward = "CycleChatChannelBackward";
         public static readonly BoundKeyFunction EscapeContext = "EscapeContext";
-        // DeltaV - Begin NanoChat keybinds
+        // Delta V start: NanoChat keybinds
         public static readonly BoundKeyFunction NanoChatNavigateUp = "NanoChatNavigateUp";
         public static readonly BoundKeyFunction NanoChatNavigateDown = "NanoChatNavigateDown";
         public static readonly BoundKeyFunction NanoChatNavigateUpUnread = "NanoChatNavigateUpUnread";
         public static readonly BoundKeyFunction NanoChatNavigateDownUnread = "NanoChatNavigateDownUnread";
-        // DeltaV - End NanoChat keybinds
+        // Delta V end
         public static readonly BoundKeyFunction OpenCharacterMenu = "OpenCharacterMenu";
         public static readonly BoundKeyFunction OpenEmotesMenu = "OpenEmotesMenu";
         public static readonly BoundKeyFunction OpenCraftingMenu = "OpenCraftingMenu";
@@ -69,12 +70,11 @@ namespace Content.Shared.Input
         public static readonly BoundKeyFunction ZoomOut = "ZoomOut";
         public static readonly BoundKeyFunction ZoomIn = "ZoomIn";
         public static readonly BoundKeyFunction ResetZoom = "ResetZoom";
-        public static readonly BoundKeyFunction ToggleStanding = "ToggleStanding"; // EE
         public static readonly BoundKeyFunction ToggleCrawlingUnder = "ToggleCrawlingUnder"; // EE
         public static readonly BoundKeyFunction LookUp = "LookUp"; // EE
         public static readonly BoundKeyFunction OfferItem = "OfferItem"; // EE
 
-        // Shitmed Change Start
+        // Shitmed start
         public static readonly BoundKeyFunction TargetHead = "TargetHead";
         public static readonly BoundKeyFunction TargetTorso = "TargetTorso";
         public static readonly BoundKeyFunction TargetLeftArm = "TargetLeftArm";
@@ -85,7 +85,7 @@ namespace Content.Shared.Input
         public static readonly BoundKeyFunction TargetLeftFoot = "TargetLeftFoot";
         public static readonly BoundKeyFunction TargetRightLeg = "TargetRightLeg";
         public static readonly BoundKeyFunction TargetRightFoot = "TargetRightFoot";
-        // Shitmed Change End
+        // Shitmed end
 
         public static readonly BoundKeyFunction ArcadeUp = "ArcadeUp";
         public static readonly BoundKeyFunction ArcadeDown = "ArcadeDown";
