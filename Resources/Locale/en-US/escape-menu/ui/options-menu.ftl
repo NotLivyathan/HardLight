@@ -145,6 +145,7 @@ ui-options-function-move-left = Move Left
 ui-options-function-move-down = Move Down
 ui-options-function-move-right = Move Right
 ui-options-function-walk = Walk
+ui-options-function-toggle-knockdown = Toggle Crawling
 
 ui-options-function-camera-rotate-left = Rotate left
 ui-options-function-camera-rotate-right = Rotate right
@@ -169,10 +170,11 @@ ui-options-function-move-stored-item = Move stored item
 ui-options-function-rotate-stored-item = Rotate stored item
 
 ui-options-function-save-item-location = Save item location
-ui-options-function-toggle-standing = Toggle standing
+
+# EE
 ui-options-function-toggle-crawling-under = Toggle crawling under furniture
 
-# _HL
+# HardLight
 ui-options-function-offer-item = Offer something
 ui-options-function-al-open-mob-interaction = Interact With Mob
 

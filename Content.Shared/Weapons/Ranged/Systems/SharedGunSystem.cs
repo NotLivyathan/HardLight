@@ -4,16 +4,17 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Audio;
-using Content.Shared.Buckle.Components; // Frontier: firing when buckled in space
+using Content.Shared.Buckle.Components; // Frontier: Firing when buckled in space
 using Content.Shared.CombatMode;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Damage;
 using Content.Shared.Examine;
 using Content.Shared.Gravity;
 using Content.Shared.Hands;
-using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Item;
-using Content.Shared.Mech.Components; // Delta-V: Felinids in duffelbags can't shoot.
+using Content.Shared.Inventory; // HardLight
+using Content.Shared.Mech.Components; // Delta V: Felinids in duffelbags can't shoot.
 using Content.Shared.Popups;
 using Content.Shared.Projectiles;
 using Content.Shared.Tag;
@@ -54,6 +55,8 @@ public abstract partial class SharedGunSystem : EntitySystem
     [Dependency] protected readonly ISharedAdminLogManager Logs = default!;
     [Dependency] protected readonly DamageableSystem Damageable = default!;
     [Dependency] protected readonly ExamineSystemShared Examine = default!;
+    [Dependency] private   readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!; // HardLight
     [Dependency] private   readonly ItemSlotsSystem _slots = default!;
     [Dependency] private   readonly RechargeBasicEntityAmmoSystem _recharge = default!;
     [Dependency] protected readonly SharedActionsSystem Actions = default!;
@@ -158,11 +161,11 @@ public abstract partial class SharedGunSystem : EntitySystem
             return;
 
         gun.ShootCoordinates = GetCoordinates(msg.Coordinates);
-        // Goob edit start
+        // Goob start
         var potentialTarget = GetEntity(msg.Target);
         if (gun.Target == null || !gun.BurstActivated || !gun.LockOnTargetBurst)
             gun.Target = potentialTarget;
-        // Goob edit end
+        // Goob end
         AttemptShoot(user.Value, ent, gun);
     }
 
@@ -253,8 +256,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             return true;
         }
 
-        if (EntityManager.TryGetComponent(entity, out HandsComponent? hands) &&
-            hands.ActiveHandEntity is { } held &&
+        if (_hands.GetActiveItem(entity) is { } held &&
             TryComp(held, out GunComponent? gun))
         {
             gunEntity = held;
@@ -262,7 +264,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             return true;
         }
 
-        // Mono edit - you can use gloves as guns now because its fucking amazing.
+        // Mono: You can use gloves as guns now because its fucking amazing.
         if (_inventory.TryGetSlotEntity(entity, "gloves", out var gloves) &&
             TryComp<GunComponent>(gloves, out var glovesGun))
         {
@@ -289,13 +291,13 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         gun.ShotCounter = 0;
         gun.ShootCoordinates = null;
-        if (!gun.LockOnTargetBurst || !gun.BurstActivated) // Goob edit
+        if (!gun.LockOnTargetBurst || !gun.BurstActivated) // Goob
             gun.Target = null;
         Dirty(uid, gun);
     }
 
     /// <summary>
-    /// Frontier - Sets the targeted entity of the gun. Should be called before attempting to shoot to avoid shooting over the target.
+    /// Frontier: Sets the targeted entity of the gun. Should be called before attempting to shoot to avoid shooting over the target.
     /// </summary>
     public void SetTarget(GunComponent gun, EntityUid target)
     {
@@ -313,7 +315,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         EntityManager.DirtyField(gunUid, gun, nameof(GunComponent.ShotCounter));
     }
 
-    // Goobstation - Crawling turret fix
+    // Goobstation: Crawling turret fix
     public void AttemptShoot(EntityUid user, EntityUid gunUid, GunComponent gun, EntityCoordinates toCoordinates, EntityUid target)
     {
         gun.Target = target;
@@ -334,7 +336,7 @@ public abstract partial class SharedGunSystem : EntitySystem
     }
 
     /// <summary>
-    /// Mono - attempts to shoot at the target coordinates for specified duration, or refreshes duration if already shooting.
+    /// Mono: Attempts to shoot at the target coordinates for specified duration, or refreshes duration if already shooting.
     /// </summary>
     public void AttemptShots(EntityUid user, EntityUid gunUid, GunComponent gun, EntityCoordinates toCoordinates, TimeSpan duration)
     {
@@ -360,7 +362,7 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         var curTime = Timing.CurTime;
 
-        // check if anything wants to prevent shooting
+        // Check if anything wants to prevent shooting
         var prevention = new ShotAttemptedEvent
         {
             User = user,
@@ -441,7 +443,7 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         var fromCoordinates = Transform(user).Coordinates;
         // Remove ammo
-        var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user, true); // Frontier: add intent to fire
+        var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user, true); // Frontier: Add intent to fire
 
         // Listen it just makes the other code around it easier if shots == 0 to do this.
         if (shots > 0)
@@ -509,10 +511,17 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         // Shoot confirmed - sounds also played here in case it's invalid (e.g. cartridge already spent).
         Shoot(gunUid, gun, ev.Ammo, fromCoordinates, toCoordinates.Value, out var userImpulse, user, throwItems: attemptEv.ThrowItems);
-        var shotEv = new GunShotEvent(user, ev.Ammo, toCoordinates.Value); // Mono - pass coordinates
+        var shotEv = new GunShotEvent(user, ev.Ammo, toCoordinates.Value); // Mono: Pass coordinates
         RaiseLocalEvent(gunUid, ref shotEv);
 
-        CauseImpulse(toCoordinates.Value, (gunUid, gun), ev.Ammo.Count);
+        if (!userImpulse || !TryComp<PhysicsComponent>(user, out var userPhysics))
+            return;
+
+        var shooterEv = new ShooterImpulseEvent();
+        RaiseLocalEvent(user, ref shooterEv);
+
+        if (shooterEv.Push || _gravity.IsWeightless(user, userPhysics))
+            CauseImpulse(fromCoordinates, toCoordinates.Value, user, userPhysics);
     }
 
     public void Shoot(
@@ -540,7 +549,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         bool throwItems = false);
 
     public virtual void ShootProjectile(EntityUid uid, Vector2 direction, Vector2 gunVelocity, EntityUid gunUid, EntityUid? user = null, float speed = 20f,
-                                        float offset = 0f) // Mono - add offset
+                                        float offset = 0f) // Mono: Add offset
     {
         var physics = _physQuery.CompOrNull(uid) ?? EnsureComp<PhysicsComponent>(uid);
         Physics.SetBodyStatus(uid, physics, BodyStatus.InAir);
@@ -587,7 +596,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         return cartridge;
     }
 
-    // Mono - used for multiple-per-frame projectile offset
+    // Mono: Used for multiple-per-frame projectile offset
     public override void Update(float frameTime)
     {
         _lastFrameTime = frameTime;
@@ -607,7 +616,7 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         cartridge.Spent = spent;
 
-        if (cartridge.DeleteOnSpawn) // Mono - No need to update appearance if cartridge is getting deleted anyways
+        if (cartridge.DeleteOnSpawn) // Mono: No need to update appearance if cartridge is getting deleted anyways
             return;
 
         Appearance.SetData(uid, AmmoVisuals.Spent, spent);
@@ -633,7 +642,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         TransformSystem.SetLocalRotation(xform, Random.NextAngle());
         TransformSystem.SetCoordinates(entity, xform, coordinates);
 
-        // decides direction the casing ejects and only when not cycling
+        // Decides direction the casing ejects and only when not cycling
         if (angle != null)
         {
             Angle ejectAngle = angle.Value;
@@ -676,7 +685,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         CreateEffect(gun, ev, user);
     }
 
-    // Mono - rewritten
+    // Mono: Rewritten
     public void CauseImpulse(EntityCoordinates toCoordinates, Entity<GunComponent> ent, float scale)
     {
         var totalImpulse = ent.Comp.Recoil * scale;
@@ -693,7 +702,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         if (!_physQuery.TryComp(toEnt, out var toBody))
             return;
 
-        // velocity is in world-aligned coordinates so get vec based off that
+        // Velocity is in world-aligned coordinates so get vec based off that
         var worldSource = TransformSystem.GetWorldPosition(toEnt);
         var worldTarget = TransformSystem.ToWorldPosition(toCoordinates);
         var dirVec = worldTarget - worldSource;
@@ -703,7 +712,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         Physics.ApplyLinearImpulse(toEnt, -dirVec * totalImpulse, pos);
     }
 
-    public void RefreshModifiers(Entity<GunComponent?> gun, EntityUid? User = null) // GoobStation change - User for NoWieldNeeded
+    public void RefreshModifiers(Entity<GunComponent?> gun, EntityUid? User = null) // GoobStation: User for NoWieldNeeded
     {
         if (!Resolve(gun, ref gun.Comp))
             return;
@@ -722,13 +731,13 @@ public abstract partial class SharedGunSystem : EntitySystem
             comp.ProjectileSpeed
         );
 
-        // Begin DeltaV additions
+        // Delta V start
         // Raise an event at the user of the gun so they have a chance to modify the gun's details.
         if (User != null)
         {
             RaiseLocalEvent(User.Value, ref ev);
         }
-        // End DeltaV additions
+        // Delta V end
 
         RaiseLocalEvent(gun, ref ev);
 
@@ -804,10 +813,10 @@ public abstract partial class SharedGunSystem : EntitySystem
 }
 
 /// <summary>
-///     Raised directed on the gun before firing to see if the shot should go through.
+/// Raised directed on the gun before firing to see if the shot should go through.
 /// </summary>
 /// <remarks>
-///     Handling this in server exclusively will lead to mispredicts.
+/// Handling this in server exclusively will lead to mispredicts.
 /// </remarks>
 /// <param name="User">The user that attempted to fire this gun.</param>
 /// <param name="Cancelled">Set this to true if the shot should be cancelled.</param>
@@ -816,11 +825,21 @@ public abstract partial class SharedGunSystem : EntitySystem
 public record struct AttemptShootEvent(EntityUid User, string? Message, bool Cancelled = false, bool ThrowItems = false);
 
 /// <summary>
-///     Raised directed on the gun after firing.
+/// Raised directed on the gun after firing.
 /// </summary>
 /// <param name="User">The user that fired this gun.</param>
 [ByRefEvent]
-public record struct GunShotEvent(EntityUid User, List<(EntityUid? Uid, IShootable Shootable)> Ammo, EntityCoordinates ToCoordinates); // Mono - pass coordinates
+public record struct GunShotEvent(EntityUid User, List<(EntityUid? Uid, IShootable Shootable)> Ammo, EntityCoordinates ToCoordinates); // Mono: Pass coordinates
+
+/// <summary>
+/// Raised on an entity after firing a gun to see if any components or systems would allow this entity to be pushed
+/// by the gun they're firing. If true, GunSystem will create an impulse on our entity.
+/// </summary>
+[ByRefEvent]
+public record struct ShooterImpulseEvent()
+{
+    public bool Push;
+};
 
 public enum EffectLayers : byte
 {
@@ -833,7 +852,7 @@ public enum AmmoVisuals : byte
     Spent,
     AmmoCount,
     AmmoMax,
-    HasAmmo, // used for generic visualizers. c# stuff can just check ammocount != 0
+    HasAmmo, // Used for generic visualizers. C# stuff can just check AmmoCount != 0
     MagLoaded,
     BoltClosed,
 }
