@@ -51,12 +51,18 @@
   components:
   - type: FrictionStatusEffect
 
-# HardLight start: Placeholder; Refactor SeeingRainbows to New Status Effect System #38620
-# # Adds drugs overlay
-# - type: entity
-#   parent: MobStatusEffectBase
-#   id: StatusEffectSeeingRainbow
-#   name: hallucinations
-#   components:
-#   - type: SeeingRainbowsStatusEffect
-# HardLight end
+# Adds drugs overlay
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectSeeingRainbow
+  name: hallucinations
+  components:
+  - type: SeeingRainbowsStatusEffect
+
+# HardLight: Abyssal Whispers overlay
+- type: entity
+  parent: MobStatusEffectBase
+  id: StatusEffectAbyssalWhispers
+  name: abyssal whispers
+  components:
+  - type: AbyssalWhispersStatusEffect

@@ -281,6 +281,11 @@
         reagent: WidowsCurse
         amount: 0.3
       # Abyssal whispers - atmospheric audio effect
+      - !type:ModifyStatusEffect
+        effectProto: StatusEffectAbyssalWhispers
+        type: Add
+        time: 5
+        refresh: false
       - !type:PopupMessage
         type: Local
         visualType: Small
