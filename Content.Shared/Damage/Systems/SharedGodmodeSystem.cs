@@ -3,7 +3,7 @@ using Content.Shared.Damage.Events;
 using Content.Shared.Nutrition;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Slippery;
-using Content.Shared.StatusEffect;
+using Content.Shared.StatusEffectNew;
 using Content.Shared.Body.Systems; // Shitmed
 
 namespace Content.Shared.Damage.Systems;
