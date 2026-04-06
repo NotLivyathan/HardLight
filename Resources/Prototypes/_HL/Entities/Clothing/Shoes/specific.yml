@@ -8,3 +8,46 @@
     sprite: _HL/Clothing/Shoes/clockwork_treads.rsi
   - type: Clothing
     sprite: _HL/Clothing/Shoes/clockwork_treads.rsi
+ 
+- type: entity
+  parent: [ClothingShoesBase, PowerCellSlotSmallItem, BaseToggleClothing] # BaseSecurityEngineeringContraband<BaseC1Contraband
+  id: ClothingShoesBootsChameleonZoom
+  name: emperor's new enchanted shoes
+  suffix: Chameleon
+  components:
+    - type: Tag
+      tags: [] # ignore "WhitelistChameleon" tag
+    - type: Sprite
+      sprite: _HL/Clothing/Shoes/zoomshoes.rsi
+    - type: Clothing
+      sprite: _HL/Clothing/Shoes/zoomshoes.rsi
+    - type: ChameleonClothing
+      slot: [FEET]
+      default: DummyZoomShoesInvisible
+    - type: ToggleClothing
+      action: ActionToggleSpeedBoots
+    - type: ClothingSpeedModifier
+      walkModifier: 1.5  # fast, but slower than speed boots. It is exchanged for having ability to DRIP
+      sprintModifier: 1.5
+    - type: PowerCellDraw
+      drawRate: 40 # Hardlight 30>40, you have to turn off micro reactor and antique cell at somepoint
+    - type: ToggleCellDraw
+    - type: ItemSlots
+      slots:
+        cell_slot:
+          name: power-cell-slot-component-slot-name-default
+    - type: UserInterface
+      interfaces:
+        enum.ChameleonUiKey.Key:
+          type: ChameleonBoundUserInterface
+          
+- type: entity
+  parent: ClothingShoesBase
+  id: DummyZoomShoesInvisible
+  name: emperor's new enchanted shoes
+  description: The finest shoes you'll never see. Speed you up quite a bit.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Shoes/zoomshoes.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Shoes/zoomshoes.rsi

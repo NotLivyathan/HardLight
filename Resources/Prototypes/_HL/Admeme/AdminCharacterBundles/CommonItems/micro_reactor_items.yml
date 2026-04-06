@@ -15,6 +15,10 @@
   parent: [ BaseMicroreactorItem, HandheldCrewMonitor ]
 
 - type: entity
+  id: HandheldHealthAnalyzerMicroreactor
+  parent: [ BaseMicroreactorItem, HandheldHealthAnalyzer ]
+
+- type: entity
   id: HolofanProjectorAntiqueProto
   parent: [ BaseAntiqueProtoItem, HolofanProjector ]
 
@@ -29,6 +33,10 @@
 - type: entity
   id: HoloprojectorNfsdAntiqueProto
   parent: [ BaseAntiqueProtoItem, HoloprojectorNfsd ]
+
+- type: entity
+  id: HoloprojectorRadiationAntiqueProto
+  parent: [ BaseAntiqueProtoItem, RadiationBlockingProjector ]
 
 # Base Item with Microreactor
 - type: entity

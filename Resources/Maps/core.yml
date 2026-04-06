@@ -19330,7 +19330,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 138
-      - invalid
   - uid: 776
     components:
     - type: Transform
@@ -19338,7 +19337,6 @@ entities:
       parent: 2
     - type: DeviceNetwork
       deviceLists:
-      - invalid
       - 11519
   - uid: 777
     components:
@@ -19574,8 +19572,6 @@ entities:
       pos: -46.5,-51.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 25015
 - proto: AltarConvertWhite
@@ -84039,7 +84035,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 11519
-      - invalid
   - uid: 11509
     components:
     - type: Transform
@@ -84048,7 +84043,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 11519
-      - invalid
   - uid: 11510
     components:
     - type: Transform
@@ -111856,7 +111850,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 138
-      - invalid
     - type: AtmosPipeColor
       color: '#0335FCFF'
   - uid: 15047
@@ -111865,9 +111858,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 21.5,-65.5
       parent: 2
-    - type: DeviceNetwork
-      deviceLists:
-      - invalid
     - type: AtmosPipeColor
       color: '#FF1212FF'
   - uid: 15048
@@ -111878,7 +111868,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 138
-      - invalid
     - type: AtmosPipeColor
       color: '#0335FCFF'
   - uid: 15049
@@ -112041,8 +112030,6 @@ entities:
       pos: 19.5,32.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 24762
     - type: AtmosPipeColor
@@ -112053,8 +112040,6 @@ entities:
       pos: 21.5,41.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 24762
     - type: AtmosPipeColor
@@ -112192,9 +112177,6 @@ entities:
     - type: Transform
       pos: 2.5,43.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
     - type: AtmosPipeColor
       color: '#0335FCFF'
   - uid: 21299
@@ -112204,8 +112186,6 @@ entities:
       pos: 1.5,37.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 6592
     - type: AtmosPipeColor
@@ -112238,8 +112218,6 @@ entities:
     - type: AtmosPipeColor
       color: '#0335FCFF'
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 25015
   - uid: 25013
@@ -112251,8 +112229,6 @@ entities:
     - type: AtmosPipeColor
       color: '#0335FCFF'
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 25015
 - proto: GasVentScrubber
@@ -113379,7 +113355,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 138
-      - invalid
     - type: AtmosPipeColor
       color: '#FF1212FF'
   - uid: 15215
@@ -113390,7 +113365,6 @@ entities:
     - type: DeviceNetwork
       deviceLists:
       - 138
-      - invalid
     - type: AtmosPipeColor
       color: '#FF1212FF'
   - uid: 15216
@@ -113399,9 +113373,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 17.5,-65.5
       parent: 2
-    - type: DeviceNetwork
-      deviceLists:
-      - invalid
     - type: AtmosPipeColor
       color: '#0335FCFF'
   - uid: 15217
@@ -113588,8 +113559,6 @@ entities:
       pos: 22.5,31.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 24762
     - type: AtmosPipeColor
@@ -113600,8 +113569,6 @@ entities:
       pos: 20.5,41.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 24762
     - type: AtmosPipeColor
@@ -113714,9 +113681,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 4.5,43.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
     - type: AtmosPipeColor
       color: '#990000FF'
   - uid: 21297
@@ -113726,8 +113690,6 @@ entities:
       pos: 4.5,41.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 6592
     - type: AtmosPipeColor
@@ -113780,8 +113742,6 @@ entities:
     - type: AtmosPipeColor
       color: '#990000FF'
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 25015
   - uid: 25011
@@ -113793,8 +113753,6 @@ entities:
     - type: AtmosPipeColor
       color: '#990000FF'
     - type: DeviceNetwork
-      configurators:
-      - invalid
       deviceLists:
       - 25015
 - proto: GasVolumePump

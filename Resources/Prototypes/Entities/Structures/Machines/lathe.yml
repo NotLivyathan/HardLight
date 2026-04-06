@@ -429,6 +429,7 @@
     - SecurityEquipment
     - SecurityWeapons # Frontier
     - SyringeGuns # Delta-V
+    - HLIndustrialImplants # HL
     emagStaticPacks:
     - CivilianAmmoRecipePack
   - type: DeviceLinkSink
@@ -571,6 +572,8 @@
     - RipleyUpgrade
     # Starlight - Implants
     - SLCybernetics
+    # HardLight - Implants
+    - HLIndustrialImplants
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - WeaponMechCombatArsenal

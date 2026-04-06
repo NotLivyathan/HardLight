@@ -45,7 +45,9 @@ public sealed class UnpoweredFlashlightSystem : EntitySystem
         NetEntity? toggleAction = null;
 
         if (component.ToggleActionEntity is { } toggleActionUid &&
-            MetaData(toggleActionUid) is { } meta &&
+            // HardLight: We have to check for MetaDataComponent because the entity might be deleted,
+            // and we don't want to throw an exception trying to get the name of a deleted entity.
+            TryComp(toggleActionUid, out MetaDataComponent? meta) &&
             meta.EntityLifeStage < EntityLifeStage.Terminating)
         {
             toggleAction = GetNetEntity(toggleActionUid, meta);

@@ -176,6 +176,18 @@ public sealed partial class InteractionVerbPrototype : IPrototype, IInheritingPr
     [DataField]
     public bool Global = false;
 
+    /// <summary>
+    ///     Whether this verb requires the user to be unblocked (not cuffed, stunned, etc).
+    /// </summary>
+    [DataField("requiresUnblocked")]
+    public bool RequiresUnblocked = true;
+
+    /// <summary>
+    ///     Ignore the action blocker checks (canInteract and canAccess) for this verb. Useful for custom verbs that should work while cuffed.
+    /// </summary>
+    [DataField("exemptFromInteractionBlocker")]
+    public bool ExemptFromInteractionBlocker = false;
+
     [DataDefinition, Serializable]
     public partial struct RangeSpecifier()
     {

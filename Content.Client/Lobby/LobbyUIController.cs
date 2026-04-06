@@ -135,9 +135,6 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
     {
         PreviewPanel?.SetLoaded(true);
 
-        if (_stateManager.CurrentState is not LobbyState)
-            return;
-
         ReloadCharacterSetup();
     }
 
@@ -287,68 +284,67 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
 
     private (CharacterSetupGui, HumanoidProfileEditor) EnsureGui()
     {
-        if (_characterSetup != null && _profileEditor != null)
+        if (_characterSetup == null || _profileEditor == null)
         {
-            _characterSetup.Visible = true;
-            _profileEditor.Visible = true;
-            return (_characterSetup, _profileEditor);
+            _profileEditor = new HumanoidProfileEditor(
+                _preferencesManager,
+                _configurationManager,
+                EntityManager,
+                _dialogManager,
+                _logManager,
+                _playerManager,
+                _prototypeManager,
+                _resourceCache,
+                _requirements,
+                _markings);
+
+            _profileEditor.OnOpenGuidebook += _guide.OpenHelp;
+
+            _characterSetup = new CharacterSetupGui(_profileEditor);
+
+            _characterSetup.CloseButton.OnPressed += _ =>
+            {
+                // Open the save panel if we have unsaved changes.
+                if (_profileEditor.Profile != null && _profileEditor.IsDirty)
+                {
+                    OpenSavePanel();
+
+                    return;
+                }
+
+                // Reset sliders etc.
+                CloseProfileEditor();
+            };
+
+            _profileEditor.Save += SaveProfile;
+
+            _characterSetup.SelectCharacter += args =>
+            {
+                _preferencesManager.SelectCharacter(args);
+                ReloadCharacterSetup();
+            };
+
+            _characterSetup.DeleteCharacter += args =>
+            {
+                _preferencesManager.DeleteCharacter(args);
+
+                // Reload everything
+                if (EditedSlot == args)
+                {
+                    ReloadCharacterSetup();
+                }
+                else
+                {
+                    // Only need to reload character pickers
+                    _characterSetup?.ReloadCharacterPickers();
+                }
+            };
         }
 
-        _profileEditor = new HumanoidProfileEditor(
-            _preferencesManager,
-            _configurationManager,
-            EntityManager,
-            _dialogManager,
-            _logManager,
-            _playerManager,
-            _prototypeManager,
-            _resourceCache,
-            _requirements,
-            _markings);
+        _characterSetup.Visible = true;
+        _profileEditor.Visible = true;
 
-        _profileEditor.OnOpenGuidebook += _guide.OpenHelp;
-
-        _characterSetup = new CharacterSetupGui(_profileEditor);
-
-        _characterSetup.CloseButton.OnPressed += _ =>
-        {
-            // Open the save panel if we have unsaved changes.
-            if (_profileEditor.Profile != null && _profileEditor.IsDirty)
-            {
-                OpenSavePanel();
-
-                return;
-            }
-
-            // Reset sliders etc.
-            CloseProfileEditor();
-        };
-
-        _profileEditor.Save += SaveProfile;
-
-        _characterSetup.SelectCharacter += args =>
-        {
-            _preferencesManager.SelectCharacter(args);
-            ReloadCharacterSetup();
-        };
-
-        _characterSetup.DeleteCharacter += args =>
-        {
-            _preferencesManager.DeleteCharacter(args);
-
-            // Reload everything
-            if (EditedSlot == args)
-            {
-                ReloadCharacterSetup();
-            }
-            else
-            {
-                // Only need to reload character pickers
-                _characterSetup?.ReloadCharacterPickers();
-            }
-        };
-
-        if (_stateManager.CurrentState is LobbyState lobby)
+        if (_stateManager.CurrentState is LobbyState lobby && _characterSetup.Parent == null)
         {
             lobby.Lobby?.CharacterSetupState.AddChild(_characterSetup);
         }

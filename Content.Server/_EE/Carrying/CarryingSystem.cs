@@ -65,6 +65,7 @@ namespace Content.Server.Carrying
             SubscribeLocalEvent<CarryingComponent, VirtualItemDeletedEvent>(OnVirtualItemDeleted);
             SubscribeLocalEvent<CarryingComponent, BeforeThrowEvent>(OnThrow);
             SubscribeLocalEvent<CarryingComponent, EntParentChangedMessage>(OnParentChanged);
+            SubscribeLocalEvent<CarryingComponent, EntityTerminatingEvent>(OnCarrierTerminating);
             SubscribeLocalEvent<CarryingComponent, MobStateChangedEvent>(OnMobStateChanged);
             SubscribeLocalEvent<BeingCarriedComponent, InteractionAttemptEvent>(OnInteractionAttempt);
             SubscribeLocalEvent<BeingCarriedComponent, MoveInputEvent>(OnMoveInput);
@@ -77,6 +78,7 @@ namespace Content.Server.Carrying
             SubscribeLocalEvent<BeingCarriedComponent, UnbuckledEvent>(OnBuckleChange);
             SubscribeLocalEvent<BeingCarriedComponent, StrappedEvent>(OnBuckleChange);
             SubscribeLocalEvent<BeingCarriedComponent, UnstrappedEvent>(OnBuckleChange);
+            SubscribeLocalEvent<BeingCarriedComponent, EntityTerminatingEvent>(OnCarriedTerminating);
             SubscribeLocalEvent<CarriableComponent, CarryDoAfterEvent>(OnDoAfter);
         }
 
@@ -133,6 +135,12 @@ namespace Content.Server.Carrying
             if (!HasComp<CarriableComponent>(args.BlockingEntity))
                 return;
 
+            if (TerminatingOrDeleted(args.BlockingEntity))
+            {
+                CleanupCarryState(uid, args.BlockingEntity, false);
+                return;
+            }
+
             DropCarried(uid, args.BlockingEntity);
         }
 
@@ -170,6 +178,16 @@ namespace Content.Server.Carrying
         private void OnMobStateChanged(EntityUid uid, CarryingComponent component, MobStateChangedEvent args)
         {
             DropCarried(uid, component.Carried);
+        }
+
+        private void OnCarrierTerminating(EntityUid uid, CarryingComponent component, ref EntityTerminatingEvent args)
+        {
+            CleanupCarryState(uid, component.Carried, !TerminatingOrDeleted(component.Carried));
+        }
+
+        private void OnCarriedTerminating(EntityUid uid, BeingCarriedComponent component, ref EntityTerminatingEvent args)
+        {
+            CleanupCarryState(component.Carrier, uid, false);
         }
 
         /// <summary>
@@ -237,7 +255,6 @@ namespace Content.Server.Carrying
 
         private void OnDoAfter(EntityUid uid, CarriableComponent component, CarryDoAfterEvent args)
         {
-            component.CancelToken = null;
             if (args.Handled || args.Cancelled
                 || !CanCarry(args.Args.User, uid, component))
                 return;
@@ -245,8 +262,13 @@ namespace Content.Server.Carrying
             Carry(args.Args.User, uid);
             args.Handled = true;
         }
+
         private void StartCarryDoAfter(EntityUid carrier, EntityUid carried, CarriableComponent component)
         {
+            // Prevent duplicate attempts properly
+            if (HasComp<CarryingComponent>(carrier) || HasComp<BeingCarriedComponent>(carried))
+                return;
+
             if (!TryComp<PhysicsComponent>(carrier, out var carrierPhysics)
                 || !TryComp<PhysicsComponent>(carried, out var carriedPhysics)
                 || carriedPhysics.Mass > carrierPhysics.Mass * 2f)
@@ -266,8 +288,6 @@ namespace Content.Server.Carrying
                 component.MinPickupDuration,
                 component.MaxPickupDuration));
             // End Frontier
-
-            component.CancelToken = new CancellationTokenSource();
 
             var ev = new CarryDoAfterEvent();
             var args = new DoAfterArgs(EntityManager, carrier, duration, ev, carried, target: carried) // Frontier: length<duration
@@ -323,15 +343,31 @@ namespace Content.Server.Carrying
 
         public void DropCarried(EntityUid carrier, EntityUid carried)
         {
-            RemComp<CarryingComponent>(carrier); // get rid of this first so we don't recursively fire that event
-            RemComp<CarryingSlowdownComponent>(carrier);
+            CleanupCarryState(carrier, carried, true);
+        }
+
+        private void CleanupCarryState(EntityUid carrier, EntityUid carried, bool dropCarried)
+        {
+            if (!TerminatingOrDeleted(carrier))
+            {
+                RemComp<CarryingComponent>(carrier); // get rid of this first so we don't recursively fire that event
+                RemComp<CarryingSlowdownComponent>(carrier);
+                _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
+                _movementSpeed.RefreshMovementSpeedModifiers(carrier);
+            }
+
+            if (TerminatingOrDeleted(carried))
+                return;
+
             RemComp<BeingCarriedComponent>(carried);
             RemComp<KnockedDownComponent>(carried);
             _actionBlockerSystem.UpdateCanMove(carried);
-            _virtualItemSystem.DeleteInHandsMatching(carrier, carried);
+
+            if (!dropCarried)
+                return;
+
             _transform.AttachToGridOrMap(carried);
             _standingState.Stand(carried);
-            _movementSpeed.RefreshMovementSpeedModifiers(carrier);
         }
 
         private void ApplyCarrySlowdown(EntityUid carrier, EntityUid carried)
@@ -348,7 +384,6 @@ namespace Content.Server.Carrying
         public bool CanCarry(EntityUid carrier, EntityUid carried, CarriableComponent? carriedComp = null)
         {
             if (!Resolve(carried, ref carriedComp, false)
-                || carriedComp.CancelToken != null
                 || !HasComp<MapGridComponent>(Transform(carrier).ParentUid)
                 || HasComp<BeingCarriedComponent>(carrier)
                 || HasComp<BeingCarriedComponent>(carried)
@@ -366,6 +401,18 @@ namespace Content.Server.Carrying
             while (query.MoveNext(out var carried, out var comp, out var xform))
             {
                 var carrier = comp.Carrier;
+                if (TerminatingOrDeleted(carried))
+                {
+                    CleanupCarryState(carrier, carried, false);
+                    continue;
+                }
+
+                if (TerminatingOrDeleted(carrier))
+                {
+                    CleanupCarryState(carrier, carried, true);
+                    continue;
+                }
+
                 if (carrier is not { Valid: true } || carried is not { Valid: true })
                     continue;
 

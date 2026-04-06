@@ -32,7 +32,6 @@ entities:
       name: ""
     - type: Transform
       pos: -0.421875,-0.5625
-      parent: invalid
     - type: MapGrid
       chunks:
         0,0:
@@ -237,6 +236,7 @@ entities:
     - type: GasTileOverlay
     - type: RadiationGridResistance
     - type: BecomesStation
+      id: Mosquito
     - type: InitRepairSnapshot
       id: Mosquito
     - type: IFF

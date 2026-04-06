@@ -99,6 +99,13 @@
   description: A disposable tin of blue spray paint.
   suffix: Disposable, Admin
 
+- type: entity
+  id: SprayPaintDeepGreyDisposable
+  parent: [ SprayPaintDisposableBase, SprayPaintGreyDeep, PaintBase ]
+  name: disposable spray paint
+  description: A disposable tin of deep grey spray paint.
+  suffix: Disposable, Admin
+
 # useful code for when a custom color is needed
 # - type: entity
   # id: SprayPaintf6a44bDisposable

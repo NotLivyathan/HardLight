@@ -1,29 +1,30 @@
 - type: startingGear
-  id: CCEngineerCYN182
+  id: CYNColCommUniform
   equipment:
     pocket1: WeaponEnergyRevolver
     pocket2: FlashlightSecliteAntiqueProto
     head: ClothingHeadHelmetChameleon
     neck: TrinketHeatRes
-    # mask:
+    mask: ClothingMaskPilot
     eyes: ClothingEyesGlassesNfsd
     ears: ClothingHeadsetAltColCom
     gloves: ClothingHandsGlovesSr
     shoes: ClothingShoesChameleonNoSlips
-    # suitstorage:
+    suitstorage: WeaponEnergyShotgun
     outerClothing: ClothingOuterWinterCCWarden
     jumpsuit: ClothingUniformJumpsuitCentcomFormal
-    belt: ClothingBeltUtilityColCommCYN182
+    belt: ClothingWebUtilityColCommCYN182
     back: ClothingBackpackMessengerColCommCYN182
     id: CYN182ColcommPDA
 
-# ID card
+# [ CYN's ID Card ]
 - type: entity
   id: CYN182ColcommIDCard
   parent: IDCardStandard
   name: CYN-182's ID card (Colonial Engineer)
   description: '"Do your jobs, be competent, and all will turn out just fine."'
   suffix: CYN182, Admin
+  categories: [ HideSpawnMenu ]
   components:
   - type: Tag
     tags:
@@ -44,11 +45,12 @@
     tags:
     - CentralCommand
 
-# pda
+# [ CYN's PDA ]
 - type: entity
   id: CYN182ColcommPDA
   parent: CentcomPDA
   suffix: CYN182, Admin
+  categories: [ HideSpawnMenu ]
   components:
   - type: Tag
     tags:
@@ -72,12 +74,15 @@
     - WantedListCartridge
     - GlimmerMonitorCartridge
     - PsiWatchCartridge
+    - LogProbeCartridge
+    - AppraisalCartridge
+    - LedgerCartridge
 
-# backpack
+# [CYN's Backpack ]
 - type: entity
   id: ClothingBackpackMessengerColCommCYN182
   parent: ClothingBackpackMessengerHolding
-  name: CYN's messenger bag of holding
+  name: Messenger bag of holding (CYN-182's)
   description: A personally sown satchel with several straps to attach things. Seems a nametag is attached to the side.
   suffix: CYN182, Filled
   components:
@@ -86,48 +91,78 @@
     - Admin
   - type: StorageFill
     contents:
-      - id: CableHVStack
-      - id: CableHVStack
       - id: ClothingShoesBootsMagAdv
+      - id: ClothingShoesBootsSpeedAntiqueProto
       - id: MindShieldImplanterDisposable
       - id: MedicalTrackingImplanterDisposable
       - id: DeathRattleImplanterColcommDisposable
       - id: DeathAcidifierImplanterDisposable
+      - id: BibleUserImplanterDisposable
       - id: ClothingOuterHardsuitERTCentcommEngi
       - id: BoxFolderColComClipboardNirou
-      - id: RubberStampCentcom
-      - id: HoloprojectorNfsdAntiqueProto
-      - id: PowerCellAntiqueProto
       - id: ClothingWalletLeatherBlack
       - id: JetpackBlackLiquidNitrogen
+      - id: BoxFolderEngiForms
+      - id: ElectricGuitarInstrumentCYNSpecial
+      - id: SheetSteel
+        amount: 2
+      - id: CombatMedkitCYN182
+      - id: OmniPolypBluespaceJug
+      - id: DoorRemoteCustom
+      - id: HandcuffSecPouchCYN
+      - id: StampPouchCapCYN
+      - id: Holo-FanPouchContractorCYN
+      - id: UtilityPouchCYN
+      - id: WirePouchEngineeringCYN
+      - id: IPCHealerPouchFirstAidCYN
+      - id: CYNPillBottleTricordrazine20
+        amount: 2
+      - id: BluespaceAirTankLiquidNitrogenCYN
+      - id: Bible
+      - id: AntiPsychicKnife
+      - id: JugWater
+      - id: SprayPaintDeepGreyDisposable
 
-# utility belt
+# [ A Web Vest to carry tools ]
 - type: entity
-  id: ClothingBeltUtilityColCommCYN182
-  parent: ClothingBeltUtility
-  name: Loose utility belt
-  description: A worn-out toolbelt with some clearly loose loops to attach your tools too. This really needs to be re-sown soon.
+  id: ClothingWebUtilityColCommCYN182
+  parent: ClothingBeltMilitaryWebbing
   suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
   components:
   - type: Tag
     tags:
     - Admin
   - type: StorageFill
     contents:
-      - id: JawsOfLife
+      - id: SyndicateJawsOfLife
       - id: PowerDrill
       - id: WelderExperimental
       - id: Multitool
       - id: trayScanner
       - id: GasAnalyzer
-      - id: HolofanProjectorAntiqueProto
+      - id: RemoteSignallerAdvanced
 
-# jetpack
+# [ Her Special Guitar ]
+- type: entity
+  id: ElectricGuitarInstrumentCYNSpecial
+  parent: ElectricGuitarInstrument
+  name: Personalized Electric Guitar
+  description: A old and worn looking electric guitar, adorned with a plethora of stickers and scratches. A taped on label among them stands out, saying "CYN-182"
+  suffix: CYN182
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+
+# [ The Overfilled Jetpack is real! ]
 - type: entity
   id: JetpackBlackLiquidNitrogen
   parent: JetpackBlack
   name: Jetpack 
   suffix: CYN182, Admin
+  categories: [ HideSpawnMenu ]
   components:
   - type: Tag
     tags:
@@ -138,21 +173,40 @@
       volume: 5
       moles:
         - 0 # oxygen
-        - 1203 # nitrogen
-      temperature: 1
+        - 8.46 # nitrogen
+      temperature: 72
+
+# [ The Special Nitrogen Tank ]
+- type: entity
+  id: BluespaceAirTankLiquidNitrogenCYN
+  parent: BluespaceAirTank
+  suffix: CYN182, Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: GasTank
+    outputPressure: 21.3
+    air:
+      volume: 20
+      moles:
+        - 0 # oxygen
+        - 33.85 # nitrogen
+      temperature: 72
 
 # smaller nullspace
-- type: entity
-  id: ClothingNullSpaceTeleporterSmall
-  parent: ClothingNullSpaceTeleporter
-  name: Portable nullspace teleporter
-  description: A new experemental design divised for more portable use to quickly get between stations and colonial command for said personel. A label says 'Use with caution, and stow when not in use.'
-  suffix: CYN182, Admin
-  components:
-    - type: Item
-      size: Large
+#- type: entity
+#  id: ClothingNullSpaceTeleporterSmall
+#  parent: ClothingNullSpaceTeleporter
+#  name: Portable nullspace teleporter
+#  description: A new experemental design divised for more portable use to quickly get between stations and colonial command for said personel. A label says 'Use with caution, and stow when not in use.'
+#  suffix: CYN182, Admin
+#  components:
+#    - type: Item
+#      size: Large
 
-# colcomm engi hardsuit
+# [ CYN's Engineering ColComm Hardsuit ]
 - type: entity
   id: ClothingOuterHardsuitERTCentcommEngi
   parent: ClothingOuterHardsuitERTCentcomm
@@ -188,3 +242,346 @@
    - type: ClothingSpeedModifier
      walkModifier: 0.9
      sprintModifier: 0.9
+
+# [ Pouches! ]
+- type: entity
+  id: HandcuffSecPouchCYN
+  parent: NFPouchPrivateSecurity
+  name: Handcuff Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: Handcuffs
+      amount: 3
+
+- type: entity
+  id: StampPouchCapCYN
+  parent: NFPouchCaptain
+  name: Stamp Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: RubberStampCentcom
+    - id: RubberStampCE
+    - id: RubberStampApproved
+    - id: RubberStampDenied
+
+- type: entity
+  id: Holo-FanPouchContractorCYN
+  parent: NFPouchContractor
+  name: Holo-Fan Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: HoloprojectorNfsdAntiqueProto
+    - id: HolofanProjectorAntiqueProto
+    - id: HoloprojectorRadiationAntiqueProto
+
+- type: entity
+  id: UtilityPouchCYN
+  parent: NFPouchUtility
+  name: Utility Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: HandHeldMassScannerMarrik
+    - id: HandLabeler
+    - id: PinpointerUniversal
+
+- type: entity
+  id: WirePouchEngineeringCYN
+  parent: NFPouchEngineering
+  name: Wire Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: CableApcStack
+    - id: CableMVStack
+    - id: CableHVStack
+
+- type: entity
+  id: IPCHealerPouchFirstAidCYN
+  parent: NFPouchFirstAidAlt
+  name: IPC Wire Pouch
+  suffix: CYN182, Filled
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+    - id: CableHVStack
+      amount: 3
+
+# [ Chemical Mixtures & Storage] [ I have these off-Duty, so why not on-duty? ]
+- type: entity
+  id: OmniPolypBluespaceJug
+  parent: JugBluespace
+  name: Bluespace Jug (General Healer)
+  suffix: Admin
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 2000
+        reagents:
+          - ReagentId: Omnizine
+            Quantity: 1800
+          - ReagentId: PolypyryliumOligomers
+            Quantity: 200
+
+- type: entity
+  id: SalineDexplusVial
+  parent: VialBluespace
+  name: Bluespace Vial (Bloodloss & Airloss)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: DexalinPlus
+            Quantity: 150
+          - ReagentId: Saline
+            Quantity: 150
+
+- type: entity
+  id: AmoxlaVial
+  parent: VialBluespace
+  name: Bluespace Vial (Avali & Resomi)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: Amoxla
+            Quantity: 300
+
+- type: entity
+  id: UltravascVial
+  parent: VialBluespace
+  name: Bluespace Vial (Toxin)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: Ultravasculine
+            Quantity: 270
+          - ReagentId: Omnizine
+            Quantity: 30
+
+- type: entity
+  id: PolypVial
+  parent: VialBluespace
+  name: Bluespace Vial (Brute & Airloss)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: PolypyryliumOligomers
+            Quantity: 240
+          - ReagentId: Omnizine
+            Quantity: 60
+
+- type: entity
+  id: TranexVial
+  parent: VialBluespace
+  name: Bluespace Vial (Bleeding)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: TranexamicAcid
+            Quantity: 270
+          - ReagentId: Omnizine
+            Quantity: 30
+
+- type: entity
+  id: DermalineVial
+  parent: VialBluespace
+  name: Bluespace Vial (Burn)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: Dermaline
+            Quantity: 240
+          - ReagentId: Omnizine
+            Quantity: 60
+
+- type: entity
+  id: PhalanxVial
+  parent: VialBluespace
+  name: Bluespace Vial (Genetic)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: Phalanximine
+            Quantity: 180
+          - ReagentId: Omnizine
+            Quantity: 120
+
+- type: entity
+  id: CombatMechanitesVial
+  parent: VialBluespace
+  name: Bluespace Vial (Emergency Use)
+  suffix: Admin
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 300
+        reagents:
+          - ReagentId: Mechanites
+            Quantity: 270
+          - ReagentId: Omnizine
+            Quantity: 30
+
+- type: entity
+  id: SyringeCaseCYN182
+  parent: SyringeCase
+  name: Syringe Case (Vial Case)
+  suffix: CYN182, Filled
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+      - id: SalineDexplusVial
+      - id: AmoxlaVial
+      - id: UltravascVial
+      - id: PolypVial
+      - id: TranexVial
+      - id: DermalineVial
+      - id: PhalanxVial
+      - id: CombatMechanitesVial
+
+- type: entity
+  id: CombatMedkitCYN182
+  parent: MedkitCombat
+  suffix: CYN182, Filled
+  components:
+  - type: Tag
+    tags:
+    - Admin
+  - type: StorageFill
+    contents:
+      - id: SyringeCaseCYN182
+      - id: Hypospray
+      - id: HandheldCrewMonitorMicroreactor
+      - id: HandheldHealthAnalyzerMicroreactor
+
+- type: entity
+  name: pill canister
+  parent: PillCanister
+  id: CYNPillBottleTricordrazine20
+  suffix: Tricordrazine 20u, 10
+  components:
+  - type: Label
+    currentLabel: Tricordrazine 20u
+  - type: StorageFill
+    contents:
+    - id: CYNPillTricordrazine20
+      amount: 10
+
+- type: entity
+  name: pill
+  suffix: Tricordrazine 20u
+  parent: Pill
+  id: CYNPillTricordrazine20
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Pill
+    pillType: 2
+  - type: Sprite
+    state: pill3
+  - type: Label
+    currentLabel: Tricordrazine 20u
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 20
+        reagents:
+        - ReagentId: Tricordrazine
+          Quantity: 20

@@ -1,0 +1,21 @@
+
+- type: entity
+  parent: BaseItem
+  id: UnfinishedRamblerForged
+  name: forged rambler parts
+  description: Some assembly may be required. Needs welding.
+  components:
+  - type: Item
+    size: Large
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler.rsi
+    state: unfinished
+  - type: ToolRefinable
+    refineResult:
+    - id: WeaponRamblerShotgun
+  - type: Tag
+    tags:
+    - Metal
+  - type: Construction
+    graph: ForgedRamblerGraph
+    node: shotgun

@@ -1,0 +1,1 @@
+global using ServerUnbanDef = Content.Server.Database.UnbanDef;

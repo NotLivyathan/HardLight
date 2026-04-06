@@ -40,6 +40,14 @@
       "directions": 4
     },
 	{
+      "name": "abyssquadr",
+      "directions": 4
+    },
+	{
+      "name": "abyssquadl",
+      "directions": 4
+    },
+	{
       "name": "abyssquad",
       "directions": 4
     },

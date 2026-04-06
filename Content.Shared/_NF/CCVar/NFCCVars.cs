@@ -117,7 +117,7 @@ public sealed class NFCCVars
     /// The maximum number of shuttles able to go on expedition at once.
     /// </summary>
     public static readonly CVarDef<int> SalvageExpeditionMaxActive =
-        CVarDef.Create("nf14.salvage.expedition_max_active", 15, CVar.REPLICATED);
+        CVarDef.Create("nf14.salvage.expedition_max_active", 6, CVar.REPLICATED);
 
     /// <summary>
     /// Cooldown for failed missions.

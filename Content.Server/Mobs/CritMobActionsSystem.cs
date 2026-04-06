@@ -1,5 +1,7 @@
 ﻿using Content.Server.Administration;
 using Content.Server.Chat.Systems;
+using Content.Server.Ghost;
+using Content.Server.Mind;
 using Content.Server.Popups;
 using Content.Server.Speech.Muting;
 using Content.Shared.Mobs;
@@ -19,7 +21,8 @@ public sealed class CritMobActionsSystem : EntitySystem
 {
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly DeathgaspSystem _deathgasp = default!;
-    [Dependency] private readonly IServerConsoleHost _host = default!;
+    [Dependency] private readonly GhostSystem _ghostSystem = default!;
+    [Dependency] private readonly MindSystem _mindSystem = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly QuickDialogSystem _quickDialog = default!;
@@ -40,7 +43,11 @@ public sealed class CritMobActionsSystem : EntitySystem
         if (!TryComp<ActorComponent>(uid, out var actor) || !_mobState.IsCritical(uid))
             return;
 
-        _host.ExecuteCommand(actor.PlayerSession, "ghost");
+        if (_mindSystem.TryGetMind(actor.PlayerSession, out var mindId, out var mind))
+        {
+            _ghostSystem.OnGhostAttempt(mindId, true, viaCommand: true, mind: mind);
+        }
+
         args.Handled = true;
     }
 
@@ -78,7 +85,11 @@ public sealed class CritMobActionsSystem : EntitySystem
                 lastWords += "...";
 
                 _chat.TrySendInGameICMessage(uid, lastWords, InGameICChatType.Whisper, ChatTransmitRange.Normal, checkRadioPrefix: false, ignoreActionBlocker: true);
-                _host.ExecuteCommand(actor.PlayerSession, "ghost");
+
+                if (_mindSystem.TryGetMind(actor.PlayerSession, out var mindId, out var mind))
+                {
+                    _ghostSystem.OnGhostAttempt(mindId, true, viaCommand: true, mind: mind);
+                }
             });
 
         args.Handled = true;

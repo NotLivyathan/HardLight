@@ -13,6 +13,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Content.Shared.Verbs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,7 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         _xformQuery = GetEntityQuery<TransformComponent>();
 
         SubscribeLocalEvent<RoomGridSpawnerConsoleComponent, InteractHandEvent>(OnConsoleInteract);
+        SubscribeLocalEvent<RoomGridSpawnerConsoleComponent, GetVerbsEvent<AlternativeVerb>>(OnGetAlternativeVerbs);
         SubscribeLocalEvent<MindContainerComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeNetworkEvent<SendRoomGridDataMessage>(OnRoomGridData);
     }
@@ -76,6 +78,24 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         if (session == null)
             return;
 
+        if (_pendingLoads.ContainsKey(mindComp.UserId.Value))
+        {
+            _popup.PopupEntity("Your room is already being loaded.", args.User, args.User);
+            args.Handled = true;
+            return;
+        }
+
+        if (_activeSessions.TryGetValue(mindComp.UserId.Value, out var activeSession))
+        {
+            var message = activeSession.ConsoleUid == uid
+                ? "Your room is already loaded here."
+                : "You already have a room loaded. Stash it before loading another.";
+
+            _popup.PopupEntity(message, args.User, args.User);
+            args.Handled = true;
+            return;
+        }
+
         if (!TryGetAreaMarker(uid, component, consoleXform, out var markerUid, out var markerComp, out var markerXform))
         {
             _popup.PopupEntity("No linked room marker found.", args.User, args.User);
@@ -91,6 +111,48 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         RaiseNetworkEvent(new RequestRoomGridLoadMessage(GetNetEntity(uid), characterKey), session);
         _popup.PopupEntity("Looking for your saved room...", args.User, args.User);
         args.Handled = true;
+    }
+
+    private void OnGetAlternativeVerbs(Entity<RoomGridSpawnerConsoleComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
+    {
+        if (!args.CanAccess || !args.CanInteract)
+            return;
+
+        if (!TryGetUserId(args.User, out var userId))
+            return;
+
+        if (!_activeSessions.TryGetValue(userId, out var activeSession) || activeSession.ConsoleUid != ent.Owner)
+            return;
+
+        var user = args.User;
+
+        args.Verbs.Add(new AlternativeVerb
+        {
+            Text = "Save room",
+            Act = () =>
+            {
+                if (!_activeSessions.TryGetValue(userId, out var session) || session.ConsoleUid != ent.Owner)
+                    return;
+
+                if (TrySaveRoom(userId, session))
+                    _popup.PopupEntity("Room saved.", user, user);
+                else
+                    _popup.PopupEntity("Failed to save room.", user, user);
+            }
+        });
+
+        args.Verbs.Add(new AlternativeVerb
+        {
+            Text = "Stash room",
+            Act = () =>
+            {
+                if (!_activeSessions.TryGetValue(userId, out var session) || session.ConsoleUid != ent.Owner)
+                    return;
+
+                SaveAndResetRoom(userId, session);
+                _popup.PopupEntity("Room stashed.", user, user);
+            }
+        });
     }
 
     private void OnRoomGridData(SendRoomGridDataMessage msg, EntitySessionEventArgs args)
@@ -147,6 +209,8 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         if (userId == null)
             return;
 
+        _pendingLoads.Remove(userId.Value);
+
         if (!_activeSessions.TryGetValue(userId.Value, out var activeSession))
             return;
 
@@ -155,8 +219,14 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
 
     private void SaveAndResetRoom(NetUserId userId, ActiveRoomSession session)
     {
+        TrySaveRoom(userId, session);
+        ResetRoom(userId, session);
+    }
+
+    private bool TrySaveRoom(NetUserId userId, ActiveRoomSession session)
+    {
         if (!_gridQuery.TryComp(session.GridUid, out var gridComp))
-            return;
+            return false;
 
         var excluded = new HashSet<EntityUid> { session.ConsoleUid, session.MarkerUid };
         var shipData = _shipSerialization.SerializeShipArea(session.GridUid, userId, $"Room_{session.CharacterKey}", session.Bounds, excluded);
@@ -167,8 +237,26 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
             RaiseNetworkEvent(new SendRoomGridSaveDataClientMessage(session.CharacterKey, yaml), playerSession);
         }
 
-        ClearArea(session.GridUid, gridComp, session.Bounds, session.ConsoleUid, session.MarkerUid, DeleteContainedEntitiesOnReset);
+        return true;
+    }
+
+    private void ResetRoom(NetUserId userId, ActiveRoomSession session)
+    {
+        if (_gridQuery.TryComp(session.GridUid, out MapGridComponent? gridComp))
+            ClearArea(session.GridUid, gridComp, session.Bounds, session.ConsoleUid, session.MarkerUid, DeleteContainedEntitiesOnReset);
+
         _activeSessions.Remove(userId);
+    }
+
+    private bool TryGetUserId(EntityUid user, out NetUserId userId)
+    {
+        userId = default;
+
+        if (!_mind.TryGetMind(user, out _, out var mindComp) || mindComp.UserId == null)
+            return false;
+
+        userId = mindComp.UserId.Value;
+        return true;
     }
 
     private bool TryGetAreaMarker(EntityUid consoleUid, RoomGridSpawnerConsoleComponent component, TransformComponent consoleXform,

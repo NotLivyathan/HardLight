@@ -1,4 +1,5 @@
 interaction-verb-invalid = Some requirements for this verb are not met. You cannot use it right now.
+interaction-verb-mask-blocked = Your mask is blocking your mouth; pull it down to use this verb.
 interaction-verb-cooldown = This verb is on cooldown. Wait {TOSTRING($seconds, "F1")} seconds.
 interaction-verb-too-strong = You are too strong to use this verb.
 interaction-verb-too-weak = You are too weak to use this verb.

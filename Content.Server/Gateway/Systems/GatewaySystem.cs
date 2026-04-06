@@ -103,12 +103,22 @@ public sealed class GatewaySystem : EntitySystem
             if (!dest.Enabled || destUid == uid)
                 continue;
 
-            if (!TryComp<MetaDataComponent>(destUid, out var destMeta) || destMeta.EntityLifeStage >= EntityLifeStage.Terminating)
+            var destMeta = MetaData(destUid);
+            if (destMeta.EntityLifeStage >= EntityLifeStage.Terminating)
                 continue;
 
             // Show destination if either no destination comp on the map or it's ours.
             TryComp<GatewayGeneratorDestinationComponent>(destXform.MapUid, out var gatewayDestination);
-            var isDockingArm = HasComp<DockingArmDestinationComponent>(destUid);
+            var isDockingArm = TryComp<DockingArmDestinationComponent>(destUid, out var dockingArmDestination);
+
+            if (isDockingArm)
+            {
+                if (!HasComp<DockingArmGeneratorComponent>(uid))
+                    continue;
+
+                if (dockingArmDestination!.Generator != null && dockingArmDestination.Generator != uid)
+                    continue;
+            }
 
             Log.Debug($"Gateway {ToPrettyString(uid)} found destination {ToPrettyString(destUid)} - IsDockingArm: {isDockingArm}, HasDockingArmComp: {HasComp<DockingArmDestinationComponent>(destUid)}, DestName: {destMeta.EntityName}");
 
@@ -116,8 +126,8 @@ public sealed class GatewaySystem : EntitySystem
             {
                 Entity = GetNetEntity(destUid),
                 // Fallback to grid's ID if applicable.
-                Name = dest.Name.IsEmpty && destXform.GridUid != null && TryComp<MetaDataComponent>(destXform.GridUid.Value, out var gridMeta)
-                    ? FormattedMessage.FromUnformatted(gridMeta.EntityName)
+                Name = dest.Name.IsEmpty && destXform.GridUid != null
+                    ? FormattedMessage.FromUnformatted(MetaData(destXform.GridUid.Value).EntityName)
                     : dest.Name,
                 Portal = HasComp<PortalComponent>(destUid),
                 // If NextUnlock < CurTime it's unlocked, however
@@ -132,7 +142,7 @@ public sealed class GatewaySystem : EntitySystem
         NetEntity? currentNet = null;
 
         if (current is { } currentUid &&
-            TryComp<MetaDataComponent>(currentUid, out var currentMeta) &&
+            MetaData(currentUid) is { } currentMeta &&
             currentMeta.EntityLifeStage < EntityLifeStage.Terminating)
         {
             currentNet = GetNetEntity(currentUid, currentMeta);
@@ -199,6 +209,12 @@ public sealed class GatewaySystem : EntitySystem
 
         var desto = GetEntity(args.Destination);
 
+        if (!HasComp<DockingArmGeneratorComponent>(uid))
+        {
+            _popup.PopupEntity(Loc.GetString("gateway-docking-arm-unavailable"), user, user);
+            return;
+        }
+
         // Verify it's a valid docking arm destination
         if (!TryComp<GatewayComponent>(desto, out var dest) ||
             !dest.Enabled)
@@ -210,6 +226,12 @@ public sealed class GatewaySystem : EntitySystem
         if (!TryComp<DockingArmDestinationComponent>(desto, out var dockingArmDest))
         {
             Log.Warning($"Gateway spawn docking arm: {ToPrettyString(desto)} does not have DockingArmDestinationComponent");
+            return;
+        }
+
+        if (dockingArmDest.Generator != null && dockingArmDest.Generator != uid)
+        {
+            _popup.PopupEntity(Loc.GetString("gateway-docking-arm-unavailable"), user, user);
             return;
         }
 

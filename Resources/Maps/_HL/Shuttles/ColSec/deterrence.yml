@@ -1150,6 +1150,7 @@ entities:
     - type: GasTileOverlay
     - type: RadiationGridResistance
     - type: BecomesStation
+      id: Deterrence
     - type: InitRepairSnapshot
       id: Deterrence
     - type: IFF

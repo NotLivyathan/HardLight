@@ -13,8 +13,6 @@
   - MiningDrill
   - WeaponGrapplingGun # Frontier
   - MineralScannerEmpty
-  #- BorgModuleMining # HL
-  - BorgModuleGrapplingGun
   - OreProcessorIndustrialMachineCircuitboard
   - ClothingMaskWeldingGas
   - ClothingShoesBootsJump
@@ -198,6 +196,8 @@
     - NFBlueprintPowerDrill # Frontier
     - NFBlueprintJawsOfLife # Frontier
     - NFBlueprintWelderExperimental # Frontier
+    - OmniHandLeft # HardLight
+    - OmniHandRight # HardLight
 
 - type: technology
   id: MassExcavation

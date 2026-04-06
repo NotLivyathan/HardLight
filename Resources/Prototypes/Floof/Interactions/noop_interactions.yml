@@ -4,7 +4,8 @@
   parent: BaseGlobal
   priority: -100 # Very specific ERP meaning, should be at the bottom
   requiresHands: false
-  requiresCanInteract: false
+  requiresUnblocked: false
+  exemptFromInteractionBlocker: true
   contactInteraction: false
   icon: /Textures/Interface/Actions/eyeopen.png
   range: {max: 20}
@@ -14,7 +15,7 @@
     soundPerceivedByOthers: false
   action:
     !type:NoOpAction
-  hideByRequirement: true
+  hideByRequirement: false
   requirement:
     !type:MobStateRequirement # Don't check out a wall
     inverted: true

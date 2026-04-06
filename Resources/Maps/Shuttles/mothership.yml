@@ -31,7 +31,6 @@ entities:
       name: mothership
     - type: Transform
       pos: -0.49999905,-0.4677186
-      parent: invalid
     - type: MapGrid
       chunks:
         0,0:

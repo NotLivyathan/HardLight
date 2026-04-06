@@ -155,7 +155,177 @@
     stateOn: quadspritemossballz
     movementStateOff: quadspritemoss_moving
     movementStateOn: quadspritemoss_movingballz
+
+- type: entity
+  id: AbyssQuad
+  parent: BorgChassisQuad
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: abyssquad
+      map: ["movement"]
+    - state: abyssquadr
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: abyssquadl
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: abyssquad_moving
+    noMovementLayers:
+      movement:
+        state: abyssquad
+  - type: BorgChassis
+    maxModules: 5
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - XenoborgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - BorgModuleMedical
+      - BorgModuleEngineering
+      - BorgModuleScience
+      - BorgModuleService
+      - BorgModuleCargo
+    hasMindState: abyssquadr
+    noMindState: abyssquadl
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: abyssquad
+    name: Verzical
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: abyssquad
+    stateOn: abyssquadballz
+    movementStateOff: abyssquad_moving
+    movementStateOn: abyssquad_movingballz
+  - type: HitscanBatteryAmmoProvider
+    proto: Abysslaser # Frontier: use NF variant
+    fireCost: 100
+  - type: BatterySelfRecharger
+    autoRecharge: true
+    autoRechargeRate: 50
+  - type: Battery
+    maxCharge: 2000
+    startingCharge: 2000
+  - type: Gun
+    fireRate: 1
+    useKey: false
+    selectedMode: SemiAuto
+    availableModes:
+      - SemiAuto
+    soundGunshot: /Audio/_HL/Effects/abysslaser.ogg
+
+- type: hitscan
+  id: Abysslaser
+  damage:
+    types:
+      Cold: 12
+  muzzleFlash: &lightMuzzleFlash
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+    state: muzzle_abyss_laser
+  travelFlash: &lightTravelFlash
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+    state: abyss_laser
+  impactFlash: &lightImpactFlash
+    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+    state: impact_abyss_laser
+  maxLength: 21
     
+- type: entity
+  id: PlayerBorgQuadViz
+  parent: AbyssQuad
+  name: Verzical
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+
+- type: entity
+  id: PlayerBorgQuadfeathered
+  parent: XenoQuadfeathered
+  name: Snai
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+
+- type: entity
+  id: PlayerBorgQuadGlitz
+  parent: BorgChassisGl1tz
+  name: Glitz
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+
+- type: entity
+  id: PlayerBorgQuaddog
+  parent: BorgChassisDog
+  name: Pending
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium        
+
+- type: entity
+  id: PlayerBorgQuadPetal
+  parent: BorgChassisPetal
+  name: Pending
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium 
+
 - type: entity
   id: PlayerBorgQuadMoss
   parent: BorgChassisQuadMoss

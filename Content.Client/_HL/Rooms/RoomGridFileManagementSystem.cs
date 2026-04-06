@@ -12,6 +12,7 @@ public sealed class RoomGridFileManagementSystem : EntitySystem
     [Dependency] private readonly IResourceManager _resourceManager = default!;
 
     private const string ExportsRoot = "/Exports";
+    private const string RoomGridsRoot = "/Exports/room_grids";
     private const string RoomPrefix = "room_";
 
     public override void Initialize()
@@ -24,15 +25,20 @@ public sealed class RoomGridFileManagementSystem : EntitySystem
     private void OnRequestRoomGridLoad(RequestRoomGridLoadMessage message)
     {
         var safeKey = SanitizeKey(message.CharacterKey);
-        var filePath = $"{ExportsRoot}/{RoomPrefix}{safeKey}.yml";
+        var filePath = GetRoomGridPath(safeKey);
+        var legacyPath = GetLegacyRoomGridPath(safeKey);
         string yamlData = string.Empty;
         var found = false;
 
         try
         {
-            if (_resourceManager.UserData.Exists(new(filePath)))
+            var readPath = _resourceManager.UserData.Exists(new(filePath))
+                ? filePath
+                : legacyPath;
+
+            if (_resourceManager.UserData.Exists(new(readPath)))
             {
-                using var reader = _resourceManager.UserData.OpenText(new(filePath));
+                using var reader = _resourceManager.UserData.OpenText(new(readPath));
                 yamlData = reader.ReadToEnd();
                 found = !string.IsNullOrWhiteSpace(yamlData);
             }
@@ -48,11 +54,11 @@ public sealed class RoomGridFileManagementSystem : EntitySystem
     private void OnSaveRoomData(SendRoomGridSaveDataClientMessage message)
     {
         var safeKey = SanitizeKey(message.CharacterKey);
-        var filePath = $"{ExportsRoot}/{RoomPrefix}{safeKey}.yml";
+        var filePath = GetRoomGridPath(safeKey);
 
         try
         {
-            _resourceManager.UserData.CreateDir(new(ExportsRoot));
+            _resourceManager.UserData.CreateDir(new(RoomGridsRoot));
             using var writer = _resourceManager.UserData.OpenWriteText(new(filePath));
             writer.Write(message.RoomData);
         }
@@ -60,6 +66,16 @@ public sealed class RoomGridFileManagementSystem : EntitySystem
         {
             Logger.Error($"Failed to save room data to {filePath}: {ex.Message}");
         }
+    }
+
+    private static string GetRoomGridPath(string safeKey)
+    {
+        return $"{RoomGridsRoot}/{RoomPrefix}{safeKey}.yml";
+    }
+
+    private static string GetLegacyRoomGridPath(string safeKey)
+    {
+        return $"{ExportsRoot}/{RoomPrefix}{safeKey}.yml";
     }
 
     private static string SanitizeKey(string key)

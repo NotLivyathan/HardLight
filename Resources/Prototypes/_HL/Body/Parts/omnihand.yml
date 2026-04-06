@@ -1,0 +1,307 @@
+- type: entity
+  name: omnitool hand "P.E.T. 6" #Packed experimental tools - 6 tools
+  parent: [BaseItem, BaseC2ContrabandUnredeemable]
+  id: OmniHand
+  suffix: Unremoveable
+  description: Advanced engineering cybernetic, useful for many construction tasks. Has a manipulator to use your hand normally when tools are not active.
+  components: 
+  - type: Unremoveable  
+  - type: Sprite
+    sprite: _HL/Objects/Tools/omnihand.rsi
+    layers:
+    - state: icon
+    - state: welder_flame
+      visible: false
+      shader: unshaded
+      map: ["enum.ToggleVisuals.Layer"]
+  - type: RefillableSolution
+    solution: Welder
+  - type: SolutionContainerManager
+    solutions:
+      Welder:
+        reagents:
+        - ReagentId: WeldingFuel
+          Quantity: 500
+        maxVol: 500
+  - type: SolutionRegeneration
+    solution: Welder
+    generated:
+      reagents:
+      - ReagentId: WeldingFuel
+        Quantity: 5
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleVisuals.Toggled:
+        enum.ToggleVisuals.Layer:
+          True: { visible: true }
+          False: { visible: false }
+  - type: Item
+    sprite: _HL/Objects/Tools/omnihand.rsi
+    size: Normal
+  - type: ItemSwitch
+    state: Prying
+    states:
+      prying: !type:ItemSwitchState
+        verb: Prying
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: crowbar
+        components:
+        - type: ToolTileCompatible
+          delay: 1
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: Tool
+          qualities:
+            - Prying
+          useSound:
+            path: /Audio/Items/jaws_pry.ogg
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            collection: MetalThud
+            params:
+              variation: 0.250
+              volume: -10
+          damage:
+            types:
+              Blunt: 11 #one extra damage, as a treat
+
+      screwing: !type:ItemSwitchState
+        verb: Screwing
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: screwdriver
+        components:
+        - type: Tool
+          qualities:
+            - Screwing
+          useSound:
+            path: /Audio/Items/drill_use.ogg
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            path: "/Audio/Items/drill_hit.ogg"
+            params:
+              variation: 0.250
+              volume: -10
+          damage:
+            types:
+              Piercing: 10
+
+      cutting: !type:ItemSwitchState
+        verb: Cutting
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: cutters
+        components:
+        - type: ToolTileCompatible
+        - type: Tool
+          qualities:
+            - Cutting
+          useSound:
+            path: /Audio/Items/jaws_cut.ogg
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            collection: MetalThud
+            params:
+              variation: 0.250
+              volume: -10
+          damage:
+            types:
+              Blunt: 11
+
+      anchoring: !type:ItemSwitchState
+        verb: Anchoring
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: wrench
+        components:
+        - type: Tool
+          qualities:
+            - Anchoring
+          useSound:
+            path: /Audio/Items/drill_use.ogg
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            path: "/Audio/Items/drill_hit.ogg"
+            params:
+              variation: 0.250
+              volume: -10
+          damage:
+            types:
+              Piercing: 11
+
+      pulsing: !type:ItemSwitchState
+        verb: Pulsing
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: multi
+        components:
+        - type: Tool
+          qualities:
+            - Pulsing
+        - type: NetworkConfigurator
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            collection: MetalThud
+            params:
+              variation: 0.250
+              volume: -10
+          damage:
+            types:
+              Blunt: 5
+
+      welding: !type:ItemSwitchState
+        verb: Welding
+        sprite:
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          state: welder
+        components:
+        - type: ItemToggle
+          predictable: false
+          soundActivate:
+            collection: WelderOn
+            params:
+              variation: 0.125
+              volume: -5
+          soundDeactivate:
+            collection: WelderOff
+            params:
+              variation: 0.125
+              volume: -5
+        - type: ItemToggleSize
+          activatedSize: Large
+        - type: ItemToggleHot
+        - type: Item
+          sprite: _HL/Objects/Tools/omnihand.rsi
+          inhandVisuals:
+            left:
+            - state: inhand-left
+            right:
+            - state: inhand-right
+        - type: ComponentToggler
+          components:
+          - type: DisarmMalus
+            malus: 0.6
+        - type: ToggleableLightVisuals
+          spriteLayer: flame
+        - type: RefillableSolution
+          solution: Welder
+        - type: Tool
+          useSound:
+            collection: Welder
+          qualities: Welding
+        - type: Appearance
+        - type: RequiresEyeProtection
+        - type: IgnitionSource
+          temperature: 700
+        - type: ItemToggleMeleeWeapon
+          activatedSoundOnHit:
+            path: /Audio/Weapons/Guns/Hits/energy_meat1.ogg
+            params:
+              variation: 0.250
+              volume: -10
+          activatedSoundOnHitNoDamage:
+            path: /Audio/Weapons/Guns/Hits/energy_meat1.ogg
+            params:
+              variation: 0.250
+              volume: -12
+          deactivatedSoundOnHitNoDamage:
+            collection: MetalThud
+          activatedDamage:
+            types:
+              Heat: 10
+        - type: MeleeWeapon
+          wideAnimationRotation: -135
+          soundHit:
+            collection: MetalThud
+          damage:
+            types:
+              Blunt: 5
+  - type: Tag
+    tags:
+      - Multitool
+      - DoorElectronicsConfigurator
+      - Wrench
+      - PlantSampleTaker
+      - Wirecutter
+      - Screwdriver
+      
+- type: entity
+  id: CyberneticsOmnihandRight
+  parent: [RightArmCybernetic, BaseC2ContrabandUnredeemable]
+  name: right omnihand "P.E.T. 6"
+  description: Have you ever been jealous of borgs and their built-in tools? Well that issue is now solved forever!
+  components:
+    - type: Sprite
+      sprite: _HL/Objects/Tools/omnihand.rsi
+      layers:
+        - state: omnihand
+    - type: BodyPart
+      onAdd:
+        - type: OmniHand
+     
+- type: entity
+  id: CyberneticsOmnihandLeft
+  parent: [LeftArmCybernetic, BaseC2ContrabandUnredeemable]
+  name: left omnihand "P.E.T. 6"
+  description: Have you ever been jealous of borgs and their built-in tools? Well that issue is now solved forever!
+  components:
+    - type: Sprite
+      sprite: _HL/Objects/Tools/omnihand.rsi
+      layers:
+        - state: omnihand
+    - type: BodyPart
+      onAdd:
+        - type: OmniHand
+     
+- type: entity
+  id: ActionToggleOmniHand
+  name: Toggle Omnitool Hand
+  description: Turns your arm into a set of tools.
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: InstantAction
+    useDelay: 2
+    itemIconStyle: NoItem
+    icon:
+      sprite: Objects/Tools/drill.rsi
+      state: drill_screw
+    event: !type:OmniHandToggledEvent

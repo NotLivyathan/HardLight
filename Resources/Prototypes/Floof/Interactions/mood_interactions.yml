@@ -5,15 +5,18 @@
   priority: -1
   delay: 0.4
   range: {max: 1}
-  hideByRequirement: true
+  requiresUnblocked: false
+  exemptFromInteractionBlocker: true
+  hideByRequirement: false
   requirement:
     !type:ComplexRequirement
     requirements:
     - !type:EntityWhitelistRequirement
       whitelist:
         components: [MobState] # Don't go around kissing inanimate objects.
-#    - !type:SlotObstructionRequirement | Appropriate systems not implemented
-#      slot: MASK
+    - !type:SlotObstructionRequirement
+      slot: mask
+      checkUser: true
   action:
     !type:NoOpAction
 #    effect: BeingKissed | Moods not implemented
@@ -29,7 +32,9 @@
   priority: -2
   delay: 0.7
   range: {max: 1}
-  hideByRequirement: true
+  requiresUnblocked: false
+  exemptFromInteractionBlocker: true
+  hideByRequirement: false
   requirement:
     !type:ComplexRequirement
     requirements:
@@ -37,8 +42,9 @@
       whitelist:
         components: [MobState, Anomaly, Edible] # TODO check if can be metabolized
         tags: [Window] # yes.
-#    - !type:SlotObstructionRequirement | Appropriate systems not implemented
-#      slot: MASK
+    - !type:SlotObstructionRequirement
+      slot: mask
+      checkUser: true
   action:
     !type:NoOpAction
 #    effect: BeingLicked | Moods not implemented

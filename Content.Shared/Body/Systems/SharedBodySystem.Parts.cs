@@ -195,22 +195,31 @@ public partial class SharedBodySystem
 
     protected virtual void DropPart(Entity<BodyPartComponent> partEnt)
     {
+        var body = partEnt.Comp.Body;
+
+        if (TerminatingOrDeleted(partEnt)
+            || EntityManager.IsQueuedForDeletion(partEnt)
+            || body is { Valid: true } && (TerminatingOrDeleted(body.Value) || EntityManager.IsQueuedForDeletion(body.Value)))
+        {
+            return;
+        }
+
         DropSlotContents(partEnt);
         // I don't know if this can cause issues, since any part that's being detached HAS to have a Body.
         // though I really just want the compiler to shut the fuck up.
-        var body = partEnt.Comp.Body.GetValueOrDefault();
+        var bodyUid = body.GetValueOrDefault();
         if (TryComp(partEnt, out TransformComponent? transform) && _gameTiming.IsFirstTimePredicted)
         {
             var enableEvent = new BodyPartEnableChangedEvent(false);
             RaiseLocalEvent(partEnt, ref enableEvent);
             var droppedEvent = new BodyPartDroppedEvent(partEnt);
-            RaiseLocalEvent(body, ref droppedEvent);
+            RaiseLocalEvent(bodyUid, ref droppedEvent);
 
-            if (body != EntityUid.Invalid)
+            if (bodyUid != EntityUid.Invalid)
             {
-                var bodyTransform = Transform(body);
+                var bodyTransform = Transform(bodyUid);
                 if (bodyTransform.MapUid != null)
-                    SharedTransform.DropNextTo((partEnt.Owner, transform), (body, bodyTransform));
+                    SharedTransform.DropNextTo((partEnt.Owner, transform), (bodyUid, bodyTransform));
             }
 
             if (transform.MapUid != null)
