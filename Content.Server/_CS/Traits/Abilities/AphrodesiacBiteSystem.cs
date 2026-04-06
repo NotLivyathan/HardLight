@@ -1,8 +1,8 @@
 using Content.Server._Common.Consent;
-using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Shared._CS.Traits.Abilities;
 using Content.Shared.Actions;
+using Content.Shared.Body.Components; // HardLight
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
@@ -53,7 +53,7 @@ public sealed class AphrodesiacBiteSystem : EntitySystem
         }
 
         var solution = new Solution(bite.Reagent, bite.Amount);
-        if (_bloodstream.TryAddToChemicals(target, solution, bloodstream))
+        if (_bloodstream.TryAddToChemicals((target, bloodstream), solution)) // HardLight: Moved solution
         {
             _audio.PlayPvs(bite.Sound, user);
             _actions.StartUseDelay(bite.ActionEntity);

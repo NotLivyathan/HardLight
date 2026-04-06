@@ -15,7 +15,8 @@
     quickEquip: false
     slots:
     - Belt
-  - type: OnUseTimerTrigger
+  - type: TriggerOnUse
+  - type: TimerTrigger
     delay: 3
   - type: Damageable
     damageContainer: Inorganic
@@ -141,7 +142,7 @@
       - !type:TriggerBehavior
       - !type:DoActsBehavior
         acts: ["Destruction"]
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 5
   - type: ExplodeOnTrigger
     keysIn:
@@ -454,8 +455,11 @@
   - type: SmokeOnTrigger
     duration: 30
     spreadAmount: 50
-  - type: SoundOnTrigger
-    sound: /Audio/Items/smoke_grenade_smoke.ogg
+  - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
+    sound:
+      path: /Audio/Items/smoke_grenade_smoke.ogg
   - type: DeleteOnTrigger
   - type: TimerTriggerVisuals
     primingSound:
@@ -502,7 +506,7 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Grenades/metalfoam.rsi
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 1.5
   - type: SmokeOnTrigger
     duration: 2
@@ -519,12 +523,15 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Grenades/airboom.rsi
-  - type: SoundOnTrigger
-    sound: /Audio/Items/smoke_grenade_smoke.ogg
+  - type: EmitSoundOnTrigger
+    keysIn:
+    - timer
+    sound:
+      path: /Audio/Items/smoke_grenade_smoke.ogg
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Items/smoke_grenade_prime.ogg
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 3
   - type: ReleaseGasOnTrigger
     removeFraction: 0.25
