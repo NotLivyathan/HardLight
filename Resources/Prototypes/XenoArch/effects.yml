@@ -7,8 +7,7 @@
     #  weight: 10.0
     - id: XenoArtifactSolutionStorage
       weight: 10.0
-    - id: XenoArtifactPhasing
-      weight: 2.0
+    # Frontier: effect prototype intentionally disabled below, keep table in sync.
     - id: XenoArtifactWandering
       weight: 4.0
     - id: XenoArtifactSpeedUp

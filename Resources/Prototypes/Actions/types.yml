@@ -111,7 +111,7 @@
     icon:
       sprite: Actions/Implants/implants.rsi
       state: freedom
-    event: !type:UseFreedomImplantEvent
+    event: !type:ActivateImplantEvent
 
 - type: entity
   id: ActionOpenUplinkImplant
@@ -159,7 +159,7 @@
     icon:
       sprite: Structures/Specific/anomaly.rsi
       state: anom4
-    event: !type:UseScramImplantEvent
+    event: !type:ActivateImplantEvent
 
 - type: entity
   parent: BaseImplantAction
@@ -177,7 +177,7 @@
     icon:
       sprite: Clothing/OuterClothing/Hardsuits/lingspacesuit.rsi
       state: icon
-    event: !type:UseDnaScramblerImplantEvent
+    event: !type:ActivateImplantEvent
 
 - type: entity
   id: ActionToggleSuitPiece
