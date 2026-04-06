@@ -6,7 +6,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Decals;
 using Content.Shared.Examine;
 using Content.Shared.Humanoid.Markings;
-using Content.Shared._Shitmed.Humanoid.Events; // Shitmed Change
+using Content.Shared._Shitmed.Humanoid.Events; // Shitmed
 using Content.Shared.Humanoid.Prototypes;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Inventory;
@@ -41,6 +41,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ISerializationManager _serManager = default!;
     [Dependency] private readonly MarkingManager _markingManager = default!;
+    [Dependency] private readonly IdentitySystem _identity = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
     public static readonly ProtoId<SpeciesPrototype> DefaultSpecies = "Human";
@@ -165,7 +166,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         targetHumanoid.Species = sourceHumanoid.Species;
         targetHumanoid.SkinColor = sourceHumanoid.SkinColor;
         targetHumanoid.EyeColor = sourceHumanoid.EyeColor;
-        targetHumanoid.EyeGlowing = sourceHumanoid.EyeGlowing; //starlight
+        targetHumanoid.EyeGlowing = sourceHumanoid.EyeGlowing; // Starlight
         targetHumanoid.Age = sourceHumanoid.Age;
         targetHumanoid.Height = sourceHumanoid.Height;
         targetHumanoid.Width = sourceHumanoid.Width;
@@ -433,12 +434,12 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         // Preserve an optional custom species display string from the profile for examine-only purposes.
         humanoid.CustomSpecies = string.IsNullOrEmpty(profile.CustomSpecies) ? null : profile.CustomSpecies;
         humanoid.EyeColor = profile.Appearance.EyeColor;
-        humanoid.EyeGlowing = profile.Appearance.EyeGlowing; //starlight
+        humanoid.EyeGlowing = profile.Appearance.EyeGlowing; // Starlight
 
         SetEyeColor(uid, humanoid.EyeColor, false); // Starlight
 
-        var ev = new EyeColorInitEvent(); //starlight
-        RaiseLocalEvent(uid, ref ev); //starlight
+        var ev = new EyeColorInitEvent(); // Starlight
+        RaiseLocalEvent(uid, ref ev); // Starlight
 
         SetSkinColor(uid, profile.Appearance.SkinColor, false);
 
@@ -452,7 +453,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             {
                 if (!prototype.ForcedColoring)
                 {
-                    AddMarking(uid, marking.MarkingId, marking.MarkingColors, marking.IsGlowing, false); //starlight
+                    AddMarking(uid, marking.MarkingId, marking.MarkingColors, marking.IsGlowing, false); // Starlight
                 }
                 else
                 {
@@ -471,13 +472,13 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
         if (_markingManager.Markings.TryGetValue(profile.Appearance.HairStyleId, out var hairPrototype) &&
             _markingManager.CanBeApplied(profile.Species, profile.Sex, hairPrototype, _proto))
         {
-            AddMarking(uid, profile.Appearance.HairStyleId, profile.Appearance.HairGlowing, hairColor, false); //starlight
+            AddMarking(uid, profile.Appearance.HairStyleId, profile.Appearance.HairGlowing, hairColor, false); // Starlight
         }
 
         if (_markingManager.Markings.TryGetValue(profile.Appearance.FacialHairStyleId, out var facialHairPrototype) &&
             _markingManager.CanBeApplied(profile.Species, profile.Sex, facialHairPrototype, _proto))
         {
-            AddMarking(uid, profile.Appearance.FacialHairStyleId, profile.Appearance.FacialHairGlowing, facialHairColor, false); //starlight
+            AddMarking(uid, profile.Appearance.FacialHairStyleId, profile.Appearance.FacialHairGlowing, facialHairColor, false); // Starlight
         }
 
         humanoid.MarkingSet.EnsureSpecies(profile.Species, profile.Appearance.SkinColor, _markingManager, _proto);
@@ -491,7 +492,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
                 profile.Appearance.EyeColor,
                 humanoid.MarkingSet
             );
-            AddMarking(uid, marking.MarkingId, markingColors, marking.IsGlowing, false); //starlight
+            AddMarking(uid, marking.MarkingId, markingColors, marking.IsGlowing, false); // Starlight
         }
 
         EnsureDefaultMarkings(uid, humanoid);
@@ -513,7 +514,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             _appearance.SetData(uid, HumanoidVisuals.Scale, new Vector2(profile.Appearance.Width, profile.Appearance.Height), appearance);
         }
 
-        RaiseLocalEvent(uid, new ProfileLoadFinishedEvent()); // Shitmed Change
+        RaiseLocalEvent(uid, new ProfileLoadFinishedEvent()); // Shitmed
         Dirty(uid, humanoid);
     }
 
@@ -544,7 +545,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             }
         }
 
-        markingObject.IsGlowing = isGlowing; //starlight
+        markingObject.IsGlowing = isGlowing; // Starlight
 
         humanoid.MarkingSet.AddBack(prototype.MarkingCategory, markingObject);
 
@@ -579,7 +580,7 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             return;
         }
 
-        var markingObject = new Marking(marking, colors, isGlowing) //starlight
+        var markingObject = new Marking(marking, colors, isGlowing) // Starlight
         {
             Forced = forced
         };
