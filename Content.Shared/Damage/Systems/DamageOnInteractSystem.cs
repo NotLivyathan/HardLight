@@ -6,6 +6,7 @@ using Content.Shared.Inventory;
 using Content.Shared.Popups;
 using Robust.Shared.Random;
 using Content.Shared.Throwing;
+using Content.Shared.Hands.EntitySystems;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Network;
 using Robust.Shared.Timing;
@@ -21,6 +22,7 @@ public sealed class DamageOnInteractSystem : EntitySystem
     [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
     [Dependency] private readonly InventorySystem _inventorySystem = default!;
+    [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
@@ -73,21 +75,23 @@ public sealed class DamageOnInteractSystem : EntitySystem
             }
         }
 
-        // Shitmed Change Start
+        // Shitmed, // HardLight start: Rewritten for upstream compatibility.
         TargetBodyPart? targetPart = null;
-        var hands = CompOrNull<HandsComponent>(args.User);
-        if (hands is { ActiveHand: not null })
+        if (TryComp<HandsComponent>(args.User, out var hands)
+            && _handsSystem.GetActiveHand((args.User, hands)) is { } activeHandId
+            && _handsSystem.TryGetHand((args.User, hands), activeHandId, out var activeHand))
         {
-            targetPart = hands.ActiveHand.Location switch
+            targetPart = activeHand.Value.Location switch
             {
                 HandLocation.Left => TargetBodyPart.LeftHand,
                 HandLocation.Right => TargetBodyPart.RightHand,
-                _ => null
+                _ => (TargetBodyPart?) null
             };
         }
+        // HardLight end
 
         totalDamage = _damageableSystem.TryChangeDamage(args.User, totalDamage, origin: args.Target, targetPart: targetPart);
-        // Shitmed Change End
+        // Shitmed end
 
         if (totalDamage != null && totalDamage.AnyPositive())
         {

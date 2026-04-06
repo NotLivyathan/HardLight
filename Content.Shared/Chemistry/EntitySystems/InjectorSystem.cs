@@ -4,6 +4,7 @@ using Content.Shared.Body.Components;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Events;
 using Content.Shared.Chemistry.Prototypes;
+using Content.Shared.Chemistry.Reagent; // HardLight
 using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.FixedPoint;
@@ -562,7 +563,7 @@ public sealed partial class InjectorSystem : EntitySystem
         var temporarilyRemovedSolution = new Solution();
         if (injector.Comp.ReagentWhitelist is { } reagentWhitelist)
         {
-            temporarilyRemovedSolution = applicableTargetSolution.SplitSolutionWithout(applicableTargetSolution.Volume, reagentWhitelist.ToArray());
+            temporarilyRemovedSolution = applicableTargetSolution.SplitSolutionWithout(applicableTargetSolution.Volume, reagentWhitelist.Select(proto => proto.Id).ToArray()); // HardLight
         }
 
         // If transferAmount is null, fallback to 5 units.
@@ -766,4 +767,26 @@ public sealed partial class InjectorSystem : EntitySystem
             _popup.PopupClient(Loc.GetString(errorMessage), user, user);
     }
     #endregion Mode Toggling
+
+    // HardLight start: Required by Frontier systems.
+    /// <summary>
+    /// Sets the reagent whitelist used by this injector.
+    /// </summary>
+    [PublicAPI]
+    public void SetReagentWhitelist(Entity<InjectorComponent> injector, List<ProtoId<ReagentPrototype>>? whitelist)
+    {
+        injector.Comp.ReagentWhitelist = whitelist;
+        Dirty(injector);
+    }
+
+    /// <summary>
+    /// Clears the reagent whitelist for this injector, allowing all reagents.
+    /// </summary>
+    [PublicAPI]
+    public void ResetReagentWhitelist(Entity<InjectorComponent> injector)
+    {
+        injector.Comp.ReagentWhitelist = null;
+        Dirty(injector);
+    }
+    // HardLight end
 }

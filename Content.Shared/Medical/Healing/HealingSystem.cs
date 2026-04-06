@@ -1,7 +1,6 @@
 using Content.Shared.Administration.Logs;
 using Content.Shared.Body.Components;
 using Content.Shared.Body.Systems;
-using Content.Server.Mobs.Components; // HardLight
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
 using Content.Shared.Database;
@@ -15,15 +14,12 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
-using Content.Shared.Body.Systems; // Shitmed
-using Content.Server._FarHorizons.Medical.ConditionalHealing; // Far Horizons
 using Content.Shared._FarHorizons.Medical.ConditionalHealing; // Far Horizons
 using Content.Shared.Eye.Blinding.Components; // Far Horizons
 using Content.Shared.Eye.Blinding.Systems; // Far Horizons
 using Robust.Shared.Audio.Systems;
 // Shitmed Change
 using Content.Shared._Shitmed.Targeting; // Shitmed
-using Content.Shared.Body.Components;
 using System.Linq;
 
 namespace Content.Shared.Medical.Healing;
@@ -62,17 +58,17 @@ public sealed class HealingSystem : EntitySystem
         if (!TryComp(args.Used, out HealingComponent? healing))
         {
             // Far Horizons: Handle fake components from conditional healing
-            if(args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, entity) is not ConditionalHealingData healingData)
+            if (args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, target.Owner) is not ConditionalHealingData healingData)
                 return;
             healing = ConditionalHealingSystem.MakeComponent(healingData);
         }
 
         if (healing.DamageContainers is not null &&
-            entity.Comp.DamageContainerID is not null &&
-            !healing.DamageContainers.Contains(entity.Comp.DamageContainerID))
+            target.Comp.DamageContainerID is not null &&
+            !healing.DamageContainers.Contains(target.Comp.DamageContainerID.Value))
         {
             // Far Horizons: Handle fake components from conditional healing
-            if(args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, entity) is not ConditionalHealingData fallbackData)
+            if (args.Used is null || _conditionalHealing.SelectBestMatch(args.Used.Value, target.Owner) is not ConditionalHealingData fallbackData)
                 return;
             healing = ConditionalHealingSystem.MakeComponent(fallbackData);
         }
@@ -97,15 +93,10 @@ public sealed class HealingSystem : EntitySystem
         if (healing.ModifyBloodLevel != 0 && bloodstream != null)
             _bloodstreamSystem.TryModifyBloodLevel((target.Owner, bloodstream), healing.ModifyBloodLevel);
 
-        // Far Horizons
-        // Restores vision
-        if (healing.AdjustEyeDamage != 0 && TryComp(entity, out BlindableComponent? blindable))
-            _blindable.AdjustEyeDamage((entity, blindable), healing.AdjustEyeDamage);
-
         // HardLight start
         // Determines if the entity is a Synth and scales damage recovery accordingly.
         var damageToApply = healing.Damage;
-        if (TryComp<HLSynthComponent>(entity.Owner, out _))
+        if (TryComp<HLSynthComponent>(target.Owner, out _))
         {
             damageToApply = ScaleDamageSpecifier(healing.Damage, 0.5f);
         }
@@ -114,7 +105,7 @@ public sealed class HealingSystem : EntitySystem
 
         // HardLight end
 
-        if (healed == null && healing.BloodlossModifier != 0 && healing.AdjustEyeDamage != 0) // Far Horizons: Added eye healing
+        if (healed == null && healing.BloodlossModifier != 0)
             return;
 
         var total = healed?.GetTotal() ?? FixedPoint2.Zero;
@@ -147,7 +138,7 @@ public sealed class HealingSystem : EntitySystem
         _audio.PlayPredicted(healing.HealingEndSound, target.Owner, args.User);
 
         // Logic to determine the whether or not to repeat the healing action
-        args.Repeat = HasDamage((args.Used.Value, healing), target) && !dontRepeat || IsPartDamaged(args.User, entity); // Shitmed
+        args.Repeat = HasDamage((args.Used.Value, healing), target) && !dontRepeat || IsPartDamaged(args.User, target.Owner); // Shitmed
         if (!args.Repeat && !dontRepeat)
             _popupSystem.PopupClient(Loc.GetString("medical-item-finished-using", ("item", args.Used)), target.Owner, args.User);
         args.Handled = true;
@@ -234,12 +225,14 @@ public sealed class HealingSystem : EntitySystem
         if (TryComp<StackComponent>(healing, out var stack) && stack.Count < 1)
             return false;
 
+        var resolvedTarget = (target.Owner, target.Comp!);
+
         var anythingToDo =
-            HasDamage(healing, target) ||
-            IsPartDamaged(user, target) || // Shitmed
-            component.ModifyBloodLevel > 0 // Special case if healing item can restore lost blood...
+            HasDamage(healing, resolvedTarget) ||
+            IsPartDamaged(user, target.Owner) || // Shitmed
+            healing.Comp.ModifyBloodLevel > 0 // Special case if healing item can restore lost blood...
                 && TryComp<BloodstreamComponent>(target, out var bloodstream)
-                && _solutionContainerSystem.ResolveSolution(target, bloodstream.BloodSolutionName, ref bloodstream.BloodSolution, out var bloodSolution)
+                && _solutionContainerSystem.ResolveSolution(target.Owner, bloodstream.BloodSolutionName, ref bloodstream.BloodSolution, out var bloodSolution)
                 && bloodSolution.Volume < bloodSolution.MaxVolume; // ...and there is lost blood to restore.
 
         if (!anythingToDo)

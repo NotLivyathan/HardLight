@@ -112,7 +112,7 @@ public sealed class SharedTinyHandReservationSystem : EntitySystem
         if (TryComp<TinyWeaponHandlingComponent>(args.User, out var tinyComp))
             TryShowTinyPopup(args.User, tinyComp, Loc.GetString("tiny-trait-requires-two-hands", ("item", uid)), uid);
 
-        _hands.TryDrop(args.User, args.Hand, checkActionBlocker: false);
+        _hands.TryDrop(args.User, uid, checkActionBlocker: false);
     }
 
     private bool IsBorgChassis(EntityUid uid)
@@ -143,11 +143,8 @@ public sealed class SharedTinyHandReservationSystem : EntitySystem
     {
         var count = 0;
 
-        foreach (var hand in hands.Hands.Values)
+        foreach (var held in _hands.EnumerateHeld((user, hands)))
         {
-            if (hand.HeldEntity is not { } held)
-                continue;
-
             if (!HasComp<ItemComponent>(held) || HasComp<VirtualItemComponent>(held))
                 continue;
 

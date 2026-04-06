@@ -15,10 +15,10 @@ public sealed class GrabThrownSystem : EntitySystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
-    [Dependency] private readonly StaminaSystem _stamina = default!;
+    [Dependency] private readonly SharedStaminaSystem _stamina = default!; // HardLight: StaminaSystem<SharedStaminaSystem
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly INetManager _netMan = default!;
-    [Dependency] private readonly SharedLayingDownSystem _layingDown = default!;
+    [Dependency] private readonly StandingStateSystem _standing = default!; // HardLight
 
     public override void Initialize()
     {
@@ -61,7 +61,7 @@ public sealed class GrabThrownSystem : EntitySystem
         _damageable.TryChangeDamage(args.OtherEntity, kineticEnergyDamage);
         _stamina.TakeStaminaDamage(ent, (float) Math.Floor(modNumber / 2));
 
-        _layingDown.TryLieDown(args.OtherEntity, behavior: DropHeldItemsBehavior.AlwaysDrop);
+        _standing.Down(args.OtherEntity, dropHeldItems: true); // HardLight
 
         _color.RaiseEffect(Color.Red, new List<EntityUid>() { ent }, Filter.Pvs(ent, entityManager: EntityManager));
     }
@@ -95,7 +95,7 @@ public sealed class GrabThrownSystem : EntitySystem
         comp.IgnoreEntity.Add(thrower);
         comp.DamageOnCollide = damageToUid;
 
-        _layingDown.TryLieDown(uid, behavior: DropHeldItemsBehavior.AlwaysDrop);
+        _standing.Down(uid, dropHeldItems: true); // HardLight
         _throwing.TryThrow(uid, vector, grabThrownSpeed, animated: false);
     }
 }

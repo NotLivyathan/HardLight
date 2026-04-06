@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Item;
 using Content.Shared.Popups;
@@ -34,6 +35,7 @@ public sealed class SharedTraitWeaponHandlingSystem : EntitySystem
 
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedSmallPseudoWieldSystem _smallPseudoWield = default!;
     [Dependency] private readonly SharedGunSystem _gunSystem = default!;
     [Dependency] private readonly INetManager _net = default!;
@@ -116,11 +118,8 @@ public sealed class SharedTraitWeaponHandlingSystem : EntitySystem
         if (!TryComp<HandsComponent>(holder, out var hands))
             return;
 
-        foreach (var hand in hands.Hands.Values)
+        foreach (var held in _hands.EnumerateHeld((holder, hands)))
         {
-            if (hand.HeldEntity is not { } held)
-                continue;
-
             ApplyBigPenaltyToGun(holder, held);
         }
     }

@@ -39,9 +39,10 @@ public sealed class SharedSmallPseudoWieldSystem : EntitySystem
 
     public bool IsPseudoWielded(EntityUid item, EntityUid user)
     {
-        foreach (var hand in _hands.EnumerateHands(user))
+        foreach (var handId in _hands.EnumerateHands(user))
         {
-            if (!TryComp<VirtualItemComponent>(hand.HeldEntity, out var virtualItem))
+            if (!_hands.TryGetHeldItem(user, handId, out var held)
+                || !TryComp<VirtualItemComponent>(held, out var virtualItem))
                 continue;
 
             if (virtualItem.BlockingEntity == item)

@@ -148,17 +148,19 @@ public sealed class DroppableBorgModuleSystem : EntitySystem
     /// Tries to add a hand to the given cyborg entity and insert the given item into it.
     /// On failure, the hand will be deleted.
     /// </summary>
-    private void AddItemAsHand(Entity<HandsComponent> chassis, EntityUid item, string handId)
+    private void AddItemAsHand(Entity<HandsComponent?> chassis, EntityUid item, string handId) // HardLight: Added ?
     {
-        _hands.AddHand(chassis, handId, HandLocation.Middle, chassis.Comp);
-        var hand = chassis.Comp.Hands[handId];
-        _hands.DoPickup(chassis, hand, item, chassis.Comp);
-        if (hand.HeldEntity != item)
+        // HardLight start
+        _hands.AddHand(chassis, handId, HandLocation.Middle);
+        _hands.DoPickup(chassis, handId, item, chassis.Comp);
+        var heldItem = _hands.GetHeldItem(chassis, handId);
+        if (heldItem != item)
         {
-            Log.Error($"Failed to pick up {ToPrettyString(item)} into hand {handId} of {ToPrettyString(chassis)}, it holds {ToPrettyString(hand.HeldEntity)}");
+            Log.Error($"Failed to pick up {ToPrettyString(item)} into hand {handId} of {ToPrettyString(chassis)}, it holds {ToPrettyString(heldItem)}");
             // If we didn't pick up our expected item, delete the hand.  No free hands!
-            _hands.RemoveHand(chassis, handId, chassis.Comp);
+            _hands.RemoveHand(chassis, handId);
         }
+        // HardLight end
 
         _interaction.DoContactInteraction(chassis, item); // for potential forensics or other systems (why does hands system not do this)
         _placeholder.SetEnabled(item, true);
@@ -167,36 +169,35 @@ public sealed class DroppableBorgModuleSystem : EntitySystem
     /// <summary>
     /// Removes the named hand from the given cyborg, returning its item to the given container.
     /// </summary>
-    private bool DeleteHandAndStoreItem(Entity<HandsComponent> chassis, BaseContainer container, string handId)
+    private bool DeleteHandAndStoreItem(Entity<HandsComponent?> chassis, BaseContainer container, string handId) // HardLight: Added ?
     {
         var ret = true;
-        _hands.TryGetHand(chassis, handId, out var hand, chassis.Comp);
-        if (hand?.HeldEntity is { } item)
+        // HardLight start
+        if (_hands.TryGetHeldItem(chassis, handId, out var item))
         {
-            _placeholder.SetEnabled(item, false);
-            _container.Insert(item, container, force: true);
+            _placeholder.SetEnabled(item.Value, false);
+            _container.Insert(item.Value, container, force: true);
         }
+        // HardLight end
         else
             ret = false;
 
-        _hands.RemoveHand(chassis, handId, chassis.Comp);
+        _hands.RemoveHand(chassis, handId); // HardLight: Removed chassis.Comp
         return ret;
     }
 
     /// <summary>
     /// Removes the named hand from the given cyborg, deleting its held item.
     /// </summary>
-    private bool DeleteHandAndHeldItem(Entity<HandsComponent> chassis, string handId)
+    private bool DeleteHandAndHeldItem(Entity<HandsComponent?> chassis, string handId) // HardLight: Added ?
     {
         bool ret = true;
-        _hands.TryGetHand(chassis, handId, out var hand, chassis.Comp);
-
-        if (hand?.HeldEntity is { } item)
-            QueueDel(item);
+        if (_hands.TryGetHeldItem(chassis, handId, out var item)) // HardLight
+            QueueDel(item.Value); // HardLight: item<item.Value
         else if (!TerminatingOrDeleted(chassis) && Transform(chassis).MapID != MapId.Nullspace) // don't care if its empty if the server is shutting down
             ret = false;
 
-        _hands.RemoveHand(chassis, handId, chassis.Comp);
+        _hands.RemoveHand(chassis, handId); // HardLight: Removed chassis.Comp
         return ret;
     }
 }

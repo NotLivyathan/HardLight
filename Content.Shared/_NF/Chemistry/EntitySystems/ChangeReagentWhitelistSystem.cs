@@ -2,6 +2,7 @@
 using Content.Shared._NF.Chemistry.Components;
 using Content.Shared._NF.Chemistry.Events;
 using Content.Shared.Chemistry.Components;
+using Content.Shared.Chemistry.EntitySystems; // HardLight
 using Content.Shared.Verbs;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -10,12 +11,13 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._NF.Chemistry.EntitySystems;
 
 /// <summary>
-///     Allows an entity to change an injector component's whitelist via a UI box
+/// Allows an entity to change an injector component's whitelist via a UI box
 /// </summary>
 public sealed class ReagentWhitelistChangeSystem : EntitySystem
 {
     [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly InjectorSystem _injector = default!; // HardLight
 
     [NetSerializable, Serializable]
     public enum ReagentWhitelistChangeUIKey : byte
@@ -41,7 +43,7 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
         args.Verbs.Add(new InteractionVerb()
         {
             Text = Loc.GetString("comp-change-reagent-whitelist-verb-filter"),
-            //Icon = new SpriteSpecifier(),
+            // Icon = new SpriteSpecifier(),
             Act = () =>
             {
                 _ui.OpenUi(uid, ReagentWhitelistChangeUIKey.Key, @event.User);
@@ -67,7 +69,7 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
             return;
         }
 
-        injectorComp.ReagentWhitelist = new() { args.NewReagentProto };
+        _injector.SetReagentWhitelist((ent.Owner, injectorComp), new() { args.NewReagentProto }); // HardLight
     }
 
     private void OnReagentWhitelistReset(Entity<ReagentWhitelistChangeComponent> ent, ref ReagentWhitelistResetMessage args)
@@ -77,6 +79,6 @@ public sealed class ReagentWhitelistChangeSystem : EntitySystem
             return;
         }
 
-        injectorComp.ReagentWhitelist = null;
+        _injector.ResetReagentWhitelist((ent.Owner, injectorComp)); // HardLight
     }
 }

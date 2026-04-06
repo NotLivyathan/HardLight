@@ -227,7 +227,7 @@ public sealed partial class SleepingSystem : EntitySystem
         I'll probably just increase the threshold */
 
         if (args.DamageDelta.GetTotal() >= ent.Comp.WakeThreshold
-            && !HasComp<ForcedSleepingComponent>(ent))
+            && !_statusEffectNew.HasEffectComp<ForcedSleepingStatusEffectComponent>(ent)) // HardLight
             TryWaking((ent, ent.Comp));
 
         // Shitmed Change End
@@ -345,7 +345,7 @@ public sealed partial class SleepingSystem : EntitySystem
         args.Prefix = ent.Comp.ForceSaySleepDataset;
     }
 
-    // Frontier: auto-wakeup
+    // Frontier: Auto-wakeup
     /// <summary>
     /// Handles auto-wakeup
     /// </summary>
@@ -358,12 +358,10 @@ public sealed partial class SleepingSystem : EntitySystem
             if (curTime >= wakeUp.NextWakeUp)
             {
                 Wake((uid, sleeping));
-                _statusEffectsSystem.TryRemoveStatusEffect(uid, "Drowsiness");
+                _statusEffectOld.TryRemoveStatusEffect(uid, "Drowsiness"); // HardLight: _statusEffectsSystem<_statusEffectOld
             }
         }
     }
-    // End Frontier: auto-wakeup
-
 }
 
 

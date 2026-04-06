@@ -26,9 +26,14 @@ public partial class SharedGunSystem
     // Mono
     private void OnClothingCheckProto(Entity<ClothingSlotAmmoProviderComponent> ent, ref CheckShootPrototypeEvent args)
     {
-        if (!TryGetClothingSlotEntity(ent, ent.Comp, out var entity))
+        // HardLight start
+        var getConnectedContainerEvent = new GetConnectedContainerEvent();
+        RaiseLocalEvent(ent.Owner, ref getConnectedContainerEvent);
+        if (!getConnectedContainerEvent.ContainerEntity.HasValue)
             return;
-        RaiseLocalEvent(entity.Value, ref args);
+
+        RaiseLocalEvent(getConnectedContainerEvent.ContainerEntity.Value, ref args);
+        // HardLight end
     }
 
     private void OnClothingAmmoCount(EntityUid uid, ClothingSlotAmmoProviderComponent component, ref GetAmmoCountEvent args)

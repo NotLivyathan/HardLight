@@ -23,11 +23,6 @@ public sealed partial class StatusEffectsSystem
         RelayEvent((uid, component), ref args);
     }
 
-    protected void RelayStatusEffectEvent<T>(EntityUid uid, StatusEffectContainerComponent component, T args) where T : class
-    {
-        RelayEvent((uid, component), args);
-    }
-
     public void RelayEvent<T>(Entity<StatusEffectContainerComponent> statusEffect, ref T args) where T : struct
     {
         // this copies the by-ref event if it is a struct
