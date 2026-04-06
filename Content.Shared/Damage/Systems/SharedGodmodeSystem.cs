@@ -1,5 +1,6 @@
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Events;
+using Content.Shared.Destructible;
 using Content.Shared.Nutrition;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Slippery;
@@ -23,6 +24,7 @@ public abstract class SharedGodmodeSystem : EntitySystem
         SubscribeLocalEvent<GodmodeComponent, BeforeStaminaDamageEvent>(OnBeforeStaminaDamage);
         SubscribeLocalEvent<GodmodeComponent, IngestibleEvent>(BeforeEdible);
         SubscribeLocalEvent<GodmodeComponent, SlipAttemptEvent>(OnSlipAttempt);
+        SubscribeLocalEvent<GodmodeComponent, DestructionAttemptEvent>(OnDestruction);
     }
 
     private void OnSlipAttempt(EntityUid uid, GodmodeComponent component, SlipAttemptEvent args)
@@ -48,6 +50,11 @@ public abstract class SharedGodmodeSystem : EntitySystem
     private void BeforeEdible(Entity<GodmodeComponent> ent, ref IngestibleEvent args)
     {
         args.Cancelled = true;
+    }
+
+    private void OnDestruction(Entity<GodmodeComponent> ent, ref DestructionAttemptEvent args)
+    {
+        args.Cancel();
     }
 
     public virtual void EnableGodmode(EntityUid uid, GodmodeComponent? godmode = null)
