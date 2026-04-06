@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   name: nutrient paste meal
   parent: FoodMealBase
   id: FoodThaSlop #tha slop
@@ -7,7 +7,7 @@
     - type: FlavorProfile
       flavors:
         - thaslop
-    - type: Food
+    - type: Edible
       trash:
         - FoodPacketMRETrash
     - type: Sprite
@@ -42,7 +42,7 @@
   id: FoodThaSlopDrink
   description: A synthetic drinkable mixture of protein, carbohydrates, vitamins, amino acids and minerals. Everything the body needs, and absolutely disgusting.
   components:
-    - type: Food
+    - type: Edible
       trash:
         - FoodThaSlopTrash
     - type: Sprite

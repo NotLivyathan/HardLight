@@ -685,6 +685,18 @@ public abstract partial class SharedGunSystem : EntitySystem
         CreateEffect(gun, ev, user);
     }
 
+    // HardLight: Used for recoil and pushing back when firing in space
+    public void CauseImpulse(EntityCoordinates fromCoordinates, EntityCoordinates toCoordinates, EntityUid user, PhysicsComponent userPhysics)
+    {
+        var fromMap = TransformSystem.ToMapCoordinates(fromCoordinates).Position;
+        var toMap = TransformSystem.ToMapCoordinates(toCoordinates).Position;
+        var shotDirection = (toMap - fromMap).Normalized();
+
+        const float impulseStrength = 25.0f;
+        var impulseVector = shotDirection * impulseStrength;
+        Physics.ApplyLinearImpulse(user, -impulseVector, body: userPhysics);
+    }
+
     // Mono: Rewritten
     public void CauseImpulse(EntityCoordinates toCoordinates, Entity<GunComponent> ent, float scale)
     {

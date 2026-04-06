@@ -1,6 +1,7 @@
 using System.Numerics;
 using Content.Server.Administration.Logs;
 using Content.Server.Singularity.Events;
+using Content.Shared.Ghost; // HardLight
 using Content.Shared.Database;
 using Content.Shared.Mind.Components;
 using Content.Shared.Singularity.Components;

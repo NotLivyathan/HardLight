@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   parent: [ VolatileGrenadeBase, GrenadeBase, BaseC2ContrabandUnredeemable ] # HardLight: BaseSecurityContraband<BaseC2ContrabandUnredeemable
   id: SmokeGrenade
   name: smoke grenade
@@ -69,7 +69,7 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Grenades/metalfoam.rsi
-  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
+  - type: TimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 5
   - type: SmokeOnTrigger
     # keysIn: # HardLight
@@ -95,7 +95,7 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Items/smoke_grenade_prime.ogg
-  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
+  - type: TimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 3
   - type: ReleaseGasOnTrigger
     # keysIn: # HardLight

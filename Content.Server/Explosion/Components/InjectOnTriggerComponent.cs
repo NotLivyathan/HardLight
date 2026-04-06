@@ -1,4 +1,5 @@
 using Content.Shared.FixedPoint;
+using Content.Shared.Trigger.Systems; // HardLight
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
 
 namespace Content.Server.Explosion.Components
@@ -15,7 +16,7 @@ namespace Content.Server.Explosion.Components
     /// so the effect can't spam repeatedly.
     /// </summary>
     [RegisterComponent, AutoGenerateComponentPause]
-    [Access(typeof(Content.Server.Explosion.EntitySystems.TriggerSystem))]
+    [Access(typeof(TriggerSystem))] // HardLight: Content.Server.Explosion.EntitySystems.TriggerSystem<TriggerSystem
     public sealed partial class InjectOnTriggerComponent : Component
     {
         /// <summary>

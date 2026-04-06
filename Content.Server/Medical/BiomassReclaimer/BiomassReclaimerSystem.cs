@@ -33,6 +33,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Prototypes; // HardLight
 using Robust.Shared.Random;
 
 namespace Content.Server.Medical.BiomassReclaimer

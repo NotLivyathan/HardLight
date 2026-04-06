@@ -1,5 +1,6 @@
 using Content.Server.Station.Components;
 using Content.Server.StationEvents.Components;
+using Content.Shared.Station.Components; // HardLight
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Fax.Components;
 using Content.Server.Fax;
@@ -63,7 +64,7 @@ public sealed class RandomFaxRule : StationEventSystem<RandomFaxRuleComponent>
                 continue;
             }
 
-            var grid = StationSystem.GetLargestGrid(stationData);
+            var grid = StationSystem.GetLargestGrid((chosenStation.Value, stationData)); // HardLight: Added chosenStation.Value
 
             if (grid is null)
             {

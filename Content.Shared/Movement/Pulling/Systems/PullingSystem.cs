@@ -73,11 +73,10 @@ public sealed class PullingSystem : EntitySystem
 
     // Goobstation start
     [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly StaminaSystem _stamina = default!;
+    [Dependency] private readonly SharedStaminaSystem _stamina = default!; // HardLight: StaminaSystem<SharedStaminaSystem
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly INetManager _netManager = default!;
-    [Dependency] private readonly SharedVirtualItemSystem _virtualSystem = default!;
     [Dependency] private readonly GrabThrownSystem _grabThrown = default!;
     [Dependency] private readonly SharedCombatModeSystem _combatMode = default!;
     [Dependency] private readonly ThrowingSystem _throwing = default!;
@@ -290,8 +289,8 @@ public sealed class PullingSystem : EntitySystem
 
         foreach (var item in ent.Comp.GrabVirtualItems)
         {
-            if(TryComp<VirtualItemComponent>(ent, out var virtualItemComponent))
-                _virtualSystem.DeleteVirtualItem((item,virtualItemComponent), ent);
+            if (TryComp<VirtualItemComponent>(item, out var virtualItemComponent)) // HardLight: ent<item
+                _virtual.DeleteVirtualItem((item, virtualItemComponent), ent.Owner); // HardLight: ent<ent.Owner
         }
         ent.Comp.GrabVirtualItems.Clear();
     }
@@ -987,7 +986,7 @@ public sealed class PullingSystem : EntitySystem
         {
             for (var i = 0; i < delta; i++)
             {
-                var emptyHand = _handsSystem.TryGetEmptyHand(puller, out _);
+                var emptyHand = _handsSystem.TryGetEmptyHand((puller.Owner, CompOrNull<HandsComponent>(puller.Owner)), out _); // HardLight
                 if (!emptyHand)
                 {
                     if (_netManager.IsServer)
@@ -996,7 +995,7 @@ public sealed class PullingSystem : EntitySystem
                     return false;
                 }
 
-                if (!_virtualSystem.TrySpawnVirtualItemInHand(pullable, puller.Owner, out var item, true))
+                if (!_virtual.TrySpawnVirtualItemInHand(pullable, puller.Owner, out var item, true)) // HardLight: _virtualSystem<_virtual
                 {
                     // I'm lazy write client code
                     if (_netManager.IsServer)
@@ -1018,8 +1017,8 @@ public sealed class PullingSystem : EntitySystem
 
             var item = puller.Comp.GrabVirtualItems[i];
             puller.Comp.GrabVirtualItems.Remove(item);
-            if(TryComp<VirtualItemComponent>(item, out var virtualItemComponent))
-                _virtualSystem.DeleteVirtualItem((item,virtualItemComponent), puller);
+            if (TryComp<VirtualItemComponent>(item, out var virtualItemComponent)) // HardLight: Added space
+                _virtual.DeleteVirtualItem((item, virtualItemComponent), puller.Owner); // HardLight: puller<puller.Owner
         }
 
         return true;

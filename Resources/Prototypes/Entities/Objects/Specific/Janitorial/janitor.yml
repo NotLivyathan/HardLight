@@ -25,6 +25,7 @@
       collection: MetalThud
   - type: Spillable
     solution: absorbed
+    preventMelee: false
   - type: Wieldable
   - type: IncreaseDamageOnWield
     damage:
@@ -80,6 +81,7 @@
          collection: MetalThud
     - type: Spillable
       solution: absorbed
+      preventMelee: false
     - type: Wieldable
     - type: IncreaseDamageOnWield
       damage:

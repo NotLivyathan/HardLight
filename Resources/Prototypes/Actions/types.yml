@@ -7,6 +7,14 @@
   - type: ConfirmableAction
     popup: suicide-action-popup
 
+- type: entity
+  abstract: true
+  # parent: BaseAction
+  id: BaseImplantAction
+  components:
+  - type: InstantAction
+    event: !type:ActivateImplantEvent
+
 # actions
 
 - type: entity

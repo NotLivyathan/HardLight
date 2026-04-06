@@ -1,8 +1,9 @@
 using Content.Server._Funkystation.Genetics.Mutations.Components;
-using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Shared.Chemistry.EntitySystems;
+using Content.Shared.FixedPoint; // HardLight
 using Content.Shared.Mobs.Systems;
+using Content.Shared.Body.Components; // HardLight
 
 namespace Content.Server._Funkystation.Genetics.Mutations.Systems;
 
@@ -31,7 +32,7 @@ public sealed class MutationBloodRegenerationSystem : EntitySystem
             if (_mobState.IsDead(uid) || _mobState.IsCritical(uid))
                 continue;
 
-            var currentPercentage = _bloodstream.GetBloodLevelPercentage(uid, bloodstream);
+            var currentPercentage = _bloodstream.GetBloodLevelPercentage((uid, bloodstream)); // HardLight
 
             if (currentPercentage >= regen.TargetPercentage)
                 continue; // Already at or above target
@@ -43,7 +44,7 @@ public sealed class MutationBloodRegenerationSystem : EntitySystem
             var maxVolume = bloodSolution.MaxVolume.Float();
             var regenThisTick = MathF.Min(regen.RegenRatePerSecond, deficitPercentage * maxVolume);
 
-            _bloodstream.TryModifyBloodLevel(uid, regenThisTick, bloodstream);
+            _bloodstream.TryModifyBloodLevel((uid, bloodstream), FixedPoint2.New(regenThisTick)); // HardLight
         }
     }
 }

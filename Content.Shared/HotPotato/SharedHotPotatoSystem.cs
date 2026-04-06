@@ -54,7 +54,7 @@ public abstract class SharedHotPotatoSystem : EntitySystem
             if (!TryComp<HandsComponent>(hitEntity, out var hands))
                 continue;
 
-            if (!_hands.IsHolding(hitEntity, ent.Owner, out _, handsComp: hands) && _hands.TryForcePickupAnyHand(hitEntity, ent.Owner, handsComp: hands)) // HardLight
+            if (!_hands.IsHolding((hitEntity, hands), ent.Owner, out _) && _hands.TryForcePickupAnyHand(hitEntity, ent.Owner, handsComp: hands)) // HardLight
             {
                 _popup.PopupPredicted(
                     Loc.GetString("hot-potato-passed", ("from", Identity.Entity(args.User, EntityManager)), ("to", Identity.Entity(hitEntity, EntityManager))),

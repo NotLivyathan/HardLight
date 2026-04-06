@@ -20,7 +20,7 @@ public sealed partial class StatusEffectsSystem
 
     private void RelayStatusEffectEvent<T>(EntityUid uid, StatusEffectContainerComponent component, T args) where T : class
     {
-        RelayEvent((uid, component), ref args);
+        RelayEvent((uid, component), args);
     }
 
     public void RelayEvent<T>(Entity<StatusEffectContainerComponent> statusEffect, ref T args) where T : struct

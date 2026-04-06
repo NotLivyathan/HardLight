@@ -1,4 +1,5 @@
 using Content.Server.Anomaly;
+using Content.Server.Station.Components; // HardLight
 using Content.Server.StationEvents.Components;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Station.Components;

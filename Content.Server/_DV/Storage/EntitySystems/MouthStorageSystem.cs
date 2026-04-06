@@ -27,7 +27,7 @@ public sealed class MouthStorageSystem : SharedMouthStorageSystem
     }
 
     // Attempting to eat or drink anything with items in your mouth won't work
-    private void OnIngestAttempt(EntityUid uid, MouthStorageComponent component, IngestionAttemptEvent args)
+    private void OnIngestAttempt(EntityUid uid, MouthStorageComponent component, ref IngestionAttemptEvent args) // HardLight: Added ref
     {
         if (!IsMouthBlocked(component))
             return;
@@ -37,6 +37,6 @@ public sealed class MouthStorageSystem : SharedMouthStorageSystem
 
         var firstItem = storage.Container.ContainedEntities[0];
         args.Blocker = firstItem;
-        args.Cancel();
+        args.Cancelled = true; // HardLight: Cancel()<Cancelled
     }
 }

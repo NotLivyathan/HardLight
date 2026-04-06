@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Shared.Camera;
 using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Item;
 using Robust.Shared.Serialization;
 
@@ -10,6 +11,7 @@ namespace Content.Shared.Telescope;
 public abstract class SharedTelescopeSystem : EntitySystem
 {
     [Dependency] private readonly SharedEyeSystem _eye = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
 
     public override void Initialize()
     {
@@ -52,8 +54,8 @@ public abstract class SharedTelescopeSystem : EntitySystem
         TelescopeComponent? telescope = null;
 
         if (TryComp<HandsComponent>(ent, out var hands)
-            && hands.ActiveHandEntity.HasValue
-            && TryComp<TelescopeComponent>(hands.ActiveHandEntity, out var handTelescope))
+            && _hands.TryGetActiveItem((ent.Value, hands), out var activeItem) // HardLight
+            && TryComp<TelescopeComponent>(activeItem, out var handTelescope)) // HardLight
             telescope = handTelescope;
         else if (TryComp<TelescopeComponent>(ent, out var entityTelescope))
             telescope = entityTelescope;

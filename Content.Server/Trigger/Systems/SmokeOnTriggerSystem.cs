@@ -20,7 +20,6 @@ public sealed class SmokeOnTriggerSystem : EntitySystem
     [Dependency] private readonly SmokeSystem _smoke = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly SpreaderSystem _spreader = default!;
-    [Dependency] private readonly TurfSystem _turf = default!;
 
     public override void Initialize()
     {
@@ -49,7 +48,7 @@ public sealed class SmokeOnTriggerSystem : EntitySystem
             return;
         }
 
-        if (_spreader.RequiresFloorToSpread(ent.Comp.SmokePrototype.ToString()) && _turf.IsSpace(tileRef))
+        if (_spreader.RequiresFloorToSpread(ent.Comp.SmokePrototype.ToString()) && tileRef.Tile.IsSpace()) // HardLight: _turf<tileRef.Tile
             return;
 
         var coords = _map.MapToGrid(gridUid, mapCoords);

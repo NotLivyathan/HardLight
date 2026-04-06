@@ -29,20 +29,20 @@ public sealed class PseudoItemSystem : SharedPseudoItemSystem
         if (component.Active)
             return;
 
-        if (!TryComp<StorageComponent>(args.Using, out var targetStorage))
+        if (args.Using is not { } usingEnt) // HardLight
+            return;
+
+        if (!TryComp<StorageComponent>(usingEnt, out var targetStorage)) // HardLight: args.Using<usingEnt; added out var
             return;
 
         if (!CheckItemFits((uid, component), (args.Using.Value, targetStorage)))
-            return;
-
-        if (args.Hands?.ActiveHandEntity == null)
             return;
 
         AlternativeVerb verb = new()
         {
             Act = () =>
             {
-                StartInsertDoAfter(args.User, uid, args.Hands.ActiveHandEntity.Value, component);
+                StartInsertDoAfter(args.User, uid, usingEnt, component); // HardLight: args.Hands.ActiveHandEntity.Value<usingEnt
             },
             Text = Loc.GetString("action-name-insert-other", ("target", Identity.Entity(args.Target, EntityManager))),
             Priority = 2

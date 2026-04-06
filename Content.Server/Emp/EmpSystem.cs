@@ -6,6 +6,7 @@ using Content.Server.Station.Components;
 using Content.Server.SurveillanceCamera;
 using Content.Shared.Emp;
 using Content.Shared.Examine;
+using Content.Shared.Trigger.Components.Effects; // HardLight
 using Content.Shared.Tiles; // Frontier
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
@@ -42,7 +43,12 @@ public sealed class EmpSystem : SharedEmpSystem
         // SubscribeLocalEvent<EmpDisabledComponent, SurveillanceCameraSetActiveAttemptEvent>(OnCameraSetActive); // Frontier: Upstream - #28984
     }
 
-    public override void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration, List<EntityUid>? immuneGrids = null)
+    public override void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration) // HardLight
+    {
+        EmpPulse(coordinates, range, energyConsumption, duration, null);
+    }
+
+    public void EmpPulse(MapCoordinates coordinates, float range, float energyConsumption, float duration, List<EntityUid>? immuneGrids) // HardLight
     {
         foreach (var uid in _lookup.GetEntitiesInRange(coordinates, range))
         {
@@ -69,22 +75,6 @@ public sealed class EmpSystem : SharedEmpSystem
 
     /// <summary>
     /// Triggers an EMP pulse at the given location, by first raising an <see cref="EmpAttemptEvent"/>, then a raising <see cref="EmpPulseEvent"/> on all entities in range.
-    /// </summary>
-    /// <param name="coordinates">The location to trigger the EMP pulse at.</param>
-    /// <param name="range">The range of the EMP pulse.</param>
-    /// <param name="energyConsumption">The amount of energy consumed by the EMP pulse.</param>
-    /// <param name="duration">The duration of the EMP effects.</param>
-    public void EmpPulse(EntityCoordinates coordinates, float range, float energyConsumption, float duration)
-    {
-        foreach (var uid in _lookup.GetEntitiesInRange(coordinates, range))
-        {
-            TryEmpEffects(uid, energyConsumption, duration);
-        }
-        Spawn(EmpPulseEffectPrototype, coordinates);
-    }
-
-    /// <summary>
-    ///   Triggers an EMP pulse at the given location, by first raising an <see cref="EmpAttemptEvent"/>, then a raising <see cref="EmpPulseEvent"/> on all entities in range.
     /// </summary>
     /// <param name="coordinates">The location to trigger the EMP pulse at.</param>
     /// <param name="range">The range of the EMP pulse.</param>
@@ -182,7 +172,7 @@ public sealed class EmpSystem : SharedEmpSystem
         if (!args.CanInteract || !args.CanAccess)
             return;
 
-        var msg = GetEmpDescription(component.Range, component.EnergyConsumption, component.DisableDuration);
+        var msg = GetEmpDescription(component.Range, component.EnergyConsumption, (float) component.DisableDuration.TotalSeconds); // HardLight
 
         _examine.AddDetailedExamineVerb(args, component, msg,
             Loc.GetString("emp-examinable-verb-text"), "/Textures/Interface/VerbIcons/smite.svg.192dpi.png",

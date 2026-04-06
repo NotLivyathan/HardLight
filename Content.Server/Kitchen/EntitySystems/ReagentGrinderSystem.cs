@@ -333,7 +333,7 @@ namespace Content.Server.Kitchen.EntitySystems
             active.Program = program;
 
             reagentGrinder.AudioStream = _audioSystem.PlayPvs(sound, uid,
-                AudioParams.Default.WithPitchScale(1 / reagentGrinder.WorkTimeMultiplier))?.Entity; //slightly higher pitched
+                AudioParams.Default.WithPitchScale(1 / reagentGrinder.WorkTimeMultiplier))?.Entity; // Slightly higher pitched
             _userInterfaceSystem.ServerSendUiMessage(uid, ReagentGrinderUiKey.Key,
                 new ReagentGrinderWorkStartedMessage(program));
         }
@@ -366,8 +366,8 @@ namespace Content.Server.Kitchen.EntitySystems
                 return true;
             }
 
-            if (TryComp<FoodComponent>(uid, out var food)
-                && _solutionContainersSystem.TryGetSolution(uid, food.Solution, out _, out var foodSolution))
+            if (TryComp<EdibleComponent>(uid, out var edible) // HardLight: FoodComponent<EdibleComponent
+                && _solutionContainersSystem.TryGetSolution(uid, edible.Solution, out _, out var foodSolution)) // HardLight: food.Solution<edible.Solution
             {
                 solution = foodSolution;
                 return true;

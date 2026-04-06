@@ -9,14 +9,12 @@ using Robust.Shared.Player;
 
 namespace Content.Server.Standing;
 
-public sealed class LayingDownSystem : SharedLayingDownSystem
+public sealed class LayingDownSystem : EntitySystem // HardLight: SharedLayingDownSystem<EntitySystem
 {
     [Dependency] private readonly INetConfigurationManager _cfg = default!;
 
     public override void Initialize()
     {
-        base.Initialize();
-
         SubscribeNetworkEvent<CheckAutoGetUpEvent>(OnCheckAutoGetUp);
     }
 

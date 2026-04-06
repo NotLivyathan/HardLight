@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   parent: [ MobDragonDungeon ]
   id: MobDragonAlloren
   suffix: ""
@@ -128,7 +128,7 @@
     mobState:
     - Dead
     preventSuicide: true
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 20
   - type: DeleteOnTrigger
 
@@ -222,6 +222,6 @@
     mobState:
     - Dead
     preventSuicide: true
-  - type: OnUseTimerTrigger
+  - type: TimerTrigger
     delay: 20
   - type: DeleteOnTrigger

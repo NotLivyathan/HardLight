@@ -9,7 +9,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Client.Standing;
 
-public sealed class LayingDownSystem : SharedLayingDownSystem
+public sealed class LayingDownSystem : EntitySystem // HardLight: SharedLayingDownSystem<EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IEyeManager _eyeManager = default!;
@@ -21,8 +21,6 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
 
     public override void Initialize()
     {
-        base.Initialize();
-
         SubscribeLocalEvent<LayingDownComponent, MoveEvent>(OnMovementInput);
         SubscribeNetworkEvent<CheckAutoGetUpEvent>(OnCheckAutoGetUp);
     }
@@ -41,7 +39,7 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
             var squeezeDepthOverride = TryComp<DrawDepthVisualizerComponent>(uid, out var drawDepth)
                 && drawDepth.OriginalDrawDepth != null;
 
-            var drawDepthTarget = (standing.CurrentState is StandingState.Lying && layingDown.IsCrawlingUnder || squeezeDepthOverride)
+            var drawDepthTarget = (!standing.Standing && layingDown.IsCrawlingUnder || squeezeDepthOverride) // HardLight
                 ? layingDown.CrawlingUnderDrawDepth
                 : layingDown.NormalDrawDepth;
 

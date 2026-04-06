@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   id: BaseSubdermalImplant
   name: implant
   description: A microscopic chip that's injected under the skin.
@@ -99,7 +99,7 @@
       mobState:
       - Critical
       - Dead
-    - type: Rattle
+    - type: RattleOnTrigger
       radioChannel: "ColSec" # HardLight
 
 
@@ -186,7 +186,7 @@
   components:
     - type: SubdermalImplant
       implantAction: ActionActivateEmpImplant
-    - type: TriggerImplantAction
+    - type: TriggerOnActivateImplant
     - type: EmpOnTrigger
       range: 2.75
       energyConsumption: 2700000 # Frontier: 50000<2700000
@@ -201,7 +201,7 @@
   components:
   - type: SubdermalImplant
     implantAction: ActionActivateScramImplant
-  - type: TriggerImplantAction
+  - type: TriggerOnActivateImplant
   - type: ScramOnTrigger
     targetUser: true
 
@@ -237,7 +237,7 @@
     - type: TriggerOnMobstateChange
       mobState:
       - Dead
-    - type: TriggerImplantAction
+    - type: TriggerOnActivateImplant
     - type: ExplodeOnTrigger
     - type: GibOnTrigger
       deleteItems: true
@@ -267,7 +267,7 @@
       mobState:
       - Dead
       preventSuicide: true
-    - type: OnUseTimerTrigger
+    - type: TimerTrigger
       delay: 7
       initialBeepDelay: 0
       beepSound:
@@ -302,7 +302,7 @@
   - type: TriggerOnMobstateChange
     mobState:
     - Dead
-  - type: TriggerImplantAction
+  - type: TriggerOnActivateImplant
   - type: GibOnTrigger
     deleteItems: true
   - type: SpawnOnTrigger
@@ -329,7 +329,8 @@
       mobState:
       - Critical
       - Dead
-    - type: Rattle
+    - type: RattleOnTrigger
+      targetUser: true
 
 - type: entity
   parent: BaseSubdermalImplant
@@ -375,5 +376,5 @@
   description: This implant will inform the Colcomm radio channel should the user fall into critical condition or die.
   categories: [ HideSpawnMenu ]
   components:
-  - type: Rattle
+  - type: RattleOnTrigger
     radioChannel: ColCom

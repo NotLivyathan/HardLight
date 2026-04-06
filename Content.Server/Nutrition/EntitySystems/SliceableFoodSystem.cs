@@ -182,10 +182,10 @@ public sealed class SliceableFoodSystem : EntitySystem
         if (!TryComp<StackComponent>(sliceUid, out _))
             return;
 
-        if (!TryComp<FoodComponent>(sliceUid, out var foodComp))
+        if (!TryComp<EdibleComponent>(sliceUid, out var edibleComp)) // HardLight: FoodComponent<EdibleComponent; foodComp<edibleComp
             return;
 
-        if (!_solutionContainer.TryGetSolution(sliceUid, foodComp.Solution, out _, out var solution))
+        if (!_solutionContainer.TryGetSolution(sliceUid, edibleComp.Solution, out _, out var solution)) // HardLight: foodComp<edibleComp
             return;
 
         var stackSig = EnsureComp<StackSignatureComponent>(sliceUid);

@@ -1,4 +1,4 @@
-- type: entity
+﻿- type: entity
   parent: BaseBulletTrigger
   id: BulletRiotGunTearGas
   name: Tear Gas Round
@@ -18,7 +18,7 @@
       reagents:
       - ReagentId: TearGas
         Quantity: 50
-  - type: SoundOnTrigger
+  - type: EmitSoundOnTrigger
     sound: /Audio/Items/smoke_grenade_smoke.ogg
 
 - type: entity

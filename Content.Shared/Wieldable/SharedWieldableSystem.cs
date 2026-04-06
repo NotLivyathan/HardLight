@@ -71,6 +71,35 @@ public abstract class SharedWieldableSystem : EntitySystem
         SubscribeLocalEvent<IncreaseDamageOnWieldComponent, GetMeleeDamageEvent>(OnGetMeleeDamage);
     }
 
+    private void OnMeleeAttempt(EntityUid uid, MeleeRequiresWieldComponent component, ref AttemptMeleeEvent args)
+    {
+        if (TryComp<WieldableComponent>(uid, out var wieldable) &&
+            !wieldable.Wielded)
+        {
+            args.Cancelled = true;
+            args.Message = Loc.GetString("wieldable-component-requires", ("item", uid));
+        }
+    }
+
+    private void OnShootAttempt(EntityUid uid, GunRequiresWieldComponent component, ref ShotAttemptedEvent args)
+    {
+        if (TryComp<WieldableComponent>(uid, out var wieldable) &&
+            !wieldable.Wielded)
+        {
+            args.Cancel();
+
+            var time = _timing.CurTime;
+            if (time > component.LastPopup + component.PopupCooldown &&
+                !HasComp<MeleeWeaponComponent>(uid) &&
+                !HasComp<MeleeRequiresWieldComponent>(uid))
+            {
+                component.LastPopup = time;
+                var message = Loc.GetString("wieldable-component-requires", ("item", uid));
+                _popup.PopupClient(message, args.Used, args.User);
+            }
+        }
+    }
+
     private void OnGunUnwielded(EntityUid uid, GunWieldBonusComponent component, ItemUnwieldedEvent args)
     {
         _gun.RefreshModifiers(uid);

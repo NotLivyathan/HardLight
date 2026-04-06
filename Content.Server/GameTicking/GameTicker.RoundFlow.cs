@@ -836,7 +836,7 @@ namespace Content.Server.GameTicking
 
             // Delete all stations at round cleanup
             var stationSystem = EntitySystem.Get<Content.Server.Station.Systems.StationSystem>();
-            foreach (var station in EntityManager.EntityQuery<Content.Server.Station.Components.StationDataComponent>())
+            foreach (var station in EntityManager.EntityQuery<Content.Shared.Station.Components.StationDataComponent>()) // HardLight: .Server<.Shared
             {
                 stationSystem.DeleteStation(station.Owner, station);
             }

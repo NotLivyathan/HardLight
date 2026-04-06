@@ -4,6 +4,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Examine;
 using Content.Shared.Floofstation.Leash.Components;
 using Content.Shared.Hands.Components;
+using Content.Shared.Hands.EntitySystems; // HardLight
 using Content.Shared.Input;
 using Content.Shared.Interaction;
 using Content.Shared.Inventory.Events;
@@ -33,6 +34,7 @@ public sealed class LeashSystem : EntitySystem
     [Dependency] private readonly SharedJointSystem _joints = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedPopupSystem _popups = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!; // HardLight
     [Dependency] private readonly ThrowingSystem _throwing = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
@@ -293,7 +295,7 @@ public sealed class LeashSystem : EntitySystem
             || session?.AttachedEntity is not { } player
             || !player.IsValid()
             || !TryComp<HandsComponent>(player, out var hands)
-            || hands.ActiveHandEntity is not {} leash
+            || _hands.GetActiveItem((player, hands)) is not {} leash // HardLight: hands.ActiveHandEntity<_hands.GetActiveItem
             || !TryComp<LeashComponent>(leash, out var leashComp)
             || leashComp.NextPull > _timing.CurTime)
             return false;

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server.Body.Components; // HardLight
 using Content.Server.Ghost;
 using Content.Server.Humanoid;
 using Content.Shared._Shitmed.Body.Part;

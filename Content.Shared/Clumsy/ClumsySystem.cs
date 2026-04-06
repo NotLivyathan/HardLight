@@ -54,9 +54,9 @@ public sealed class ClumsySystem : EntitySystem
         if (!rand.Prob(ent.Comp.ClumsyDefaultCheck))
             return;
 
-        args.TargetGettingInjected = args.EntityUsingHypospray;
-        args.InjectMessageOverride = Loc.GetString(ent.Comp.HypoFailedMessage);
-        _audio.PlayPredicted(ent.Comp.ClumsySound, ent, args.EntityUsingHypospray);
+        args.TargetGettingInjected = args.EntityUsingInjector;
+        args.OverrideMessage = Loc.GetString(ent.Comp.HypoFailedMessage);
+        _audio.PlayPredicted(ent.Comp.ClumsySound, ent, args.EntityUsingInjector);
     }
 
     private void BeforeDefibrillatorZapsEvent(Entity<ClumsyComponent> ent, ref SelfBeforeDefibrillatorZapsEvent args)

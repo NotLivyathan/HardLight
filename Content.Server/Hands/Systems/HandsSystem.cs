@@ -12,6 +12,7 @@ using Content.Shared.Hands;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Input;
+using Content.Shared.Inventory.VirtualItem; // HardLight
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Stacks;
@@ -137,7 +138,7 @@ namespace Content.Server.Hands.Systems
 
         private void HandleBodyPartAdded(Entity<HandsComponent> ent, ref BodyPartAddedEvent args)
         {
-            TryAddHand(ent.AsNullable(), component, args.Part, args.Slot);
+            TryAddHand(ent.AsNullable(), ent.Comp, args.Part, args.Slot); // HardLight: component<ent.Comp
         }
 
         private void HandleBodyPartRemoved(EntityUid uid, HandsComponent component, ref BodyPartRemovedEvent args)
@@ -202,10 +203,10 @@ namespace Content.Server.Hands.Systems
 
             if (TryComp<VirtualItemComponent>(throwEnt, out var virt))
             {
-                var userEv = new VirtualItemThrownEvent(virt.BlockingEntity, player, throwEnt, direction);
+                var userEv = new VirtualItemThrownEvent(virt.BlockingEntity, player, throwEnt.Value, direction); // HardLight: Added .Value
                 RaiseLocalEvent(player, userEv);
 
-                var targEv = new VirtualItemThrownEvent(virt.BlockingEntity, player, throwEnt, direction);
+                var targEv = new VirtualItemThrownEvent(virt.BlockingEntity, player, throwEnt.Value, direction); // HardLight: Added .Value
                 RaiseLocalEvent(virt.BlockingEntity, targEv);
             }
             // Goobstation end
@@ -235,7 +236,7 @@ namespace Content.Server.Hands.Systems
 
             // Let other systems change the thrown entity (useful for virtual items)
             // or the throw strength.
-            var itemEv = new BeforeGettingThrownEvent(throwEnt, direction, throwSpeed, player);
+            var itemEv = new BeforeGettingThrownEvent(throwEnt.Value, direction, throwSpeed, player); // HardLight: Added .Value
             RaiseLocalEvent(player, ref itemEv);
 
             if (itemEv.Cancelled)

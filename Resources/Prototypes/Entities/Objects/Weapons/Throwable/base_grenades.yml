@@ -1,4 +1,4 @@
-- type: entity # Starts fuse after taking 10 damage.
+﻿- type: entity # Starts fuse after taking 10 damage.
   parent: [ BaseItem, RecyclableItemSteelSmall ] # Frontier: RecyclableItemSteelSmall
   abstract: true
   id: GrenadeBase
@@ -16,7 +16,7 @@
     slots:
     - Belt
   - type: TriggerOnUse
-  - type: OnUseTimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
+  - type: TimerTrigger # HardLight: TimerTrigger<OnUseTimerTrigger
     delay: 3
   - type: Damageable
     damageContainer: Inorganic

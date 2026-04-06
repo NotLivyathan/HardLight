@@ -22,8 +22,13 @@
     solution: hypospray
   - type: ExaminableSolution
     solution: hypospray
-  - type: Hypospray
-    onlyAffectsMobs: false
+  - type: Injector
+    solutionName: hypospray
+    ignoreClosed: false
+    ignoreMobs: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
   - type: UseDelay
     delay: 2.5
   - type: StaticPrice
@@ -105,11 +110,14 @@
   - type: SolutionContainerVisuals
     maxFillLevels: 1
     changeColor: false
-  - type: Hypospray
+  - type: Injector
     solutionName: pen
-    onlyAffectsMobs: false
-    injectOnly: true
-    transferAmount: 15 # Explicitly redefined in case parent changes
+    ignoreClosed: false
+    ignoreMobs: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 15 # Explicitly redefined in case parent changes
   - type: Tag
     tags: []
 
@@ -137,8 +145,13 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: SolutionContainerVisuals
     emptySpriteName: hemostasispen_empty
-  - type: Hypospray
-    transferAmount: 20
+  - type: Injector
+    solutionName: pen
+    ignoreClosed: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 20
   - type: SolutionContainerManager
     solutions:
       pen:
@@ -174,8 +187,13 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: SolutionContainerVisuals
     emptySpriteName: stimulantpen_empty
-  - type: Hypospray
-    transferAmount: 20
+  - type: Injector
+    solutionName: pen
+    ignoreClosed: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 20
   - type: SolutionContainerManager
     solutions:
       pen:
@@ -211,8 +229,13 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: SolutionContainerVisuals
     emptySpriteName: crisispen_empty
-  - type: Hypospray
-    transferAmount: 20
+  - type: Injector
+    solutionName: pen
+    ignoreClosed: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 20
   - type: SolutionContainerManager
     solutions:
       pen:
@@ -351,8 +374,13 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: SolutionContainerVisuals
     emptySpriteName: barkeepersfriend_empty
-  - type: Hypospray
-    transferAmount: 20
+  - type: Injector
+    solutionName: pen
+    ignoreClosed: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 20
   - type: SolutionContainerManager
     solutions:
       pen:
@@ -384,9 +412,13 @@
         maxVol: 30
   - type: ExaminableSolution
     solution: hypospray
-  - type: Hypospray
-    onlyAffectsMobs: false
-    injectOnly: true
+  - type: Injector
+    solutionName: hypospray
+    ignoreClosed: false
+    ignoreMobs: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
   - type: UseDelay
     delay: 0.5
   - type: Appearance
@@ -465,8 +497,13 @@
       map: ["enum.SolutionContainerLayers.Fill"]
   - type: SolutionContainerVisuals
     emptySpriteName: avalipen_empty
-  - type: Hypospray
-    transferAmount: 20
+  - type: Injector
+    solutionName: pen
+    ignoreClosed: false
+    activeModeProtoId: HyposprayInjectMode
+    allowedModes:
+    - HyposprayInjectMode
+    currentTransferAmount: 20
   - type: SolutionContainerManager
     solutions:
       pen:

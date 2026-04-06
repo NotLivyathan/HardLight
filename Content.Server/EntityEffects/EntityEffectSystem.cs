@@ -26,6 +26,7 @@ using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
 using Content.Shared.Audio;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.Chat; // HardLight
 using Content.Shared.EntityEffects.EffectConditions;
 using Content.Shared.EntityEffects.Effects.PlantMetabolism;
 using Content.Shared.EntityEffects.Effects.StatusEffects;

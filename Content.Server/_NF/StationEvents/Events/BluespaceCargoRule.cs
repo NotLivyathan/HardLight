@@ -1,5 +1,6 @@
-using Content.Server.Station.Components;
 using Content.Server.StationEvents.Components;
+using Content.Server.Station.Components; // HardLight
+using Content.Shared.Station.Components; // HardLight
 using Content.Shared.Physics;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
@@ -35,7 +36,7 @@ public sealed class BluespaceCargoRule : StationEventSystem<BluespaceCargoRuleCo
         if (!TryComp<StationDataComponent>(chosenStation, out var stationData))
             return;
 
-        var grid = StationSystem.GetLargestGrid(stationData);
+        var grid = StationSystem.GetLargestGrid((chosenStation.Value, stationData)); // HardLight: Added chosenStation.Value
 
         if (grid is null)
             return;

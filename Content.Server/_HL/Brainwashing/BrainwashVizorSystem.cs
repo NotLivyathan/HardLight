@@ -10,7 +10,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Flash;
 using Content.Shared.Flash.Components;
 using Content.Shared.Mindshield.Components;
-using Content.Shared.StatusEffect;
+using Content.Shared.StatusEffect; // HardLight
 using Content.Shared.Verbs;
 using Robust.Server.Audio;
 using Robust.Server.Player;
