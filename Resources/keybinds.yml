@@ -162,6 +162,10 @@ binds:
 - function: SwapHands
   type: State
   key: X
+- function: SwapHandsReverse
+  type: State
+  key: X
+  mod1: Shift
 - function: MoveStoredItem
   type: State
   key: MouseLeft
@@ -170,7 +174,7 @@ binds:
 - function: RotateStoredItem
   type: State
   key: MouseRight
-# DeltaV - Start custom keybinds
+# Delta V start
 - function: NanoChatNavigateUp
   type: State
   key: Up
@@ -189,7 +193,7 @@ binds:
   key: Down
   mod1: Alt
   mod2: Shift
-  # DeltaV - End custom keybinds
+  # Delta V end
 - function: SaveItemLocation
   type: State
   key: MouseMiddle
@@ -650,12 +654,6 @@ binds:
   type: State
   key: MouseRight
   canFocus: true
-# region Frontier
-- function: SwapHandsPrevious
-  type: State
-  key: X
-  mod1: Shift
-# endregion Frontier
 # region EE
 - function: LookUp
   type: State

@@ -30,8 +30,8 @@ public abstract partial class SharedHandsSystem : EntitySystem
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.UseItemInHand, InputCmdHandler.FromDelegate(HandleUseItem, handle: false, outsidePrediction: false))
             .Bind(ContentKeyFunctions.AltUseItemInHand, InputCmdHandler.FromDelegate(HandleAltUseInHand, handle: false, outsidePrediction: false))
-            .Bind(ContentKeyFunctions.SwapHandsPrevious, InputCmdHandler.FromDelegate(SwapHandsPreviousPressed, handle: false, outsidePrediction: false)) // Frontier
             .Bind(ContentKeyFunctions.SwapHands, InputCmdHandler.FromDelegate(SwapHandsPressed, handle: false, outsidePrediction: false))
+            .Bind(ContentKeyFunctions.SwapHandsReverse, InputCmdHandler.FromDelegate(SwapHandsReversePressed, handle: false, outsidePrediction: false))
             .Bind(ContentKeyFunctions.Drop, new PointerInputCmdHandler(DropPressed))
             .Register<SharedHandsSystem>();
     }
@@ -81,23 +81,15 @@ public abstract partial class SharedHandsSystem : EntitySystem
 
     private void SwapHandsPressed(ICommonSession? session)
     {
-        if (!TryComp(session?.AttachedEntity, out HandsComponent? component))
-            return;
-
-        if (!_actionBlocker.CanInteract(session.AttachedEntity.Value, null))
-            return;
-
-        if (component.ActiveHandId == null || component.Hands.Count < 2)
-            return;
-
-        var newActiveIndex = component.SortedHands.IndexOf(component.ActiveHandId) + 1;
-        var nextHand = component.SortedHands[newActiveIndex % component.Hands.Count];
-
-        TrySetActiveHand((session.AttachedEntity.Value, component), nextHand);
+        SwapHands(session, false);
     }
 
-    // Frontier: Swap hands
-    private void SwapHandsPreviousPressed(ICommonSession? session)
+    private void SwapHandsReversePressed(ICommonSession? session)
+    {
+        SwapHands(session, true);
+    }
+
+    private void SwapHands(ICommonSession? session, bool reverse)
     {
         if (!TryComp(session?.AttachedEntity, out HandsComponent? component))
             return;
@@ -108,10 +100,11 @@ public abstract partial class SharedHandsSystem : EntitySystem
         if (component.ActiveHandId == null || component.Hands.Count < 2)
             return;
 
-        var newActiveIndex = component.SortedHands.IndexOf(component.ActiveHandId) + component.Hands.Count - 1; // Ensure no negatives, // HardLight: ActiveHand.Name<ActiveHandId
-        var nextHand = component.SortedHands[newActiveIndex % component.Hands.Count];
+        var currentIndex = component.SortedHands.IndexOf(component.ActiveHandId);
+        var newActiveIndex = (currentIndex + (reverse ? -1 : 1) + component.Hands.Count) % component.Hands.Count;
+        var nextHand = component.SortedHands[newActiveIndex];
 
-        TrySetActiveHand((session.AttachedEntity.Value, component), nextHand); // HardLight: Moved nextHand
+        TrySetActiveHand((session.AttachedEntity.Value, component), nextHand);
     }
 
     private bool DropPressed(ICommonSession? session, EntityCoordinates coords, EntityUid netEntity)

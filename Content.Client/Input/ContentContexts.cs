@@ -64,7 +64,7 @@ namespace Content.Client.Input
             human.AddFunction(EngineKeyFunctions.Walk);
             human.AddFunction(ContentKeyFunctions.ToggleKnockdown);
             human.AddFunction(ContentKeyFunctions.SwapHands);
-            human.AddFunction(ContentKeyFunctions.SwapHandsPrevious); // Frontier
+            human.AddFunction(ContentKeyFunctions.SwapHandsReverse);
             human.AddFunction(ContentKeyFunctions.Drop);
             human.AddFunction(ContentKeyFunctions.UseItemInHand);
             human.AddFunction(ContentKeyFunctions.AltUseItemInHand);
@@ -97,7 +97,7 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.Arcade2);
             human.AddFunction(ContentKeyFunctions.Arcade3);
             human.AddFunction(ContentKeyFunctions.LookUp); // EE
-            // Shitmed Change Start - TODO: Add hands, feet and groin targeting.
+            // Shitmedstart - TODO: Add hands, feet and groin targeting.
             human.AddFunction(ContentKeyFunctions.TargetHead);
             human.AddFunction(ContentKeyFunctions.TargetTorso);
             human.AddFunction(ContentKeyFunctions.TargetLeftArm);
@@ -108,7 +108,7 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.TargetLeftFoot);
             human.AddFunction(ContentKeyFunctions.TargetRightLeg);
             human.AddFunction(ContentKeyFunctions.TargetRightFoot);
-            // Shitmed Change End
+            // Shitmed end
             human.AddFunction(ContentKeyFunctions.OfferItem); // HardLight
 
             // actions should be common (for ghosts, mobs, etc)
@@ -126,7 +126,7 @@ namespace Content.Client.Input
             aghost.AddFunction(EngineKeyFunctions.MoveRight);
             aghost.AddFunction(EngineKeyFunctions.Walk);
             aghost.AddFunction(ContentKeyFunctions.SwapHands);
-            aghost.AddFunction(ContentKeyFunctions.SwapHandsPrevious); // Frontier
+            aghost.AddFunction(ContentKeyFunctions.SwapHandsReverse);
             aghost.AddFunction(ContentKeyFunctions.Drop);
             aghost.AddFunction(ContentKeyFunctions.UseItemInHand);
             aghost.AddFunction(ContentKeyFunctions.AltUseItemInHand);
