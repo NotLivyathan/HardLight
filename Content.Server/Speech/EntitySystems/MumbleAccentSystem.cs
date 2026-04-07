@@ -1,5 +1,6 @@
 using Content.Server.Speech.Components;
 using Content.Shared.Chat.Prototypes;
+using Content.Shared.Speech;
 using Content.Shared.Speech.Components;
 using Robust.Shared.Prototypes;
 
