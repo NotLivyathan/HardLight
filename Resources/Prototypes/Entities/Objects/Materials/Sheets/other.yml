@@ -12,6 +12,7 @@
   - type: Tag
     tags:
     - Sheet
+    - ConstructionMaterial
     - NoPaint
   - type: Damageable
     damageContainer: Inorganic
@@ -111,6 +112,7 @@
   - type: Tag
     tags:
     - Sheet
+    - ConstructionMaterial
   - type: NFFuel # Frontier
   # FH Start - Protogen Healing
   - type: ConditionalHealing

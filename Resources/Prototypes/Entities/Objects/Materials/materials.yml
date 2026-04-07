@@ -147,11 +147,12 @@
           Quantity: 5
   - type: Tag
     tags:
-      - ClothMade
-      - DroneUsable
-      - Gauze
-      - RawMaterial
-      - TiderAnvilParts
+    - ClothMade
+    - DroneUsable
+    - Gauze
+    - RawMaterial
+    - ConstructionMaterial
+    - TiderAnvilParts
   - type: Construction
     graph: WebObjects # not sure if I should either keep this here or just make another prototype. Will keep it here just in case.
     node: cloth
@@ -216,9 +217,10 @@
           Quantity: 5
   - type: Tag
     tags:
-      - ClothMade
-      - DroneUsable
-      - RawMaterial
+    - ClothMade
+    - DroneUsable
+    - RawMaterial
+    - ConstructionMaterial
   - type: Item
     heldPrefix: durathread
 
@@ -270,6 +272,7 @@
     - Wooden
     - DroneUsable
     - RawMaterial
+    - ConstructionMaterial
     - TiderAnvilParts
   - type: Extractable
     grindableSolutionName: wood

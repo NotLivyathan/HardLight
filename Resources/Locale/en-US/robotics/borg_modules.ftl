@@ -10,6 +10,7 @@ borg-slot-documents-empty = Books and papers
 borg-slot-soap-empty = Soap
 borg-slot-instruments-empty = Instruments
 borg-slot-beakers-empty = Beakers
+## Frontier
 borg-slot-brains-empty = Brains and MMIs
 borg-slot-modules-empty = Modules
 borg-slot-powercell-empty = Powercells
