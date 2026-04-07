@@ -10,59 +10,78 @@
 - type: entity
   id: BorgModuleStun
   parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule ]
-  name: Disabler cyborg Module
-  description: A Module "incapable of causing harm if used correctly"
+  name: disabler cyborg module
+  description: A module theoretically incapable of causing harm. If used correctly. # HardLight: Rewritten
   components:
   - type: Sprite
     sprite: Floof/Objects/Specific/Robotics/borgmodule.rsi
     layers:
     - state: security
     - state: icon-stun
-  - type: ItemBorgModule
-    moduleId: Stun
-    items:
-    - WeaponBorgDisabler
-    - BorgStunbaton
-    - BorgFlash
-    # - BorgZipties
+  - type: ItemBorgModule # HardLight: Edited to use the new system.
+    hands:
+    - item: WeaponBorgDisabler
+    - item: BorgStunbaton
+    - item: BorgFlash
+    - item: Zipties # HardLight: TODO: Make sec borgs dispense zipties and forensic pads instead.
+      hand:
+        emptyRepresentative: Handcuffs
+        emptyLabel: borg-slot-handcuffs-empty
+        whitelist:
+          tags:
+          - Handcuffs
 
 - type: entity
   id: BorgModuleKill
   parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule ]
-  name: Combat cyborg module
+  name: combat cyborg module
   components:
   - type: Sprite
     sprite: Floof/Objects/Specific/Robotics/borgmodule.rsi
     layers:
     - state: security
     - state: icon-kill
-  - type: ItemBorgModule
-    moduleId: Combat
-    items:
-    - WeaponAdvancedLaser
-    - WeaponborgPistolMk58
-    - CombatKnife
+  - type: ItemBorgModule # HardLight: Edited to use the new system.
+    hands:
+    - item: WeaponAdvancedLaser
+    - item: WeaponborgPistolMk58
+    - item: CombatKnife
 
 - type: entity
   id: BorgModuleInvestigation
   parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule ]
-  name: Investigation cyborg module
+  name: investigation cyborg module
   components:
   - type: Sprite
     sprite: Floof/Objects/Specific/Robotics/borgmodule.rsi
     layers:
     - state: security
     - state: icon-investigation
-  - type: ItemBorgModule
-    moduleId: Investigation
-    items:
-    - ForensicScanner
-    - SecurityWhistle
+  - type: ItemBorgModule # HardLight: Edited to use the new system.
+    hands:
+    - item: ForensicScanner
+    - item: SecurityWhistle
 
 - type: entity
-  id: BorgModuleadvancedmeasures
-  parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule ]
-  name: advanced combat cyborg module
+  id: BorgModuleHoS # HardLight: BorgModuleadvancedmeasures<BorgModuleHoS
+  parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule, BaseC3SyndicateContraband ] # HardLight: BaseC3SyndicateContraband
+  name: hos cyborg module
+  components:
+  - type: Sprite
+    sprite: Floof/Objects/Specific/Robotics/borgmodule.rsi
+    layers:
+    - state: security
+    - state: icon-Advmeasures
+  - type: ItemBorgModule # HardLight: Edited to use the new system.
+    hands:
+    # HardLight: TODO: - item: WeaponBorgX-01
+    - item: WeaponBorgEnergyShotgun
+    - item: Demag
+
+- type: entity # HardLight
+  id: BorgModuleWarden
+  parent: [ BaseBorgModuleSecurity, BaseProviderBorgModule, BaseC3SyndicateContraband ]
+  name: warden cyborg module
   components:
   - type: Sprite
     sprite: Floof/Objects/Specific/Robotics/borgmodule.rsi
@@ -70,8 +89,10 @@
     - state: security
     - state: icon-Advmeasures
   - type: ItemBorgModule
-    moduleId: AdvancedMeasures
-    items:
-    - WeaponBorgEnergyShotgun
-    - BorgWeaponXrayCannon
-
+    hands:
+    # TODO: - item: WeaponBorgBigLeady
+    - item: WeaponEnergyHalberd
+    - item: WeaponLauncherRiotGun
+    - item: SecurityWhistle
+    - item: Multitool
+    - item: RemoteSignallerAdvanced

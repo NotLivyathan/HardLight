@@ -91,7 +91,7 @@
 - type: Tag
   id: BorgArm
 
-# Hardlight start: quadborgs need these TODO make quadborgs use switchable
+# Hardlight start: Quadborgs need these TODO make quadborgs use switchable
 - type: Tag
   id: BorgEngineerHead
 
@@ -108,7 +108,7 @@
 - type: Tag
   id: BorgHead
 
-# Hardlight start: quadborgs need these TODO make quadborgs use switchable
+# Hardlight start: Quadborgs need these TODO make quadborgs use switchable
 - type: Tag
   id: BorgJanitorHead
 
@@ -193,7 +193,7 @@
 - type: Tag
   id: BorgModuleSyndicateAssault
 
-# Hardlight start quadborgs still need these TODO make quadborgs switchable
+# Hardlight start: Quadborgs still need these TODO make quadborgs switchable
 - type: Tag
   id: BorgServiceHead
 

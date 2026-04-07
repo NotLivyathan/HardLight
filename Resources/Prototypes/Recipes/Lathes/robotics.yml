@@ -100,9 +100,11 @@
   parent: BaseBorgLimbRecipe
   id: TorsoBorg
   result: TorsoBorg
-# Hardlight start - quadborgs need these TODO make quadborgs switchable and remove these
+
  # Engineer
 
+# Hardlight start: Quadborgs still need these; TODO: Make quadborgs switchable and remove these
+# Livyatan comment: Considering I need to make quadborgs a player species and I'm going to need these for limbs; don't do that.
 - type: latheRecipe
   parent: BaseBorgLimbRecipe
   id: LeftLegBorgEngineer
@@ -260,19 +262,9 @@
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
-  id: BorgModuleGPS
-  result: BorgModuleGPS
-
-- type: latheRecipe
-  parent: BaseBorgModuleRecipe
-  id: BorgModuleRadiationDetection
-  result: BorgModuleRadiationDetection
-
-- type: latheRecipe
-  parent: BaseBorgModuleRecipe
   id: BorgModuleTool
   result: BorgModuleTool
-# Hardlight start quadborgs still need these TODO make quadborgs switchable
+
 # Mining Modules
 
 - type: latheRecipe
@@ -287,9 +279,9 @@
 
 - type: latheRecipe
   parent: BaseGoldBorgModuleRecipe
-  id: BorgModuleGrapplingGun
-  result: BorgModuleGrapplingGun
-# Hardlight end
+  id: BorgModuleAdvancedMining
+  result: BorgModuleAdvancedMining
+
 # Engineering Modules
 
 - type: latheRecipe
@@ -297,24 +289,22 @@
   id: BorgModuleAdvancedTool
   result: BorgModuleAdvancedTool
 
-- type: latheRecipe # Hardlight quadborgs still need these TODO make quadborgs switchable
+- type: latheRecipe
   parent: BaseBorgModuleRecipe
   id: BorgModuleConstruction
   result: BorgModuleConstruction
 
 # Janitor Modules
 
-# Hardlight start quadborgs still need these todo make quadborgs switchable
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
-  id: BorgModuleLightReplacer
-  result: BorgModuleLightReplacer
+  id: BorgModuleCustodial
+  result: BorgModuleCustodial
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
   id: BorgModuleCleaning
   result: BorgModuleCleaning
-# #Hardlight end
 
 - type: latheRecipe
   parent: BaseGoldBorgModuleRecipe
@@ -323,7 +313,6 @@
 
 # Medical Modules
 
-# Hardlight start quadborgs still need these TODO make quadborgs switchable
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
   id: BorgModuleDiagnosis
@@ -331,23 +320,18 @@
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
-  id: BorgModuleTreatment
-  result: BorgModuleTreatment
-# Hardlight end
-
-# Frontier: base modules for a medical cyborg
+  id: BorgModuleTopicals
+  result: BorgModuleTopicals
 
 - type: latheRecipe
   parent: BaseGoldBorgModuleRecipe
-  id: BorgModuleAdvancedTreatment
-  result: BorgModuleAdvancedTreatment
+  id: BorgModuleChemical
+  result: BorgModuleChemical
 
 - type: latheRecipe
   parent: BaseGoldBorgModuleRecipe
-  id: BorgModuleDefibrillator
-  result: BorgModuleDefibrillator
-
-# End Frontier
+  id: BorgModuleRescue
+  result: BorgModuleRescue
 
 # Science Modules
 
@@ -363,7 +347,6 @@
 
 # Service Modules
 
-# Hardlight start quadborgs still need these TODO make quadborgs switchable
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
   id: BorgModuleService
@@ -378,7 +361,16 @@
   parent: BaseBorgModuleRecipe
   id: BorgModuleClowning
   result: BorgModuleClowning
-# Hardlight end
+
+- type: latheRecipe
+  parent: BaseGoldBorgModuleRecipe
+  id: BorgModuleAdvancedClowning
+  result: BorgModuleAdvancedClowning
+  materials:
+    Steel: 500
+    Glass: 500
+    Plastic: 250
+    Bananium: 375
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe

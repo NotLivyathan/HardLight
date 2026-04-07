@@ -34,8 +34,8 @@ public sealed partial class ItemBorgModuleComponent : Component
     /// <summary>
     /// Frontier: A module ID to check for equivalence
     /// </summary>
-    [DataField(required: true)]
-    public string ModuleId = default!;
+    [DataField]
+    public string? ModuleId;
 }
 
 [DataDefinition, Serializable, NetSerializable]

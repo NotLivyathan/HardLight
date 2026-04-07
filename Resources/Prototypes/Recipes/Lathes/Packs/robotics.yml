@@ -7,44 +7,43 @@
   - PositronicBrain
   - SciFlash
   - CyborgEndoskeleton
-  - Quadborgendoskeleton
+  - Quadborgendoskeleton # Floof
 
 - type: latheRecipePack
-  id: BorgModulesStatic #
+  id: BorgModulesStatic
   recipes:
   - BorgModuleCable
   - BorgModuleFireExtinguisher
-  - BorgModuleRadiationDetection
   - BorgModuleTool
-  - BorgModuleStun
-  - BorgModuleKill
+  - BorgModuleStun # Floof
+  - BorgModuleKill # Floof
   - BorgModuleInvestigation
-  - BorgModuleSurgery # Shitmed Change
-  # Hardlight change start
-  - BorgModuleGrapplingGun
+  - BorgModuleSurgery # Shitmed
+  # HardLight start
   - BorgModuleCleaning
-  - BorgModuleLightReplacer
-  - BorgModuleTreatment
+  - BorgModuleCustodial
+  - BorgModuleTopicals
   - BorgModuleBureaucracy
   - BorgModuleJetpack
   - BorgModuleConstruction
-  - BorgModuleDefibrillator
+  - BorgModuleRescue
   - BorgModuleDiagnosis
-  - BorgModuleNFService
   - BorgModuleClowning
   - BorgModuleMusique
-  - BorgModuleRCDShipyard
   - BorgModuleMining
+  # HardLight end
 
 - type: latheRecipePack
   id: BorgModulesDynamic
   recipes:
   - BorgModuleAdvancedSurgery
-  # Hardlight change start
-  - BorgModuleTreatment
-  - BorgModuleadvancedmeasures
-  - BorgModuleAdvancedTreatment
+  # HardLight start
+  - BorgModuleTopicals
+  # - BorgModuleHoS
+  # - BorgModuleWarden
+  - BorgModuleChemical
   - BorgModuleAdvancedParamedic
+  # HardLight end
 
 - type: latheRecipePack
   id: SMCybernetics
@@ -127,15 +126,14 @@
   recipes:
   - BorgModuleAdvancedCleaning
   - BorgModuleAdvancedTool
-  # - BorgModuleGPS # Frontier: useless
+  - BorgModuleAdvancedClowning
+  # - BorgModuleAdvancedTopical # HardLight: Placeholder
+  - BorgModuleAdvancedMining
   - BorgModuleArtifact
   - BorgModuleAnomaly
   - BorgModuleGardening
   - BorgModuleHarvesting
-  #- BorgModuleDefibrillator # Frontier: base module
-  #- BorgModuleAdvancedTreatment # Frontier: base module
   - BorgModuleAdvancedParamedic # Frontier
-  - BorgModuleAdvancedMining # Frontier
   - BorgModuleChef # Frontier
   - BorgModuleRCD # Frontier
   - BorgModuleStorage # HardLight

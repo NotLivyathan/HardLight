@@ -198,7 +198,8 @@ public sealed partial class BorgSystem
         for (var i = 0; i < component.Hands.Count; i++)
         {
             var hand = component.Hands[i];
-            var handId = $"{uid}-hand-{i}";
+            var handId = GetStableHandId(component, i); // HardLight
+            var uidScopedHandId = GetUidScopedHandId(uid, i); // HardLight
 
             _hands.AddHand((chassis, hands), handId, hand.Hand);
             EntityUid? item = null;
@@ -209,6 +210,16 @@ public sealed partial class BorgSystem
                 {
                     item = storedItem;
                     _container.Remove(storedItem, container, force: true);
+                }
+                // HardLight: Ship save would fail to correctly save items stored within modules, resulting in empty slots on load.
+                // This is a workaround.
+                else if (component.StoredItems.TryGetValue(uidScopedHandId, out var uidScopedStoredItem))
+                {
+                    // Backward compatibility for previously serialized UID-based hand IDs.
+                    item = uidScopedStoredItem;
+                    _container.Remove(uidScopedStoredItem, container, force: true);
+                    component.StoredItems.Remove(uidScopedHandId);
+                    component.StoredItems[handId] = uidScopedStoredItem;
                 }
             }
             else if (hand.Item is { } itemProto)
@@ -247,23 +258,39 @@ public sealed partial class BorgSystem
 
         for (var i = 0; i < component.Hands.Count; i++)
         {
-            var handId = $"{uid}-hand-{i}";
+            var handId = GetStableHandId(component, i); // HardLight
+            var uidScopedHandId = GetUidScopedHandId(uid, i); // HardLight
 
             if (_hands.TryGetHeldItem(chassis, handId, out var held))
             {
                 RemComp<UnremoveableComponent>(held.Value);
                 _container.Insert(held.Value, container);
                 component.StoredItems[handId] = held.Value;
+                component.StoredItems.Remove(uidScopedHandId); // HardLight
             }
             else
             {
                 component.StoredItems.Remove(handId);
+                component.StoredItems.Remove(uidScopedHandId); // HardLight
             }
 
             _hands.RemoveHand(chassis, handId);
+            _hands.RemoveHand(chassis, uidScopedHandId); // HardLight
         }
 
         Dirty(uid, component);
+    }
+
+    // HardLight: Stable key used for StoredItems persistence across save/load where entity UIDs may change.
+    private static string GetStableHandId(ItemBorgModuleComponent component, int index)
+    {
+        return $"{component.ModuleId ?? "module"}-hand-{index}";
+    }
+
+    // HardLight: Backward-compatibility key for saves written before stable module-scoped hand IDs.
+    private static string GetUidScopedHandId(EntityUid uid, int index)
+    {
+        return $"{uid}-hand-{index}";
     }
 
     /// <summary>
