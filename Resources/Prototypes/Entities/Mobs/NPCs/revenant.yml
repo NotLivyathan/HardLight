@@ -18,7 +18,6 @@
     - state: active
   - type: StatusEffects
     allowed:
-    - Stun
     - Corporeal
   - type: Damageable
     damageContainer: ManifestedSpirit
@@ -83,4 +82,6 @@
       Acidic: [Touch]
   - type: Tag
     tags:
-      - NoPaint
+    - SlowImmune
+    - KnockdownImmune
+    - NoPaint

@@ -133,9 +133,6 @@
       - !type:WashCreamPieReaction
   - type: StatusEffects
     allowed:
-    - Stun
-    - Friction
-    - SlowedDown
     - Electrocution
     - RatvarianLanguage
     - PressureImmunity
