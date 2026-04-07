@@ -68,7 +68,6 @@
     - type: Damageable
       damageContainer: Inorganic
       damageModifierSet: Metallic
-    - type: MobCollision
     - type: Physics
       bodyType: Dynamic
     - type: Fixtures
@@ -76,11 +75,10 @@
         fix1:
           shape:
             !type:PhysShapeAabb
-            bounds: "-0.3,-0.3,0.3,0.3" # mono
+            bounds: "-0.3,-0.3,0.3,0.3" # Mono
           density: 190
-          hard: false
           mask:
-          - SmallMobMask #this is so they can go under plastic flaps
+          - SmallMobMask # This is so they can go under plastic flaps
           layer:
           - MachineLayer
     - type: AtmosDevice
@@ -129,8 +127,8 @@
       - GasCanisters
     - type: Paintable
       group: Canisters
-    - type: Climbable # mono
-    - type: FootstepModifier # mono
+    - type: Climbable # Mono
+    - type: FootstepModifier # Mono
       footstepSoundCollection:
         collection: FootstepHull
 
