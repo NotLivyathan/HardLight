@@ -657,12 +657,12 @@ public sealed partial class DeepFryerSystem : SharedDeepfryerSystem
         if (!_solutionContainerSystem.TryGetSolution(uid, component.Solution.Name, out var solution))
             return;
 
-        _solutionTransferSystem.Transfer(user,
+        _solutionTransferSystem.Transfer(new SolutionTransferData(user, // HardLight: Added new SolutionTransferData
             uid,
             solution.Value,
             heldItem.Value,
             heldSolution.Value,
-            transferAmount);
+            transferAmount)); // HardLight: Added second )
 
         // UI update is not necessary here, because the solution change event handles it.
     }
