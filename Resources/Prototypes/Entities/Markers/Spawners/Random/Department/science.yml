@@ -107,7 +107,7 @@
       state: generic
   - type: RandomSpawner
     rarePrototypes:
-    # - BorgModuleAdvancedTopical # HardLight: Placeholder
+    - BorgModuleAdvancedChemical
     - BorgModuleAdvancedCleaning
     - BorgModuleAdvancedTool
     - BorgModuleChef # Frontier

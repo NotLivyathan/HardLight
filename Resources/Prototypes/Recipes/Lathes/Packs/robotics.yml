@@ -12,9 +12,8 @@
 - type: latheRecipePack
   id: BorgModulesStatic
   recipes:
-  - BorgModuleCable
-  - BorgModuleFireExtinguisher
   - BorgModuleTool
+  - BorgModuleFireExtinguisher
   - BorgModuleStun # Floof
   - BorgModuleKill # Floof
   - BorgModuleInvestigation
@@ -33,7 +32,7 @@
   - BorgModuleMining
   # HardLight end
 
-- type: latheRecipePack
+- type: latheRecipePack # HardLight: Why is this up here and not merged with the dynamic BorgModules?
   id: BorgModulesDynamic
   recipes:
   - BorgModuleAdvancedSurgery
@@ -127,12 +126,8 @@
   - BorgModuleAdvancedCleaning
   - BorgModuleAdvancedTool
   - BorgModuleAdvancedClowning
-  # - BorgModuleAdvancedTopical # HardLight: Placeholder
+  - BorgModuleAdvancedChemical
   - BorgModuleAdvancedMining
-  - BorgModuleArtifact
-  - BorgModuleAnomaly
-  - BorgModuleGardening
-  - BorgModuleHarvesting
   - BorgModuleAdvancedParamedic # Frontier
   - BorgModuleChef # Frontier
   - BorgModuleRCD # Frontier

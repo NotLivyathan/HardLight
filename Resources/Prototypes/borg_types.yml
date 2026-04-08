@@ -17,6 +17,8 @@
 
   defaultModules:
   - BorgModuleTool
+  - BorgModuleArtifact
+  - BorgModuleAnomaly
   - BorgModuleJetpack # Frontier
 
   radioChannels:
@@ -124,7 +126,7 @@
     - XenoborgModuleGeneric # HardLight
 
   defaultModules:
-  - BorgModuleTool # Starlight
+  - BorgModuleTool
   - BorgModuleCleaning
   - BorgModuleCustodial
   - BorgModuleJetpack # Frontier
@@ -161,7 +163,8 @@
     - XenoborgModuleGeneric # HardLight
 
   defaultModules:
-  - BorgModuleTool # Starlight
+  - BorgModuleTool
+  - BorgModuleChemical
   - BorgModuleTopicals
   - BorgModuleRescue
   - BorgModuleJetpack # Frontier
@@ -212,11 +215,12 @@
     - XenoborgModuleGeneric # HardLight
 
   defaultModules:
-  - BorgModuleTool # Starlight
+  - BorgModuleTool
   - BorgModuleMusique
   - BorgModuleService
   - BorgModuleClowning
   - BorgModuleGardening
+  - BorgModuleHarvesting
   - BorgModuleBureaucracy # Frontier
   - BorgModuleJetpack # Frontier
 
