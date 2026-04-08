@@ -665,8 +665,11 @@ public sealed partial class ShuttleSystem
         // Get enumeration exceptions from people dropping things if we just paralyze as we go
         var toKnock = new ValueList<EntityUid>();
         KnockOverKids(xform, ref toKnock);
-        TryComp<MapGridComponent>(xform.GridUid, out var grid);
-        var hasShuttleBody = TryComp<PhysicsComponent>(xform.GridUid, out var shuttleBody); // HardLight
+        if (xform.GridUid is not { } gridUid) // HardLight
+            return;
+
+        TryComp<MapGridComponent>(gridUid, out var grid);
+        var hasShuttleBody = TryComp<PhysicsComponent>(gridUid, out var shuttleBody); // HardLight
 
         // HardLight start
         foreach (var child in toKnock)
@@ -678,8 +681,8 @@ public sealed partial class ShuttleSystem
             _stuns.TryUpdateParalyzeDuration(child, _hyperspaceKnockdownTime);
 
             // If the guy we knocked down is on a spaced tile, throw them too
-            if (grid != null && hasShuttleBody && shuttleBody != null)
-                TossIfSpaced((xform.GridUid.Value, grid, shuttleBody), child);
+            if (grid is { } shuttleGrid && hasShuttleBody && shuttleBody is { } body)
+                TossIfSpaced((gridUid, shuttleGrid, body), child);
         }
         // HardLight end
     }

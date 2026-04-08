@@ -54,7 +54,7 @@ public sealed class TableSlamSystem : EntitySystem
         if(!_random.Prob(ent.Comp.ParalyzeChance))
             return;
 
-        _stunSystem.TryParalyze(ent, TimeSpan.FromSeconds(3), false);
+        _stunSystem.TryUpdateParalyzeDuration(ent.Owner, TimeSpan.FromSeconds(3)); // HardLight: TryParalyze<TryUpdateParalyzeDuration; ent<ent.Owner; removed false
         RemComp<PostTabledComponent>(ent);
     }
 
@@ -138,7 +138,7 @@ public sealed class TableSlamSystem : EntitySystem
         }
 
         _staminaSystem.TakeStaminaDamage(ent, ent.Comp.TabledStaminaDamage);
-        _stunSystem.TryKnockdown(ent, TimeSpan.FromSeconds(3 * modifierOnGlassBreak), false);
+        _stunSystem.TryUpdateKnockdownDuration(ent.Owner, TimeSpan.FromSeconds(3 * modifierOnGlassBreak)); // HardLight: TryKnockdown<TryUpdateKnockdownDuration; ent<ent.Owner; removed false
         var postTabledComponent = EnsureComp<PostTabledComponent>(ent);
         postTabledComponent.PostTabledShovableTime = _gameTiming.CurTime.Add(TimeSpan.FromSeconds(3));
         ent.Comp.BeingTabled = false;

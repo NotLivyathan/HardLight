@@ -24,7 +24,7 @@ public sealed class FlashOnTriggerSystem : EntitySystem
         if (target == null)
             return;
 
-        _flash.FlashArea(target.Value, args.User, ent.Comp.Range, (float) ent.Comp.Duration.TotalMilliseconds, probability: ent.Comp.Probability); // HardLight: Added (float) & .TotalMilliseconds
+        _flash.FlashArea(target.Value, args.User, ent.Comp.Range, ent.Comp.Duration, probability: ent.Comp.Probability);
         args.Handled = true;
     }
 }

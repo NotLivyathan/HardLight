@@ -29,7 +29,7 @@
     Narcotic:
       effects:
       # Main effects
-      - !type:MovementSpeedModifier
+      - !type:MovespeedModifier # HardLight: MovementSpeedModifier<MovespeedModifier
         walkSpeedModifier: 1.20
         sprintSpeedModifier: 1.20
       - !type:GenericStatusEffect
@@ -41,7 +41,7 @@
         component: IgnoreSlowOnDamage
         time: 3
       # Side effects
-      - !type:GenericStatusEffect
+      - !type:ModifyStatusEffect # HardLight: GenericStatusEffect<ModifyStatusEffect
         effectProto: StatusEffectPainNumbness
         time: 2
       # Interactions
@@ -79,14 +79,15 @@
     Narcotic:
       effects:
       # Main effects
-      - !type:MovementSpeedModifier
+      - !type:MovespeedModifier # HardLight: MovementSpeedModifier<MovespeedModifier
         walkSpeedModifier: 1.15
         sprintSpeedModifier: 1.15
       - !type:ModifyStatusEffect
         effectProto: StatusEffectStunned
         time: 1
         type: Remove
-      - !type:ModifyKnockdown
+      - !type:ModifyStatusEffect # HardLight: GenericStatusEffect<ModifyStatusEffect
+        effectProto: StatusEffectKnockdown
         time: 1
         type: Remove
       # Side effects
@@ -136,7 +137,7 @@
     Narcotic:
       effects:
       # Main effects
-      - !type:MovementSpeedModifier
+      - !type:MovespeedModifier # HardLight: MovementSpeedModifier<MovespeedModifier
         walkSpeedModifier: 1.25
         sprintSpeedModifier: 1.25
       - !type:GenericStatusEffect
@@ -160,7 +161,7 @@
       # OD
       - !type:HealthChange
         conditions:
-        - !type:ReagentCondition
+        - !type:ReagentThreshold # HardLight: ReagentCondition<ReagentThreshold
           reagent: Stimulants
           min: 50
         damage:
@@ -177,7 +178,7 @@
         type: Remove
       - !type:AdjustReagent
         conditions:
-        - !type:ReagentCondition
+        - !type:ReagentThreshold # HardLight: ReagentCondition<ReagentThreshold
           reagent: ChloralHydrate
           min: 1
         reagent: ChloralHydrate
@@ -185,18 +186,18 @@
     Medicine:
       effects:
       # Main effects
-      - !type:ModifyBleed
+      - !type:ModifyBleedAmount # HardLight: ModifyBleed<ModifyBleedAmount
         amount: -1.5
-      - !type:EvenHealthChange
+      - !type:HealthChange # HardLight: EvenHealthChange<HealthChange
         conditions:
-        - !type:TotalDamageCondition
+        - !type:TotalDamage # HardLight: TotalDamageCondition<TotalDamage
           min: 70 # only heals when you're more dead than alive
         damage: # Doesn't heal poison because if you OD'd I'm not giving you a safety net
           Burn: -0.5
           Brute: -0.5
       - !type:HealthChange
         conditions:
-        - !type:TotalDamageCondition
+        - !type:TotalDamage # HardLight: TotalDamageCondition<TotalDamage
           min: 95 # Just to bring you back from the brink of death
         damage:
           types:
