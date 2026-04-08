@@ -210,21 +210,28 @@ namespace Content.Client.Gameplay
             if (args.Viewport is IViewportControl vp && kArgs.PointerLocation.IsValid)
             {
                 var mousePosWorld = vp.PixelToMap(kArgs.PointerLocation.Position);
+                var mapSystem = _entitySystemManager.GetEntitySystem<MapSystem>();
 
-                if (vp is ScalingViewport svp)
+                // HardLight: If the pointer is over an invalid or unloaded map, do not attempt any map/grid conversion.
+                if (mousePosWorld.MapId == MapId.Nullspace || !mapSystem.MapExists(mousePosWorld.MapId))
                 {
-                    entityToClick = GetClickedEntity(mousePosWorld, svp.Eye);
+                    coordinates = EntityCoordinates.Invalid;
                 }
                 else
                 {
-                    entityToClick = GetClickedEntity(mousePosWorld);
+                    if (vp is ScalingViewport svp)
+                    {
+                        entityToClick = GetClickedEntity(mousePosWorld, svp.Eye);
+                    }
+                    else
+                    {
+                        entityToClick = GetClickedEntity(mousePosWorld);
+                    }
+                    var transformSystem = _entitySystemManager.GetEntitySystem<SharedTransformSystem>();
+                    coordinates = _mapManager.TryFindGridAt(mousePosWorld, out var uid, out _) ?
+                        mapSystem.MapToGrid(uid, mousePosWorld) :
+                        transformSystem.ToCoordinates(mousePosWorld);
                 }
-                var transformSystem = _entitySystemManager.GetEntitySystem<SharedTransformSystem>();
-                var mapSystem = _entitySystemManager.GetEntitySystem<MapSystem>();
-
-                coordinates = _mapManager.TryFindGridAt(mousePosWorld, out var uid, out _) ?
-                    mapSystem.MapToGrid(uid, mousePosWorld) :
-                    transformSystem.ToCoordinates(mousePosWorld);
             }
             else
             {
@@ -237,9 +244,9 @@ namespace Content.Client.Gameplay
                 Coordinates = coordinates,
                 ScreenCoordinates = kArgs.PointerLocation,
                 Uid = entityToClick ?? default,
-            }; // TODO make entityUid nullable
+            }; // TODO: Make entityUid nullable
 
-            // client side command handlers will always be sent the local player session.
+            // Client side command handlers will always be sent the local player session.
             var session = _playerManager.LocalSession;
             if (inputSys.HandleInputCommand(session, func, message))
             {

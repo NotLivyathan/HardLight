@@ -170,7 +170,10 @@ public abstract partial class SharedStationSystem : EntitySystem
         {
             foreach (var gridUid in data.Grids)
             {
-                if (Transform(gridUid).MapID == map)
+                if (!_xformQuery.TryGetComponent(gridUid, out var xform)) // HardLight
+                    continue;
+
+                if (xform.MapID == map) // HardLight
                 {
                     return uid;
                 }

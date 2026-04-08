@@ -166,7 +166,7 @@ public sealed class SurgerySystem : SharedSurgerySystem
 
     private void OnStepScreamComplete(Entity<SurgeryStepEmoteEffectComponent> ent, ref SurgeryStepEvent args)
     {
-        if (HasComp<ForcedSleepingStatusEffectComponent>(args.Body) || HasComp<PainNumbnessComponent>(args.Body)) // HardLight: ForcedSleepingComponent<ForcedSleepingStatusEffectComponent
+        if (HasComp<ForcedSleepingStatusEffectComponent>(args.Body) || HasComp<PainNumbnessStatusEffectComponent>(args.Body)) // HardLight: ForcedSleepingComponent<ForcedSleepingStatusEffectComponent; PainNumbnessComponent<PainNumbnessStatusEffectComponent
             return;
 
         _chat.TryEmoteWithChat(args.Body, ent.Comp.Emote);

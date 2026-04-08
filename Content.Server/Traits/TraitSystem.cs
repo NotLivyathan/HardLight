@@ -121,12 +121,12 @@ public sealed class TraitSystem : EntitySystem
 
         // Add all components required by the prototype
             if (traitPrototype.Components.Count > 0)
-                EntityManager.AddComponents(args.Mob, traitPrototype.Components, false);
+                EntityManager.AddComponents(uid, traitPrototype.Components, false); // HardLight: args.Mob<uid
 
             // Add all JobSpecials required by the prototype
             foreach (var special in traitPrototype.Specials)
             {
-                special.AfterEquip(args.Mob);
+                special.AfterEquip(uid); // HardLight: args.Mob<uid
             }
 
         // HardLight: Force an immediate refresh so movement penalties/bonuses apply on spawn.

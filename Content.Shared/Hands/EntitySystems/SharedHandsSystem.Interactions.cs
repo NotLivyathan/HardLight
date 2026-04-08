@@ -100,9 +100,22 @@ public abstract partial class SharedHandsSystem : EntitySystem
         if (component.ActiveHandId == null || component.Hands.Count < 2)
             return;
 
-        var currentIndex = component.SortedHands.IndexOf(component.ActiveHandId);
-        var newActiveIndex = (currentIndex + (reverse ? -1 : 1) + component.Hands.Count) % component.Hands.Count;
-        var nextHand = component.SortedHands[newActiveIndex];
+        // HardLight start: Guard against duplicated / stale sorted entries so swap never resolves to the same hand repeatedly.
+        var orderedHands = component.SortedHands
+            .Where(component.Hands.ContainsKey)
+            .Distinct()
+            .ToList();
+
+        if (orderedHands.Count < 2)
+            return;
+
+        var currentIndex = orderedHands.IndexOf(component.ActiveHandId);
+        if (currentIndex < 0)
+            currentIndex = 0;
+
+        var newActiveIndex = (currentIndex + (reverse ? -1 : 1) + orderedHands.Count) % orderedHands.Count;
+        var nextHand = orderedHands[newActiveIndex];
+        // HardLight end
 
         TrySetActiveHand((session.AttachedEntity.Value, component), nextHand);
     }

@@ -586,8 +586,6 @@
     - item: WelderExperimental
     - item: Multitool
     - item: RemoteSignallerAdvanced
-    - item: GasAnalyzer # HardLight
-    - item: GeigerCounter # HardLight
     - item: MaintenanceJack # Frontier
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: adv-tools-module }
@@ -665,6 +663,13 @@
         whitelist:
           components:
           - FloorTile
+    - item: ConstructionBag # HardLight
+      hand:
+        emptyRepresentative: ConstructionBag
+        emptyLabel: borg-slot-bag-empty
+        whitelist:
+          components:
+          - NFConstructionBag
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: construction-module }
 
@@ -680,6 +685,7 @@
   - type: ItemBorgModule
     hands:
     - item: RCDRecharging
+    - item: ShipRepairDeviceRecharging # Mono
     - item: BorgFireExtinguisher
     - item: BorgHandheldGPSBasic
     - item: GasAnalyzer
