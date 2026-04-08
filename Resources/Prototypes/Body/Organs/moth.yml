@@ -6,14 +6,14 @@
   components:
   - type: Stomach
     specialDigestible:
-      Frontier: general moth digestion
+      # Frontier start: General moth digestion
       tags:
        - ClothMade
        - Paper
        - Pill
       components:
       - MothFood
-      End Frontier: general moth digestion
+      # Frontier end
   - type: SolutionContainerManager
     solutions:
       stomach:

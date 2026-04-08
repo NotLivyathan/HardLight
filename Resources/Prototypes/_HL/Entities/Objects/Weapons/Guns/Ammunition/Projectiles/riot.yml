@@ -8,8 +8,8 @@
     sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
     layers:
     - state: cleanade
-  - type: ActiveTimerTrigger
-    timeRemaining: 0.3
+  - type: TimedDespawn
+    lifetime: 0.3
   - type: SmokeOnTrigger
     duration: 10
     spreadAmount: 30

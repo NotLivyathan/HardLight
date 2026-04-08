@@ -84,9 +84,6 @@
   - type: TriggerOnBeingGibbed
   - type: GibOnTrigger
     deleteItems: true
-    deleteOrgans: true
-    gib: false
-    useArgumentEntity: true
     # Medical bounty-specific fields
   - type: MedicalBounty
   - type: RandomHumanoidAppearance

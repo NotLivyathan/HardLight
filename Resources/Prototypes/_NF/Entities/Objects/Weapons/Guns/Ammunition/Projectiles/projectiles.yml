@@ -112,8 +112,8 @@
     sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
     layers:
     - state: cleanade
-  - type: ActiveTimerTrigger
-    timeRemaining: 0.3
+  - type: TimedDespawn # HardLight: Replaced trigger components with modern systems.
+    lifetime: 0.3
   - type: SmokeOnTrigger
     duration: 3.5
     spreadAmount: 30

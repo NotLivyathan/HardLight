@@ -18,7 +18,12 @@
   - type: ShockOnTrigger
     damage: 1
     duration: 2.5
-    cooldown: 3.5
+  # HardLight start: Replaced trigger cooldown with modern systems.
+  - type: UseDelay
+    delay: 3.5
+  - type: UseDelayTriggerCondition
+  - type: UseDelayOnTrigger
+  # HardLight end
   - type: TriggerOnSignal
   - type: DeviceNetwork
     deviceNetId: Wireless

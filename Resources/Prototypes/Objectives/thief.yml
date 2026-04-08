@@ -359,12 +359,12 @@
 
 - type: entity
   parent: BaseThiefStealStructureObjective
-  id: ArtifactStealObjective
+  id: XenoArtifactStealObjective
   components:
   - type: NotJobRequirement
     job: Scientist
   - type: StealCondition
-    stealGroup: Artifact
+    stealGroup: XenoArtifact
   - type: Objective
     difficulty: 0.5
 

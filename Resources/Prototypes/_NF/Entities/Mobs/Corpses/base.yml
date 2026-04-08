@@ -20,6 +20,3 @@
   - type: TriggerOnBeingGibbed
   - type: GibOnTrigger
     deleteItems: true
-    deleteOrgans: true
-    gib: false
-    useArgumentEntity: true

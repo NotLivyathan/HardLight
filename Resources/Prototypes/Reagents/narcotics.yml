@@ -193,8 +193,9 @@
         - !type:TotalDamage # HardLight: TotalDamageCondition<TotalDamage
           min: 70 # only heals when you're more dead than alive
         damage: # Doesn't heal poison because if you OD'd I'm not giving you a safety net
-          Burn: -0.5
-          Brute: -0.5
+          groups:
+            Burn: -0.5
+            Brute: -0.5
       - !type:HealthChange
         conditions:
         - !type:TotalDamage # HardLight: TotalDamageCondition<TotalDamage

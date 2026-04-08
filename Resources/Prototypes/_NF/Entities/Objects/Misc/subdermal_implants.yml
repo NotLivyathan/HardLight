@@ -30,7 +30,7 @@
       mobState:
       - Critical
       - Dead
-      preventVore: true
+      preventSuicide: true # HardLight: preventVore<preventSuicide
     - type: RattleOnTrigger
       radioChannel: "Medical"
 
@@ -57,7 +57,7 @@
       mobState:
       - Critical
       - Dead
-      preventVore: true
+      preventSuicide: true # HardLight: preventVore<preventSuicide
     - type: RattleOnTrigger
       radioChannel: "Pirate"
 
@@ -76,7 +76,6 @@
     - Critical
   - type: GibOnTrigger
     deleteItems: true
-    deleteOrgans: true
   - type: SpawnOnTrigger
     proto: Acidifier
   - type: Tag
@@ -97,7 +96,6 @@
   - type: TriggerOnBeingGibbed
   - type: GibOnTrigger
     deleteItems: true
-    deleteOrgans: true
   - type: SpawnOnTrigger
     proto: Acidifier
   - type: Tag

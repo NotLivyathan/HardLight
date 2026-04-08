@@ -253,7 +253,8 @@
         !type:PhysShapeCircle
           radius: 10
       triggerSpeed: 0.1
-      whitelist:
+    - type: WhitelistTriggerCondition # HardLight
+      userWhitelist:
         components:
         - NullSpace
     - type: Sprite

@@ -14,8 +14,8 @@
   - type: Item
     sprite: _NF/Objects/Specific/Chemistry/dropper.rsi
   - type: Injector
-    transferAmount: 5
-    toggleState: Draw
+    currentTransferAmount: 5 # HardLight: Replaced with modern systems.
+    activeModeProtoId: DropperDrawMode # HardLight: ^
   - type: Tag
     tags:
     - Syringe
