@@ -1,0 +1,27 @@
+# security
+- type: borgSubtype
+  abstract: true
+  id: BorgSecuritySubtypeBase
+  name: borg security subtype
+  parentType: security
+  dummyPrototype: BorgChassisSecurity
+  # Visuals
+  layerData:
+    - state: borg
+      map: [ "enum.BorgVisualLayers.Body", "movement" ]
+    - state: borg_e
+      map: [ "enum.BorgVisualLayers.Light" ]
+      shader: unshaded
+      visible: false
+    - state: borg_l
+      shader: unshaded
+      map: [ "light","enum.BorgVisualLayers.LightStatus" ]
+      visible: false
+
+  spriteBodyState: borg
+  spriteHasMindState: borg_e
+  # if rsi has a specific no mind state sprite, use that instead (i.e. borg_e_r)
+  spriteNoMindState: borg_e
+
+  footstepCollection:
+    collection: FootstepBorg

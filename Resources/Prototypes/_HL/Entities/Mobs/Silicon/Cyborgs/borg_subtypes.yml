@@ -42,6 +42,71 @@
   name: K4T-ENG-alt
   spritePath: _HL/Mobs/Silicon/Borg/Engineering/k4t_alt_engi.rsi
 
+# region generic
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaFNinja
+  dummyPrototype: BorgChassisGenericMekaFNinja
+  name: Meka-F (Ninja)
+  spritePath: _HL/Mobs/Silicon/Borg/Ninja/fmeka_ninja.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaNinja
+  dummyPrototype: BorgChassisGenericMekaNinja
+  name: Meka (Ninja)
+  spritePath: _HL/Mobs/Silicon/Borg/Ninja/meka_ninja.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaMNinja
+  dummyPrototype: BorgChassisGenericMekaMNinja
+  name: Meka-M (Ninja)
+  spritePath: _HL/Mobs/Silicon/Borg/Ninja/mmeka_ninja.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeK4tNinja
+  dummyPrototype: BorgChassisGenericK4tNinja
+  name: K4T-NNJ
+  spritePath: _HL/Mobs/Silicon/Borg/Ninja/k4t_ninja.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaFPeace
+  dummyPrototype: BorgChassisGenericMekaFPeace
+  name: Meka-F (Peace)
+  spritePath: _HL/Mobs/Silicon/Borg/Peace/fmeka_peace.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaPeace
+  dummyPrototype: BorgChassisGenericMekaPeace
+  name: Meka (Peace)
+  spritePath: _HL/Mobs/Silicon/Borg/Peace/meka_peace.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaMPeace
+  dummyPrototype: BorgChassisGenericMekaMPeace
+  name: Meka-M (Peace)
+  spritePath: _HL/Mobs/Silicon/Borg/Peace/mmeka_peace.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeMekaSFPeace
+  dummyPrototype: BorgChassisGenericMekaSFPeace
+  name: Meka-SF (Peace)
+  spritePath: _HL/Mobs/Silicon/Borg/Peace/sfmeka_peace.rsi
+
+- type: borgSubtype
+  parent: BorgGenericSubtypeBase
+  id: BorgGenericSubtypeK4tPeace
+  dummyPrototype: BorgChassisGenericK4tPeace
+  name: K4T-PCE
+  spritePath: _HL/Mobs/Silicon/Borg/Peace/k4t_peace.rsi
+
 # region janitor
 
 - type: borgSubtype
@@ -166,6 +231,108 @@
   dummyPrototype: BorgChassisMiningK4tAlt
   name: K4T-DIG-alt
   spritePath: _HL/Mobs/Silicon/Borg/Mining/k4t_alt_salv.rsi
+
+  # TODO if the cargo borg is ported from SL, move these over to the cargo subtype
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeMekaF
+  dummyPrototype: BorgChassisCargoMekaF
+  name: Meka-F (Cargo)
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/fmeka_cargo.rsi
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeMeka
+  dummyPrototype: BorgChassisCargoMeka
+  name: Meka (Cargo)
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/meka_cargo.rsi
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeMekaM
+  dummyPrototype: BorgChassisCargoMekaM
+  name: Meka-M (Cargo)
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/mmeka_cargo.rsi
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeMekaSF
+  dummyPrototype: BorgChassisCargoMekaSF
+  name: Meka-SF (Cargo)
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/sfmeka_cargo.rsi
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeK4t
+  dummyPrototype: BorgChassisCargoK4t
+  name: K4T-CRG
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/k4t_cargo.rsi
+
+- type: borgSubtype
+  parent: BorgMiningSubtypeBase
+  id: BorgCargoSubtypeK4tAlt
+  dummyPrototype: BorgChassisCargoK4tAlt
+  name: K4T-CRG-alt
+  spritePath: _HL/Mobs/Silicon/Borg/Cargo/k4t_cargo_alt.rsi # WHY IS THIS ONE NAMED THE OTHER WAY AROUND. WHY!!
+
+# region security
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMekaF
+  dummyPrototype: BorgChassisSecurityMekaF
+  name: Meka-F
+  spritePath: _HL/Mobs/Silicon/Borg/Security/fmeka_sec.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMeka
+  dummyPrototype: BorgChassisSecurityMeka
+  name: Meka
+  spritePath: _HL/Mobs/Silicon/Borg/Security/meka_sec.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMekaM
+  dummyPrototype: BorgChassisSecurityMekaM
+  name: Meka-M
+  spritePath: _HL/Mobs/Silicon/Borg/Security/mmeka_sec.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeK4t
+  dummyPrototype: BorgChassisSecurityK4t
+  name: K4T-SEC
+  spritePath: _HL/Mobs/Silicon/Borg/Security/k4t_sec.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMekaFSyndie
+  dummyPrototype: BorgChassisSecurityMekaFSyndie
+  name: Meka-F (Syndie)
+  spritePath: _HL/Mobs/Silicon/Borg/Syndicate/fmeka_syndie.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMekaSyndie
+  dummyPrototype: BorgChassisSecurityMekaSyndie
+  name: Meka (Syndie)
+  spritePath: _HL/Mobs/Silicon/Borg/Syndicate/meka_syndie.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeMekaMSyndie
+  dummyPrototype: BorgChassisSecurityMekaMSyndie
+  name: Meka-M (Syndie)
+  spritePath: _HL/Mobs/Silicon/Borg/Syndicate/mmeka_syndie.rsi
+
+- type: borgSubtype
+  parent: BorgSecuritySubtypeBase
+  id: BorgSecuritySubtypeK4tSyndie
+  dummyPrototype: BorgChassisSecurityK4tSyndie
+  name: K4T-SYN
+  spritePath: _HL/Mobs/Silicon/Borg/Syndicate/k4t_syndie.rsi
 
 # region service
 

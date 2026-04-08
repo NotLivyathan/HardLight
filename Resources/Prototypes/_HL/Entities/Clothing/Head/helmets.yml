@@ -37,3 +37,48 @@
   - type: PointLight
     radius: 7
     energy: 3
+    
+- type: entity
+  parent: [ ClothingHeadBase, BaseC3ExpeditionContraband, ContrabandClothing ]
+  id: ClothingHeadHelmetAberrant
+  name: aberrant helmet
+  description: Wearing this helmet feels like putting your head inside of someone's corpse. But hey, at least it can open up for eating.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Head/aberranthelm.rsi
+    layers:
+    - state: icon
+  - type: Clothing
+    clothingVisuals:
+      head:
+      - state: equipped-head
+      head-vox:
+      - state: equipped-head-vox
+      head-reptilian:
+      - state: equipped-head-reptilian
+  - type: TemperatureProtection
+    heatingCoefficient: 0.01 #Same as fire helmets or eva helmets. I just felt like it
+    coolingCoefficient: 0.2
+  - type: IdentityBlocker
+  - type: BreathMask
+  - type: Butcherable
+    butcheringType: Knife
+    spawned:
+    - id: MaterialSheetMeat1
+      amount: 2
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 1.15 #Flesh that hates etc, burn that creature
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide

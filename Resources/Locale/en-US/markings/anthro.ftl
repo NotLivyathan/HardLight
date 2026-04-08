@@ -845,6 +845,18 @@ marking-EarsFourEars2-m_ears_four_ears_2_FRONT_tertiary = Four Ears (Secondary)
 marking-EarsFourEars2-m_ears_four_ears_2_ADJ_primary = Four Ears (Primary)
 marking-EarsFourEars2 = Four Ears
 
+marking-EarsSixEars-m_ears_six_ears_2_FRONT_primary = Six Ears (Primary)
+marking-EarsSixEars-m_ears_six_ears_2_FRONT_tertiary = Six Ears (Secondary)
+marking-EarsSixEars-m_ears_six_ears_2_ADJ_primary = Six Ears (Primary)
+marking-EarsSixEars-m_ears_six_ears_2_ADJ_tertiary = Six Ears (Secondary)
+marking-EarsSixEars = Six Ears
+
+marking-EarsAltEars-m_ears_six_ears_2_FRONT_primary = Alt Ears (Primary)
+marking-EarsAltEars-m_ears_six_ears_2_FRONT_tertiary = Alt Ears (Secondary)
+marking-EarsAltEars-m_ears_six_ears_2_ADJ_primary = Alt Ears (Primary)
+marking-EarsAltEars-m_ears_six_ears_2_ADJ_tertiary = Alt Ears (Secondary)
+marking-EarsAltEars = Alt Ears
+
 marking-EarsHammerhead-m_ears_hammerhead_FRONT_primary = Hammerhead Projections (Secondary)
 marking-EarsHammerhead-m_ears_hammerhead_FRONT_secondary = Hammerhead Projections (Primary)
 marking-EarsHammerhead = Hammerhead Projections

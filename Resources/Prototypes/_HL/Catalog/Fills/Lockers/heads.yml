@@ -234,6 +234,9 @@
     - id: ClothingBeltMedicalFilled
     - id: RubberStampDoctor
     - id: CMOIDCard
+    # Hardlight Shitmed :3
+    - id: MedicalBiofabMachineBoard
+    - id: BiomassReclaimerMachineCircuitboard
 
 # Hardsuit table, used for suit storage as well
 - type: entityTable

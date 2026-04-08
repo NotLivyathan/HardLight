@@ -1,0 +1,49 @@
+- type: entity
+  id: HLFreezerPouch
+  parent: NFPouchBase
+  name: Freezer Pouch
+  description: A pouch internally lined with a self-cooling material, preventing any contents from spoiling.
+  components:
+  - type: AntiRottingContainer
+  - type: Sprite
+    layers:
+    - state: base
+      color: "#4d4d5d"
+    - state: closed
+      map: [ "closeLayer" ]
+      color: "#c8c8d7"
+    - state: open
+      color: "#c8c8d7"
+      map: [ "openLayer" ]
+      visible: false
+    - state: inside
+      map: ["insideLayer"]
+      visible: false
+    - state: fill-med-1
+      map: [ "pouchFill1" ]
+      visible: false
+    - state: fill-med-2
+      map: [ "pouchFill2" ]
+      visible: false
+    - state: fill-med-3
+      map: [ "pouchFill3" ]
+      visible: false
+    - state: fill-med-4
+      map: [ "pouchFill4" ]
+      visible: false
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: inhand-left
+        color: "#c8c8d7"
+      right:
+      - state: inhand-right
+        color: "#c8c8d7"
+  - type: Clothing
+    clothingVisuals:
+      belt:
+      - state: equipped-BELT
+        color: "#c8c8d7"
+      pocket:
+      - state: equipped-BELT
+        color: "#c8c8d7"

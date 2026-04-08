@@ -86,3 +86,37 @@
     fiberMaterial: fibers-durathread
     fiberColor: fibers-pink
   - type: FingerprintMask
+ 
+- type: entity
+  parent: [ClothingHandsBase, BaseC3ExpeditionContraband]
+  id: ClothingHandsGlovesAberrant
+  name: aberrant gloves
+  description: For some reason, you feel everything you touch with those gloves as if you did not have any.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Gloves/aberrantgloves.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Gloves/aberrantgloves.rsi
+  - type: Butcherable
+    butcheringType: Knife
+    spawned:
+    - id: MaterialSheetMeat1
+      amount: 1
+  - type: MeleeWeapon
+    autoAttack: True
+    attackRate: 1.5
+    damage:
+      types:
+        Slash: 15 #Pretty good, but its c3, after all. Plus heat weakness
+    soundHit:
+      collection: AlienClaw
+    animation: WeaponArcClaw
+    mustBeEquippedToUse: true
+  - type: Fiber
+    fiberMaterial: fibers-flesh
+  - type: FingerprintMask
+  - type: Armor
+    modifiers:
+      coefficients:
+        Heat: 1.1 
+  - type: Insulated

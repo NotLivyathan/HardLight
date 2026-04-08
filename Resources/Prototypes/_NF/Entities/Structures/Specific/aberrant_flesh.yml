@@ -69,6 +69,6 @@
           collection: gib
       - !type:SpawnEntitiesBehavior
         spawn:
-          FoodMeat:
+          AberrantFleshGiftCore:
             min: 1
             max: 2

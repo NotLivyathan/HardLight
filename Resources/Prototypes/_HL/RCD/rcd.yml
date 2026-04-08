@@ -9,3 +9,59 @@
 #  collisionMask: FullTileMask
 #  rotation: Camera
 #  fx: EffectRCDConstruct3
+
+- type: rcd
+  id: PlatingNE
+  name: NE plating
+  category: Floors
+  sprite: /Textures/_Mono/Tiles/plating/ne.png
+  mode: ConstructTile
+  prototype: PlatingCornerNE
+  cost: 1
+  delay: 1
+  collisionMask: InteractImpassable
+  rules:
+    - CanBuildOnEmptyTile
+  fx: EffectRCDConstruct1
+
+- type: rcd
+  id: PlatingNW
+  name: NW plating
+  category: Floors
+  sprite: /Textures/_Mono/Tiles/plating/nw.png
+  mode: ConstructTile
+  prototype: PlatingCornerNW
+  cost: 1
+  delay: 1
+  collisionMask: InteractImpassable
+  rules:
+    - CanBuildOnEmptyTile
+  fx: EffectRCDConstruct1
+
+- type: rcd
+  id: PlatingSE
+  name: SE plating
+  category: Floors
+  sprite: /Textures/_Mono/Tiles/plating/se.png
+  mode: ConstructTile
+  prototype: PlatingCornerSE
+  cost: 1
+  delay: 1
+  collisionMask: InteractImpassable
+  rules:
+    - CanBuildOnEmptyTile
+  fx: EffectRCDConstruct1
+
+- type: rcd
+  id: PlatingSW
+  name: SW plating
+  category: Floors
+  sprite: /Textures/_Mono/Tiles/plating/sw.png
+  mode: ConstructTile
+  prototype: PlatingCornerSW
+  cost: 1
+  delay: 1
+  collisionMask: InteractImpassable
+  rules:
+    - CanBuildOnEmptyTile
+  fx: EffectRCDConstruct1

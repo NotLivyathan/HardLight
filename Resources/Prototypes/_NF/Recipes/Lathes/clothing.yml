@@ -909,6 +909,15 @@
   parent: NFBaseBeltRecipe
   result: NFPouchCargo
 
+# Hardlight Freezer Pouch
+- type: latheRecipe
+  id: HLFreezerPouch
+  parent: NFBaseBeltRecipe
+  result: HLFreezerPouch
+  materials:
+    Cloth: 600
+    Durathread: 400
+
 - type: latheRecipe
   parent: BaseToolRecipe
   id: UtilityBeltChiefEngineer

@@ -51,3 +51,31 @@
     sprite: _HL/Clothing/Shoes/zoomshoes.rsi
   - type: Clothing
     sprite: _HL/Clothing/Shoes/zoomshoes.rsi
+    
+- type: entity
+  parent: [ClothingShoesBaseButcherable, BaseC3ExpeditionContraband, ContrabandClothing ] # Frontier: BaseMajorContraband<BaseC3Contraband, added ContrabandClothing
+  id: ClothingShoesAberrant #Heavily inspired by Look Outside, i will be honest with you all
+  name: aberrant boots
+  description: A pair of surprisingly comfortable shoes with teeth at the bottom that grip onto any surface.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Shoes/aberrantboots.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Shoes/aberrantboots.rsi
+  - type: NoSlip
+  - type: Butcherable
+    butcheringType: Knife
+    spawned:
+    - id: MaterialSheetMeat1
+      amount: 1
+  - type: Magboots # always have gravity because le teeth
+  - type: ClothingSpeedModifier
+    walkModifier: 1.2 #Just a little treat, makes them better than CE magboots but still a c3 contraband item. Offset by heat weakness too.
+    sprintModifier: 1.2
+  - type: FootstepModifier
+    footstepSoundCollection:
+      path: /Audio/Effects/Fluids/blood1.ogg
+  - type: Armor
+    modifiers:
+      coefficients:
+        Heat: 1.1

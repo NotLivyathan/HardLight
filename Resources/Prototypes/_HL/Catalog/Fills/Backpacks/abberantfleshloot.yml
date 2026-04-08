@@ -1,0 +1,95 @@
+- type: entity
+  parent: BaseItem
+  id: AberrantFleshGiftCore
+  name: aberrant flesh core
+  description: Its still moving...
+  abstract: false
+  categories: [ HideSpawnMenu ]
+  suffix: NPC Loot
+  components:
+  - type: Sprite
+    sprite: Structures/Specific/Anomalies/Cores/flesh_core.rsi
+    layers:
+      - state: core
+      - state: pulse
+  - type: PointLight
+    radius: 3
+    energy: 3.5
+    color: "#cb5b7e"
+    castShadows: false
+  - type: Item
+    size: Normal
+  - type: SpawnItemsOnUse
+    items:
+      #General food and items
+      - id: FoodMeatAnomaly
+        prob: 0.07
+      - id: AnomalyCoreFleshInert
+        prob: 0.1
+      - id: AnomalyCoreFlesh
+        prob: 0.05
+      - id: FoodMeatDragon
+        prob: 0.07
+      - id: FoodMeatCat
+        prob: 0.07
+      - id: FoodMeatCorgi
+        prob: 0.07
+      - id: MaterialBiomass50
+        prob: 0.3
+      - id: MaterialBones
+        prob: 0.3
+      - id: MaterialGoliathHide1
+        prob: 0.07
+      - id: MaterialSheetMeat
+        prob: 0.3     
+      - id: FoodMeatFish
+        prob: 0.3
+      - id: FoodMeatBacon
+        prob: 0.2
+      - id: FoodMeatChicken
+        prob: 0.3
+      - id: FoodMeatDuck
+        prob: 0.3
+      - id: FoodMeatCrab
+        prob: 0.3
+      - id: FoodMeatWheat
+        prob: 0.3
+      - id: FoodMeat
+        prob: 0.3
+      - id: FoodMeatHuman
+        prob: 0.3
+      - id: FoodMeatBear
+        prob: 0.3
+      - id: FoodMeatPenguin
+        prob: 0.3
+      - id: FoodMeatGoliath #I mean, it already drops the hide too...
+        prob: 0.3
+      - id: FoodMeatRat
+        prob: 0.3
+      - id: FoodMeatLizard
+        prob: 0.3
+      - id: FoodMeatSpider
+        prob: 0.3
+      - id: FoodMeatSnake
+        prob: 0.3
+      # Armors and weapons
+      - id: ClothingOuterArmorAberrant 
+        prob: 0.05    
+      - id: ClothingShoesAberrant 
+        prob: 0.05
+      - id: ClothingHeadHelmetAberrant 
+        prob: 0.05
+      - id: ClothingHandsGlovesAberrant 
+        prob: 0.05
+      - id: AberrantTail
+        prob: 0.03
+      - id: AberrantBlade
+        prob: 0.03
+      - id: AberrantSpikeGun
+        prob: 0.03
+      - id: AberrantSpikeSniper
+        prob: 0.03
+      - id: AberrantSpikeShotgun
+        prob: 0.03
+    sound:
+      path: /Audio/Effects/gib2.ogg

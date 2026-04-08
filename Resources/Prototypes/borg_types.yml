@@ -55,7 +55,6 @@
   - BorgModuleConstruction
   - BorgModuleRCD
   - BorgModuleCable
-  - BorgModuleJetpack # Frontier
 
   radioChannels:
   - Engineering
@@ -92,7 +91,6 @@
   - BorgModuleMining
   - BorgModuleTraversal
   - BorgModuleAppraisal
-  - BorgModuleJetpack # Frontier
 
   radioChannels:
   - Supply
@@ -182,6 +180,11 @@
   - type: ShowHealthIcons
     damageContainers:
     - Biological
+  #Start HL
+  - type: SurgerySpeedModifier
+    speedModifier: 1.75
+  - type: Sanitized
+  #End HL
 
   # Visual
   inventoryTemplateId: borgDutchHL # HardLight: borgDutch<borgDutchHL

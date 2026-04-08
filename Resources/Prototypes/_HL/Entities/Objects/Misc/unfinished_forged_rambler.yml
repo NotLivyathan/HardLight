@@ -10,6 +10,7 @@
   - type: Sprite
     sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler.rsi
     state: unfinished
+    scale: 0.7, 0.7
   - type: ToolRefinable
     refineResult:
     - id: WeaponRamblerShotgun

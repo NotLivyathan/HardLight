@@ -192,7 +192,7 @@
   name: pooltoy-name
   description: pooltoy-text
   category: Physical
-  cost: 8
+  cost: 2
   mutuallyExclusiveTraits:
   - Heatresistant
   - Insulated

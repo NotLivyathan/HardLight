@@ -1,0 +1,21 @@
+
+- type: entity
+  parent: BaseItem
+  id: UnfinishedForgedHardsuit
+  name: forged hardsuit parts
+  description: Some assembly may be required. Needs welding.
+  components:
+  - type: Item
+    size: Large
+  - type: Sprite
+    sprite: _HL/Clothing/OuterClothing/Hardsuits/forgedhardsuit.rsi
+    state: unfinished
+  - type: ToolRefinable
+    refineResult:
+    - id: ClothingForgedHardsuit
+  - type: Tag
+    tags:
+    - Metal
+  - type: Construction
+    graph: ForgedHardsuitGraph
+    node: vest

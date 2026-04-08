@@ -182,6 +182,7 @@
   - NFPouchMime
   - NFPouchCaptain
   - NFPouchCargo
+  - HLFreezerPouch # Hardlight
   # AdvancedFoodService
   - DeepFryerMachineCircuitboard
   - ServiceSelectiveDropper

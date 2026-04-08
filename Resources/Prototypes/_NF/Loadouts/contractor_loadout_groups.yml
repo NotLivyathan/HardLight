@@ -975,6 +975,7 @@
   maxLimit: 6 # Caveat emptor - enjoy picking stuff up off the ground
   loadouts:
   - AACTablet
+  - ContractorClicker # HL Added clicker to generic loadouts
   - ContractorMonkeyCubeWrapped
   - ContractorKoboldCubeWrapped
   - ContractorCigPackBlue

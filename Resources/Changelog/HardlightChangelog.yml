@@ -2316,3 +2316,59 @@ Entries:
       message: Aphrodesiac bite now has a cooldown.
   id: 252
   time: '2026-04-04T19:55:06.0000000+00:00'
+- author: Magniras
+  changes:
+    - type: Add
+      message: Restored cool sexy thieving gloves
+    - type: Remove
+      message: Removed boring smelly thieving gloves
+  id: 253
+  time: '2026-04-08T21:36:19.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Tweak
+      message: ESAR now fully replaces the WT and Energy shotgun for HoS.
+  id: 254
+  time: '2026-04-08T22:49:24.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Fix
+      message: Plating and Lattice can now be traversed at normal speed again.
+  id: 255
+  time: '2026-04-08T22:49:44.0000000+00:00'
+- author: Iisazel
+  changes:
+    - type: Add
+      message: >-
+        Flesh expeditions now have improved loot! Time to break some
+        assimilation sacks!
+  id: 256
+  time: '2026-04-08T22:50:36.0000000+00:00'
+- author: Nikode16
+  changes:
+    - type: Add
+      message: >-
+        Freezer Pouch so now you can live out your space warlord organ trading
+        simulator fantasy.
+  id: 257
+  time: '2026-04-08T22:56:36.0000000+00:00'
+- author: Iisazel
+  changes:
+    - type: Fix
+      message: Avalis can now use cryopods correctly
+  id: 258
+  time: '2026-04-08T22:59:33.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: UHP Gunnery server is now researchable.
+    - type: Tweak
+      message: Gunnery servers now require increasingly expensive amounts of materials.
+  id: 259
+  time: '2026-04-08T23:01:16.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Tweak
+      message: Newly bought ships do not include a latejoin spot anymore.
+  id: 260
+  time: '2026-04-08T23:11:01.0000000+00:00'

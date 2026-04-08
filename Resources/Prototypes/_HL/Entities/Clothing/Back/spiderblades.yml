@@ -40,3 +40,44 @@
         Piercing: 5
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+      
+- type: entity
+  parent: [Clothing, BaseC3ExpeditionContraband]
+  id: AberrantTail
+  name: aberrant biting tentacle
+  description: A long flesh tentacle with a mouth ending with a mouth. Easily connects to your spine...if you dare to do it.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Back/aberrantback.rsi
+    state: icon
+  - type: Clothing
+    sprite: _HL/Clothing/Back/aberrantback.rsi          
+    quickEquip: true
+    slots:
+    - back
+    - suitStorage
+  - type: Butcherable
+    butcheringType: Knife
+    spawned:
+    - id: MaterialSheetMeat1
+      amount: 3
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 1.1
+  - type: MeleeWeapon
+    autoAttack: true
+    mustBeEquippedToUse: true
+    wideAnimationRotation: 90
+    attackRate: 2.0
+    animation: WeaponArcBite
+    usableWhileEquipped: true
+    damage:
+      types:
+        Slash: 6
+        Piercing: 10
+    soundHit:
+      path: /Audio/Effects/bite.ogg
