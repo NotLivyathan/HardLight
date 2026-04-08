@@ -42,8 +42,8 @@ public sealed partial class IngestionSystem
         var ev = new GetUtensilsEvent();
         RaiseLocalEvent(target, ref ev);
 
-        //Prevents food usage with a wrong utensil
-        if ((ev.Types & utensil.Comp.Types) == 0)
+        // Prevents food usage with a wrong utensil
+        if (ev.Types != UtensilType.None && (ev.Types & utensil.Comp.Types) == 0)
         {
             _popup.PopupClient(Loc.GetString("ingestion-try-use-wrong-utensil", ("verb", GetEdibleVerb(target)),("food", target), ("utensil", utensil.Owner)), user, user);
             return true;
