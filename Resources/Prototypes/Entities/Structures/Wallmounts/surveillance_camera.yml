@@ -25,7 +25,7 @@
         layer:
         - TabletopMachineLayer
   - type: CameraActiveOnCollide
-    requiresPower: false # TODO: Change this when AI can no longer see via unpowered cameras
+    requiresPower: true # HardLight: false<true; upstream took too long.
   - type: PointLight
     enabled: false
     radius: 5
