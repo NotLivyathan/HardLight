@@ -534,6 +534,8 @@
   - type: TimerTrigger
     delay: 3
   - type: ReleaseGasOnTrigger
+    keysIn:
+    - timer
     removeFraction: 0.25
     air:
       volume: 1000

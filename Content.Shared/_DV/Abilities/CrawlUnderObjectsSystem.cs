@@ -1,15 +1,16 @@
 using Content.Shared.Actions;
 using Content.Shared.Climbing.Components;
 using Content.Shared.Climbing.Events;
-// using Content.Shared.Maps; // HardLight
 using Content.Shared.Mobs;
 using Content.Shared.Movement.Systems;
-// using Content.Shared.Physics; // HardLight
 using Content.Shared.Popups;
 using Content.Shared.Standing;
+using Content.Shared.Input; // HardLight
+using Robust.Shared.Input.Binding; // HardLight
 using Robust.Shared.Network; // HardLight
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Player;
 using Robust.Shared.Timing; // HardLight
 
 namespace Content.Shared._DV.Abilities;
@@ -32,6 +33,10 @@ public sealed partial class CrawlUnderObjectsSystem : EntitySystem // HardLight:
     {
         base.Initialize();
 
+        CommandBinds.Builder // HardLight
+            .Bind(ContentKeyFunctions.ToggleCrawlingUnder, InputCmdHandler.FromDelegate(HandleToggleCrawlingUnder, handle: false))
+            .Register<CrawlUnderObjectsSystem>();
+
         SubscribeLocalEvent<CrawlUnderObjectsComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<CrawlUnderObjectsComponent, ComponentStartup>(OnStartup); // HardLight
         SubscribeLocalEvent<CrawlUnderObjectsComponent, ToggleCrawlingStateEvent>(OnToggleCrawling);
@@ -46,6 +51,37 @@ public sealed partial class CrawlUnderObjectsSystem : EntitySystem // HardLight:
 
         SubscribeLocalEvent<FixturesComponent, CrawlingUpdatedEvent>(OnCrawlingUpdated);
     }
+
+    // HardLight start
+    public override void Shutdown()
+    {
+        base.Shutdown();
+
+        CommandBinds.Unregister<CrawlUnderObjectsSystem>();
+    }
+
+    private void HandleToggleCrawlingUnder(ICommonSession? session)
+    {
+        if (session is not { } playerSession)
+            return;
+
+        if (playerSession.AttachedEntity is not { Valid: true } ent || !Exists(ent))
+            return;
+
+        if (!CanProcessPredictedInput())
+            return;
+
+        if (!TryComp<CrawlUnderObjectsComponent>(ent, out var crawl))
+            return;
+
+        TryToggle((ent, crawl));
+    }
+
+    private bool CanProcessPredictedInput()
+    {
+        return !_net.IsClient || _timing.IsFirstTimePredicted;
+    }
+    // HardLight end
 
     private void OnMapInit(Entity<CrawlUnderObjectsComponent> ent, ref MapInitEvent args)
     {
@@ -81,7 +117,7 @@ public sealed partial class CrawlUnderObjectsSystem : EntitySystem // HardLight:
 
     private void OnToggleCrawling(Entity<CrawlUnderObjectsComponent> ent, ref ToggleCrawlingStateEvent args)
     {
-        if (_net.IsClient && !_timing.IsFirstTimePredicted) // HardLight
+        if (!CanProcessPredictedInput()) // HardLight
             return;
 
         if (args.Handled)
