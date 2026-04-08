@@ -82,5 +82,7 @@
   description: trait-painnumbness-desc
   category: Physical
   cost: -1
-  components:
-  - type: PainNumbness
+  specials:
+  - !type:ApplyStatusEffectSpecial
+    statusEffects:
+    - PainNumbnessTraitStatusEffect
