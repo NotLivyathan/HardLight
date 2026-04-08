@@ -19,13 +19,13 @@ public sealed partial class CrewManifestUiFragment : BoxContainer
         VerticalExpand = true;
     }
 
-    public void UpdateState(CrewManifestEntries? entries) // coyote: remove name
+    public void UpdateState(CrewManifestEntries? entries, string? message = null) // Coyote: Removed name, // HardLight: Added string? & message = null
     {
         CrewManifestListing.DisposeAllChildren();
         CrewManifestListing.RemoveAllChildren();
 
-        StationNameContainer.Visible = entries != null;
-        StationName.Text = "Crew Manifest"; // coyote: remove name
+        StationNameContainer.Visible = entries != null || !string.IsNullOrEmpty(message); // HardLight: Added !string.IsNullOrEmpty(message)
+        StationName.Text = string.IsNullOrEmpty(message) ? "Crew Manifest" : message; // HardLight: Rewritten for Coyote compatibility.
 
         if (entries == null)
             return;
