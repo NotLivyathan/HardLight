@@ -18,10 +18,8 @@
   - CraftMedicalBag
   - CraftClothingEyesHudMedical
   - CraftClothingEyesEyepatchHudMedical
-  - LiddedBottle
-  - LiddedVial
-  - BoneGel # Shitmed Change
-  - OmnimedTool # Shitmed Change
+  - BoneGel # Shitmed
+  - OmnimedTool # Shitmed
 
 - type: latheRecipePack
   id: SM
@@ -37,7 +35,7 @@
   - BeltMedicalEMT
   - BeltMedical
   - CraftMedicalBag
-  - BoneGel # Shitmed Change
+  - BoneGel # Shitmed
 
 - type: latheRecipePack
   id: NFMedical

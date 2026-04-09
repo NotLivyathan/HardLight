@@ -525,7 +525,7 @@
     - item: MiningDrill
     - item: Shovel
     - item: MineralScannerUnpowered
-    - item: NFOreBag # Frontier: BorgOreBag<NFOreBag
+    - item: BorgOreBag
     - item: RadioHandheldNF # Frontier
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: mining-module }
@@ -696,19 +696,17 @@
 
 - type: entity # HardLight: TODO: Replace with upstream PR #42850
   id: BorgModuleXenoRCD
-  parent: [ BorgModuleRCD ]
-  name: RCD cyborg module
+  parent: BorgModuleRCD
+  name: RCD xenoborg module
   components:
   - type: Sprite
     layers:
     - state: xenoborg_engi
     - state: icon-rcd
   - type: ItemBorgModule
-    moduleId: XenoRCD # Frontier
-    items:
-    - RCDXeno
-  - type: BorgModuleIcon
-    icon: { sprite: Interface/Actions/actions_borg.rsi, state: rcd-module }
+    hands:
+      items:
+      - RCDXeno
 
 # janitorial modules (this gets its own unique things because janis are epic)
 - type: entity

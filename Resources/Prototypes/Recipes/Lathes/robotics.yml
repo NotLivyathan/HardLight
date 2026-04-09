@@ -370,15 +370,16 @@
   id: BorgModuleClowning
   result: BorgModuleClowning
 
-- type: latheRecipe
-  parent: BaseGoldBorgModuleRecipe
-  id: BorgModuleAdvancedClowning
-  result: BorgModuleAdvancedClowning
-  materials:
-    Steel: 500
-    Glass: 500
-    Plastic: 250
-    Bananium: 375
+# HardLight: We don't have most of the items in this module, so I'm commenting it out for now until we do.
+# - type: latheRecipe
+#   parent: BaseGoldBorgModuleRecipe
+#   id: BorgModuleAdvancedClowning
+#   result: BorgModuleAdvancedClowning
+#   materials:
+#     Steel: 500
+#     Glass: 500
+#     Plastic: 250
+#     Bananium: 375
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
