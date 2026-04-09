@@ -90,7 +90,6 @@
   name: light
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi
@@ -109,7 +108,6 @@
   name: light
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi
@@ -128,7 +126,6 @@
   name: light
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi
@@ -147,7 +144,6 @@
   name: light
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi
@@ -166,7 +162,6 @@
   name: the dreaming
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi
@@ -185,7 +180,6 @@
   name: light
   components:
   - type: ActiveTimerTrigger
-    timeRemaining: 0
   - type: DeleteOnTrigger
   - type: Sprite
     sprite: Objects/Weapons/Grenades/janitor.rsi

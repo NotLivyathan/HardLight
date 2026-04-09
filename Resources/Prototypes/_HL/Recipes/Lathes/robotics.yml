@@ -7,24 +7,9 @@
 
 - type: latheRecipe
   parent: BaseBorgModuleRecipe
-  id: BorgModuleNFService
-  result: BorgModuleNFService
-
-- type: latheRecipe
-  parent: BaseBorgModuleRecipe
-  id: BorgModuleRCDShipyard
-  result: BorgModuleRCDShipyard
-
-- type: latheRecipe
-  parent: BaseGoldBorgModuleRecipe
-  id: BorgModuleadvancedmeasures
-  result: BorgModuleadvancedmeasures
-
-- type: latheRecipe
-  parent: BaseBorgModuleRecipe
   id: BorgModuleStorage
   result: BorgModuleStorage
- 
+
 - type: latheRecipe
   id: OmniHandRight
   result: CyberneticsOmnihandRight
@@ -34,7 +19,7 @@
     Plastic: 300
     Plasma: 500
     Gold: 100
-    
+
 - type: latheRecipe
   id: OmniHandLeft
   result: CyberneticsOmnihandLeft

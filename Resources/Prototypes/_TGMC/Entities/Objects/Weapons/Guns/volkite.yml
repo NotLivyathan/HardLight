@@ -128,8 +128,9 @@
     walkModifier: 0.25
     sprintModifier: 0.25
   - type: ClothingSlotAmmoProvider
+  - type: SlotBasedConnectedContainer # HardLight
     targetSlot: BACK
-    providerWhitelist:
+    containerWhitelist: # HardLight: providerWhitelist<containerWhitelist
       tags:
       - VolkiteBackpack
 

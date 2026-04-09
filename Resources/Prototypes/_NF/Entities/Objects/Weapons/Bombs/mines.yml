@@ -43,7 +43,6 @@
   - type: ExplodeOnTrigger
   - type: DeleteOnTrigger
   - type: TimerTrigger
-    useVerbInstead: true
     beepInterval: .25
     beepSound:
       path: /Audio/Effects/beep_landmine.ogg
@@ -57,7 +56,8 @@
         radius: 0.5
     repeating: false
     requiresAnchored: false
-    whitelist:
+  - type: WhitelistTriggerCondition # HardLight: Whitelist moved to modern components.
+    userWhitelist:
       components:
         - Actor
 

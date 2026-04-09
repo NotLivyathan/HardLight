@@ -29,8 +29,8 @@
       borg_module:
         - BorgModuleTool
         - BorgModuleDiagnosis
-        - BorgModuleTreatment
-  - type: SurgerySpeedModifier #shitmed
+        - BorgModuleTopicals
+  - type: SurgerySpeedModifier # Shitmed
     speedModifier: 1.75
   - type: ItemSlots
     slots:
@@ -209,7 +209,7 @@
     movementStateOff: abyssquad_moving
     movementStateOn: abyssquad_movingballz
   - type: HitscanBatteryAmmoProvider
-    proto: Abysslaser # Frontier: use NF variant
+    proto: Abysslaser # Frontier: Use NF variant
     fireCost: 100
   - type: BatterySelfRecharger
     autoRecharge: true
@@ -240,7 +240,7 @@
     sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
     state: impact_abyss_laser
   maxLength: 21
-    
+
 - type: entity
   id: PlayerBorgQuadViz
   parent: AbyssQuad
@@ -306,7 +306,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellMedium        
+        startingItem: PowerCellMedium
 
 - type: entity
   id: PlayerBorgQuadPetal
@@ -324,7 +324,7 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellMedium 
+        startingItem: PowerCellMedium
 
 - type: entity
   id: PlayerBorgQuadMoss

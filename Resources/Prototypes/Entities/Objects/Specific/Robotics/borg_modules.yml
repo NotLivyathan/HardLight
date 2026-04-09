@@ -694,6 +694,22 @@
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: rcd-module }
 
+- type: entity # HardLight: TODO: Replace with upstream PR #42850
+  id: BorgModuleXenoRCD
+  parent: [ BorgModuleRCD ]
+  name: RCD cyborg module
+  components:
+  - type: Sprite
+    layers:
+    - state: xenoborg_engi
+    - state: icon-rcd
+  - type: ItemBorgModule
+    moduleId: XenoRCD # Frontier
+    items:
+    - RCDXeno
+  - type: BorgModuleIcon
+    icon: { sprite: Interface/Actions/actions_borg.rsi, state: rcd-module }
+
 # janitorial modules (this gets its own unique things because janis are epic)
 - type: entity
   id: BorgModuleCustodial

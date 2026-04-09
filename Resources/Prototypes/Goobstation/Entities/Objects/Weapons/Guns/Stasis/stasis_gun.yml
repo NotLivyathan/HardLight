@@ -33,11 +33,12 @@
   - type: UseDelay
     delay: 0.25
   - type: ClothingSlotAmmoProvider
+  - type: SlotBasedConnectedContainer # HardLight
     targetSlot: BACK
-    providerWhitelist:
+    containerWhitelist: # HardLight: providerWhitelist<containerWhitelist
       tags:
       - StasisBattery
-      
+
 - type: entity
   id: WeaponStasisGun
   parent: WeaponStasisGunBase
