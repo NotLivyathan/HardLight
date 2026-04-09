@@ -16,11 +16,15 @@ namespace Content.Client.Light;
 /// </summary>
 public sealed class AmbientOcclusionOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> UnshadedShader = "unshaded";
+    private static readonly ProtoId<ShaderPrototype> StencilMaskShader = "StencilMask";
+    private static readonly ProtoId<ShaderPrototype> StencilEqualDrawShader = "StencilEqualDraw";
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly IConfigurationManager _cfgManager = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly ITileDefinitionManager _tileDefManager = default!;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceBelowEntities;
 
@@ -59,7 +63,6 @@ public sealed class AmbientOcclusionOverlay : Overlay
         var lookups = _entManager.System<EntityLookupSystem>();
         var query = _entManager.System<OccluderSystem>();
         var xformSystem = _entManager.System<SharedTransformSystem>();
-        var turfSystem = _entManager.System<TurfSystem>();
         var invMatrix = args.Viewport.GetWorldToLocalMatrix();
 
         var res = _resources.GetForViewport(args.Viewport, static _ => new CachedResources());
@@ -109,7 +112,7 @@ public sealed class AmbientOcclusionOverlay : Overlay
             () =>
             {
                 // Don't want lighting affecting it.
-                worldHandle.UseShader(_proto.Index<ShaderPrototype>("unshaded").Instance());
+                worldHandle.UseShader(_proto.Index(UnshadedShader).Instance());
 
                 foreach (var grid in _mapManager.FindGridsIntersecting(mapId, worldBounds))
                 {
@@ -119,7 +122,7 @@ public sealed class AmbientOcclusionOverlay : Overlay
                     worldHandle.SetTransform(worldToTextureMatrix);
                     while (tiles.MoveNext(out var tileRef))
                     {
-                        if (turfSystem.IsSpace(tileRef))
+                        if (tileRef.IsSpace(_tileDefManager))
                             continue;
 
                         var bounds = lookups.GetLocalBounds(tileRef, grid.TileSize);
@@ -130,7 +133,7 @@ public sealed class AmbientOcclusionOverlay : Overlay
             }, Color.Transparent);
 
         // Draw the stencil texture to depth buffer.
-        worldHandle.UseShader(_proto.Index<ShaderPrototype>("StencilMask").Instance());
+        worldHandle.UseShader(_proto.Index(StencilMaskShader).Instance());
         worldHandle.DrawTextureRect(res.AOStencilTarget!.Texture, worldBounds);
 
         // Draw the Blurred AO texture finally.
