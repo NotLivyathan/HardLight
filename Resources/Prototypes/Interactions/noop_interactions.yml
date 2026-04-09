@@ -5,7 +5,6 @@
   requiresHands: false
   requiresCanInteract: false
   requiresUnblocked: false
-  requiresCanInteract: false
   contactInteraction: false
   allowSelfInteract: true
   icon: /Textures/Interface/Actions/eyeopen.png

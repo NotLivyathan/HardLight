@@ -250,6 +250,7 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
 
         if (proto.Requirement?.IsMet(args, proto, _verbDependencies) == false)
         {
+            skipAdding = proto.HideByRequirement;
             if (args.Blackboard.TryGetValue("interaction-verb-failure-locale", out var locale) && locale is string localeStr)
             {
                 errorLocale = localeStr;
@@ -258,7 +259,6 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
             {
                 errorLocale = "interaction-verb-invalid";
             }
-            skipAdding = proto.HideByRequirement && errorLocale != "interaction-verb-mask-blocked";
             return false;
         }
 
