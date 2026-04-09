@@ -18,6 +18,7 @@ using Robust.Shared.GameObjects; // HardLight: For SpawnTimer extension method
 using Robust.Shared.Map; // Frontier
 using Robust.Shared.Map.Components;
 using Robust.Shared.Player;
+using RobustTimer = Robust.Shared.Timing.Timer; // HardLight
 
 namespace Content.Server.Salvage;
 
