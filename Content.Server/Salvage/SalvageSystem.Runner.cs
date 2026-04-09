@@ -394,7 +394,7 @@ public sealed partial class SalvageSystem
 
                 // HardLight: Generate new missions after a shorter delay to reduce confusion
                 var consoleUid = component.Console.Value;
-                RobustTimer.Spawn(TimeSpan.FromSeconds(0.5), () => // consoleUid.SpawnTimer<RobustTimer.Spawn
+                consoleUid.SpawnTimer(TimeSpan.FromSeconds(0.5), () =>
                 {
                     if (Exists(consoleUid) && TryComp<SalvageExpeditionConsoleComponent>(consoleUid, out var comp))
                     {
