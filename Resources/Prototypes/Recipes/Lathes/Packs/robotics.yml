@@ -125,7 +125,7 @@
   recipes:
   - BorgModuleAdvancedCleaning
   - BorgModuleAdvancedTool
-  - BorgModuleAdvancedClowning
+  # - BorgModuleAdvancedClowning # HardLight: We don't have most of the items in this module, so I'm commenting it out for now until we do.
   - BorgModuleAdvancedChemical
   - BorgModuleAdvancedMining
   - BorgModuleAdvancedParamedic # Frontier
