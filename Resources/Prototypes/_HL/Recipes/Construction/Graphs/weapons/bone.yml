@@ -1,0 +1,157 @@
+- type: constructionGraph
+  id: BoneArrow
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneArrow
+      steps:
+      - material: Bones
+        amount: 2
+        doAfter: 0.5
+      - material: Cloth
+        amount: 1
+        doAfter: 0.5
+
+  - node: BoneArrow
+    entity: ArrowBone
+    
+- type: constructionGraph
+  id: BoneBow
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneBow
+      steps:
+      - material: Bones
+        amount: 20
+        doAfter: 30
+      - material: Cloth
+        amount: 8
+        doAfter: 4
+
+  - node: BoneBow
+    entity: BowBone
+   
+- type: constructionGraph
+  id: BoneKnife
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneKnife
+      steps:
+      - material: Bones
+        amount: 6
+        doAfter: 15
+      - material: Cloth
+        amount: 2
+        doAfter: 4
+
+  - node: BoneKnife
+    entity: KnifeBone
+   
+- type: constructionGraph
+  id: BoneHatchet
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneHatchet
+      steps:
+      - material: Bones
+        amount: 8
+        doAfter: 20
+      - material: Cloth
+        amount: 3
+        doAfter: 4
+
+  - node: BoneHatchet
+    entity: BoneToolHatchet
+    
+- type: constructionGraph
+  id: BoneHalberd
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneHalberd
+      steps:
+      - material: Bones
+        amount: 50
+        doAfter: 116
+      - material: Cloth
+        amount: 5
+        doAfter: 4
+
+  - node: BoneHalberd
+    entity: WeaponHalberdBone
+    
+- type: constructionGraph
+  id: BoneClub
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneClub
+      steps:
+      - material: Bones
+        amount: 12
+        doAfter: 20
+
+  - node: BoneClub
+    entity: ClubBone
+    
+- type: constructionGraph
+  id: BoneKnifeFang
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneKnifeFang
+      steps:
+      - material: Bones
+        amount: 5
+        doAfter: 20
+      - material: Cloth
+        amount: 2
+        doAfter: 8
+      - tag: DinoFang
+        name: construction-graph-tag-dino-fang
+        icon:
+          sprite: Objects/Materials/Mob/sharktooth.rsi
+          state: tooth
+
+  - node: BoneKnifeFang
+    entity: KnifeBoneFang
+    
+- type: constructionGraph
+  id: BoneDart
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneDart
+      steps:
+      - material: Bones
+        amount: 2
+        doAfter: 4
+
+  - node: BoneDart
+    entity: DartBone
+   
+- type: constructionGraph
+  id: BoneSkewer
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneSkewer
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneSkewer
+    entity: FoodKebabSkewerBone

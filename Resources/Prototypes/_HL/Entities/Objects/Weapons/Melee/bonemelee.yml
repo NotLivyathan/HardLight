@@ -1,0 +1,179 @@
+- type: entity
+  name: bone knife
+  parent: [BaseC1Contraband, CombatKnife] # BaseSecurityCargoContraband<BaseC1Contraband
+  id: KnifeBone
+  description: Crudely made bone dagger.
+  components:
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Slash: 10
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Melee/boneknife.rsi
+    state: icon
+  - type: Item
+    sprite: _HL/Objects/Weapons/Melee/boneknife.rsi
+    storedSprite:
+      state: storage
+      sprite: _HL/Objects/Weapons/Melee/boneknife.rsi
+  - type: Construction
+    graph: BoneKnife
+    node: BoneKnife
+   
+- type: entity
+  name: dinosaur fang
+  parent: [BaseItem, BaseC1Contraband] # Frontier: added BaseC3CultContraband
+  id: DinosaurFang
+  description: a sharp fang straight out of a carnivore dinosaur's mouth.
+  components:
+  - type: Sharp
+  - type: Sprite
+    sprite: Objects/Materials/Mob/sharktooth.rsi
+    state: tooth
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1.5
+    damage:
+      types:
+        Slash: 6
+  - type: Item
+    size: Normal
+  - type: DisarmMalus
+  - type: Tag
+    tags:
+      - DinoFang
+      
+- type: entity
+  name: fang knife
+  parent: [BaseC1Contraband, CombatKnife] # BaseSecurityCargoContraband<BaseC1Contraband
+  id: KnifeBoneFang
+  description: Hand-made blade, created using a sharp dinosaur fang, its inner canals allowing to add poison to this dagger.
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      melee:
+        maxVol: 5
+  - type: MeleeChemicalInjector
+    solution: melee
+  - type: RefillableSolution
+    solution: melee
+  - type: InjectableSolution
+    solution: melee
+  - type: SolutionInjectOnEmbed
+    transferAmount: 5
+    solution: melee
+  - type: SolutionTransfer
+    maxTransferAmount: 5
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Slash: 15
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Melee/bonefangknife.rsi
+    state: icon
+  - type: Item
+    sprite: _HL/Objects/Weapons/Melee/bonefangknife.rsi
+    storedSprite:
+      state: storage
+      sprite: _HL/Objects/Weapons/Melee/bonefangknife.rsi
+  - type: Construction
+    graph: BoneKnifeFang
+    node: BoneKnifeFang
+
+- type: entity
+  name: bone halberd
+  parent: [BaseC1Contraband, UnholyHalberd]
+  id: WeaponHalberdBone
+  description: A polearm with an axe blade, topped with a spike, mounted on a long bone shaft.
+  components:
+  - type: Clothing
+    sprite: _HL/Objects/Weapons/Melee/bonehalberd.rsi
+    quickEquip: false
+    slots:
+    - back
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Melee/bonehalberd.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 0.5
+    damage:
+      types:
+        Blunt: 10
+        Slash: 10
+        Structural: 15
+    soundHit:
+      collection: MetalThud
+  - type: Wieldable
+  - type: IncreaseDamageOnWield
+    damage:
+      types:
+        Blunt: 10
+        Slash: 15
+        Structural: 20
+  - type: Construction
+    graph: BoneHalberd
+    node: BoneHalberd
+      
+- type: entity
+  name: bone hatchet
+  parent: [BaseItem, BaseC1Contraband]
+  id: BoneToolHatchet
+  description: Hand-made hatchet, just like in good old times.
+  components:
+  - type: Tag
+    tags:
+    - BotanyHatchet
+  - type: Sharp
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Melee/bonehatchet.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: 135
+    swingLeft: true
+    damage:
+      types:
+        Slash: 12
+  - type: Item
+    sprite: _HL/Objects/Weapons/Melee/bonehatchet.rsi
+  - type: BoneSaw # Shitmed
+    speed: 0.35
+  - type: SurgeryTool # Shitmed
+    startSound:
+      path: /Audio/_Shitmed/Medical/Surgery/saw.ogg
+  - type: Construction
+    graph: BoneHatchet
+    node: BoneHatchet
+      
+- type: entity
+  name: bone club
+  parent: [BaseItem, BaseC1Contraband]
+  id: ClubBone
+  description: Big bone make big hurt. # Frontier: changed description
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Melee/boneclub.rsi
+    state: icon
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Blunt: 20
+    soundHit:
+      collection: MetalThud
+  - type: Item
+    size: Normal
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: PhysicalComposition
+    materialComposition:
+      Bones: 200
+  - type: AddAccentPickup # Frontier
+    accent: CavemanAccent # Frontier
+  - type: Construction
+    graph: BoneClub
+    node: BoneClub

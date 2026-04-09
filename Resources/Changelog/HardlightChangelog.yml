@@ -2378,3 +2378,49 @@ Entries:
       message: More aphro descriptions
   id: 261
   time: '2026-04-08T23:35:11.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added more patron borgs
+    - type: Add
+      message: Added other tweaks and fixes
+  id: 262
+  time: '2026-04-09T01:14:42.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Add
+      message: More aphrodesiac bites
+  id: 263
+  time: '2026-04-09T01:17:51.0000000+00:00'
+- author: Jerulean
+  changes:
+    - type: Add
+      message: Two recipes for Tiramisu.
+  id: 264
+  time: '2026-04-09T01:18:43.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        Round-end logic no longer forces shuttles not on the station map to FTL
+        to ColComm.
+    - type: Tweak
+      message: >-
+        FTL once again causes a 5.5 second startup delay, instead of occurring
+        instantly.
+    - type: Fix
+      message: >-
+        Round-end logic should no longer cause the server to hang and ultimately
+        crash.
+    - type: Fix
+      message: >-
+        Ending an expedition early from the shuttle console once again announces
+        that the expedition is ending.
+  id: 265
+  time: '2026-04-09T19:46:36.0000000+00:00'
+- author: Iisazel
+  changes:
+    - type: Add
+      message: Added new craftable bone items and some interesting drops from dinosaurs
+  id: 266
+  time: '2026-04-09T20:47:48.0000000+00:00'

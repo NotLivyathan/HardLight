@@ -51,3 +51,43 @@
     size: Small
   - type: ThrowingAngle
     angle: 225
+
+- type: entity
+  parent: Dart
+  id: DartBone
+  name: bone dart
+  description: A piece of bone, hollowed out from the inside allowing it to store chemicals.
+  components:
+  - type: Item
+    sprite: _HL/Objects/Fun/bonedart.rsi
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedart.rsi
+  - type: SolutionContainerManager
+    solutions:
+      melee:
+        maxVol: 5
+  - type: SolutionInjectOnEmbed
+    transferAmount: 5
+    blockSlots: NONE
+    solution: melee
+  - type: SolutionTransfer
+    maxTransferAmount: 5
+  - type: Construction
+    graph: BoneDart
+    node: BoneDart
+ 
+- type: entity
+  name:  bone skewer
+  parent: FoodKebabSkewer
+  id: FoodKebabSkewerBone
+  description: A thin piece of bone used to skewer just about anything and cook it.
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Consumable/Food/boneskewer.rsi
+    state: 
+    layers:
+    - state: skewer
+    - map: ["foodSequenceLayers"]
+  - type: Construction
+    graph: BoneSkewer
+    node: BoneSkewer

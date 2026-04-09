@@ -79,6 +79,18 @@
   description: Compsognathus is a genus of small, bipedal, carnivorous theropods. They have long hind legs and longer tails, which they used for balance during locomotion. Their forelimbs are small but beware of their claws.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 1
+    - id: MaterialBones1
+      amount: 2
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.1 #Small critter, not alot of meat
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.1
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/compy.rsi
@@ -117,6 +129,18 @@
   description: With a name meaning "two-crested lizard", these measure in at about 7 m in length and 400 kg in weight. Slender and lightly built, these are very agile.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 1
+    - id: MaterialBones1
+      amount: 2
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.2 #Small critter, not alot of meat
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.1
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/dilo.rsi
@@ -152,6 +176,18 @@
   description: A bipedal, featherless carnivore with a long tail. Each of its hindfeet has an enlarged sickle-shaped claw, which is used to tackle and restrain prey. Very fast, exercise caution.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 2
+    - id: MaterialBones1
+      amount: 5
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.3 #Small critter, not alot of meat
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.2
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/raptor.rsi
@@ -194,6 +230,21 @@
   description: A large carnivore that can reach over 9 metres (30 ft) long and weigh over 5 metric tons (5.5 short tons), these can move on two legs or four. Reasonably fast for its size, but comparatively fragile and weak.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 2
+    - id: MaterialBones1
+      amount: 7
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.3 # 0-2 legs randomly
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.3 
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.2
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/para.rsi
@@ -236,6 +287,21 @@
   description: On the smaller side of dinosaurs, Kentrosaurus generally measure around 4–4.5 m, and weigh about 700–1,600 kg. Its elongated head and beak are used to bite off plant material or tear off limbs.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 3
+    - id: MaterialBones1
+      amount: 10
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.4 # 0-2 legs randomly
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.4
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.3
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/kentro.rsi
@@ -278,6 +344,21 @@
   description: Bearing a large bony frill with three horns on its skull, this massive quadruped is one of the most recognizable of all dinosaurs and the best-known ceratopsian. Typically tries to gore whatever it attacks.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 4
+    - id: MaterialBones1
+      amount: 15
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.6 # 0-2 legs randomly
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.6
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.4
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/trike.rsi
@@ -320,6 +401,21 @@
   description: Typically between between 6 and 8 meters long and between 4.8 and 8 tons in weight, this lumbering beast shouldn't be underestimated. Its wide, low skull and robust body can take a beating and still survive, and the large club on the end of its tail can be used as a weapon.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 4
+    - id: MaterialBones1
+      amount: 15
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.6 # 0-2 legs randomly
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.6
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.4
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/anki.rsi
@@ -362,6 +458,20 @@
   description: With a typical length of 14 m and a mass of 7.4 tons, Spinosaurus has large, robust forelimbs. Each of its hands has three-fingers, with an enlarged claw on the first digit. Surprisingly quick for its size, this giant can take a lot of punishment.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 5
+    - id: MaterialBones1
+      amount: 20
+    - id: FoodMeatOnBone
+      amount: 1
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.5
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.5
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/spino.rsi
@@ -404,6 +514,20 @@
   description: Large and heavily built, these herbivorous quadrupeds have rounded backs, short fore limbs, long hind limbs, and tails held high in the air. Lumbering, but lethal up close.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatChicken
+      amount: 5
+    - id: MaterialBones1
+      amount: 20
+    - id: FoodMeatOnBone
+      amount: 1
+    - id: FoodMeatOnBone
+      amount: 1
+      prob: 0.7
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.5
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/stego.rsi
@@ -448,6 +572,18 @@
   description: A massive therapod, its giant thorax is balanced by a long, heavy tail. Relative to its large and powerful hind limbs, the forelimbs of Tyrannosaurus are short but incredible powerful for their size, and they have two clawed digits.
 #  categories: [ HideSpawnMenu ]
   components:
+  - type: Butcherable
+    spawned:
+    - id: MaterialBones
+      amount: 1
+    - id: FoodMeatOnBone
+      amount: 5
+    - id: DinosaurEggSentient
+      amount: 1
+      prob: 0.3
+    - id: DinosaurFang
+      amount: 1
+      prob: 0.7
   - type: Sprite
     drawdepth: Mobs
     sprite: _NF/Mobs/Dinosaurs/trex.rsi

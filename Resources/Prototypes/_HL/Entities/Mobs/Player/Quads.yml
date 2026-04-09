@@ -157,6 +157,112 @@
     movementStateOn: quadspritemoss_movingballz
 
 - type: entity
+  id: Engiservquad
+  parent: BorgChassisQuad
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: engieservborg
+      map: ["movement"]
+    - state: engieborgl
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: engieborgr
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: engieservborg_moving
+    noMovementLayers:
+      movement:
+        state: engieservborg
+  - type: BorgChassis
+    maxModules: 5
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - XenoborgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - BorgModuleMedical
+      - BorgModuleEngineering
+      - BorgModuleScience
+      - BorgModuleService
+      - BorgModuleCargo
+    hasMindState: engieborgl
+    noMindState: engieborgr
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: engieservborg
+    name: Verzical
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: engieservborg
+    stateOn: engieservborgballz
+    movementStateOff: engieservborg_moving
+    movementStateOn: engieservborg_movingballz
+    
+- type: entity
+  id: Orchidborg
+  parent: BorgChassisQuad
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: OrchidBase
+      map: ["movement"]
+    - state: OrchidFlashlight
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: orchidl
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: orchid_moving
+    noMovementLayers:
+      movement:
+        state: OrchidBase
+  - type: BorgChassis
+    maxModules: 5
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - XenoborgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - BorgModuleMedical
+      - BorgModuleEngineering
+      - BorgModuleScience
+      - BorgModuleService
+      - BorgModuleCargo
+    hasMindState: OrchidFlashlight
+    noMindState: orchidl
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: OrchidBase
+    name: Verzical
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: OrchidBase
+    stateOn: OrchidBelly
+    movementStateOff: orchid_moving
+    movementStateOn: orchid_movingballz
+
+- type: entity
   id: AbyssQuad
   parent: BorgChassisQuad
   components:
@@ -245,6 +351,32 @@
   id: PlayerBorgQuadViz
   parent: AbyssQuad
   name: Verzical
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+        
+- type: entity
+  id: PlayerBorgQuadorchid
+  parent: Orchidborg
+  name: Vytian
+  suffix: Battery, Tools
+  components:
+  - type: ContainerFill
+    containers:
+      borg_brain:
+        - PositronicBrain
+      borg_module:
+        - BorgModuleTool
+
+- type: entity
+  id: PlayerBorgQuadengiserv
+  parent: Engiservquad
+  name: potato3s
   suffix: Battery, Tools
   components:
   - type: ContainerFill

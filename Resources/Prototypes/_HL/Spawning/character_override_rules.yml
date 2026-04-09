@@ -82,6 +82,24 @@
   logins:
   - VexonOrkali
   entity: PlayerBorgQuadViz
+
+- type: spawnCharacterOverrideRule
+  id: orchidonspawn
+  match: Vytian
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Vytian
+  entity: PlayerBorgQuadorchid
+
+- type: spawnCharacterOverrideRule
+  id: engiservspawn
+  match: potato3s
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - potato3s
+  entity: PlayerBorgQuadengiserv
   
 ## Component example
 - type: spawnCharacterOverrideRule

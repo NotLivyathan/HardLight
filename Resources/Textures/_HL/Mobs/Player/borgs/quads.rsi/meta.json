@@ -1322,6 +1322,176 @@
     {
         "name": "engieborgballz",
         "directions": 4
+    },
+    {
+        "name": "engieservborg",
+        "directions": 4
+    },
+    {
+        "name": "engieservborgballz",
+        "directions": 4
+    },
+    {
+        "name": "engieservborg_moving",
+        "directions": 4,
+        "delays": [
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ]
+        ]
+    },
+    {
+        "name": "engieservborg_movingballz",
+        "directions": 4,
+        "delays": [
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ]
+        ]
+    },
+    {
+        "name": "OrchidBase",
+        "directions": 4
+    },
+    {
+        "name": "OrchidBelly",
+        "directions": 4
+    },
+    {
+        "name": "OrchidFlashlight",
+        "directions": 4
+    },
+    {
+        "name": "orchidl",
+        "directions": 4,
+        "delays": [
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ]
+        ]
+    },
+    {
+        "name": "orchid_moving",
+        "directions": 4,
+        "delays": [
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ]
+        ]
+    },
+    {
+        "name": "orchid_movingballz",
+        "directions": 4,
+        "delays": [
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ],
+            [
+                0.2,
+                0.2,
+                0.2,
+                0.2
+            ]
+        ]
     }
   ]
 }
