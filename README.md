@@ -37,6 +37,7 @@ Content under these subdirectories originate from their respective forks and may
 | `_RMC14` | RMC-14 | https://github.com/RMC-14/RMC-14 | MIT |
 | `_FarHorizons` | Far-Horizons | https://github.com/Far-Horizons-SS14/Far-Horizons-SS14.git | MIT |
 | `_Crescent` | Hullrot | https://github.com/Sector-Crescent/Hullrot.git | AGPL 3.0|
+| `_CS` | Coyote Station | https://github.com/ARF-SS13/coyote-frontier/ | AGPL 3.0|
 
 Additional repos that we have ported features from without subdirectories are listed below.
 

@@ -67,7 +67,9 @@
         visualType: Small
         probability: 0.2
         messages:
-          - "reagent-effect-aphrodisiac-fade"
+          - "reagent-effect-aphrodisiac-fade1" # A decent chance to notify the player when their meds run out, but could happen silently.
+          - "reagent-effect-aphrodisiac-fade2"
+          - "reagent-effect-aphrodisiac-fade3"
         conditions:
           - !type:ConsentCondition
             consent: Aphrodisiacs

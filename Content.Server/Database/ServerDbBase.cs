@@ -1847,15 +1847,15 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({playerDbId}, {id}) ON 
                     UserId = userId,
                     ConsentToggles = new(),
                     ConsentFreetext = consentSettings.Freetext,
-                    ConsentFreetextUpdatedAt = DateTime.Now,
+                    ConsentFreetextUpdatedAt = DateTime.UtcNow,
                 };
 
                 db.DbContext.ConsentSettings.Add(currentConsentSettings);
             }
-            else if (currentConsentSettings.ConsentFreetext != consentSettings.Freetext)
+            else if (currentConsentSettings.ConsentFreetext != consentSettings.Freetext || currentConsentSettings.ConsentFreetextUpdatedAt.Kind != DateTimeKind.Utc)
             {
                 currentConsentSettings.ConsentFreetext = consentSettings.Freetext;
-                currentConsentSettings.ConsentFreetextUpdatedAt = DateTime.Now;
+                currentConsentSettings.ConsentFreetextUpdatedAt = DateTime.UtcNow;
             }
 
             Dictionary<ProtoId<ConsentTogglePrototype>, string> currentConsentToggles = currentConsentSettings.ConsentToggles.ToDictionary(
@@ -1927,11 +1927,11 @@ INSERT INTO player_round (players_id, rounds_id) VALUES ({playerDbId}, {id}) ON 
                 {
                     ReaderUserId = readerUserId,
                     ReadConsentSettingsId = readConsentSettingsId,
-                    ReadAt = DateTime.Now,
+                    ReadAt = DateTime.UtcNow,
                 };
             }
             else {
-                readRecipe.ReadAt = DateTime.Now;
+                readRecipe.ReadAt = DateTime.UtcNow;
             }
 
             return readRecipe;

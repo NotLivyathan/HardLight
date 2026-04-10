@@ -92,15 +92,16 @@
   - type: BorgSwitchableSubtype
     borgSubtype: BorgGenericSubtypeMekaMNinja
 
-- type: entity
-  id: BorgChassisGenericK4tNinja
-  parent: BorgChassisSelectable
-  name: K4t-NNJ
-  components:
-  - type: BorgSwitchableType
-    selectedBorgType: generic
-  - type: BorgSwitchableSubtype
-    borgSubtype: BorgGenericSubtypeK4tNinja
+# The sprites for this one are broken, so I am commenting it TODO fix sprites.
+# - type: entity
+#   id: BorgChassisGenericK4tNinja
+#   parent: BorgChassisSelectable
+#   name: K4t-NNJ
+#   components:
+#   - type: BorgSwitchableType
+#     selectedBorgType: generic
+#   - type: BorgSwitchableSubtype
+#     borgSubtype: BorgGenericSubtypeK4tNinja
 
 - type: entity
   id: BorgChassisGenericMekaFPeace

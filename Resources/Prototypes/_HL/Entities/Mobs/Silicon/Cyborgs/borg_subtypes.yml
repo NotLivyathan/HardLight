@@ -65,12 +65,13 @@
   name: Meka-M (Ninja)
   spritePath: _HL/Mobs/Silicon/Borg/Ninja/mmeka_ninja.rsi
 
-- type: borgSubtype
-  parent: BorgGenericSubtypeBase
-  id: BorgGenericSubtypeK4tNinja
-  dummyPrototype: BorgChassisGenericK4tNinja
-  name: K4T-NNJ
-  spritePath: _HL/Mobs/Silicon/Borg/Ninja/k4t_ninja.rsi
+# Sprites for this are broken so I am commenting it pending fixes TODO fix sprites
+# - type: borgSubtype
+#   parent: BorgGenericSubtypeBase
+#   id: BorgGenericSubtypeK4tNinja
+#   dummyPrototype: BorgChassisGenericK4tNinja
+#   name: K4T-NNJ
+#   spritePath: _HL/Mobs/Silicon/Borg/Ninja/k4t_ninja.rsi
 
 - type: borgSubtype
   parent: BorgGenericSubtypeBase

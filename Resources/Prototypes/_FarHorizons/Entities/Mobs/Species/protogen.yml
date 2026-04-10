@@ -583,42 +583,42 @@
       jumpsuit:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: jumpsuit
       head:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: head
       eyes:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: eyes
       ears:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: head
       mask:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: mask
       neck:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: neck
       outerClothing:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: outerclothing_hardsuit
       gloves:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: hands
   - type: Tag
     tags:
@@ -643,42 +643,42 @@
       jumpsuit:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: jumpsuit
       head:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: head
       eyes:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: eyes
       ears:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: head
       mask:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: mask
       neck:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: neck
       outerClothing:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: outerclothing_hardsuit
       gloves:
         sizeMaps:
           32:
-            sprite: _Starlight/Mobs/Species/Thaven/displacement.rsi
+            sprite: _Impstation/Mobs/Species/Thaven/displacement.rsi #HL
             state: hands
 
 #region LASPI ####
@@ -1719,17 +1719,17 @@
           32:
             sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
             state: hand
-      shoes:
-        sizeMaps:
-          32:
-            sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
-            state: shoes
+      # shoes: # Hardlight Humans have no shoes displacement so this is breaking tests, moths do I guess. Someone fix this.
+      #   sizeMaps:
+      #     32:
+      #       sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
+      #       state: shoes
     displacements:
-      jumpsuit:
-        sizeMaps:
-          32:
-            sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
-            state: jumpsuit-male
+      # jumpsuit: # Hardlight just port the moth displacements
+      #   sizeMaps:
+      #     32:
+      #       sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
+      #       state: jumpsuit-male
       back:
         sizeMaps:
           32:
@@ -1745,11 +1745,11 @@
           32:
             sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
             state: hand
-      shoes:
-        sizeMaps:
-          32:
-            sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
-            state: shoes
+      # shoes: # Hardlight port the moth displacements
+      #   sizeMaps:
+      #     32:
+      #       sprite: Mobs/Species/Human/displacement.rsi #TODO port moth displacements
+      #       state: shoes
   - type: Tag
     tags:
       - CanPilot
@@ -2477,12 +2477,12 @@
           sizeMaps:
             32:
               sprite: _Starlight/Mobs/Species/Avali/displacement.rsi
-              state: back
+              state: back  
         outerClothing:
           sizeMaps:
             32:
               sprite: _Starlight/Mobs/Species/Avali/displacement.rsi
-              state: outerClothing      
+              state: outerclothing   
 
 #region ARACHNID ####
 

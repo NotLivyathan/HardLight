@@ -8,16 +8,16 @@
   range: {max: 0.666} # Very close-range
   requiresUnblocked: false
   exemptFromInteractionBlocker: true
-  hideByRequirement: false
+  hideByRequirement: true
   requirement:
     !type:ComplexRequirement
     requirements:
-    - !type:EntityWhitelistRequirement
-      whitelist:
-        components: [MobState, Edible] # Don't go around biting inanimate objects.
     - !type:SlotObstructionRequirement
       slot: mask
       checkUser: true
+    - !type:EntityWhitelistRequirement
+      whitelist:
+        components: [MobState, Edible] # Don't go around biting inanimate objects.
   action:
     !type:ComplexAction
     actions:

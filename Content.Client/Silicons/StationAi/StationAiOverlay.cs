@@ -12,14 +12,15 @@ namespace Content.Client.Silicons.StationAi;
 
 public sealed class StationAiOverlay : Overlay
 {
+    private static readonly ProtoId<ShaderPrototype> CameraStaticShader = "CameraStatic";
+    private static readonly ProtoId<ShaderPrototype> StencilMaskShader = "StencilMask";
+    private static readonly ProtoId<ShaderPrototype> StencilDrawShader = "StencilDraw";
+
     [Dependency] private readonly IClyde _clyde = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
-    private static readonly ProtoId<ShaderPrototype> CameraStaticShaderId = "CameraStatic";
-    private static readonly ProtoId<ShaderPrototype> StencilMaskShaderId = "StencilMask";
-    private static readonly ProtoId<ShaderPrototype> StencilDrawShaderId = "StencilDraw";
 
     public override OverlaySpace Space => OverlaySpace.WorldSpace;
 
@@ -94,7 +95,7 @@ public sealed class StationAiOverlay : Overlay
             () =>
             {
                 worldHandle.SetTransform(invMatrix);
-                var shader = _proto.Index(CameraStaticShaderId).Instance();
+                var shader = _proto.Index(CameraStaticShader).Instance();
                 worldHandle.UseShader(shader);
                 worldHandle.DrawRect(worldBounds, Color.White);
             },
@@ -117,11 +118,11 @@ public sealed class StationAiOverlay : Overlay
         }
 
         // Use the lighting as a mask
-        worldHandle.UseShader(_proto.Index(StencilMaskShaderId).Instance());
+        worldHandle.UseShader(_proto.Index(StencilMaskShader).Instance());
         worldHandle.DrawTextureRect(_stencilTexture!.Texture, worldBounds);
 
         // Draw the static
-        worldHandle.UseShader(_proto.Index(StencilDrawShaderId).Instance());
+        worldHandle.UseShader(_proto.Index(StencilDrawShader).Instance());
         worldHandle.DrawTextureRect(_staticTexture!.Texture, worldBounds);
 
         worldHandle.SetTransform(Matrix3x2.Identity);

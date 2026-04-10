@@ -65,7 +65,9 @@
         type: Local
         visualType: Small
         messages:
-          - "reagent-effect-aphrodisiac-fade" # A decent chance to notify the player when their meds run out, but could happen silently.
+          - "reagent-effect-aphrodisiac-fade1" # A decent chance to notify the player when their meds run out, but could happen silently.
+          - "reagent-effect-aphrodisiac-fade2"
+          - "reagent-effect-aphrodisiac-fade3"
         probability: 0.35
         conditions:
           - !type:ConsentCondition
@@ -169,7 +171,9 @@
         type: Local
         visualType: Small
         messages:
-          - "reagent-effect-aphrodisiac-fade" # A decent chance to notify the player when their meds run out, but could happen silently.
+          - "reagent-effect-aphrodisiac-fade1" # A decent chance to notify the player when their meds run out, but could happen silently.
+          - "reagent-effect-aphrodisiac-fade2"
+          - "reagent-effect-aphrodisiac-fade3"
         probability: 0.32
         conditions:
           - !type:ConsentCondition
