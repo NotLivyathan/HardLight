@@ -40,6 +40,7 @@ public static class ShipSaveYamlSanitizer
         "MindContainer",
         "VendingMachine",
         "Forensics",
+        "ContainmentFieldGenerator",
     };
 
     // Fill components that are normally removed from ship saves.
@@ -109,6 +110,7 @@ public static class ShipSaveYamlSanitizer
         "VendingMachineVendomatPOI",
         "VendingMachineYouToolPOI",
         // Everything else
+        "ContainmentField",
         "PortalBlue",
         "PortalRed",
         "ReactorGasPipe",

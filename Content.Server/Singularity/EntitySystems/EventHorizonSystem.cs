@@ -27,6 +27,8 @@ namespace Content.Server.Singularity.EntitySystems;
 /// </summary>
 public sealed class EventHorizonSystem : SharedEventHorizonSystem
 {
+    private const float CoMovingRelativeSpeedSq = 0.01f; // HardLight
+
     #region Dependencies
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -51,7 +53,7 @@ public sealed class EventHorizonSystem : SharedEventHorizonSystem
 
         SubscribeLocalEvent<MapGridComponent, EventHorizonAttemptConsumeEntityEvent>(PreventConsume);
         SubscribeLocalEvent<GhostComponent, EventHorizonAttemptConsumeEntityEvent>(PreventConsume);
-        SubscribeLocalEvent<TelegnosticProjectionComponent, EventHorizonAttemptConsumeEntityEvent>(PreventConsume); ///Nyano - Summary: the telegnositic projection has the same trait as ghosts. 
+        SubscribeLocalEvent<TelegnosticProjectionComponent, EventHorizonAttemptConsumeEntityEvent>(PreventConsume); ///Nyano - Summary: the telegnositic projection has the same trait as ghosts.
         SubscribeLocalEvent<StationDataComponent, EventHorizonAttemptConsumeEntityEvent>(PreventConsume);
         SubscribeLocalEvent<EventHorizonComponent, MapInitEvent>(OnHorizonMapInit);
         SubscribeLocalEvent<EventHorizonComponent, StartCollideEvent>(OnStartCollide);
@@ -410,6 +412,21 @@ public sealed class EventHorizonSystem : SharedEventHorizonSystem
             return;
         if (args.OurFixtureId != comp.ConsumerFixtureId)
             return;
+
+        // HardLight: Some horizons, such as the tesla, intentionally disable wave-based entity consumption but still consume on touch.
+        // Ignore co-moving edge contacts from moving grids, but still allow direct overlap consumes at near-zero relative velocity
+        if (!comp.ConsumeEntities
+            && _physicsQuery.TryComp(uid, out var ourBody)
+            && _physicsQuery.TryComp(args.OtherEntity, out var otherBody))
+        {
+            var relativeVelocity = ourBody.LinearVelocity - otherBody.LinearVelocity;
+            if (relativeVelocity.LengthSquared() <= CoMovingRelativeSpeedSq)
+            {
+                var distanceSq = (_xformSystem.GetWorldPosition(uid) - _xformSystem.GetWorldPosition(args.OtherEntity)).LengthSquared();
+                if (distanceSq > comp.Radius * comp.Radius)
+                    return;
+            }
+        }
 
         AttemptConsumeEntity(uid, args.OtherEntity, comp);
     }
