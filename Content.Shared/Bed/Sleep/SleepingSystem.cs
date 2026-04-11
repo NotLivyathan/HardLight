@@ -131,7 +131,7 @@ public sealed partial class SleepingSystem : EntitySystem
         }
 
         _stun.TryUnstun(ent.Owner);
-        _stun.TryStanding(ent.Owner, out _);
+        _stun.TryStanding(ent.Owner); // HardLight: Removed out _
         RemComp<SpamEmitSoundComponent>(ent);
     }
 

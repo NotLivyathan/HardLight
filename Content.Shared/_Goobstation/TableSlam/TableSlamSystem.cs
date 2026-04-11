@@ -138,7 +138,7 @@ public sealed class TableSlamSystem : EntitySystem
         }
 
         _staminaSystem.TakeStaminaDamage(ent, ent.Comp.TabledStaminaDamage);
-        _stunSystem.TryUpdateKnockdownDuration(ent.Owner, TimeSpan.FromSeconds(3 * modifierOnGlassBreak)); // HardLight: TryKnockdown<TryUpdateKnockdownDuration; ent<ent.Owner; removed false
+        _stunSystem.TryKnockdown(ent.Owner, TimeSpan.FromSeconds(3 * modifierOnGlassBreak), refresh: true, force: true);  // HardLight: ent<ent.Owner; added refresh: true & force: true
         var postTabledComponent = EnsureComp<PostTabledComponent>(ent);
         postTabledComponent.PostTabledShovableTime = _gameTiming.CurTime.Add(TimeSpan.FromSeconds(3));
         ent.Comp.BeingTabled = false;
