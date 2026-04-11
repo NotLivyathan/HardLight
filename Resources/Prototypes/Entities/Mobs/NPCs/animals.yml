@@ -1484,6 +1484,7 @@
       methods: [ Touch ]
       effects:
       - !type:WashCreamPieReaction
+  - type: Crawler
   - type: LabGrown # Frontier
   - type: LeashAnchor # Floofstation
     kind: Intrinsic

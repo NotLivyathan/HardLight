@@ -1,4 +1,6 @@
+using System.Numerics;
 using Content.Shared.Buckle;
+using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Rotation;
 using Content.Shared.Standing;
@@ -47,14 +49,29 @@ public sealed class HLLayingDownSystem : EntitySystem
             return;
         }
 
-        var rotation = _xform.GetWorldRotation(uid);
-        var targetRotation = rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North
-            ? Angle.FromDegrees(270)
-            : Angle.FromDegrees(90);
+        var targetRotation = GetTargetHorizontalRotation(uid);
 
         if (rotationVisuals.HorizontalRotation == targetRotation)
             return;
 
         rotationVisuals.HorizontalRotation = targetRotation;
+    }
+
+    private Angle GetTargetHorizontalRotation(EntityUid uid)
+    {
+        // Use current movement intent first. Toggling crawl while moving can happen before facing updates.
+        if (TryComp<InputMoverComponent>(uid, out var mover) && mover.WishDir != Vector2.Zero)
+        {
+            if (mover.WishDir.X > 0f)
+                return Angle.FromDegrees(270);
+
+            if (mover.WishDir.X < 0f)
+                return Angle.FromDegrees(90);
+        }
+
+        var rotation = _xform.GetWorldRotation(uid);
+        return rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North
+            ? Angle.FromDegrees(270)
+            : Angle.FromDegrees(90);
     }
 }
