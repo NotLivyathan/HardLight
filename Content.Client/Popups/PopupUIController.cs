@@ -90,15 +90,9 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
     /// </summary>
     private sealed class PopupRootControl : Control
     {
-        // HardLight: Added stacking for cursor popups in order to prevent them overlapping each other.
-        // I got really tired of it.
-        private static readonly Comparison<PopupSystem.CursorPopupLabel> CursorPopupSequenceComparison =
-            static (a, b) => a.Sequence.CompareTo(b.Sequence);
-
         private readonly PopupSystem? _popup;
         private readonly PopupUIController _controller;
         private readonly Dictionary<(int x, int y), int> _stackCounts = new(); // HardLight: Tracks how many popups are stacked at each position.
-        private readonly List<PopupSystem.CursorPopupLabel> _orderedCursorPopups = new(); // HardLight: Ordered list of cursor popups for stacking.
 
         public PopupRootControl(PopupSystem? system, PopupUIController controller)
         {
@@ -115,16 +109,11 @@ public sealed class PopupUIController : UIController, IOnStateEntered<GameplaySt
 
             // Different window
             var windowId = UserInterfaceManager.RootControl.Window.Id;
-            // HardLight start: Added stacking for cursor popups; prevents them from overlapping each other.
             var stackSpacing = 14f * UIScale;
 
             _stackCounts.Clear();
-            _orderedCursorPopups.Clear();
-            _orderedCursorPopups.AddRange(_popup.CursorLabels);
-            _orderedCursorPopups.Sort(CursorPopupSequenceComparison);
-            // HardLight end
 
-            foreach (var popup in _orderedCursorPopups) // HardLight: _popup.CursorLabels<_orderedCursorPopups
+            foreach (var popup in _popup.CursorLabels)
             {
                 if (popup.InitialPos.Window != windowId)
                     continue;

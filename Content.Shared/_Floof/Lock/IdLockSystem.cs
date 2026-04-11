@@ -224,10 +224,10 @@ public sealed class IdLockSystem : EntitySystem
     /// </summary>
     public bool TryReEngage(Entity<IdLockComponent> ent, Entity<IdCardComponent> id, EntityUid user)
     {
-        var level = CheckAccess(id, ent, out var reason);
-        if (!level.HasFlag(AccessLevel.CanUnlock) && !level.HasFlag(AccessLevel.CanTemporarilyUnlock))
+        var level = CheckAccess(id, ent, out _); // HardLight: Removed var reason
+        if (!level.HasFlag(AccessLevel.CanTemporarilyUnlock)) // HardLight: Removed !level.HasFlag(AccessLevel.CanUnlock)
         {
-            _popups.PopupClient("id-lock-fail-requires-master", user, user);
+            _popups.PopupClient(Loc.GetString("id-lock-fail-requires-master"), user, user); // HardLight: Added Loc.GetString
             return false;
         }
 
@@ -235,6 +235,7 @@ public sealed class IdLockSystem : EntitySystem
             return false;
 
         ent.Comp.State = Engaged;
+        Dirty(ent); // HardLight
         _popups.PopupPredicted(Loc.GetString("id-lock-re-locked", ("ent", ent.Owner)), ent, user);
         _audio.PlayPredicted(ent.Comp.LockSound, ent, user, ent.Comp.LockSound?.Params);
 
