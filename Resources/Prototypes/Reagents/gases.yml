@@ -242,6 +242,16 @@
     Poison:
       effects:
       - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Dreadtalon
+        damage:
+          groups:
+            Burn: -3
+            Toxin: -3
+            Airloss: -3
+            Brute: -3
+      - !type:HealthChange
         damage:
           types:
             Radiation: 3

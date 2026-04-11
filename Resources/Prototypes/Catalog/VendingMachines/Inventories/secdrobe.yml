@@ -31,9 +31,9 @@
     ClothingMaskBreathMedicalSecurity: 3
     ClothingEyesBlindfold: 1
     ClothingNeckCollarSec: 2 # Floofstation - Collar addition
-    ClothingShoesBootsJack: 1 # Frontier - 3<1
-    ClothingShoesBootsCombat: 1
-    ClothingShoesBootsWinterSec: 2
+    ClothingShoesBootsJack: 3 # Frontier - 3<1
+    ClothingShoesBootsCombat: 3 # HL - Changed to 3 to parity Jack
+    ClothingShoesBootsWinterSec: 3 # HL - Changed to 3 to parity Jack
     ClothingHeadHelmetJustice: 1
     ClothingShoesBootsCowboyBlack: 1 # Frontier
     ClothingHeadHatCowboyBlack: 1 # Frontier

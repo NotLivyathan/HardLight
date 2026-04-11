@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/04/2025 20:00:38
-  entityCount: 401
+  entityCount: 400
 maps: []
 grids:
 - 1
@@ -70,6 +70,7 @@ entities:
     - type: SpreaderGrid
     - type: BecomesStation
       id: Hammer
+    - type: InitRepairSnapshot
     - type: Shuttle
     - type: GridPathfinding
     - type: Gravity
@@ -2614,13 +2615,6 @@ entities:
     components:
     - type: Transform
       pos: 2.5,5.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 313
-    components:
-    - type: Transform
-      pos: 5.5,-0.5
       parent: 1
 - proto: StorageCanister
   entities:

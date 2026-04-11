@@ -15,3 +15,50 @@
     - ClothMade
     - WhitelistChameleon
     - HamsterWearable
+
+- type: entity
+  parent: FoodPoppy
+  id: PoppyChameleon
+  suffix: Chameleonable Version
+  components:
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+
+- type: entity
+  parent: FoodLily
+  id: LilyChameleon
+  suffix: Chameleonable Version
+  components:
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+
+- type: entity
+  parent: FoodAmbrosiaVulgaris
+  id: AmbrosiaVulgarisChameleon
+  suffix: Chameleonable Version
+  components:
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+
+- type: entity
+  parent: FoodAmbrosiaDeus
+  id: AmbrosiaDeusChameleon
+  suffix: Chameleonable Version
+  components:
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+
+- type: entity
+  parent: ClothingHeadHatBeret
+  id: ClothingHeadHatBeretInterdyne
+  name: interdyne beret
+  description: A beret in interdyne style.
+  components:
+    - type: Sprite
+      sprite: _HL/Clothing/Head/interdyneberet.rsi
+    - type: Clothing
+      sprite: _HL/Clothing/Head/interdyneberet.rsi

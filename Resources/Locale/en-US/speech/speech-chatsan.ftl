@@ -102,8 +102,9 @@ chatsan-replacement-36 = get the fuck out
 chatsan-word-37 = wdym
 chatsan-replacement-37 = what do you mean
 
-chatsan-word-38 = mf
-chatsan-replacement-38 = motherfucker
+# Hardlight: we use MF, so replace with literally anything else just to keep the entry
+chatsan-word-38 = frfr
+chatsan-replacement-38 = for real for real
 
 chatsan-word-39 = etc
 chatsan-word-40 = etc.

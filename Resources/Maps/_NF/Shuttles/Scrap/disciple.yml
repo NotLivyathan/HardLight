@@ -19,6 +19,7 @@ entities:
       pos: -0.47058776,-0.52941173
     - type: BecomesStation
       id: Disciple
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:
@@ -1144,13 +1145,6 @@ entities:
     components:
     - type: Transform
       pos: -2.5,0.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 138
-    components:
-    - type: Transform
-      pos: -0.5,3.5
       parent: 1
 - proto: SubstationBasic
   entities:

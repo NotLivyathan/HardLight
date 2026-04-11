@@ -1,13 +1,24 @@
 - type: entity
   parent: ClothingUniformBase
-  id: ClothingUniformTSFMC
-  name: ColSec uniform
-  description: A black and blue urban camo uniform. Its uncomfortable and cheap, and it probably doesn't blend in with anything other than a ship interior.
+  id: ClothingUniformColonialNavy
+  name: Colonial Navy uniform
+  description: A black and blue camo uniform. Signature Battle Dress Uniform of the Colonial Navy.
   components:
   - type: Sprite
-    sprite: _Mono/Clothing/Uniforms/Jumpsuit/tsfmc.rsi
+    sprite: _Mono/Clothing/Uniforms/Jumpsuit/colonialnavy.rsi
   - type: Clothing
-    sprite: _Mono/Clothing/Uniforms/Jumpsuit/tsfmc.rsi
+    sprite: _Mono/Clothing/Uniforms/Jumpsuit/colonialnavy.rsi
+
+- type: entity
+  parent: [ ClothingUniformBase, BaseColcommContraband ]
+  id: ClothingUniformColonialNavyOfficer
+  name: Colonial Navy officer uniform
+  description: A set of Naval officer Dress A's. Signature Colonial Navy Officer Dress Uniform.
+  components:
+  - type: Sprite
+    sprite: _Mono/Clothing/Uniforms/Jumpsuit/colonialnavyofficer.rsi
+  - type: Clothing
+    sprite: _Mono/Clothing/Uniforms/Jumpsuit/colonialnavyofficer.rsi
 
 - type: entity
   parent: ClothingUniformBase

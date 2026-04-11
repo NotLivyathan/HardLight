@@ -63,4 +63,55 @@
     # Pretty much everyone.
     allowedDepartments: [ Civilian, Security, Command, Frontier, CentralCommand ]  #IF we had a merc department we can expand on it
   #- type: ChamberMagazineAmmoProvider
-  #  autoEject: true
+  #  autoEject: true  
+
+- type: entity
+  name: Forged Rambler Shotgun
+  parent: [BaseGunWieldable, BaseWeaponRevolver, BaseC1Contraband]
+  id: WeaponRamblerShotgun
+  description: A ramshackle semi-automatic shotgun fed by revolving clamps. A curious mixture of shotgun and revolver, it reminds you of old subway tunnels for some reason.
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-unshaded-5
+      map: ["enum.GunVisualLayers.MagUnshaded"]
+      shader: unshaded
+  - type: Item
+    size: Large
+    shape:
+    - 0,0,5,2
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler_inhand.rsi 
+  - type: Clothing
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler.rsi
+    quickEquip: false 
+    slots:
+    - Back
+    - suitStorage
+  - type: GunRequiresWield
+  - type: Gun
+    fireRate: 2
+    selectedMode: SemiAuto
+    availableModes: 
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/shotgun.ogg
+    soundEmpty:
+      path: /Audio/Weapons/Guns/Empty/empty.ogg
+  - type: RevolverAmmoProvider
+    capacity: 6
+    whitelist:
+      tags:
+        - ShellShotgun12_gauge
+    chambers: [ True, True, True, True, True, True ]
+    ammoSlots: [ null, null, null, null, null, null ]
+    mayTransfer: true # Frontier
+    proto: null
+  - type: MagazineVisuals
+    magState: mag
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/forgedrambler.rsi
+    steps: 6
+    zeroVisible: true

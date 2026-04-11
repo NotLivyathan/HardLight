@@ -1,0 +1,105 @@
+- type: constructionGraph
+  id: BoneMug
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneMug
+      steps:
+      - material: Bones
+        amount: 2
+        doAfter: 4
+
+  - node: BoneMug
+    entity: DrinkMugBone
+ 
+- type: constructionGraph
+  id: BoneD20
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD20
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD20
+    entity: d20DiceBone
+   
+- type: constructionGraph
+  id: BoneD12
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD12
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD12
+    entity: d12DiceBone
+   
+- type: constructionGraph
+  id: BoneD10
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD10
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD10
+    entity: d10DiceBone
+   
+- type: constructionGraph
+  id: BoneD8
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD8
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD8
+    entity: d8DiceBone
+   
+- type: constructionGraph
+  id: BoneD6
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD6
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD6
+    entity: d6DiceBone
+   
+- type: constructionGraph
+  id: BoneD4
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: BoneD4
+      steps:
+      - material: Bones
+        amount: 1
+        doAfter: 2
+
+  - node: BoneD4
+    entity: d4DiceBone
+   

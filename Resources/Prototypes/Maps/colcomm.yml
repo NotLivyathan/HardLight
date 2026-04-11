@@ -17,3 +17,6 @@
           lobbySortOrder: 3
         - type: StationDeadDrop
           maxDeadDrops: 0
+        - type: StationJobs
+          availableJobs:
+            Passenger: [ -1, -1 ] #infinite, not counted

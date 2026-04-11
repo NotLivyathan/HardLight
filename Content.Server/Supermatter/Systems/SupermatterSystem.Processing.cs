@@ -130,17 +130,6 @@ public sealed partial class SupermatterSystem
     }
 
     /// <summary>
-    ///     Shoot lightning bolts depensing on accumulated power.
-    /// </summary>
-    private void SupermatterZap(EntityUid uid, SupermatterComponent sm)
-    {
-        // Divide power by its' threshold to get a value from 0-1, then multiply by the amount of possible lightnings
-        var zapPower = sm.Power / sm.PowerPenaltyThreshold * sm.LightningPrototypes.Length;
-        var zapPowerNorm = (int) Math.Clamp(zapPower, 0, sm.LightningPrototypes.Length - 1);
-        _lightning.ShootRandomLightnings(uid, 3.5f, sm.Power > sm.PowerPenaltyThreshold ? 3 : 1, sm.LightningPrototypes[zapPowerNorm]);
-    }
-
-    /// <summary>
     ///     Handles environmental damage.
     /// </summary>
     private void HandleDamage(EntityUid uid, SupermatterComponent sm)

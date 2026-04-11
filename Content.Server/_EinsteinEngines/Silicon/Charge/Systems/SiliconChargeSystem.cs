@@ -22,6 +22,8 @@ using Content.Shared.Mind;
 using Content.Shared.Alert;
 using Content.Server._EinsteinEngines.Silicon.Death;
 using Content.Server._EinsteinEngines.Power.Components;
+using Content.Shared.Silicons.Borgs.Components; // HardLight
+using Content.Shared._HL.Traits.Physical; // HardLight
 
 namespace Content.Server._EinsteinEngines.Silicon.Charge;
 
@@ -109,6 +111,14 @@ public sealed class SiliconChargeSystem : EntitySystem
                 continue;
 
             var drainRate = siliconComp.DrainPerSecond;
+
+            // HardLight start: Size traits may specify borg-only battery draw scaling without affecting organic species.
+            if (HasComp<BorgChassisComponent>(silicon)
+                && TryComp<TraitCyborgPowerDrawModifierComponent>(silicon, out var drawModifier))
+            {
+                drainRate *= drawModifier.Multiplier;
+            }
+            // HardLight end
 
             // All multipliers will be subtracted by 1, and then added together, and then multiplied by the drain rate. This is then added to the base drain rate.
             // This is to stop exponential increases, while still allowing for less-than-one multipliers.

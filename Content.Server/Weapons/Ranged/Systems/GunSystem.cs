@@ -151,6 +151,7 @@ public sealed partial class GunSystem : SharedGunSystem
         // Update shot based on the recoil
         toMap = fromMap.Position + angle.ToVec() * mapDirection.Length();
         mapDirection = toMap - fromMap.Position;
+        mapAngle = mapDirection.ToAngle(); // HardLight
         var gunVelocity = Physics.GetMapLinearVelocity(fromEnt);
 
         // I must be high because this was getting tripped even when true.
@@ -253,7 +254,7 @@ public sealed partial class GunSystem : SharedGunSystem
                             var hit = result.HitEntity;
                             lastHit = hit;
 
-                            FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit);
+                            FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user);
 
                             var ev = new HitScanReflectAttemptEvent(user, gunUid, hitscan.Reflective, dir, false);
                             RaiseLocalEvent(hit, ref ev);
@@ -308,7 +309,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     }
                     else
                     {
-                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan);
+                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan, null, user);
                     }
 
                     // Notify listeners about hitscan raycast result (e.g., to spawn effects/entities on hit)
@@ -364,7 +365,7 @@ public sealed partial class GunSystem : SharedGunSystem
         if (gun.Target is { } target && !TerminatingOrDeleted(target))
         {
             var targeted = EnsureComp<TargetedProjectileComponent>(uid);
-            targeted.Target = target;
+            targeted.Target = GetNetEntity(target);
             Dirty(uid, targeted);
         }
 
@@ -426,7 +427,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
     protected override void CreateEffect(EntityUid gunUid, MuzzleFlashEvent message, EntityUid? user = null)
     {
-        var filter = Robust.Shared.Player.Filter.Pvs(gunUid, entityManager: EntityManager);
+        var filter = Robust.Shared.Player.Filter.Pvs(gunUid, 0.6f, EntityManager); // Mono - default -> 0.6f
 
         if (TryComp<ActorComponent>(user, out var actor))
             filter.RemovePlayer(actor.PlayerSession);
@@ -471,8 +472,14 @@ public sealed partial class GunSystem : SharedGunSystem
     // TODO: Pseudo RNG so the client can predict these.
     #region Hitscan effects
 
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null)
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? user = null)
     {
+        // Raise custom event for radar tracking
+        // Use the actual user as shooter instead of trying to derive from coordinates
+        var shooter = user ?? GetShooterFromCoordinates(fromCoordinates);
+        var radarEv = new _Mono.Radar.HitscanRadarSystem.HitscanFireEffectEvent(fromCoordinates, distance, angle, hitscan, hitEntity, shooter);
+        RaiseLocalEvent(radarEv);
+
         // Lord
         // Forgive me for the shitcode I am about to do
         // Effects tempt me not
@@ -529,6 +536,30 @@ public sealed partial class GunSystem : SharedGunSystem
                 Sprites = sprites,
             }, Filter.Pvs(fromCoordinates, entityMan: EntityManager));
         }
+    }
+
+    // Helper method to find the shooter from coordinates, typically a gun or the coordinate's entity
+    private EntityUid? GetShooterFromCoordinates(EntityCoordinates coordinates)
+    {
+        var entity = coordinates.EntityId;
+
+        // Check if the entity is a gun
+        if (HasComp<GunComponent>(entity))
+            return entity;
+
+        // Try to find a parent that might be the shooter
+        if (TryComp<TransformComponent>(entity, out var transform) && transform.ParentUid != EntityUid.Invalid)
+        {
+            if (HasComp<GunComponent>(transform.ParentUid))
+                return transform.ParentUid;
+
+            // If parent has hands, it might be the shooter
+            if (HasComp<HandsComponent>(transform.ParentUid))
+                return transform.ParentUid;
+        }
+
+        // Default to the entity itself
+        return entity;
     }
 
     #endregion

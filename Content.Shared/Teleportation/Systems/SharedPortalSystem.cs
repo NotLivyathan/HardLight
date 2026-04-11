@@ -41,6 +41,7 @@ public abstract class SharedPortalSystem : EntitySystem
     {
         SubscribeLocalEvent<PortalComponent, StartCollideEvent>(OnCollide);
         SubscribeLocalEvent<PortalComponent, EndCollideEvent>(OnEndCollide);
+        SubscribeLocalEvent<PortalComponent, EntityTerminatingEvent>(OnPortalTerminating);
         SubscribeLocalEvent<PortalComponent, GetVerbsEvent<AlternativeVerb>>(OnGetVerbs);
     }
 
@@ -65,7 +66,7 @@ public abstract class SharedPortalSystem : EntitySystem
                 var ent = link.LinkedEntities.First();
 
                 // Validate the entity exists and has a transform before attempting teleport
-                if (!Exists(ent) || !TryComp<TransformComponent>(ent, out var entXform))
+                if (!Exists(ent) || !TryComp(ent, out TransformComponent? entXform))
                     return;
 
                 TeleportEntity(uid, args.User, entXform.Coordinates, ent, false);
@@ -96,8 +97,11 @@ public abstract class SharedPortalSystem : EntitySystem
 
         var subject = args.OtherEntity;
 
+        if (!TryComp(subject, out TransformComponent? subjectXform))
+            return;
+
         // best not.
-        if (Transform(subject).Anchored)
+        if (subjectXform.Anchored)
             return;
 
         // break pulls before portal enter so we dont break shit
@@ -112,8 +116,17 @@ public abstract class SharedPortalSystem : EntitySystem
             _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling, ignoreGrab: true); // Goobstation
         }
 
+        // Clear stale timeout references from deleted portals before deciding whether traversal is blocked.
+        if (TryComp<PortalTimeoutComponent>(subject, out var existingTimeout) &&
+            existingTimeout.EnteredPortal is { } enteredPortal &&
+            TerminatingOrDeleted(enteredPortal))
+        {
+            RemCompDeferred<PortalTimeoutComponent>(subject);
+            existingTimeout = null;
+        }
+
         // if they came from another portal, just return and wait for them to exit the portal
-        if (HasComp<PortalTimeoutComponent>(subject))
+        if (existingTimeout != null)
         {
             return;
         }
@@ -136,6 +149,9 @@ public abstract class SharedPortalSystem : EntitySystem
             // pick a target and teleport there
             var target = _random.Pick(link.LinkedEntities);
 
+            if (!TryComp(target, out TransformComponent? targetXform))
+                return;
+
             if (HasComp<PortalComponent>(target))
             {
                 // if target is a portal, signal that they shouldn't be immediately portaled back
@@ -144,7 +160,7 @@ public abstract class SharedPortalSystem : EntitySystem
                 Dirty(subject, timeout);
             }
 
-            TeleportEntity(uid, subject, Transform(target).Coordinates, target);
+            TeleportEntity(uid, subject, targetXform.Coordinates, target);
             return;
         }
 
@@ -168,6 +184,20 @@ public abstract class SharedPortalSystem : EntitySystem
         {
             RemCompDeferred<PortalTimeoutComponent>(subject);
         }
+    }
+
+    private void OnPortalTerminating(EntityUid uid, PortalComponent component, ref EntityTerminatingEvent args)
+    {
+        var query = EntityQueryEnumerator<PortalTimeoutComponent>();
+        while (query.MoveNext(out var subject, out var timeout))
+        {
+            if (timeout.EnteredPortal != uid)
+                continue;
+
+            RemCompDeferred<PortalTimeoutComponent>(subject);
+        }
+
+        query.Dispose();
     }
 
     private void TeleportEntity(EntityUid portal, EntityUid subject, EntityCoordinates target, EntityUid? targetEntity = null, bool playSound = true,

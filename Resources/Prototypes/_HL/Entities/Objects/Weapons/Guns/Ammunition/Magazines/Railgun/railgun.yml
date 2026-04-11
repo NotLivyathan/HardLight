@@ -25,6 +25,9 @@
   name: Improvised Peregrine Magazine
   description: A magazine cobbled together from found materials. Putting this in your NT-88 Peregrine will void the warranty, but chances are, you're not in a situation to care.
   components:
+  - type: Tag
+    tags:
+      - MagazineRailgunTag
   - type: Construction
     graph: MagazineRailgunImprovisedCraftingGraph
     node: mag

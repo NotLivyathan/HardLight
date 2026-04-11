@@ -1,4 +1,5 @@
 phrase-hazard-space = spaced
+phrase-hazard-loose = loose
 phrase-hazard-low-presure = low pressure
 phrase-hazard-high-presure = high pressure
 phrase-hazard-heat = overheating
@@ -50,3 +51,5 @@ phrase-safety-how-to-help = How can I help?
 phrase-safety-evac = Let's evacuate
 phrase-safety-not = not
 phrase-safety-lost = lost
+phrase-safety-pain = in pain
+phrase-safety-unconscious = unconscious

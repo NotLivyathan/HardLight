@@ -4,7 +4,7 @@
   parent: BaseSubdermalImplant
   id: MedicalTrackingImplant
   name: medical tracking implant
-  description: This implant has a tracking device monitor for the Medical radio channel, alongside tracking sensors for the crew monitoring server.
+  description: This implant has a tracking device monitor for the Medical radio channel. # HL: remove sensors
 #  categories: [ HideSpawnMenu ]
   components:
     - type: SubdermalImplant
@@ -16,16 +16,16 @@
       # HL end
       teleportSound:
         path: /Audio/Effects/teleport_departure.ogg
-    - type: SuitSensor
-      randomMode: false
-      controlsLocked: true
-      mode: SensorCords
-      activationContainer: "implant"
-    - type: DeviceNetwork
-      deviceNetId: Wireless
-      transmitFrequencyId: SuitSensor
-    - type: WirelessNetworkConnection
-      range: 10000
+    # - type: SuitSensor # Hardlight: Remove this so manifest works fine.
+    #   randomMode: false
+    #   controlsLocked: true
+    #   mode: SensorCords
+    #   activationContainer: "implant"
+    # - type: DeviceNetwork
+    #   deviceNetId: Wireless
+    #   transmitFrequencyId: SuitSensor
+    # - type: WirelessNetworkConnection
+    #   range: 10000
     - type: TriggerOnMobstateChange
       mobState:
       - Critical

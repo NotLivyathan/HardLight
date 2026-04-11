@@ -1,5 +1,6 @@
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Reaction;
+using Content.Shared._Goobstation.Factory;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
@@ -27,6 +28,7 @@ public abstract class SharedSolutionContainerMixerSystem : EntitySystem
     {
         SubscribeLocalEvent<SolutionContainerMixerComponent, ActivateInWorldEvent>(OnActivateInWorld);
         SubscribeLocalEvent<SolutionContainerMixerComponent, ContainerIsRemovingAttemptEvent>(OnRemoveAttempt);
+        SubscribeLocalEvent<SolutionContainerMixerComponent, MachineStartedEvent>(OnMachineStarted);
     }
 
     private void OnActivateInWorld(Entity<SolutionContainerMixerComponent> entity, ref ActivateInWorldEvent args)
@@ -38,6 +40,11 @@ public abstract class SharedSolutionContainerMixerSystem : EntitySystem
         args.Handled = true;
     }
 
+    private void OnMachineStarted(Entity<SolutionContainerMixerComponent> ent, ref MachineStartedEvent args)
+    {
+        // Start mixing when a machine receives a start signal.
+        TryStartMix(ent, null);
+    }
     private void OnRemoveAttempt(Entity<SolutionContainerMixerComponent> ent, ref ContainerIsRemovingAttemptEvent args)
     {
         if (args.Container.ID == ent.Comp.ContainerId && ent.Comp.Mixing)

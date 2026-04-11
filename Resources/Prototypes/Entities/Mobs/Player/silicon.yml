@@ -8,25 +8,35 @@
   - type: IntrinsicRadioTransmitter
     channels:
     - Binary
+    - ColSec
     - Common
     - Command
     - Engineering
+    - Freelance
     - Medical
+    # Needed for ColSec for some reason?
+    - Nfsd
     - Science
     - Security
     - Service
     - Supply
+    - Traffic
   - type: ActiveRadio
     channels:
     - Binary
+    - ColSec
     - Common
     - Command
     - Engineering
+    - Freelance
     - Medical
+    # See above
+    - Nfsd
     - Science
     - Security
     - Service
     - Supply
+    - Traffic
   - type: IgnoreUIRange
   - type: StationAiHeld
   - type: StationAiOverlay
@@ -36,6 +46,7 @@
     - ActionJumpToCore
     - ActionSurvCameraLights
     - ActionAIViewLaws
+    - ActionOpenRemoteDevicesMenu # Corvax-Next-AiRemoteControl
   - type: UserInterface
     interfaces:
       enum.RadarConsoleUiKey.Key:
@@ -48,6 +59,8 @@
         type: SiliconLawBoundUserInterface
       enum.CommunicationsConsoleUiKey.Key:
         type: CommunicationsConsoleBoundUserInterface
+      enum.RemoteDeviceUiKey.Key: # Corvax-Next-AiRemoteControl
+        type: RemoteDevicesBoundUserInterface
   - type: IntrinsicUI
     uis:
       enum.RadarConsoleUiKey.Key:
@@ -66,6 +79,7 @@
     transmitFrequencyId: ShuttleTimer
   - type: RadarConsole
     followEntity: false
+    pannable: true # Mono
   - type: CommunicationsConsole
     canShuttle: false
     title: comms-console-announcement-title-station-ai
@@ -539,27 +553,8 @@
 
 # Borgs
 - type: entity
-  id: PlayerBorgGeneric
-  parent: BorgChassisGeneric
-  suffix: Battery, Tools
-  components:
-  - type: ContainerFill
-    containers:
-      borg_brain:
-        - PositronicBrain
-      borg_module:
-        - BorgModuleTool
-  - type: ItemSlots
-    slots:
-      cell_slot:
-        name: power-cell-slot-component-slot-name-default
-        startingItem: PowerCellMedium
-  - type: RandomMetadata
-    nameSegments: [NFNamesBorg]
-
-- type: entity
   id: PlayerBorgBattery
-  parent: BorgChassisGeneric
+  parent: BorgChassisSelectable
   suffix: Battery
   components:
   - type: ContainerFill

@@ -1,0 +1,24 @@
+- type: entity
+  id: CrateCondiments
+  parent: CrateGenericSteel
+  name: condiment dispenser refill
+  description: Contains one refill for a condiment dispenser.
+  components:
+  - type: StorageFill
+    contents:
+      - id: DrinkAstrotameJug
+        amount: 1
+      - id: DrinkBbqSauceJug
+        amount: 1
+      - id: DrinkColdsauceJug
+        amount: 1
+      - id: DrinkHorseradishSauceJug
+        amount: 1
+      - id: DrinkHotsauceJug
+        amount: 1
+      - id: DrinkKetchupJug
+        amount: 1
+      - id: DrinkMustardJug
+        amount: 1
+      - id: DrinkSoysauceJug
+        amount: 1

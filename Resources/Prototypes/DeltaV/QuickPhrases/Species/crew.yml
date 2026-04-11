@@ -113,3 +113,8 @@
   id: SpeciesSynthPhrase
   parent: BaseCrewSpeciesPhrase
   text: species-name-synth
+
+- type: quickPhrase
+  id: SpeciesFeroxiPhrase
+  parent: BaseCrewSpeciesPhrase
+  text: species-name-feroxi

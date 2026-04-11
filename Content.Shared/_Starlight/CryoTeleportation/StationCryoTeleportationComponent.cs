@@ -6,7 +6,7 @@ namespace Content.Shared.Starlight.CryoTeleportation;
 public sealed partial class StationCryoTeleportationComponent : Component
 {
     [DataField]
-    public TimeSpan TransferDelay = TimeSpan.FromSeconds(900); //5 Minutes
+    public TimeSpan TransferDelay = TimeSpan.FromSeconds(7200); // 2 hours
 
     [DataField]
     public string PortalPrototype = "CryoPortal";

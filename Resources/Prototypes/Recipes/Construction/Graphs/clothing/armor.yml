@@ -7,8 +7,8 @@
     - to: armor
       steps:
       - material: Bones
-        amount: 6
-        doAfter: 2
+        amount: 30
+        doAfter: 20
   - node: armor
     entity: ClothingOuterArmorBone
 
@@ -21,8 +21,8 @@
     - to: helmet
       steps:
       - material: Bones
-        amount: 4
-        doAfter: 1
+        amount: 15
+        doAfter: 10
   - node: helmet
     entity: ClothingHeadHelmetBone
 

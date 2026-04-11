@@ -131,10 +131,36 @@ public abstract class SharedConveyorController : VirtualController
 
         while (query.MoveNext(out var uid, out var comp, out var fixtures, out var physics, out var xform))
         {
-            _job.Conveyed.Add(((uid, comp, fixtures, physics, xform), Vector2.Zero, false));
+            _job.Conveyed.Add(((uid, comp, fixtures, physics, xform), Vector2.Zero, false, null, 0f));
         }
 
         _parallel.ProcessNow(_job, _job.Conveyed.Count);
+
+        var selected = new Dictionary<EntityUid, int>();
+
+        for (var i = 0; i < _job.Conveyed.Count; i++)
+        {
+            var ent = _job.Conveyed[i];
+
+            if (!ent.Result || ent.BestConveyor == null)
+                continue;
+
+            if (!selected.TryGetValue(ent.BestConveyor.Value, out var existing) || ent.Priority > _job.Conveyed[existing].Priority)
+            {
+                selected[ent.BestConveyor.Value] = i;
+            }
+        }
+
+        for (var i = 0; i < _job.Conveyed.Count; i++)
+        {
+            var ent = _job.Conveyed[i];
+
+            if (ent.BestConveyor != null && ent.Result && selected[ent.BestConveyor.Value] != i)
+            {
+                ent.Result = false;
+                _job.Conveyed[i] = ent;
+            }
+        }
 
         foreach (var ent in _job.Conveyed)
         {
@@ -211,9 +237,13 @@ public abstract class SharedConveyorController : VirtualController
     /// <returns>False if we should no longer be considered actively conveyed.</returns>
     private bool TryConvey(Entity<ConveyedComponent, FixturesComponent, PhysicsComponent, TransformComponent> entity,
         bool prediction,
-        out Vector2 direction)
+        out Vector2 direction,
+        out EntityUid? bestConveyorUid,
+        out float priority)
     {
         direction = Vector2.Zero;
+        bestConveyorUid = null;
+        priority = 0f;
 
         if (!HasPlayerInRange(entity.Owner))
             return true;
@@ -294,6 +324,9 @@ public abstract class SharedConveyorController : VirtualController
 
         var itemRelative = conveyorPos - transform.Position;
         direction = Convey(direction, bestSpeed, itemRelative);
+
+        bestConveyorUid = bestConveyor.Owner;
+        priority = Vector2.Dot(transform.Position, conveyorDirection);
 
         // Do a final check for hard contacts so if we're conveying into a wall then NOOP.
         contacts = PhysicsSystem.GetContacts((entity.Owner, fixtures));
@@ -379,7 +412,11 @@ public abstract class SharedConveyorController : VirtualController
     {
         public int BatchSize => 16;
 
-        public List<(Entity<ConveyedComponent, FixturesComponent, PhysicsComponent, TransformComponent> Entity, Vector2 Direction, bool Result)> Conveyed = new();
+        public List<(Entity<ConveyedComponent, FixturesComponent, PhysicsComponent, TransformComponent> Entity,
+            Vector2 Direction,
+            bool Result,
+            EntityUid? BestConveyor,
+            float Priority)> Conveyed = new();
 
         public SharedConveyorController System;
 
@@ -396,9 +433,9 @@ public abstract class SharedConveyorController : VirtualController
 
             var result = System.TryConvey(
                 (convey.Entity.Owner, convey.Entity.Comp1, convey.Entity.Comp2, convey.Entity.Comp3, convey.Entity.Comp4),
-                Prediction, out var direction);
+                Prediction, out var direction, out var bestConveyor, out var priority);
 
-            Conveyed[index] = (convey.Entity, direction, result);
+            Conveyed[index] = (convey.Entity, direction, result, bestConveyor, priority);
         }
     }
 

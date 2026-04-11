@@ -165,4 +165,16 @@
   id: NFPaperStampProtected
 
 - type: Tag
+  id: DemagImmune
+
+- type: Tag
   id: Flammable
+
+- type: Tag
+  id: NFHotdog
+
+- type: Tag
+  id: ShipRepairTool
+
+- type: Tag
+  id: ADSRepairTool

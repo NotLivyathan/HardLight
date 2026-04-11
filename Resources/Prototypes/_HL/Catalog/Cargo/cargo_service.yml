@@ -1,0 +1,10 @@
+- type: cargoProduct
+  id: CondimentRestockCrate
+  # abstract: true # Frontier
+  icon:
+    sprite: Objects/Consumable/Drinks/generic_jug.rsi
+    state: icon
+  product: CrateCondiments
+  cost: 2000
+  category: cargoproduct-category-name-service
+  group: market

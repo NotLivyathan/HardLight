@@ -154,7 +154,7 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
             Broadcast = true,
             BreakOnHandChange = proto.RequiresHands,
             NeedHand = proto.RequiresHands,
-            RequireCanInteract = proto.RequiresCanAccess,
+            RequireCanInteract = proto.RequiresUnblocked && proto.RequiresCanAccess && !proto.ExemptFromInteractionBlocker,
             Delay = delay,
             Event = new InteractionVerbDoAfterEvent(proto.ID, args)
         };
@@ -250,8 +250,15 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
 
         if (proto.Requirement?.IsMet(args, proto, _verbDependencies) == false)
         {
-            skipAdding = proto.HideByRequirement;
-            errorLocale = "interaction-verb-invalid";
+            if (args.Blackboard.TryGetValue("interaction-verb-failure-locale", out var locale) && locale is string localeStr)
+            {
+                errorLocale = localeStr;
+            }
+            else
+            {
+                errorLocale = "interaction-verb-invalid";
+            }
+            skipAdding = proto.HideByRequirement && errorLocale != "interaction-verb-mask-blocked";
             return false;
         }
 
@@ -270,7 +277,9 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
             return false;
         }
 
-        if (!args.CanInteract || proto.RequiresCanAccess && !args.CanAccess || !proto.Range.IsInRange(distance))
+        if ((!proto.ExemptFromInteractionBlocker && proto.RequiresUnblocked && !args.CanInteract)
+            || (!proto.ExemptFromInteractionBlocker && proto.RequiresCanAccess && !args.CanAccess)
+            || !proto.Range.IsInRange(distance))
         {
             errorLocale = "interaction-verb-cannot-reach";
             return false;
@@ -375,14 +384,21 @@ public abstract class SharedInteractionVerbsSystem : EntitySystem
         var othersFilter = Filter.Pvs(othersTarget).RemoveWhereAttachedEntity(ent => ent == user || ent == target);
 
         // Popups
-        if (_protoMan.TryIndex(specifier.Popup, out var popup))
+        if (specifier.Popup is { } popupId && _protoMan.TryIndex(popupId, out var popup))
         {
             var locPrefix = $"interaction-{proto.ID}-{prefix.ToString().ToLower()}";
 
+            var userIdentity = user.Valid && EntityManager.EntityExists(user)
+                ? Identity.Entity(user, EntityManager)
+                : EntityUid.Invalid;
+            var targetIdentity = target.Valid && EntityManager.EntityExists(target)
+                ? Identity.Entity(target, EntityManager)
+                : EntityUid.Invalid;
+
             (string, object)[] localeArgs =
             [
-                ("user", Identity.Entity(user, EntityManager)), // Floof - use identity
-                ("target", Identity.Entity(target, EntityManager)), // Floof - use identity
+                ("user", userIdentity),
+                ("target", targetIdentity),
                 ("used", used ?? EntityUid.Invalid),
                 ("selfTarget", user == target),
                 ("hasUsed", used != null)

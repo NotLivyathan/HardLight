@@ -47,5 +47,5 @@
   name: id-card-access-level-directorate
 
 - type: accessLevel
-  id: Intelligence
-  name: id-card-access-level-intelligence
+  id: Naval
+  name: id-card-access-level-naval

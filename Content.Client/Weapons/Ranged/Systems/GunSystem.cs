@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using System.Collections.Generic; // HardLight
 using Content.Client.Animations;
 using Content.Client.Gameplay;
 using Content.Client.Items;
@@ -40,6 +41,8 @@ namespace Content.Client.Weapons.Ranged.Systems;
 
 public sealed partial class GunSystem : SharedGunSystem
 {
+    private readonly HashSet<EntityUid> _activeShootRequests = new(); // HardLight
+
     [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly IEyeManager _eyeManager = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
@@ -192,6 +195,8 @@ public sealed partial class GunSystem : SharedGunSystem
 
     public override void Update(float frameTime)
     {
+        base.Update(frameTime);
+
         if (!Timing.IsFirstTimePredicted)
             return;
 
@@ -199,6 +204,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
         if (entityNull == null || !TryComp<CombatModeComponent>(entityNull, out var combat) || !combat.IsInCombatMode)
         {
+            ClearActiveShootRequests(); // HardLight
             return;
         }
 
@@ -209,6 +215,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
         if (!TryGetGun(entity, out var gunUid, out var gun))
         {
+            ClearActiveShootRequests(); // HardLight
             return;
         }
 
@@ -216,7 +223,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
         if (_inputSystem.CmdStates.GetState(useKey) != BoundKeyState.Down && !gun.BurstActivated)
         {
-            if (gun.ShotCounter != 0)
+            if (_activeShootRequests.Remove(gunUid)) // HardLight: gun.ShotCounter != 0<_activeShootRequests.Remove(gunUid)
                 EntityManager.RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gunUid) });
             return;
         }
@@ -228,7 +235,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
         if (mousePos.MapId == MapId.Nullspace)
         {
-            if (gun.ShotCounter != 0)
+            if (_activeShootRequests.Remove(gunUid)) // HardLight: gun.ShotCounter != 0<_activeShootRequests.Remove(gunUid)
                 EntityManager.RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gunUid) });
 
             return;
@@ -248,6 +255,8 @@ public sealed partial class GunSystem : SharedGunSystem
 
         var projectiles = ShootRequested(GetNetEntity(gunUid), GetNetCoordinates(coordinates), target, null, (Robust.Shared.Player.ICommonSession)session);
 
+        _activeShootRequests.Add(gunUid); // HardLight
+
         EntityManager.RaisePredictiveEvent(new RequestShootEvent()
         {
             Target = target,
@@ -256,6 +265,21 @@ public sealed partial class GunSystem : SharedGunSystem
             Shot = projectiles?.Select(e => e.Entity.Id).ToList(),
         });
     }
+
+    // HardLight start
+    private void ClearActiveShootRequests()
+    {
+        if (_activeShootRequests.Count == 0)
+            return;
+
+        foreach (var gun in _activeShootRequests)
+        {
+            EntityManager.RaisePredictiveEvent(new RequestStopShootEvent { Gun = GetNetEntity(gun) });
+        }
+
+        _activeShootRequests.Clear();
+    }
+    // HardLight end
 
     public override void Shoot(EntityUid gunUid, GunComponent gun, List<(EntityUid? Entity, IShootable Shootable)> ammo,
         EntityCoordinates fromCoordinates, EntityCoordinates toCoordinates, out bool userImpulse, EntityUid? user = null, bool throwItems = false)
@@ -470,10 +494,11 @@ public sealed partial class GunSystem : SharedGunSystem
         Vector2 gunVelocity,
         EntityUid gunUid,
         EntityUid? user = null,
-        float speed = 20f)
+        float speed = 20f,
+        float offset = 0f)
     {
         EnsureComp<PredictedProjectileClientComponent>(uid);
         _physics.UpdateIsPredicted(uid);
-        base.ShootProjectile(uid, direction, gunVelocity, gunUid, user, speed);
+        base.ShootProjectile(uid, direction, gunVelocity, gunUid, user, speed, offset);
     }
 }

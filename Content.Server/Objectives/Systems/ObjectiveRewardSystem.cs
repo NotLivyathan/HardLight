@@ -1,16 +1,19 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Buffers;
+using Content.Server.Chat.Managers; // HardLight
 using Content.Server.GameTicking;
+using Content.Server.Preferences.Managers; // HardLight
 using Content.Server.Popups;
 using Content.Shared._NF.Bank.Components;
 using Content.Shared.Database;
 using Content.Server.Administration.Logs;
 using Content.Server.Objectives.Components;
 using Content.Server._NF.Bank;
+using Content.Shared.Chat; // HardLight
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Objectives.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Preferences; // HardLight
 using Robust.Shared.Player;
 
 namespace Content.Server.Objectives.Systems;
@@ -21,15 +24,15 @@ namespace Content.Server.Objectives.Systems;
 /// </summary>
 public sealed class ObjectiveRewardSystem : EntitySystem
 {
+    private const float CompletionThreshold = 0.999f; // HardLight
+
     [Dependency] private readonly SharedObjectivesSystem _objectives = default!;
     [Dependency] private readonly BankSystem _bank = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
-
-    // Track which objectives are assigned to which mind so we can compute progress.
-    private readonly Dictionary<EntityUid, EntityUid> _objectiveToMind = new();
-    // Track which objective entities we've already paid out to avoid duplicates.
-    private readonly HashSet<EntityUid> _rewarded = new();
+    [Dependency] private readonly IChatManager _chat = default!; // HardLight
+    [Dependency] private readonly ISharedPlayerManager _players = default!; // HardLight
+    [Dependency] private readonly IServerPreferencesManager _prefs = default!; // HardLight
 
     private float _accum;
     private const float ScanInterval = 2.0f; // seconds
@@ -38,50 +41,8 @@ public sealed class ObjectiveRewardSystem : EntitySystem
     {
         base.Initialize();
 
-        // When an objective is assigned, start tracking it.
-        SubscribeLocalEvent<ObjectiveComponent, ObjectiveAssignedEvent>(OnObjectiveAssigned);
-
-        // Clean up tracking if an objective is deleted or shutdown.
-        SubscribeLocalEvent<ObjectiveComponent, ComponentShutdown>(OnObjectiveShutdown);
-
-        // Seed tracking for already-active minds/objectives at startup.
-        SeedExistingObjectives();
-
         // Final sweep at round end to catch anything that completed right at the end.
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEndTextAppend);
-    }
-
-    private void SeedExistingObjectives()
-    {
-        var query = EntityQueryEnumerator<MindComponent>();
-        while (query.MoveNext(out var mindId, out var mind))
-        {
-            foreach (var obj in mind.Objectives)
-            {
-                // Only track objectives that actually have a reward component.
-                if (!HasComp<ObjectiveRewardComponent>(obj))
-                    continue;
-
-                _objectiveToMind[obj] = mindId;
-            }
-        }
-    }
-
-    private void OnObjectiveAssigned(EntityUid uid, ObjectiveComponent comp, ref ObjectiveAssignedEvent args)
-    {
-        if (args.Cancelled)
-            return;
-
-        if (!HasComp<ObjectiveRewardComponent>(uid))
-            return;
-
-        _objectiveToMind[uid] = args.MindId;
-    }
-
-    private void OnObjectiveShutdown(EntityUid uid, ObjectiveComponent comp, ref ComponentShutdown args)
-    {
-        _objectiveToMind.Remove(uid);
-        _rewarded.Remove(uid);
     }
 
     public override void Update(float frameTime)
@@ -104,73 +65,109 @@ public sealed class ObjectiveRewardSystem : EntitySystem
 
     private void ScanAndReward(bool isRoundEnd = false)
     {
-        // Copy keys since we may mutate tracking on the fly.
-        var objectives = ArrayPool<EntityUid>.Shared.Rent(_objectiveToMind.Count);
-        var idx = 0;
-        foreach (var key in _objectiveToMind.Keys)
-            objectives[idx++] = key;
-
-        for (var i = 0; i < idx; i++)
+        // HardLight start
+        var mindQuery = EntityQueryEnumerator<MindComponent>();
+        while (mindQuery.MoveNext(out var mindId, out var mind))
         {
-            var objective = objectives[i];
-
-            if (_rewarded.Contains(objective))
+            if (mind.Objectives.Count == 0)
                 continue;
 
-            if (!TryComp(objective, out ObjectiveComponent? objectiveComp))
-                continue; // Deleted or invalid
-
-            if (!TryComp(objective, out ObjectiveRewardComponent? reward))
-                continue; // No reward configured
-
-            if (reward.Rewarded)
+            foreach (var objective in mind.Objectives)
             {
-                _rewarded.Add(objective);
-                continue;
-            }
+                if (!TryComp(objective, out ObjectiveRewardComponent? reward))
+                    continue; // No reward configured
 
-            // For objectives marked as round-end only, skip early periodic payment
-            if (reward.OnlyAtRoundEnd && !isRoundEnd)
-                continue;
+                if (reward.Rewarded)
+                    continue;
 
-            if (!_objectiveToMind.TryGetValue(objective, out var mindId) || !TryComp(mindId, out MindComponent? mind))
-            {
-                // Mind mapping lost; stop tracking this objective.
-                _objectiveToMind.Remove(objective);
-                continue;
-            }
+                // For objectives marked as round-end only, skip early periodic payment
+                if (reward.OnlyAtRoundEnd && !isRoundEnd)
+                    continue;
 
-            var info = _objectives.GetInfo(objective, mindId, mind);
-            if (info == null)
-                continue;
+                var progress = _objectives.GetProgress(objective, (mindId, mind));
+                if (progress == null)
+                    continue;
 
-            var progress = info.Value.Progress;
-            if (progress < 0.999f)
-                continue;
+                if (progress.Value < CompletionThreshold)
+                    continue;
 
-            // Completed! Attempt payout once.
-            if (TryGetPayoutTarget(mind, out var target))
-            {
-                if (reward.Amount > 0 && _bank.TryBankDeposit(target.Value, reward.Amount))
+                // Mark completed zero/negative payouts as processed to avoid scanning forever.
+                if (reward.Amount <= 0)
                 {
-                    _rewarded.Add(objective);
+                    reward.Rewarded = true;
+                    continue;
+                }
+
+                // Completed! Attempt payout once.
+                if (TryDepositReward(mind, reward.Amount, out var payoutTarget))
+                {
                     reward.Rewarded = true;
 
-                    // Optional feedback
-                    if (reward.NotifyPlayer)
+                    // Optional feedback popup when we have a valid in-world target.
+                    if (reward.NotifyPlayer && payoutTarget is { } target)
                     {
-                        var msg = reward.PopupMessage ?? $"Objective complete! You were paid {Content.Shared._NF.Bank.BankSystemExtensions.ToSpesoString(reward.Amount)}.";
-                        _popup.PopupEntity(msg, target.Value, Filter.Entities(target.Value), false, PopupType.Small);
+                        var msg = reward.PopupMessage ?? "Objective complete.";
+                        _popup.PopupEntity(msg, target, Filter.Entities(target), false, PopupType.Small);
                     }
 
-                    var title = info.Value.Title;
+                    var title = Name(objective);
+                    TrySendPayoutChat(mind, reward.Amount, title, isRoundEnd);
+                    var payoutTargetText = payoutTarget is { } targetUid
+                        ? ToPrettyString(targetUid)
+                        : mind.UserId?.ToString() ?? "unknown-user";
                     _adminLog.Add(LogType.Action, LogImpact.Low,
-                        $"ObjectiveReward: Paid {reward.Amount} to {ToPrettyString(target.Value)} for completing objective '{title}' (ent {objective}).");
+                        $"ObjectiveReward: Paid {reward.Amount} to {payoutTargetText} for completing objective '{title}' (ent {objective}).");
                 }
             }
         }
+        // HardLight end
+    }
 
-        ArrayPool<EntityUid>.Shared.Return(objectives);
+    // HardLight: Sends a payout confirmation message to the player's chat session.
+    private void TrySendPayoutChat(MindComponent mind, int amount, string objectiveTitle, bool isRoundEnd)
+    {
+        if (mind.UserId is not { } userId)
+            return;
+
+        if (!_players.TryGetSessionById(userId, out var session))
+            return;
+
+        var amountText = Content.Shared._NF.Bank.BankSystemExtensions.ToSpesoString(amount);
+        var highlightedAmount = $"[color=white]+{amountText}[/color]";
+        var message = isRoundEnd
+            ? $"Objective complete: {objectiveTitle} ({highlightedAmount})."
+            : $"Objective payout: {objectiveTitle} ({highlightedAmount}).";
+
+        var wrappedMessage = Loc.GetString("chat-manager-server-wrap-message", ("message", message));
+        _chat.ChatMessageToOne(ChatChannel.Server, message, wrappedMessage, EntityUid.Invalid, false, session.Channel);
+    }
+
+    // HardLight: Deposits reward money to an in-world bank account, with a profile-based fallback.
+    private bool TryDepositReward(MindComponent mind, int amount, out EntityUid? payoutTarget)
+    {
+        payoutTarget = null;
+
+        // Preferred path: deposit via the active/original in-world entity bank account.
+        if (TryGetPayoutTarget(mind, out var target) && _bank.TryBankDeposit(target.Value, amount))
+        {
+            payoutTarget = target.Value;
+            return true;
+        }
+
+        // Fallback path for dead/ghosted/bodyless players: deposit directly to selected profile.
+        if (mind.UserId is not { } userId)
+            return false;
+
+        if (!_players.TryGetSessionById(userId, out var session))
+            return false;
+
+        if (!_prefs.TryGetCachedPreferences(userId, out var prefs))
+            return false;
+
+        if (prefs.SelectedCharacter is not HumanoidCharacterProfile profile)
+            return false;
+
+        return _bank.TryBankDeposit(session, prefs, profile, amount, out _);
     }
 
     private bool TryGetPayoutTarget(MindComponent mind, [NotNullWhen(true)] out EntityUid? target)
@@ -183,7 +180,7 @@ public sealed class ObjectiveRewardSystem : EntitySystem
         }
 
         // Fallback: the original owned entity if it still exists and has a bank account.
-    var original = GetEntity(mind.OriginalOwnedEntity);
+        var original = GetEntity(mind.OriginalOwnedEntity);
         if (original is { } orig && EntityManager.EntityExists(orig) && HasComp<BankAccountComponent>(orig))
         {
             target = orig;

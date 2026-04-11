@@ -17,3 +17,164 @@
     speciesId: fox
   - type: Puller
     needsHands: false
+     
+- type: entity
+  name: Large compsognathus
+  id: MobDinosaurCompyFriendly
+  parent: MobSpaceBasic
+  description: It probably thinks you are its mother. Poor creature.
+#  categories: [ HideSpawnMenu ] # Frontier
+  components:
+  - type: Butcherable
+    spawned:
+    - id: FoodMeatOnBone
+      amount: 3
+    - id: MaterialBones1
+      amount: 15
+  - type: Metabolizer
+    solutionOnBody: false
+    metabolizerTypes: [ Animal ]
+    groups:
+    - id: Medicine
+    - id: Cryogenic
+    - id: Poison
+  - type: NpcFactionMember
+    factions:
+    - PetsNT
+  - type: Speech
+    speechSounds: Lizard
+    speechVerb: Reptilian
+    allowedEmotes: ['Thump', 'Hiss', 'Purr']
+  - type: HTN
+    rootTask:
+      task: MouseCompound
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _NF/Mobs/Dinosaurs/compy.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: compy
+      scale: 0.8, 0.8
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: compy
+      Critical:
+        Base: compy_dead
+      Dead:
+        Base: compy_dead
+  - type: CombatMode
+    canDisarm: false
+  - type: InputMover
+  - type: MobMover
+  - type: GhostRole
+    allowMovement: true
+    allowSpeech: true
+    makeSentient: true
+    name: ghost-role-information-baby-dino-name
+    description: ghost-role-information-baby-dino-description
+    rules: ghost-role-information-baby-dino-rules
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
+  - type: TypingIndicator
+    proto: lizard
+  - type: Tag
+    tags:
+      - CannotSuicide
+      - DoorBumpOpener
+      - FootstepSound
+  - type: NoSlip
+  - type: LizardAccent
+  - type: Vocal
+    sounds:
+      Unsexed: MaleReptilian
+  - type: InteractionPopup
+    successChance: 0.25
+    interactSuccessString: petting-success-bear
+    interactFailureString: petting-failure-bear
+    interactSuccessSound:
+      path: /Audio/Animals/sloth_squeak.ogg
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.25
+        density: 1000
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepAsteroid
+  - type: PlateletFactories
+    intervalSeconds: 1
+    healPerSecond: .1
+    critMultiplier: .01
+  - type: Damageable
+    damageContainer: Biological
+    damageModifierSet: Scale
+  - type: Tool
+    speedModifier: 3
+    qualities:
+      - Prying
+  - type: Prying
+    pryPowered: true
+    force: true
+    useSound:
+      path: /Audio/Items/crowbar.ogg
+  - type: Reactive
+    groups:
+      Flammable: [Touch]
+      Extinguish: [Touch]
+  - type: MobState
+  - type: Deathgasp
+  - type: MobStateActions
+    actions:
+      Critical:
+      - ActionCritSuccumb
+      - ActionCritFakeDeath
+      - ActionCritLastWords
+  - type: BankAccount
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3
+    baseSprintSpeed: 5
+  - type: Physics
+    bodyType: KinematicController
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      100: Critical
+      200: Dead
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      150: 0.5
+  - type: Stamina
+    critThreshold: 200
+  - type: Bloodstream
+    bloodReagent: DinoBlood
+    bloodMaxVolume: 250
+  - type: LayingDown
+  - type: Hands
+  - type: Body
+    prototype: Dreadtalon
+  - type: Access
+  - type: Puller
+    needsHands: false
+  - type: MeleeWeapon
+    altDisarm: false
+    angle: 0
+    soundHit:
+     collection: AlienClaw
+    animation: WeaponArcBite
+    wideAnimation: WeaponArcClaw
+    damage:
+      types:
+        Slash: 15
+  - type: CumProducer
+    maxVol: 250
+    reagentId: Cum
+    reVol: 50
+    reHunger: 1

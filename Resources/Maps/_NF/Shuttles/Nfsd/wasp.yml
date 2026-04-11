@@ -4,8 +4,8 @@ meta:
   engineVersion: 267.3.0
   forkId: ""
   forkVersion: ""
-  time: 11/13/2025 00:06:49
-  entityCount: 1774
+  time: 02/28/2026 17:10:30
+  entityCount: 1773
 maps: []
 grids:
 - 1
@@ -44,6 +44,7 @@ entities:
       pos: 0.22101265,1.687084
     - type: BecomesStation
       id: Wasp
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:
@@ -637,7 +638,7 @@ entities:
             1: 32768
           -1,3:
             0: 52448
-            1: 8448
+            1: 12544
           0,4:
             0: 3
             1: 124
@@ -649,7 +650,7 @@ entities:
           1,2:
             0: 13115
           1,3:
-            1: 292
+            1: 4964
           1,-1:
             1: 59392
             0: 383
@@ -775,7 +776,7 @@ entities:
           -2,2:
             0: 34951
           -2,3:
-            1: 132
+            1: 2244
           -1,4:
             1: 198
             0: 8
@@ -824,6 +825,9 @@ entities:
         chunkSize: 4
     - type: GasTileOverlay
     - type: RadiationGridResistance
+    - type: ImplicitRoof
+    - type: SalvageExpeditionData
+      nextOffer: 0
 - proto: AirlockBrigmedicGlassLocked
   entities:
   - uid: 2
@@ -1027,6 +1031,8 @@ entities:
     - type: Transform
       pos: 8.492975,-18.474812
       parent: 1
+    - type: StackSignature
+      signature: AmbrosiaVulgarisSeeds|pot=10;yield=3;endur=100;life=25;mature=10;prod=3;stages=6;harvest=0;seedless=0;viable=1;ligneous=0;Bicaridine=150;Desoxyephedrine=200;Kelotane=150;Nutriment=200;Vitamin=120;
 - proto: AmeController
   entities:
   - uid: 37
@@ -1034,8 +1040,6 @@ entities:
     - type: Transform
       pos: 2.5,-1.5
       parent: 1
-    - type: AmeController
-      injecting: True
     - type: ContainerContainer
       containers:
         fuelSlot: !type:ContainerSlot
@@ -1079,7 +1083,6 @@ entities:
       parent: 1
     - type: PointLight
       radius: 2
-      enabled: True
   - uid: 44
     components:
     - type: Transform
@@ -3764,6 +3767,8 @@ entities:
     - type: Transform
       pos: -4.527932,-25.411976
       parent: 1
+    - type: StackSignature
+      signature: CannabisSeeds|pot=20;yield=2;endur=100;life=75;mature=8;prod=12;stages=3;harvest=1;seedless=0;viable=1;ligneous=0;THC=300;
 - proto: Carpet
   entities:
   - uid: 618
@@ -9562,16 +9567,6 @@ entities:
     - type: Transform
       pos: -1.5,11.5
       parent: 1
-    - type: ContainerContainer
-      containers:
-        machine_board: !type:Container
-          showEnts: False
-          occludes: True
-          ents: []
-        machine_parts: !type:Container
-          showEnts: False
-          occludes: True
-          ents: []
 - proto: SignalButton
   entities:
   - uid: 1395
@@ -9709,13 +9704,6 @@ entities:
     components:
     - type: Transform
       pos: 2.5,-2.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 1412
-    components:
-    - type: Transform
-      pos: 0.5,6.5
       parent: 1
 - proto: SpawnPointPrisoner
   entities:
@@ -10505,26 +10493,26 @@ entities:
     - type: Transform
       pos: -5.5,-2.5
       parent: 1
-- proto: VendingMachineNfsdDrobe
-  entities:
-  - uid: 1534
-    components:
-    - type: Transform
-      pos: -1.5,7.5
-      parent: 1
-- proto: VendingMachineNfsdTech
-  entities:
-  - uid: 1535
-    components:
-    - type: Transform
-      pos: -3.5,7.5
-      parent: 1
 - proto: VendingMachineSalvage
   entities:
   - uid: 1536
     components:
     - type: Transform
       pos: 9.5,-7.5
+      parent: 1
+- proto: VendingMachineSec
+  entities:
+  - uid: 1535
+    components:
+    - type: Transform
+      pos: -3.5,7.5
+      parent: 1
+- proto: VendingMachineSecDrobe
+  entities:
+  - uid: 1534
+    components:
+    - type: Transform
+      pos: -1.5,7.5
       parent: 1
 - proto: VendingMachineTankDispenserEVA
   entities:
@@ -11842,12 +11830,40 @@ entities:
       rot: 3.141592653589793 rad
       pos: -4.5,14.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
   - uid: 1772
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 5.5,14.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
 - proto: WeaponTurretVespera
   entities:
   - uid: 1221

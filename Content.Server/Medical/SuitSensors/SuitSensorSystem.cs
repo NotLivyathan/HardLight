@@ -25,12 +25,11 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Content.Shared.DeviceNetwork.Components;
+using Content.Server.Salvage.Expeditions; // Frontier
+using Content.Server._NF.Medical.SuitSensors; // Frontier
 using Content.Shared.Emp;
-// Frontier start
-using Content.Server.Salvage.Expeditions;
-using Content.Server._NF.Medical.SuitSensors;
 using Content.Shared.FloofStation;
-// Frontier end
+using Content.Shared.SSDIndicator; // Frontier
 
 namespace Content.Server.Medical.SuitSensors;
 
@@ -427,6 +426,10 @@ public sealed class SuitSensorSystem : EntitySystem
         var isAlive = false;
         if (EntityManager.TryGetComponent(sensor.User.Value, out MobStateComponent? mobState))
             isAlive = !_mobStateSystem.IsDead(sensor.User.Value, mobState);
+
+        // Coyote: Don't show SSD people on suit sensors.
+        if (TryComp<SSDIndicatorComponent>(sensor.User.Value, out var ssd) && ssd.IsSSD && isAlive)
+            return null;
 
         // get mob total damage
         var totalDamage = 0;

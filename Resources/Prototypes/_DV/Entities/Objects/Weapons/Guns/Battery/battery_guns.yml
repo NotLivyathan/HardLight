@@ -84,6 +84,7 @@
       path: /Audio/_DV/Weapons/Guns/Gunshots/laser.ogg
     soundEmpty:
       path: /Audio/_DV/Weapons/Guns/Empty/dry_fire.ogg
+    fireRate: 4
   - type: Battery
     maxCharge: 2000
     startingCharge: 2000
@@ -93,11 +94,11 @@
   - type: EnergyGun
     fireModes:
     - proto: BulletDisabler
-      fireCost: 100
+      fireCost: 25
       name: disable
       state: disabler
     - proto: MultiPhaseLethalBolt
-      fireCost: 200
+      fireCost: 50
       name: lethal
       state: lethal
     - proto: BulletTaser

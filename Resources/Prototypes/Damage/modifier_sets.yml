@@ -210,7 +210,7 @@
   id: Zombie #Blunt resistant and immune to biological threats, but can be hacked apart and burned
   coefficients:
     Blunt: 0.6
-    Piercing: 0.8
+    Piercing: 0.6
     Cold: 0.3
     Heat: 1.25
     Poison: 0.0
@@ -399,3 +399,11 @@
     Cold: 0.8
     Blunt: 1.2
     Slash: 1.15
+
+- type: damageModifierSet
+  id: Dreadtalon
+  coefficients:
+    Radiation: -1.0
+    Blunt: 0.8
+    Slash: 0.8
+    Piercing: 0.8

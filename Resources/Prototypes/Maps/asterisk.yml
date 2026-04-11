@@ -8,8 +8,8 @@
     Asterisk:
       stationProto: StandardNanotrasenStation
       components:
-        - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency.yml
+        #- type: StationEmergencyShuttle
+        #  emergencyShuttlePath: /Maps/Shuttles/emergency.yml
         - type: StationNameSetup
           mapNameTemplate: '{0} Asterisk Station {1}'
           nameGenerator:

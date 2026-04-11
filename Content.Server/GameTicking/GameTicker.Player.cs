@@ -105,7 +105,7 @@ namespace Content.Server.GameTicking
                         break;
                     }
 
-                    if (mind.CurrentEntity == null || Deleted(mind.CurrentEntity))
+                    if (mind.CurrentEntity == null || !Exists(mind.CurrentEntity.Value) || Deleted(mind.CurrentEntity))
                     {
                         DebugTools.Assert(mind.CurrentEntity == null, "a mind's current entity was deleted without updating the mind");
 
@@ -251,6 +251,11 @@ namespace Content.Server.GameTicking
             }
 
             RaiseNetworkEvent(new TickerJoinGameEvent(), session.Channel);
+        }
+
+        public void ReturnPlayerToLobby(ICommonSession session)
+        {
+            PlayerJoinLobby(session);
         }
 
         private void PlayerJoinLobby(ICommonSession session)

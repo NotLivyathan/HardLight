@@ -30,6 +30,7 @@
       - MailMetricsCartridge
       - AppraisalCartridge
       - NetProbeCartridge
+      - NanoChatCartridge
 
 - type: entity
   parent: BasePDA

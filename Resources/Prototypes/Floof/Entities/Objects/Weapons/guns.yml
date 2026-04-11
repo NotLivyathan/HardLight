@@ -158,7 +158,7 @@
     - proto: HLBulletLaserSpreadNarrow
       fireCost: 200
     - proto: HLBulletDisablerSmgSpread
-      fireCost: 120
+      fireCost: 100
   - type: Item
     size: Large
     shape:
@@ -170,9 +170,7 @@
     startingCharge: 1200
   - type: BatterySelfRecharger
     autoRecharge: true
-    autoRechargeRate: 24
-    autoRechargePause: true
-    autoRechargePauseTime: 30
+    autoRechargeRate: 100 #HL - 100 < 24, why was it so low
 
 - type: entity
   name: energy shotgun

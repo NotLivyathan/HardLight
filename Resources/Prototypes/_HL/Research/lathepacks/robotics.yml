@@ -12,3 +12,10 @@
   - BorgArmorMk1
   - BorgArmorMk2
   - BorgArmorMk3
+  
+- type: latheRecipePack
+  id: HLIndustrialImplants
+  recipes:
+  - OmniHandRight
+  - OmniHandLeft
+  

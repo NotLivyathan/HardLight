@@ -23,7 +23,7 @@
   - type: ItemToggleMeleeWeapon
     activatedDamage:
         types: # Slightly less total damage than wielded crusher glaive has
-          Heat: 8
+          Heat: 6
           Piercing: 2
           Structural: 40 # +10 damage compared to crusher glaive
     deactivatedSecret: true
@@ -46,6 +46,13 @@
     - Belt
     - back
     - suitStorage
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 4
+    damage:
+      types:
+        Blunt: 2
+    autoAttack: true
   - type: ToggleableLightVisuals
     spriteLayer: blade
     inhandVisuals:

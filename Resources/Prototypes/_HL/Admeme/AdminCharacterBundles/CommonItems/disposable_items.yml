@@ -27,6 +27,17 @@
   id: StorageImplanterDisposable
   parent: [ BaseDisposableImplanter, StorageImplanter ]
 
+- type: entity
+  id: LightImplanterDisposable
+  parent: [ BaseDisposableImplanter, LightImplanter ]
+
+- type: entity
+  id: MimePowersImplanterDisposable
+  parent: [ BaseDisposableImplanter, MimePowersImplanter ]
+
+- type: entity
+  id: BibleUserImplanterDisposable
+  parent: [ BaseDisposableImplanter, BibleUserImplanter ]
 
 # other items!
 - type: entity
@@ -86,6 +97,13 @@
   parent: [ SprayPaintDisposableBase, SprayPaintBlue, PaintBase ]
   name: disposable spray paint
   description: A disposable tin of blue spray paint.
+  suffix: Disposable, Admin
+
+- type: entity
+  id: SprayPaintDeepGreyDisposable
+  parent: [ SprayPaintDisposableBase, SprayPaintGreyDeep, PaintBase ]
+  name: disposable spray paint
+  description: A disposable tin of deep grey spray paint.
   suffix: Disposable, Admin
 
 # useful code for when a custom color is needed

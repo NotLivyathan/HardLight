@@ -1,0 +1,7 @@
+- type: radioChannel
+  id: Trinary
+  name: chat-radio-trinary
+  keycode: "]"
+  frequency: 6907
+  color: "#1fb0ff"
+  longRange: true

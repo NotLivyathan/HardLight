@@ -36,12 +36,19 @@ public sealed partial class SalvageExpeditionComponent : SharedSalvageExpedition
     public EntityUid Station;
 
     /// <summary>
-    /// HARDLIGHT: Console that initiated this mission for direct targeting
+    /// HardLight: Console that initiated this mission for direct targeting
     /// </summary>
     [DataField("console")]
     public EntityUid? Console;
 
     [ViewVariables] public bool Completed = false;
+
+    /// <summary>
+    /// HardLight: True once expedition return flow has been triggered.
+    /// Prevents duplicate FTL/cleanup scheduling.
+    /// </summary>
+    [ViewVariables]
+    public bool ReturnTriggered = false;
 
     // Frontier: moved to Client
     /// <summary>

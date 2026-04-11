@@ -1,0 +1,21 @@
+- type: entity
+  parent: [RecyclableItemSteelSmall, GasPipeBase]
+  id: GasPortStorage
+  name: storage port
+  description: A gas storage port, holds gas canisters without leaking gas!
+  placement:
+    mode: SnapgridCenter
+  components:
+    - type: SubFloorHide
+      visibleLayers:
+      - enum.SubfloorLayers.FirstLayer
+    - type: Sprite
+      sprite: Structures/Piping/Atmospherics/gascanisterport.rsi
+      layers:
+        - state: gasCanisterPort
+          map: [ "enum.SubfloorLayers.FirstLayer" ]
+    - type: Appearance
+    - type: GasPort
+    - type: Construction
+      graph: GasUnary
+      node: portstorage

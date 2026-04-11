@@ -1,0 +1,35 @@
+- type: body
+  id: Dreadtalon
+  name: "Dreadtalon"
+  root: torso
+  slots:
+    torso:
+      part: TorsoAnimal
+      connections:
+      - right arm
+      - left arm
+      - legs
+      organs:
+        lungs: OrganDreadtalonLungs
+        stomach: OrganDreadtalonStomach
+        liver: OrganDreadtalonLiver
+        heart: OrganDreadtalonHeart
+        kidneys: OrganDreadtalonKidneys
+    right arm:
+      part: RightArmHuman
+      connections:
+      - right hand
+    left arm:
+      part: LeftArmHuman
+      connections:
+      - left hand
+    right hand:
+      part: RightHandHuman
+    left hand:
+      part: LeftHandHuman
+    legs:
+      part: LegsAnimal
+      connections:
+      - feet
+    feet:
+      part: FeetAnimal

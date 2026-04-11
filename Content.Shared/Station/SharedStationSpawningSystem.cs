@@ -12,6 +12,7 @@ using Robust.Shared.Collections;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
+using Robust.Shared.Containers; // Far Horizons
 
 namespace Content.Shared.Station;
 
@@ -24,6 +25,7 @@ public abstract class SharedStationSpawningSystem : EntitySystem
     [Dependency] private readonly MetaDataSystem _metadata = default!;
     [Dependency] private readonly SharedStorageSystem _storage = default!;
     [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
+    [Dependency] private readonly SharedContainerSystem _container = default!; // Far Horizons
 
     private EntityQuery<HandsComponent> _handsQuery;
     private EntityQuery<InventoryComponent> _inventoryQuery;
@@ -192,18 +194,27 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                 if (entProtos == null || entProtos.Count == 0)
                     continue;
 
-                if (inventoryComp != null &&
-                    InventorySystem.TryGetSlotEntity(entity, slotName, out var slotEnt, inventoryComponent: inventoryComp) &&
-                    _storageQuery.TryComp(slotEnt, out var storage))
-                {
+                // Far Horizons start
+                EntityUid? slotEnt = null;
+                StorageComponent? storage = null;
+                BaseContainer? container = null;
 
+                if ((inventoryComp != null &&
+                    InventorySystem.TryGetSlotEntity(entity, slotName, out slotEnt, inventoryComponent: inventoryComp) &&
+                    _storageQuery.TryComp(slotEnt, out storage) ||
+                    _container.TryGetContainer(entity, slotName, out container)))
+                {
                     foreach (var entProto in entProtos)
                     {
                         var spawnedEntity = Spawn(entProto, coords);
 
-                        _storage.Insert(slotEnt.Value, spawnedEntity, out _, storageComp: storage, playSound: false);
+                        if (container != null)
+                            _container.Insert(spawnedEntity, container);
+                        else
+                            _storage.Insert(slotEnt!.Value, spawnedEntity, out _, storageComp: storage!, playSound: false);
                     }
                 }
+                // Far Horizons end
             }
         }
 

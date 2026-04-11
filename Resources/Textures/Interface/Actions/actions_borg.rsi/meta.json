@@ -48,7 +48,7 @@
         },
         {
             "name":"light-replacer-module"
-        }, 
+        },
         {
             "name":"cleaning-module"
         },
@@ -110,6 +110,9 @@
             "name":"syndicate-martyr-module"
         },
         {
+            "name": "select-type"
+        },
+        {
             "name":"xenoborg-access-breaker-module"
         },
         {
@@ -120,6 +123,9 @@
         },
         {
             "name":"xenoborg-control-computer"
+        },
+        {
+            "name":"xenoborg-door-remote-module"
         },
         {
             "name":"xenoborg-extinguisher-module"

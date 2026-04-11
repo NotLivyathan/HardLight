@@ -1,3 +1,5 @@
+using Content.Shared.Clothing.Components;
+using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Standing;
@@ -67,6 +69,48 @@ public sealed partial class StandingStateRequirement : InteractionRequirement
 ///     Requires the target to be the user itself.
 /// </summary>
 [Serializable, NetSerializable]
+// Hardlight - Begin
+public sealed partial class SlotObstructionRequirement : InvertableInteractionRequirement
+{
+    [DataField] public string Slot = "mask";
+    [DataField] public bool CheckUser = false;
+
+    public override bool IsMet(InteractionArgs args, InteractionVerbPrototype proto, InteractionAction.VerbDependencies deps)
+    {
+        if (string.IsNullOrWhiteSpace(Slot))
+        {
+            return false;
+        }
+
+        var entityToCheck = CheckUser ? args.User : args.Target;
+        var inv = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<InventorySystem>();
+
+        if (!inv.TryGetSlotEntity(entityToCheck, Slot, out var slotEntity))
+        {
+            // Slot is empty, so no obstruction.
+            return true ^ Inverted;
+        }
+
+        // Check if it's a mask and if it's toggled (pulled down).
+        if (deps.EntMan.TryGetComponent<MaskComponent>(slotEntity, out var maskComp))
+        {
+            // If toggled (pulled down), not obstructing (true).
+            // If not toggled (pulled up), obstructing (false).
+            var result = maskComp.IsToggled ^ Inverted;
+            if (!result)
+            {
+                args.Blackboard["interaction-verb-failure-locale"] = "interaction-verb-mask-blocked";
+            }
+            return result;
+        }
+
+        // If it's not a mask, assume it's obstructing.
+        args.Blackboard["interaction-verb-failure-locale"] = "interaction-verb-mask-blocked";
+        return false ^ Inverted;
+    }
+}
+// Hardlight - End
+
 public sealed partial class SelfTargetRequirement : InvertableInteractionRequirement
 {
     public override bool IsMet(InteractionArgs args, InteractionVerbPrototype proto, InteractionAction.VerbDependencies deps)

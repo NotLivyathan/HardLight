@@ -8,16 +8,19 @@ namespace Content.Shared.Overlays;
 /// <summary>
 /// This component allows you to see health bars above damageable mobs.
 /// </summary>
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)] // Shitmed Change
+[RegisterComponent, NetworkedComponent]
+[AutoGenerateComponentState(true)]
 public sealed partial class ShowHealthBarsComponent : Component
 {
     /// <summary>
-    /// Displays health bars of the damage containers.
+    /// Displays health bars of the damage containers. HL - added synth to medhuds
     /// </summary>
-    [DataField, AutoNetworkedField] // Shitmed Change
+    [DataField]
+    [AutoNetworkedField]
     public List<ProtoId<DamageContainerPrototype>> DamageContainers = new()
     {
-        "Biological"
+        "Biological",
+		"Synth"
     };
 
     [DataField]

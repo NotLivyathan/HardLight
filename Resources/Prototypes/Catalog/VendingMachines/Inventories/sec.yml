@@ -1,33 +1,40 @@
 - type: vendingMachineInventory
   id: SecTechInventory
-  startingInventory:
-    SecurityWhistle: 1 # Frontier 5<1
-    Handcuffs: 3 # Frontier 8<3
-    GrenadeFlashBang: 1 # Frontier 4<1
-    TearGasGrenade: 1 # Frontier 4<1
-    ClusterBangFull: 1 # Frontier 2<1
-    GrenadeStinger: 1 # Frontier 4<1
-    Flash: 1 # Frontier 5<1
-    Tourniquet: 1 # Frontier 5<1
-    FlashlightSeclite: 1 # Frontier 5<1
-    ClothingEyesGlassesSunglasses: 1 # Frontier 2<1
-    ClothingEyesHudSecurity: 1 # Frontier 2<1
-    ClothingEyesEyepatchHudSecurity: 1 # Frontier 2<1
-    ClothingBeltSecurityWebbing: 1 # Frontier 5<1
-    CombatKnife: 1 # Frontier 3<1
-    Zipties: 4 # Frontier 12<4
-    RiotShield: 1 # Frontier 2<1
-    RiotLaserShield: 1 # Frontier 2<1
-    RiotBulletShield: 1 # Frontier 2<1
-    LogProbeCartridge: 1 # Frontier
-    ForensicScanner: 1 # Frontier
-    BoxForensicPad: 1 # Frontier
-    ContrabandAppraisalTool: 1 # Frontier
-#    RadioHandheldSecurity: 5 # Frontier 
-  # security officers need to follow a diet regimen!
+  startingInventory: # HL - Paritied to NFSDtech inventory with minor changes
+    NFHyperlinkBookSpaceLaw: 20
+    SecurityWhistle: 5 
+    Handcuffs: 10
+    Zipties: 12 
+    GrenadeFlashBang: 10
+    TearGasGrenade: 4   
+    ClusterBangFull: 2 
+    GrenadeStinger: 4 
+    Flash: 10
+    FlashlightSeclite: 10
+    HoloprojectorSecurity: 5
+    Tourniquet: 5 
+    ClothingEyesGlassesSunglasses: 5
+    ClothingEyesHudSecurity: 5
+    ClothingEyesEyepatchHudSecurity: 10
+    ClothingBeltSecurityWebbing: 10
+    ClothingBeltSecurity: 10
+    RiotShield: 3
+    RiotLaserShield: 3
+    RiotBulletShield: 3
+    Stunbaton: 10
+    NFWeaponEnergyPistolDisabler: 10
+    Bola: 10
+    ContrabandAppraisalTool: 5
+    CrowbarRed: 10
+    CombatKnife: 3 
+    LogProbeCartridge: 4 # Frontier
+    ForensicScanner: 3 # Frontier
+    BoxForensicPad: 4 # Frontier
+    RadioHandheldSecurity: 5 # Frontier 
+    FoodBoxDonut: 2 
+    SecurityStimpack: 4 # _CD
+    TrackingImplanter: 5
   # contrabandInventory: # Frontier
   #   WeaponMeleeNeedle: 2 # Frontier
   #   FoodDonutHomer: 12 # Frontier
-  #   FoodBoxDonut: 2 # Frontier
-    SecurityStimpack: 4 # _CD
-    #box evidence
+ 

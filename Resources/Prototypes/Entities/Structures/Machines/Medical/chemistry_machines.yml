@@ -43,6 +43,7 @@
   name: electrolysis unit
   description: The latest in medicinal electrocution technology.
   components:
+  - type: StartableMachine
   - type: SolutionContainerMixer
     mixDuration: 5
     mixingSound:
@@ -73,6 +74,16 @@
         enum.PowerDeviceVisualLayers.Powered:
           True: { visible: True }
           False: { visible: False }
+  - type: AutomationSlots # Goobstation
+    slots:
+    - !type:AutomatedBeakerSlot
+      input: PlumbingDispenser
+      output: PlumbingDispenser
+      slotName: mixer
+    - !type:AutomatedPorts
+      sinks:
+      - Start
+      - AutoStart
   - type: Machine
     board: ElectrolysisUnitMachineCircuitboard
 
@@ -82,6 +93,7 @@
   name: tabletop centrifuge
   description: Around and around it goes...
   components:
+  - type: StartableMachine
   - type: SolutionContainerMixer
     mixDuration: 10
     mixingSound:
@@ -113,6 +125,16 @@
         enum.PowerDeviceVisualLayers.Powered:
           True: { visible: True }
           False: { visible: False }
+  - type: AutomationSlots # Goobstation
+    slots:
+    - !type:AutomatedBeakerSlot
+      input: PlumbingDispenser
+      output: PlumbingDispenser
+      slotName: mixer
+    - !type:AutomatedPorts
+      sinks:
+      - Start
+      - AutoStart
   - type: ItemSlots
     slots:
       mixer:

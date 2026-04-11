@@ -11,7 +11,7 @@
   id: PawSocksFeet
   bodyPart: RFoot
   markingCategory: Overlay
-  speciesRestriction: [Vulpkanin]
+  speciesRestriction: [Vulpkanin, ProtoVulp]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: pawsocks_feet
@@ -20,7 +20,7 @@
   id: PawSocksLegs
   bodyPart: LLeg
   markingCategory: Legs
-  speciesRestriction: [Vulpkanin]
+  speciesRestriction: [Vulpkanin, ProtoVulp]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: pawsocks_legs
@@ -29,7 +29,7 @@
   id: PawSocksHands
   bodyPart: RHand
   markingCategory: Overlay
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: pawsocks_hands
@@ -38,7 +38,7 @@
   id: PawSocksArms
   bodyPart: LArm
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: pawsocks_arms
@@ -47,7 +47,8 @@
   id: FoxTail
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: FoxTailAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: vulp_tail
@@ -58,7 +59,7 @@
   id: FoxEar
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: vulp_ear
@@ -69,7 +70,8 @@
   id: WolfTail
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: WolfTailAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: wolf_tail
@@ -80,7 +82,7 @@
   id: FoxBelly
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: vulp_belly-torso
@@ -89,7 +91,7 @@
   id: FoxSnout
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
       state: vulp_face
@@ -99,6 +101,7 @@
   id: FoxTailAnimated
   bodyPart: Tail
   markingCategory: Tail
+  staticId: FoxTail
   speciesRestriction: []
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
@@ -110,6 +113,7 @@
   id: WolfTailAnimated
   bodyPart: Tail
   markingCategory: Tail
+  staticId: WolfTail
   speciesRestriction: []
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/vulpkanin.rsi
@@ -121,7 +125,7 @@
   id: VulpEar
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: vulp
@@ -132,7 +136,7 @@
   id: VulpEarFade
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: vulp
@@ -143,7 +147,7 @@
   id: VulpEarSharp
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: vulp
@@ -154,7 +158,7 @@
   id: VulpEarJackal
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: jackal
@@ -165,7 +169,7 @@
   id: VulpEarTerrier
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: terrier
@@ -176,7 +180,7 @@
   id: VulpEarWolf
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: wolf
@@ -187,7 +191,7 @@
   id: VulpEarFennec
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: fennec
@@ -198,7 +202,7 @@
   id: VulpEarFox
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: fox
@@ -207,7 +211,7 @@
   id: VulpEarOtie
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: otie
@@ -218,7 +222,7 @@
   id: VulpEarTajaran
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: msai
@@ -229,7 +233,7 @@
   id: VulpEarShock
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: shock
@@ -238,7 +242,7 @@
   id: VulpEarCoyote
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: coyote
@@ -247,7 +251,7 @@
   id: VulpEarDalmatian
   bodyPart: HeadTop
   markingCategory: HeadTop
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/ear_markings.rsi
       state: dalmatian
@@ -257,7 +261,7 @@
   id: VulpSnoutAlt
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: muzzle_alt
@@ -279,7 +283,7 @@
   id: VulpSnoutSharp
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: muzzle_sharp
@@ -290,7 +294,7 @@
   id: VulpSnoutFade
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: muzzle_fade
@@ -301,7 +305,7 @@
   id: VulpSnoutNose
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: nose
@@ -310,7 +314,7 @@
   id: VulpSnoutMask
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: mask
@@ -321,7 +325,7 @@
   id: VulpSnoutVulpine
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: vulpine
@@ -332,7 +336,7 @@
   id: VulpSnoutSwift
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: vulpine-lines
@@ -341,7 +345,7 @@
   id: VulpSnoutBlaze
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: blaze
@@ -352,7 +356,7 @@
   id: VulpSnoutPatch
   bodyPart: Snout
   markingCategory: Snout
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: patch
@@ -364,7 +368,7 @@
   id: VulpHeadTiger
   bodyPart: Head
   markingCategory: Head
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: tiger_head
@@ -373,7 +377,7 @@
   id: VulpHeadTigerFace
   bodyPart: Head
   markingCategory: Head
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: tiger_face
@@ -382,7 +386,7 @@
   id: VulpHeadSlash
   bodyPart: Head
   markingCategory: Head
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/head_markings.rsi
       state: slash
@@ -392,7 +396,8 @@
   id: VulpTail
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: VulpTailAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp
@@ -403,7 +408,7 @@
   id: VulpTailTip
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp
@@ -414,7 +419,8 @@
   id: VulpTailAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTail
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp_wag
@@ -425,7 +431,8 @@
   id: VulpTailTipAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTailTip
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp_wag
@@ -436,7 +443,7 @@
   id: VulpTailAlt
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp_alt
@@ -447,7 +454,7 @@
   id: VulpTailAltTip
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: vulp_alt
@@ -458,7 +465,7 @@
   id: VulpTailLong
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: long
@@ -469,7 +476,8 @@
   id: VulpTailFox
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: VulpTailFoxAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox
@@ -480,7 +488,7 @@
   id: VulpTailFoxTip
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox
@@ -491,7 +499,8 @@
   id: VulpTailFoxAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTailFox
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox_wag
@@ -502,7 +511,8 @@
   id: VulpTailFoxTipAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTailFoxTip
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox_wag
@@ -513,7 +523,8 @@
   id: VulpTailBushy
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: VulpTailBushyAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: bushfluff
@@ -522,7 +533,8 @@
   id: VulpTailBushyAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTailBushy
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: bushfluff_wag
@@ -531,7 +543,8 @@
   id: VulpTailCoyote
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  waggingId: VulpTailCoyoteAnimated
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: coyote
@@ -540,7 +553,8 @@
   id: VulpTailCoyoteAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  staticId: VulpTailCoyote
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: coyote_wag
@@ -549,7 +563,7 @@
   id: VulpTailCorgiAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: corgi_wag
@@ -558,7 +572,7 @@
   id: VulpTailHusky
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: husky-inner
@@ -569,7 +583,7 @@
   id: VulpTailHuskyAlt
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: husky
@@ -578,7 +592,7 @@
   id: VulpTailFox2
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox2
@@ -587,7 +601,7 @@
   id: VulpTailFox3
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fox3
@@ -598,7 +612,7 @@
   id: VulpTailFennec
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fennec
@@ -607,7 +621,7 @@
   id: VulpTailOtie
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: otie
@@ -616,7 +630,7 @@
   id: VulpTailFluffy
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: fluffy
@@ -625,7 +639,7 @@
   id: VulpTailDalmatianAnimated
   bodyPart: Tail
   markingCategory: Tail
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/tail_markings.rsi
       state: dalmatian_wag
@@ -635,7 +649,7 @@
   id: VulpBellyCrest
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/body_markings.rsi
       state: belly_crest
@@ -644,7 +658,7 @@
   id: VulpBellyFull
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/body_markings.rsi
       state: belly_full
@@ -653,7 +667,7 @@
   id: VulpBellyFox
   bodyPart: Chest
   markingCategory: Chest
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/body_markings.rsi
       state: belly_fox
@@ -765,7 +779,7 @@
 - type: marking
   id: VulpHairAdhara
   bodyPart: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   markingCategory: Hair
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
@@ -774,7 +788,7 @@
 - type: marking
   id: VulpHairAnita
   bodyPart: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   markingCategory: Hair
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
@@ -783,7 +797,7 @@
 - type: marking
   id: VulpHairApollo
   bodyPart: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   markingCategory: Hair
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
@@ -792,7 +806,7 @@
 - type: marking
   id: VulpHairBelle
   bodyPart: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   markingCategory: Hair
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
@@ -802,7 +816,7 @@
   id: VulpHairBraided
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: braided
@@ -811,7 +825,7 @@
   id: VulpHairBun
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: bun
@@ -820,7 +834,7 @@
   id: VulpHairCleanCut
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: clean_cut
@@ -829,7 +843,7 @@
   id: VulpHairCurl
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: curl
@@ -838,7 +852,7 @@
   id: VulpHairHawk
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: hawk
@@ -847,7 +861,7 @@
   id: VulpHairJagged
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: jagged
@@ -856,7 +870,7 @@
   id: VulpHairJeremy
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: jeremy
@@ -865,7 +879,7 @@
   id: VulpHairKajam
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: kajam
@@ -874,7 +888,7 @@
   id: VulpHairKeid
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: keid
@@ -883,7 +897,7 @@
   id: VulpHairKleeia
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: kleeia
@@ -892,7 +906,7 @@
   id: VulpHairMizar
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: mizar
@@ -901,7 +915,7 @@
   id: VulpHairPunkBraided
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: punkbraided
@@ -910,7 +924,7 @@
   id: VulpHairRaine
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: raine
@@ -919,7 +933,7 @@
   id: VulpHairRough
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: rough
@@ -928,7 +942,7 @@
   id: VulpHairShort
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: short
@@ -937,7 +951,7 @@
   id: VulpHairShort2
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: short2
@@ -946,7 +960,7 @@
   id: VulpHairSpike
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/hair.rsi
       state: spike
@@ -956,7 +970,7 @@
   id: VulpFacialHairRuff
   bodyPart: FacialHair
   markingCategory: FacialHair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/facial_hair.rsi
       state: ruff
@@ -965,7 +979,7 @@
   id: VulpFacialHairElder
   bodyPart: FacialHair
   markingCategory: FacialHair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/facial_hair.rsi
       state: elder
@@ -974,7 +988,7 @@
   id: VulpFacialHairElderChin
   bodyPart: FacialHair
   markingCategory: FacialHair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/facial_hair.rsi
       state: elder_chin
@@ -983,7 +997,7 @@
   id: VulpFacialHairKita
   bodyPart: FacialHair
   markingCategory: FacialHair
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, ProtoVulp, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
   sprites:
     - sprite: _Starlight/Mobs/Customization/vulpkanin/facial_hair.rsi
       state: kita

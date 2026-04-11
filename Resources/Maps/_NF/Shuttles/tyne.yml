@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/04/2025 20:39:33
-  entityCount: 251
+  entityCount: 250
 maps: []
 grids:
 - 1
@@ -34,6 +34,7 @@ entities:
       pos: -0.5,-0.5
     - type: BecomesStation
       id: Tyne
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:
@@ -1716,13 +1717,6 @@ entities:
     components:
     - type: Transform
       pos: 2.5,0.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 212
-    components:
-    - type: Transform
-      pos: 0.5,-4.5
       parent: 1
 - proto: StasisBed
   entities:

@@ -352,7 +352,23 @@
 - type: Tag
   id: Syndie_Multitool
 
+# ESAR-550
+- type: Tag
+  id: MagazineEsar550Tag
+
 # Random Stuff
 
 - type: Tag
   id: GaslockFrameMachineCircuitBoard
+
+- type: Tag
+  id: Cartridge25x59HE
+  
+- type: Tag
+  id: DinoFang
+
+# Forged Rifle Mag
+- type: Tag
+  id: ForgedRifleMagazine
+
+

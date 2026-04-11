@@ -319,6 +319,15 @@
       board: [ DoorElectronicsVault ]
 
 - type: entity
+  parent: AirlockEidoMerc
+  id: AirlockEidoMercLocked
+  suffix: Mercenary, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsMercenary ]
+
+- type: entity
   parent: AirlockEidoCommand
   id: AirlockEidoEVALocked
   suffix: EVA, Locked
@@ -645,6 +654,15 @@
     containers:
       board: [ DoorElectronicsExternal ]
 
+- type: entity
+  parent: AirlockEidoMercGlass
+  id: AirlockEidoMercGlassLocked
+  suffix: Mercenary, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsMercenary ]
+
 # Maintenance Hatches
 - type: entity
   parent: AirlockHatchMaintenance
@@ -970,6 +988,15 @@
       board: [ DoorElectronicsArmory ]
   - type: Wires
     layoutId: AirlockArmory
+
+- type: entity
+  parent: AirlockHatchMaintenance
+  id: AirlockEidoMaintMercLocked
+  suffix: Mercenary, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsMercenary ]
 
 # Shuttle Airlock
 - type: entity

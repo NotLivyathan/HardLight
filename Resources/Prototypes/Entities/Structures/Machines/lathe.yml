@@ -263,11 +263,11 @@
   components:
   - type: Lathe
     materialUseMultiplier: 0.5
-    timeMultiplier: 3 # Frontier: 1.5<3 (we double dip on time with lube and machine parts)
+    timeMultiplier: 1.5 # Revert to upstream
   - type: LatheHeatProducing
   - type: ReagentSpeed
     modifiers:
-      SpaceLube: 0.5 # Frontier: 0.8<0.5
+      SpaceLube: 0.8 # Revert to upstream
       SpaceGlue: 5 # no change from normal lathe, overheat!!!
 
 - type: entity
@@ -395,6 +395,7 @@
     - ChemistryStatic
     - SurgeryStatic
     dynamicPacks:
+    - ServiceBoardsGoob
     - AdvancedTools
     - ScienceEquipment
     - ScienceExplosives
@@ -409,6 +410,7 @@
     - Instruments
     - Equipment
     - FauxTiles
+    - Hydroponics
     - NFMedical # Frontier
     - NFEngineering # Frontier
     - NFHardsuits # Frontier
@@ -428,6 +430,7 @@
     - SecurityEquipment
     - SecurityWeapons # Frontier
     - SyringeGuns # Delta-V
+    - HLIndustrialImplants # HL
     emagStaticPacks:
     - CivilianAmmoRecipePack
   - type: DeviceLinkSink
@@ -497,6 +500,7 @@
     - MechBoardsPlus
     - MonoAdvancedShuttleComponents # Hardlight
     - CivShuttleWeapons # HL
+    - ReactorCircuitboards # HL
   - type: EmagLatheRecipes
     emagDynamicPacks: # Frontier: empty list
     - SecurityBoards # Frontier
@@ -567,10 +571,10 @@
     - GygaxMechParts
     - MechWeapons
     - RipleyUpgrade
-    # Crescent - Cyberware
-    - CombatCybernetics
     # Starlight - Implants
     - SLCybernetics
+    # HardLight - Implants
+    - HLIndustrialImplants
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - WeaponMechCombatArsenal
@@ -684,6 +688,8 @@
   - type: Lathe
     idleState: icon
     runningState: icon
+    unlitIdleState: unlit
+    unlitRunningState: unlit-building
     staticPacks:
     - SecurityAmmoStatic
     - SecurityEquipmentStatic
@@ -758,6 +764,8 @@
   - type: Lathe
     idleState: icon
     runningState: icon
+    unlitIdleState: unlit
+    unlitRunningState: unlit-building
     staticPacks:
     - CivilianAmmoRecipePack
     dynamicPacks:
@@ -799,6 +807,8 @@
   - type: Lathe
     idleState: icon
     runningState: icon
+    unlitIdleState: unlit
+    unlitRunningState: unlit-building
     staticPacks:
     - TopicalsStatic
     - ChemistryStatic
@@ -816,6 +826,9 @@
     # Shitmed Change
     - SMSurgery
     - SMCybernetics
+  - type: EmagLatheRecipes
+    emagDynamicPacks:
+    - CombatCybernetics
   - type: Machine
     board: MedicalTechFabCircuitboard
   - type: StealTarget

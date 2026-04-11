@@ -7,12 +7,13 @@
     #  baseOdds: 0.036
     #  appliesToPlant: false
     #  effect: !type:Glow
-    - name: Sentient
-      description: mutation-plant-sentient
-      baseOdds: 0.0072
-      appliesToProduce: false
-      persists: false
-      effect: !type:MakeSentient # existing effect.
+    # HL -Disabled due to disappearing hydro trays on ships
+    #- name: Sentient
+    #  description: mutation-plant-sentient
+    #  baseOdds: 0.0072
+    #  appliesToProduce: false
+    #  persists: false
+    #  effect: !type:MakeSentient # existing effect.
     - name: Slippery
       description: mutation-plant-slippery
       baseOdds: 0.036

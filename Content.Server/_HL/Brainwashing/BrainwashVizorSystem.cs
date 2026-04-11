@@ -52,6 +52,10 @@ public sealed class BrainwashVizorSystem : SharedBrainwashVizorSystem
     private void Engaged(EntityUid uid, BrainwashVizorComponent component, EngagedEvent args)
     {
         component.DoAfter = null; // Informs the component the doAfter doesn't exist anymore
+
+        if (args.Cancelled) // Now we can let the handlers do our doafter work again yippie :DD
+            return;
+
         var user = _entityManager.GetEntity(args.Wearer);
         TryComp<BrainwashedComponent>(uid, out var brainwashedComponent);
         TryGetNetEntity(user, out var userNetEntity);
@@ -94,7 +98,10 @@ public sealed class BrainwashVizorSystem : SharedBrainwashVizorSystem
             args.Wearer,
             TimeSpan.FromSeconds(3),
             new EngagedEvent(netEntity.Value),
-            uid);
+            uid)
+        {
+            RequireCanInteract = false,
+        };
         var startDoAfterSuccess = _doAfterSystem.TryStartDoAfter(doAfterArgs, out var doAfterId, doAfterComponent);
         if (!startDoAfterSuccess)
             return;

@@ -140856,18 +140856,6 @@ entities:
     - type: Transform
       pos: 52.681328,57.671314
       parent: 2
-- proto: MagazinePistolSubMachineGunTopMounted
-  entities:
-  - uid: 1809
-    components:
-    - type: Transform
-      pos: 88.656746,64.585815
-      parent: 2
-  - uid: 1810
-    components:
-    - type: Transform
-      pos: 88.562996,64.335815
-      parent: 2
 - proto: MagicalLamp
   entities:
   - uid: 19917
@@ -207325,13 +207313,6 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: WeaponSubMachineGunWt550
-  entities:
-  - uid: 1811
-    components:
-    - type: Transform
-      pos: 88.57862,64.742065
-      parent: 2
 - proto: WeaponTurretSyndicateBroken
   entities:
   - uid: 7714

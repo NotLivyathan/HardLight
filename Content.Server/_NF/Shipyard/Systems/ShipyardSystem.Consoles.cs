@@ -96,6 +96,12 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (args.Actor is not { Valid: true } player)
             return;
 
+        if (!TryConsumeShipyardActionDelay(player)) // HardLight
+            return;
+
+        if (IsShipyardActionRestricted(player, shipyardConsoleUid, component)) // HardLight
+            return;
+
         if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
         {
             ConsolePopup(player, Loc.GetString("shipyard-console-no-idcard"));
@@ -284,10 +290,30 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 TryComp<FingerprintComponent>(player, out var fingerprintComponent);
                 TryComp<DnaComponent>(player, out var dnaComponent);
                 TryComp<StationRecordsComponent>(shuttleStation, out var stationRec);
-                _records.CreateGeneralRecord(shuttleStation.Value, targetId, profile.Name, profile.Age, profile.Species, profile.Gender, $"Captain", fingerprintComponent!.Fingerprint, dnaComponent!.DNA, profile, stationRec!);
+
+                var fingerprint = fingerprintComponent?.Fingerprint ?? string.Empty;
+                var dna = dnaComponent?.DNA ?? string.Empty;
+
+                if (stationRec != null)
+                {
+                    _records.CreateGeneralRecord(
+                        shuttleStation.Value,
+                        targetId,
+                        profile.Name,
+                        profile.Age,
+                        profile.Species,
+                        profile.Gender,
+                        $"Captain",
+                        fingerprint,
+                        dna,
+                        profile,
+                        stationRec);
+                }
             }
         }
-        _records.Synchronize(shuttleStation!.Value);
+
+        if (shuttleStation != null)
+            _records.Synchronize(shuttleStation.Value);
 
         EntityManager.AddComponents(shuttleUid, vessel.AddComponents);
 
@@ -348,6 +374,12 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     public void OnSaveMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsoleSaveMessage args)
     {
         if (args.Actor is not { Valid: true } player)
+            return;
+
+        if (!TryConsumeShipyardActionDelay(player)) // HardLight
+            return;
+
+        if (IsShipyardActionRestricted(player, uid, component)) // HardLight
             return;
 
         if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
@@ -425,6 +457,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (args.Actor is not { Valid: true } player)
             return;
 
+        if (!TryConsumeShipyardActionDelay(player)) // HardLight
+            return;
+
         if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
         {
             ConsolePopup(player, Loc.GetString("shipyard-console-no-idcard"));
@@ -440,6 +475,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             PlayDenySound(player, uid, component);
             return;
         }
+
+        if (IsShipyardActionRestricted(player, uid, component)) // HardLight
+            return;
 
         if (HasComp<ShuttleDeedComponent>(targetId))
         {
@@ -476,7 +514,14 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         bool loaded = false;
         try
         {
-            if (!string.IsNullOrWhiteSpace(args.SourceFilePath))
+            // HardLight start
+            if (!string.IsNullOrWhiteSpace(args.YamlData))
+            {
+                loaded = TryPurchaseShuttleFromYamlData(uid, args.YamlData, out shuttleUidOut);
+            }
+
+            if (!loaded && !string.IsNullOrWhiteSpace(args.SourceFilePath))
+            // HardLight end
             {
                 // Normalize to a ResPath under /UserData
                 var norm = args.SourceFilePath!.Replace('\\', '/');
@@ -487,12 +532,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
                 var resPath = new ResPath(norm);
                 loaded = TryPurchaseShuttleFromFile(uid, resPath, out shuttleUidOut);
-            }
-
-            // Fallback: write to a temp file and then load via purchase-from-file
-            if (!loaded)
-            {
-                loaded = TryPurchaseShuttleFromYamlData(uid, args.YamlData, out shuttleUidOut);
             }
         }
         catch (Exception ex)
@@ -653,7 +692,25 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 TryComp<FingerprintComponent>(player, out var fingerprintComponent);
                 TryComp<DnaComponent>(player, out var dnaComponent);
                 TryComp<StationRecordsComponent>(shuttleStation, out var stationRec);
-                _records.CreateGeneralRecord(shuttleStation.Value, targetId, playerProfile.Name, playerProfile.Age, playerProfile.Species, playerProfile.Gender, $"Captain", fingerprintComponent!.Fingerprint, dnaComponent!.DNA, playerProfile, stationRec!);
+
+                var fingerprint = fingerprintComponent?.Fingerprint ?? string.Empty;
+                var dna = dnaComponent?.DNA ?? string.Empty;
+
+                if (stationRec != null)
+                {
+                    _records.CreateGeneralRecord(
+                        shuttleStation.Value,
+                        targetId,
+                        playerProfile.Name,
+                        playerProfile.Age,
+                        playerProfile.Species,
+                        playerProfile.Gender,
+                        $"Captain",
+                        fingerprint,
+                        dna,
+                        playerProfile,
+                        stationRec);
+                }
             }
         }
         if (shuttleStation != null)
@@ -718,6 +775,12 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     {
 
         if (args.Actor is not { Valid: true } player)
+            return;
+
+        if (!TryConsumeShipyardActionDelay(player)) // HardLight
+            return;
+
+        if (IsShipyardActionRestricted(player, uid, component)) // HardLight
             return;
 
         if (component.TargetIdSlot.ContainerSlot?.ContainedEntity is not { Valid: true } targetId)
@@ -939,6 +1002,31 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     {
         _audio.PlayEntity(component.ConfirmSound, playerUid, consoleUid);
     }
+
+    // HardLight start
+    // Prevent shipyard actions from being spammed by adding a short delay between actions for each player.
+    private bool TryConsumeShipyardActionDelay(EntityUid actor)
+    {
+        var now = _timing.CurTime;
+        if (_shipyardActionDelayUntil.TryGetValue(actor, out var nextAllowed) && now < nextAllowed)
+            return false;
+
+        _shipyardActionDelayUntil[actor] = now + ShipyardActionDelay;
+        return true;
+    }
+
+    // Check for job restrictions before allowing shipyard actions.
+    // If the action is restricted, show a popup and play a deny sound.
+    private bool IsShipyardActionRestricted(EntityUid actor, EntityUid consoleUid, ShipyardConsoleComponent component)
+    {
+        if (!HasComp<ShipyardJobRestrictedComponent>(actor))
+            return false;
+
+        ConsolePopup(actor, Loc.GetString("shipyard-console-job-restricted"));
+        PlayDenySound(actor, consoleUid, component);
+        return true;
+    }
+    // HardLight end
 
     private void OnItemSlotChanged(EntityUid uid, ShipyardConsoleComponent component, ContainerModifiedMessage args)
     {

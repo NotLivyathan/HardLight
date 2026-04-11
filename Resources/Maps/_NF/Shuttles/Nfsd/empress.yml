@@ -4,8 +4,8 @@ meta:
   engineVersion: 267.3.0
   forkId: ""
   forkVersion: ""
-  time: 11/12/2025 23:14:55
-  entityCount: 2573
+  time: 02/28/2026 17:09:45
+  entityCount: 2572
 maps: []
 grids:
 - 1
@@ -44,6 +44,7 @@ entities:
       pos: -0.46484375,0.90625
     - type: BecomesStation
       id: Empress
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:
@@ -1072,7 +1073,7 @@ entities:
             1: 14
           4,1:
             0: 16
-            2: 61152
+            5: 61152
           -4,0:
             0: 65471
           -4,-1:
@@ -1114,18 +1115,18 @@ entities:
             0: 61164
           -8,1:
             1: 32800
-            3: 136
+            2: 136
           -7,0:
             0: 36863
           -8,2:
             1: 8
           -7,1:
             1: 61440
-            4: 34
+            3: 34
             0: 136
           -7,2:
             1: 1
-            5: 14
+            4: 14
           -7,-1:
             0: 61917
           -6,0:
@@ -1134,7 +1135,7 @@ entities:
             0: 3392
             1: 4096
           -6,2:
-            5: 1
+            4: 1
             0: 8
           -6,-1:
             0: 64185
@@ -1146,24 +1147,24 @@ entities:
           4,0:
             0: 61152
           4,2:
-            2: 14
+            5: 14
           5,0:
             0: 48056
           5,1:
             0: 1161
-            2: 4352
+            5: 4352
             1: 49152
           5,-1:
             0: 65263
           5,2:
-            5: 12
+            4: 12
           6,0:
             0: 59278
           6,1:
             1: 61440
             0: 238
           6,2:
-            5: 3
+            4: 3
             1: 12
           6,-1:
             0: 61679
@@ -1196,51 +1197,51 @@ entities:
             0: 56560
           -7,-3:
             1: 8955
-            5: 4356
+            4: 4356
             0: 16384
           -7,-4:
             1: 35840
-            5: 16384
+            4: 16384
           -6,-4:
             1: 256
-            5: 61440
+            4: 61440
           -6,-3:
             1: 15
-            5: 16
+            4: 16
             0: 56320
           -6,-2:
             0: 56797
           -5,-4:
-            5: 4096
+            4: 4096
             1: 24576
           -5,-3:
             1: 8739
-            5: 17476
+            4: 17476
           -5,-2:
             0: 13104
           4,-4:
             1: 12288
-            5: 49152
+            4: 49152
           4,-3:
-            5: 4369
+            4: 4369
             1: 8750
             0: 34816
           4,-2:
             0: 3808
           5,-4:
-            5: 28672
+            4: 28672
             1: 35840
           5,-3:
             1: 143
             0: 28928
-            5: 64
+            4: 64
           5,-2:
             0: 28276
           6,-4:
             1: 256
-            5: 4096
+            4: 4096
           6,-3:
-            5: 17409
+            4: 17409
             1: 8822
             0: 4096
           6,-2:
@@ -1279,55 +1280,55 @@ entities:
           - 0
           - 0
         - volume: 2500
+          temperature: 293.15
+          moles:
+          - 0
+          - 2500
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+        - volume: 2500
+          temperature: 293.15
+          moles:
+          - 2500
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+        - volume: 2500
+          temperature: 293.15
+          moles:
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+        - volume: 2500
           temperature: 235
           moles:
-          - 21.824879
-          - 82.10312
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-        - volume: 2500
-          temperature: 293.15
-          moles:
-          - 0
-          - 2500
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-        - volume: 2500
-          temperature: 293.15
-          moles:
-          - 2500
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-          - 0
-        - volume: 2500
-          temperature: 293.15
-          moles:
-          - 0
-          - 0
+          - 27.225372
+          - 102.419266
           - 0
           - 0
           - 0
@@ -1341,6 +1342,7 @@ entities:
         chunkSize: 4
     - type: GasTileOverlay
     - type: RadiationGridResistance
+    - type: ImplicitRoof
 - proto: AirAlarm
   entities:
   - uid: 2
@@ -1642,7 +1644,6 @@ entities:
       parent: 1
     - type: AmeController
       injectionAmount: 4
-      injecting: True
     - type: ContainerContainer
       containers:
         fuelSlot: !type:ContainerSlot
@@ -1711,7 +1712,6 @@ entities:
       parent: 1
     - type: PointLight
       radius: 2
-      enabled: True
   - uid: 61
     components:
     - type: Transform
@@ -1719,7 +1719,6 @@ entities:
       parent: 1
     - type: PointLight
       radius: 2
-      enabled: True
   - uid: 62
     components:
     - type: Transform
@@ -5377,6 +5376,8 @@ entities:
     components:
     - type: Transform
       parent: 776
+    - type: StackSignature
+      signature: CannabisSeeds|pot=20;yield=2;endur=100;life=75;mature=8;prod=12;stages=3;harvest=1;seedless=0;viable=1;ligneous=0;THC=300;
     - type: Physics
       canCollide: False
 - proto: Carpet
@@ -6084,6 +6085,1198 @@ entities:
     - type: Transform
       pos: -3.5,7.5
       parent: 1
+    - type: ReagentDispenser
+      storageSlots:
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      - priority: 0
+        swap: False
+        blacklist: null
+        insertSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagIn/revolver_magin.ogg
+        ejectSound: !type:SoundPathSpecifier
+          params:
+            variation: null
+            playOffsetSeconds: 0
+            loop: False
+            referenceDistance: 1
+            rolloffFactor: 1
+            maxDistance: 15
+            pitch: 1
+            volume: 0
+          path: /Audio/Weapons/Guns/MagOut/revolver_magout.ogg
+        disableEject: False
+        insertOnInteract: True
+        ejectOnInteract: False
+        ejectOnUse: False
+        insertVerbText: null
+        ejectVerbText: null
+        ejectOnDeconstruct: True
+        ejectOnBreak: True
+        whitelistFailPopup: null
+        lockedFailPopup: null
+        insertSuccessPopup: null
+        whitelist:
+          requireAll: False
+          tags:
+          - ChemDispensable
+          sizes: null
+          components: null
+      storageSlotIds:
+      - ReagentDispenser-storageSlot0
+      - ReagentDispenser-storageSlot1
+      - ReagentDispenser-storageSlot2
+      - ReagentDispenser-storageSlot3
+      - ReagentDispenser-storageSlot4
+      - ReagentDispenser-storageSlot5
+      - ReagentDispenser-storageSlot6
+      - ReagentDispenser-storageSlot7
+      - ReagentDispenser-storageSlot8
+      - ReagentDispenser-storageSlot9
+      - ReagentDispenser-storageSlot10
+      - ReagentDispenser-storageSlot11
+      - ReagentDispenser-storageSlot12
+      - ReagentDispenser-storageSlot13
+      - ReagentDispenser-storageSlot14
+      - ReagentDispenser-storageSlot15
+      - ReagentDispenser-storageSlot16
+      - ReagentDispenser-storageSlot17
+      - ReagentDispenser-storageSlot18
+      - ReagentDispenser-storageSlot19
+      - ReagentDispenser-storageSlot20
+      - ReagentDispenser-storageSlot21
+      - ReagentDispenser-storageSlot22
+      - ReagentDispenser-storageSlot23
+      - ReagentDispenser-storageSlot24
+    - type: ContainerContainer
+      containers:
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        beakerSlot: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot0: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot1: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot2: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot3: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot4: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot5: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot6: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot7: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot8: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot9: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot10: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot11: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot12: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot13: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot14: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot15: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot16: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot17: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot18: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot19: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot20: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot21: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot22: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot23: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
+        ReagentDispenser-storageSlot24: !type:ContainerSlot
+          showEnts: False
+          occludes: True
+          ent: null
 - proto: ChemistryHotplate
   entities:
   - uid: 901
@@ -13395,16 +14588,6 @@ entities:
     - type: Transform
       pos: -0.5,-0.5
       parent: 1
-    - type: ContainerContainer
-      containers:
-        machine_board: !type:Container
-          showEnts: False
-          occludes: True
-          ents: []
-        machine_parts: !type:Container
-          showEnts: False
-          occludes: True
-          ents: []
 - proto: ShipyardRCD
   entities:
   - uid: 1973
@@ -14029,14 +15212,6 @@ entities:
       parent: 1
     - type: SpamEmitSound
       enabled: False
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 2053
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 22.5,-1.5
-      parent: 1
 - proto: StationMap
   entities:
   - uid: 2054
@@ -14173,6 +15348,24 @@ entities:
     - type: Transform
       pos: 1.5,-4.5
       parent: 1
+    - type: EntityStorage
+      air:
+        volume: 200
+        immutable: False
+        temperature: 293.14673
+        moles:
+        - 1.7459903
+        - 6.568249
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
 - proto: SuitStorageWallmountBailiff
   entities:
   - uid: 2075
@@ -15232,7 +16425,7 @@ entities:
     - type: Transform
       pos: 23.5,-2.5
       parent: 1
-- proto: VendingMachineNfsdTech
+- proto: VendingMachineSec
   entities:
   - uid: 2226
     components:
@@ -17116,24 +18309,80 @@ entities:
       rot: 3.141592653589793 rad
       pos: 26.5,8.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
   - uid: 2560
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 9.5,10.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
   - uid: 2561
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -11.5,10.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
   - uid: 2562
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -27.5,8.5
       parent: 1
+    - type: ContainerContainer
+      containers:
+        ballistic-ammo: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_board: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
+        machine_parts: !type:Container
+          showEnts: False
+          occludes: True
+          ents: []
 - proto: WeldingFuelTankHighCapacity
   entities:
   - uid: 2539

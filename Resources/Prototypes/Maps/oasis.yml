@@ -12,8 +12,8 @@
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'B'
-        - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency_accordia.yml
+        #- type: StationEmergencyShuttle
+        #  emergencyShuttlePath: /Maps/Shuttles/emergency_accordia.yml
         - type: StationJobs
           availableJobs: # 72 jobs total w/o latejoins & interns, 91 jobs total w/ latejoins & interns
             #command (7)

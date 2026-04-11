@@ -1,8 +1,11 @@
-﻿using Content.Shared.Mobs;
+using Content.Shared.Mobs;
+using Content.Shared._HL.Traits.Physical; // HardLight
+using Content.Shared.Floof.Silicons.Borgs; // HardLight
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
 using Robust.Client.GameObjects;
 using Robust.Shared.Containers;
+using System.Numerics; // HardLight
 
 namespace Content.Client.Silicons.Borgs;
 
@@ -53,6 +56,8 @@ public sealed class BorgSystem : SharedBorgSystem
         if (!Resolve(uid, ref component, ref appearance, ref sprite))
             return;
 
+        ApplyQuadborgOffset(uid, sprite); // HardLight
+
         if (_appearance.TryGetData<MobState>(uid, MobStateVisuals.State, out var state, appearance))
         {
             if (state != MobState.Alive)
@@ -68,6 +73,34 @@ public sealed class BorgSystem : SharedBorgSystem
         _sprite.LayerSetVisible((uid, sprite), BorgVisualLayers.Light, component.BrainEntity != null || hasPlayer);
         _sprite.LayerSetRsiState((uid, sprite), BorgVisualLayers.Light, hasPlayer ? component.HasMindState : component.NoMindState);
     }
+
+    // HardLight start
+    private void ApplyQuadborgOffset(EntityUid uid, SpriteComponent sprite)
+    {
+        if (!TryComp<QuadborgSpriteOffsetComponent>(uid, out var offsetComp))
+            return;
+
+        var desired = GetQuadborgOffset(uid, offsetComp);
+        if (sprite.Offset == desired)
+            return;
+
+        _sprite.SetOffset((uid, sprite), desired);
+    }
+
+    private Vector2 GetQuadborgOffset(EntityUid uid, QuadborgSpriteOffsetComponent offsetComp)
+    {
+        if (HasComp<TinyWeaponHandlingComponent>(uid))
+            return offsetComp.TinyOffset;
+
+        if (HasComp<SmallWeaponHandlingComponent>(uid))
+            return offsetComp.SmallOffset;
+
+        if (HasComp<BigWeaponHandlingComponent>(uid))
+            return offsetComp.BigOffset;
+
+        return offsetComp.DefaultOffset;
+    }
+    // HardLight end
 
     private void OnMMIAppearanceChanged(EntityUid uid, MMIComponent component, ref AppearanceChangeEvent args)
     {
@@ -92,5 +125,19 @@ public sealed class BorgSystem : SharedBorgSystem
                 : component.NoMindState;
             _sprite.LayerSetRsiState((uid, sprite), MMIVisualLayers.Base, state);
         }
+    }
+
+    /// <summary>
+    /// Sets the sprite states used for the borg "is there a mind or not" indication.
+    /// </summary>
+    /// <param name="borg">The entity and component to modify.</param>
+    /// <param name="hasMindState">The state to use if the borg has a mind.</param>
+    /// <param name="noMindState">The state to use if the borg has no mind.</param>
+    /// <seealso cref="BorgChassisComponent.HasMindState"/>
+    /// <seealso cref="BorgChassisComponent.NoMindState"/>
+    public void SetMindStates(Entity<BorgChassisComponent> borg, string hasMindState, string noMindState)
+    {
+        borg.Comp.HasMindState = hasMindState;
+        borg.Comp.NoMindState = noMindState;
     }
 }

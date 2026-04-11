@@ -30,7 +30,7 @@
     port: PlumbingOutput
   - type: SolutionTransfer # verb so you can throttle its speed
     transferAmount: 50 # max speed is 50u/s
-    maxTransferAmount: 50
+    maxTransferAmount: 500 # Hardlight - Faster transfer, fewer pumps needed for large setups
     canReceive: false
     canSend: false
     canChangeTransferAmount: true

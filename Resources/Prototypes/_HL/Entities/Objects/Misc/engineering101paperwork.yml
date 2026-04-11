@@ -1,0 +1,627 @@
+# Filled Folder
+- type: entity
+  id: FillEngiForms
+  categories: [ HideSpawnMenu ]
+  abstract: true
+  components:
+  - type: StorageFill
+    contents:
+    - id: PaperworkEngiBuilding101
+    - id: PaperworkEngiElectrical101
+    - id: PaperworkEngiSingulo101
+    - id: PaperworkEngiTesla101
+    - id: PaperworkEngiAtmosParts101
+    - id: PaperworkEngiAtmosDnW101
+    - id: PaperworkEngiAtmosFrezon101
+    - id: PaperworkEngiAtmosTEG101
+    - id: PaperworkEngiAtmosSM101
+    - id: PaperworkEngiAtmosNuke101
+    - id: PaperworkEngiAtmosTurb101
+
+- type: entity
+  id: BoxFolderEngiForms
+  parent: [FillEngiForms, BoxFolderYellow]
+  categories:
+  name: Engineering 101 Guidebook
+  description: A folder filled with Engineering 101 guides to teach the fresh faces who can read.
+  suffix: Forms, Yellow
+
+- type: entity
+  id: PaperworkEngiElectrical101
+  name: Engineering 101 - Eletrical Networks
+  description: Contains all the info one might need about wiring and their components.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [head=2][/head][/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]EN-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [head=3][/head][/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [head=3][/head][/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                           [head=1][color=#f39f27]Electrical[/color] Networks[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you the basics of setting up wiring. Be it with LV, MV, or HV wiring.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Low Voltage[/head]
+      Low Voltage Wires, otherwise known as "LV" Wires. 
+
+      The green wiring that flows through the station, commonly powering Gas Pipes, Machines, Lathes, Lights, Ect...
+
+      They pull power from "APCs." The machines are commonly seen dotted around the station on walls. These can be toggled on and off without the need to alter wires.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Medium Voltage[/head]
+      Medium Voltage Wires, otherwise known as "MV" Wires. 
+
+      These are yellow wirings that commonly connecting "Substations" to APCs.
+
+      These are the wires that are the in-between HV and LV wires as they step-down HV connections to be useable for APCs via the Substations.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• High Voltage[/head]
+      High Voltage Wires, otherwise known as "HV" Wires.
+
+      These connect the various things that produce power to SMES's and/or Substations to feed power to the stations APC's. 
+
+      Most are commonly wires that bridge the gap to bring power from things like; Solars, Radiation Collector's, TEGs, AME's, Ect.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• APCs[/head]
+      Connects a MV Wire to step-down to a LV to bring power to the stations electronics and machines. Can be toggled on and off at their specific board to turn power on and off for anything connected.
+
+      [head=2]• Substations[/head]
+      Connects a HV wire to step-down to a MV. Bringing power to a APC Network. Substations are Commonly situated in a way to power a whole department or region's APC Network.
+
+      [head=2]• SMES's[/head]
+      Connects a HV Wire to charge and discharge as required. Used to store excess power incase things go badly and allow time to fix the problem before the station looses all power.
+
+      These require specifically a "Cable Terminal" to pull any produced power into themselves from HV Wires. Be mindful, as they will pull from MV and LV Wires as-well if they happen to be underneath. Also note; Cable Terminals separate the HV Network and avoids them connecting to cause the problem below.
+
+      Under no circumstances are you to connect the Output HV Wires from the SMES's to the Input Wires. This will cause a charge-loop which can rapidly cause a blackout if power production begins to fall short of the stations power use.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiBuilding101
+  name: Engineering 101 - Building
+  description: Contains all the info one might need about constructing stuff like gas pipes or machines.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [head=2][/head][/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]BA-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [head=3][/head][/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [head=3][/head][/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                                 [head=1][color=#f39f27]Build[/color] Anything[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you the basics of building.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      Your PDA has a list of all constructable machines, signs, pipes, etc. Loaded into its database. To access this, simply press G or B on its build-in keyboard, or press the hammer icon in the top-left of the screen.
+
+      Don't be overwhelmed by the amount, as located in the top left of the UI is a search bar and category selector!
+
+      The right side of the UI contains the description of the object you seek to build, alongside the materials and tools needed.
+
+      For multi-step objects like constructing machines via machine frames. Simply hover your PDA over the machine board you wish to build, and it will provide the needed materials.
+
+      [color=#AAAAAA][italic][ Just hover over the machine frame or board and right-click for a display on what parts you need! ][/color][/italic]
+
+      Beyond that, place and build where you need! You will learn how to quickly do so in due time, so don't overly stress about being slow at first.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiSingulo101
+  name: Engineering 101 - Singularity Engine
+  description: Contains all the info one might need about properly making and maintaining a singularity engine.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]SE-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                           [head=1][color=#f39f27]Singularity[/color] Engine[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to safely operate a Singularity Engine.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Singularity Engine[/head]
+      A Singularity Engine is a 9x9 space with 4 "Containment Field Generator's" at each corner, while being powered via "Emitters" firing a energy laser at them.
+
+      In the center rests the Singularity Generator, which outputs radiation once turned into a Singularity by firing a "Particle Accelerator" or PA at it. This radiation is collected and produces power via "Radiation Collector's."
+
+      It is recommended to to refuel the Radiation Collector's every 20 minutes to ensure peak power production.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Extra Info[/head]
+      Radiation Collector's require gaseous plasma to function, however the tank its held in doesn't matter. Plasma Tank, Air Tank. It will take them all the same. With the amount of plasma in the tank draining each second being based off the amount of radiation its exposed too, and subsequently the amount of power it produces.
+
+      The Emitter's require a MV Connection to function to charge the Containment fields. Be careful to not be hit by one of their energy beams, as they can cause painful burns.
+
+      The Particle Accelerator should be at maximum set to a power output of 2, as most Singularity Engine's lack the space for a larger Singularity. As-well as the beams of energy the PA produces are harmless by themselves, and can pass through objects.
+
+      For viewing how to setup the Particle Accelerator, use the terminal it comes with. If its failing to properly connect, ensure the terminal's red wires are facing to the PA, and its parts are in the correct orientation. 
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Singuloose Event[/head]
+      A "Singuloose" is whenever the Singularity inside a Singularity Engine breaks out, or is released from its containment and begins to consume the station.
+
+      The only way to stop a Singuloose is to fire on it with "Portable Particle Decelerator's" or PPD's. Which carry enough internal charge for 20 shots. After which requires recharging inside a recharger. These can be produced in a Protolathe or Engineering Techfab.
+
+      Do note, PPD's much like the PA can fire through objects. So use it to your advantage if the singuloose is known to be beyond the object your firing through.
+
+      You WILL be irradiated by it, if attempting to destabilize it enough using PPD's! Work with Medical to ensure your health if the radiation begins to become debilitating.
+
+      Wearing Magboots will be a life-saver. As a Singuloose normally reaches critical mass, so has a very strong gravitational pull. If Magboots are not available, attempt to keep your distance from it or ask Science to produce more using their Protolathe.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiTesla101
+  name: Engineering 101 - Tesla Engine
+  description: Contains all the info one might need about properly making and maintaining a tesla engine.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]TE-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                                    [head=1][color=#f39f27]Tesla[/color] Engine[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to safely operate a Tesla Engine.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Tesla Engine[/head]
+      A Tesla Engine is a 3x3 space with 4 "Containment Field Generator's" at each corner, while being powered via "Emitters" firing a energy laser at them.
+
+      In the center rests the Tesla Generator, which outputs electrical shocks and arcs once turned into a Tesla Ball by firing a "Particle Accelerator" or PA at it. The electrical shocks and arcs subsequently hit the Tesla Coils and and produce power.
+
+      It is recommended to repair the Tesla Coils every 20 minutes to ensure they do not break.
+
+      Due to the nature of electrical arcs and shocks targeting electrical sources. Grounding Rods are required around the edges of the containment field to prevent damage to the station. While wearing Insulated Gloves prevents the potential of them striking you.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Extra Info[/head]
+      Tesla Coils require a welder to repair periodically, however this can be made automatic via working with Robotics to produce Welder Bots.
+
+      The Emitter's require a MV Connection to function to charge the Containment fields. Be careful to not be hit by one of their energy beams, as they can cause painful burns.
+
+      The Particle Accelerator should only be active up until the Tesla Ball is produced by its generator, otherwise it could potentially break containment.
+
+      For viewing how to setup the Particle Accelerator, use the terminal it comes with. If its failing to properly connect, ensure the terminal's red wires are facing to the PA, and its parts are in the correct orientation. 
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Teslaloose Event[/head]
+      A "Teslaloose" is whenever the Tesla Ball inside a Tesla Engine breaks out, or is released from its containment and begins to roam the station, striking electrical arcs at anything able to hold a electrical charge.
+
+      The only way to stop a Teslaloose is to fire on it with "Portable Particle Decelerator's" or PPD's. Which carry enough internal charge for 20 shots. After which requires recharging inside a recharger. These can be produced in a Protolathe or Engineering Techfab.
+
+      Do note, PPD's much like the PA can fire through objects. So use it to your advantage if the Teslaloose is known to be beyond the object your firing through. With a Teslaloose being much more hardy compared to a Singuloose, requiring much more time or effort to destabilize.
+
+      Avoiding the Tesla Ball is the key, as much like a Singuloose. Touching it directly results in death. However wearing Insulated Gloves makes you all but immune to the effects of the electrical arcs that strike at you.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosParts101
+  name: Engineering 101 - Atmospheric Parts
+  description: Contains all the info one might need about each and every part that controls gasses.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]AP-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                          [head=1][color=#f39f27]Atmospheric[/color] Parts[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how each atmospheric part functions and in what case should they be used.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Air Alarms[/head]
+      These Wall-Mounted machines are where things like Vents, Scrubbers, Signal Valves, Air Sensors, Etc. Can connect and feed information about a room.
+
+      This is also the only way to control Vents and Scrubbers and their various settings. Though are most commonly used to alert station crew if a room is not within a livable range.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Firelocks[/head]
+      Doors and Directional Doors that specifically close when their connected Air Alarms begin enter a danger state. Mostly as a deterrent or outright blockade to prevent the stations crew from accidently entering a area with a dangerous air mixture.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Gas Pipes[/head]
+      Your bread and butter of moving around gasses. From strait pieces, to 4-Way pieces, they connect the gas flow between each different part below.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Pumps[/head]
+      Gas Pumps and Volumetric Pumps move gasses. Both do things slightly differently.
+
+      Gas Pumps move gasses based off pressure. Being better for pulling and pushing gasses into vacuums, or finely controlling the pressure of a network.
+
+      Volumetric Pumps move gasses based off liters. Being better for bulk movement of gasses than fine control.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Input & Output[/head]
+      Vents, Passive Vents, Injectors, Scrubbers, Etc. These are ways to take gasses out of pipes, and put them into the air for use or removal.
+
+      Vents are the stations consistent way to take gasses from a network and output them to a desired pressure. Commonly used for Distribution of air across the station.
+
+      Passive Vents don't require power to function compared to other forms of Input and Outputs. Where they specifically can output or input depending on its setup, as they function off which has higher pressure, be it the vent or the room.
+
+      Air Injector's are the bread and butter of a one-way movement of gas into the atmosphere of a room. Quickly ejecting out any gas within itself without allowing a way back in. This though has a upper limit of 9000kPa.
+
+      Air Scrubbers, are opposing side of Air Injector's. Allowing via a air alarm for the removal of a specific gas or gasses from a rooms air.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Valves[/head]
+      Allows or Blocks the flow of gas as needed or inputted. Only three are worth mention.
+
+      Signal Valves function based off signals from logic gates or air alarms.
+
+      Passive Gates disallow gasses from the input to re-enter into the input. With the side of the input being on the red circle.
+
+      Inlet Pressure Regulator's will automatically open when their inlet reaches their Setpoint, and will stop either when the inlet goes back below the setpoint or is equal with its outlets pressure.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Mixing & Filtering[/head]
+      I'm reaching the character limit. This is self-explanatory.
+
+      Mixing, mixes the Primary and Secondary inputs at a ratio. This ratio can be disrupted by a temperature difference in the gasses.
+
+      Filtering has a output and pass-through. The output on the bottom has the gasses you select, and the pass-through is the opposing and has the gasses you didn't select.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Temperature Manipulation[/head]
+      Freezer's Cool, Heater's Heat. Their efficiency is based off how much power they get up until their full-powered.
+
+      Radiator's radiate the heat of the gas inside them, and takes in the heat from the gas, or lack there-of, around it.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Gas Condensing[/head]
+      This machine takes any gasses in the network and turns them into their liquid chemical form. Use this for easy base chemistry liquids!
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• What do Inline's Do?[/head]
+      Instead of functioning based off what gas is inside itself, it functions based off what gas is inside the entire network. Being incredibly useful overall depending on the situation.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• High-Pressure Casings[/head]
+      A Tier 3 Engineering Research from Science. These allow for much higher pressure or flow atmospheric parts to be made. 
+
+      A example is a High-Flow Gas Pump being able to push up to 13500kPa compared to the normal 4500kPa limit.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosDnW101
+  name: Engineering 101 - Distribution and Waste
+  description: Contains all the info one might need about each and every part that controls gasses.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]AP-2[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+      [head=1][color=#f39f27]Atmospheric[/color] Distro & Waste[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to both deliver air to the station, and keep said air clean for future use.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Distribution[/head]
+      Commonly referred to as such, or the "Distro-Loop."
+
+      This line specifically is colored a dark blue, and connects to the air vents across the entire station.
+
+      Oxygen and Nitrogen is carried within, at commonly a 21% Oxygen and 79% Nitrogen at 20C from the gas mixer at the start of the line within Atmospherics.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Waste[/head]
+      Commonly referred to as such, or the "Waste-Loop."
+
+      This line is specifically colored a dark red, and connects to the air scrubbers across the station.
+
+      This pulls gasses from the air in the station that's bad for any living being and brings it into Atmospherics to be filtered out into storage tanks, or vented into space at the very end.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Waste-Loop Optimizations[/head]
+      Most station waste-loops fail to account for a over-abundance of gasses causing a clog. So here's a simplistic way to prevent that!
+
+      • Move the Gas Filter's one tile away from their gas outputs.
+      • Put a Gas Manifold in the gap
+      • Connect a Inlet Pressure Regulator set to 4400kPa
+      • Connect the Inlet Pressure Regulator's to bypass the filters to vent directly into space.
+
+      This setup specifically prevents the filters from clogging, allowing for a near non-existence requirement to oversee it.
+
+      More-Over. It is recommended to disconnect the Oxygen and Nitrogen filters and avoid ever filtering for them. As the potential harm of adding super-heated gasses from a accidental burn to either gas storages heavily outweighs the benefit.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosFrezon101
+  name: Engineering 101 - Frezon Creation
+  description: Contains all the info one might need about the creation of Frezon.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]AP-3[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                                [head=1][color=#f39f27]Frezon[/color] Creation[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to make Frezon.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Frezon Setup[/head]
+      To create Frezon in a simple way, you need a handful of things.
+
+      • A 3x3 Room
+      • A Oxygen Injector
+      • A Nitrogen Injector
+      • A Tritium Injector
+      • A Freezer
+      • A Air Alarm
+      • Scrubbers
+
+      The Oxygen and Tritium is the main components of the reaction, where as the Nitrogen and Temperature is the catalysts.
+
+      The ratio be damned in the guide-book. As the chamber will contain the Oxygen and Nitrogen needed via the injector's, where the freezer connected to the room via a passive vent will cool any gas inside to the required temperatures. 
+
+      Then the Tritium will be injected where it'd react with the already present Oxygen and Nitrogen to create Frezon. The scrubbers then scrub for only Frezon to quickly remove it from the room before it reacts with the Nitrogen inside to break down into Nitrous Oxide.
+
+      And this is how you make Frezon in a very simple way without the requirement to worry about a ratio or getting it perfect!
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosTEG101
+  name: Engineering 101 - Thermo-Eletric Generator
+  description: Contains all the info one might need about making and using a TEG.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]TG-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+        [head=1][color=#f39f27]Thermo-Electric[/color] Generator[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to make and run a TEG.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Thermo-Electric Generator[/head]
+      A power producer that generates electricity based off a temperature difference. The higher the difference between the two sides, the more power that is produced.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Cold Loop[/head]
+      A Nitrogen filled gas loop that feeds into one side of the TEG via a Circulator.
+
+      Commonly is cooled via space using radiator's, however for more compact setups it can be cooled via Freezers. Doing both is also a viable way for higher efficiency.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Hot Loop[/head]
+      A Plasma filled gas loop that feeds into one side of the TEG via a Circulator.
+
+      Commonly is heated via the burning of Plasma and Oxygen in a "Burn Chamber" at a 3% Plasma to 97% Oxygen mixture. It is recommended to fill said Burn Chamber to the maximum it can be with a injector, which is 9000kPa, before burning the mixture for the most efficient burn.
+
+      The Plasma in the Hot Loop's pipes is pushed through the room, and heated via radiator's. Which is moved out and into the TEG.
+
+      This loop always will become overfilled from heating up, so it is a must-have to setup a off-shoot with a Inlet Pressure Regulator set to 4400kPa that vents to space to avoid a clog. 
+
+      This off-shoot must be before the radiator's or before the pump that pushes gas into the radiator's. Or it will fail to work properly.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Hellfire Freezers[/head]
+      A more complex and power hungry, though even more efficient, way to cool a TEG's cold loop.
+
+      It uses a sealed room of Hellfire Freezers to cool the gas that goes through the pipes, then is put into the room directly via a passive vent or injector. Hellfire Freezers cool the gas due to their flaw. Then the gas is then taken back into the loop via a passive vent or scrubber to be pushed into the TEG.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosSM101
+  name: Engineering 101 - Supermatter Crystal
+  description: Contains all the info one might need to safely operate a SM Engine.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]SM-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                      [head=1][color=#f39f27]Supermatter[/color] Crystal[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to make and run SM.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Supermatter Crystal[/head]
+      A power source that generates radiation which is collected by radiation collector's to produce power. Which can be increased via firing a emitter at it.
+
+      Poor management of the gasses inside its chamber or temperature results in a "Delamination" which takes different reactions but all ultimately result in the destruction of a large area around the Supermatter and threatens the entire station.
+
+      When active, which is upon a emitter firing on it or a object touching it, begins to output Oxygen and Plasma. Which scales higher based off its radiation intensity.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Supermatter Interactions[/head]
+      The Crystal actively intakes the gas within its chamber, altering its output and reaction based off what gasses are inside.
+
+      Normally that would be Nitrogen, which actively lowers its output on a percentile basis. Making it require more to scale its power output higher. With it being a incredibly safe and stable gas for use with the Supermatter.
+
+      If one was to wish to raise the power output however in a safe manner. Carbon Dioxide is a go-to so long as its done in moderation and kept cool to avoid breaking down into Oxygen, otherwise it risks causing a "Charged Delamination." Which results in rapid formations of electrical anomaly's and eventually a Tesla Ball. 
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Cold Loop[/head]
+      To keep the Supermatter's gasses cold and avoid a Delamination, a Cold Loop is required.
+
+      It functions much similarly to a TEGs Cold Loop. Either using radiator's in space to cool down gasses, freezers, or both.
+
+      However, unlike TEGs, the Cold Loop must also remove unwanted gasses, like Plasma or Oxygen to avoid a burn within the chamber or runaway reaction.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosNuke101
+  name: Engineering 101 - Nuclear Reactor
+  description: Contains all the info one might need to tame the Nuclear Reactor.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]NE-1[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                              [head=1][color=#f39f27]Nuclear[/color] Reactor[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to tame a Nuclear Reactor.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Nuclear Reactor[/head]
+      Uses Radiation to generate heat, which is then put into a Gas Turbine to generate electricity.
+
+      There is multiple things that have to be kept track of, of which are labeled below. With each one having audible noise once they begin to reach dangerous levels. Alongside a diagram for a efficient design.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Setup Diagram[/head]
+
+      • [color=#4287f5]Control Rods[/color]
+      • [color=#34ad8d]Gas Channels[/color]
+      • [color=#6134ad]Heat Exchangers[/color]
+      • [color=#f54242]Fuel Rods[/color]
+
+      [head=3]• Nuclear Reactor[/head]
+      [head=1][color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]
+      [color=#6134ad]▄[/color]  [color=#f54242]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#f54242]▄[/color]  [color=#6134ad]▄[/color]
+      [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]
+      [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]
+      [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]
+      [color=#6134ad]▄[/color]  [color=#f54242]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#f54242]▄[/color]  [color=#6134ad]▄[/color]
+      [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color][/head]
+
+
+      [head=3]• Small Nuclear Reactor[/head]
+      [head=1][color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]
+      [color=#6134ad]▄[/color]  [color=#f54242]▄[/color]  [color=#4287f5]▄[/color]  [color=#f54242]▄[/color]  [color=#6134ad]▄[/color]
+      [color=#34ad8d]▄[/color]  [color=#4287f5]▄[/color]  [color=#4287f5]▄[/color]  [color=#4287f5]▄[/color]  [color=#34ad8d]▄[/color]
+      [color=#6134ad]▄[/color]  [color=#f54242]▄[/color]  [color=#4287f5]▄[/color]  [color=#f54242]▄[/color]  [color=#6134ad]▄[/color]
+      [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color]  [color=#6134ad]▄[/color]  [color=#34ad8d]▄[/color][/head]
+
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Temperature[/head]
+      The overall temperature of the reactor and it's many parts. This controls specifically the temperature of the gas it outputs however keep in mind the following;
+
+      The parts inside a nuclear reactor become melted at 1426C, at which they can no longer be removed. However any hotter than 80C requires gloves, and 400C receiving burns from handling is inevitable.
+
+      The Nuclear Reactor itself has a meltdown threshold of 1726C.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Radiation[/head]
+      Fuel Rods generate radiation, with this radiation leaking to the surrounding area around it in turn. Certain materials are more radioactive than others. A example would be Bananium Fuel Rods.
+
+      The maximum before overload is 20 Rads/s
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Thermal Power[/head]
+      The overall output of power from the reactor in terms of a ratio between the amount of gas being outputted, the heat of it, and the radiation output of the fuel rods.
+
+      The maximum before overload is 10MtW.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Material Reactions[/head]
+      Certain Materials have specific reactions. However those listed below are some of the best for their respective types.
+
+      [head=3]• Control Rods[/head]
+      Gold, or Plasteel
+
+      [head=3]• Gas Channels[/head]
+      Gold, Steel, or Glass
+
+      [head=3]• Heat Exchangers[/head]
+      Gold
+
+      [head=3]• Fuel Rods[/head]
+      Plutonium, Bananium, Uranium, or Plasma
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Gas Reactions[/head]
+      There is also gas reactions. Below are their list. Note the fact the Nuclear Reactor is capable of breaking down certain gasses into other gasses and allowing gasses to burn inside itself. So use some of them with heavy caution.
+
+      [head=3]• Nitrogen[/head]
+      Much like the Supermatter, this gas is a go-to stable gas for the reactor. Nothing happens with it.
+
+      [head=3]• Carbon Dioxide[/head]
+      Lowers the reactivity inside the reactor, however with high enough temperatures it breaks down into Oxygen.
+
+      [head=3]• Nitrous Oxide[/head]
+      Does nothing much like Nitrogen, however with high enough temperatures it breaks down into Nitrogen.
+
+      [head=3]• Plasma[/head]
+      Increases the reactivity inside the reactor, while breaking down into randomized gasses. Plasma Fuel Rods break down into this as well as they decay. So use with some caution.
+
+      [head=3]• Tritium[/head]
+      GREATLY Increases the reactivity inside the reactor, being 3x stronger than Plasma while also breaking down into randomized gasses. Use in HEAVY moderation.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]
+
+- type: entity
+  id: PaperworkEngiAtmosTurb101
+  name: Engineering 101 - Gas Turbine
+  description: Contains all the info one might need about controlling a Gas Turbine.
+  parent: Paper
+  components:
+  - type: Paper
+    content: |2
+      [color=#f39f27]░░▄▀░░ [/color] [bold]Hardlight Sector: Engineering 101[/bold]       [bold]Form: [/bold][color=#f39f27]NE-2[/color]
+      [color=#f39f27]░▄█▄▄▀ [/color] [color=#AAAAAA][italic]Brought to you by Colonial Command[/color][/italic]
+      [color=#f39f27]██▀░░░ [/color] [color=#AAAAAA][italic]Written By: [bold]Colonial Engineer, CYN-182[/bold][/color][/italic]
+      [color=#383838]▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄[/color]
+      [color=#f39f27]▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀[/color]
+                                        [head=1][color=#f39f27]Gas[/color] Turbine[/head]
+
+      [color=#AAAAAA][italic]The following is intended to teach you how to use the Gas Turbine.[/color][/italic]
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Gas Turbine[/head]
+      Produces Electricity commonly from the Nuclear Reactor. However with more complex methods can be used off other means.
+
+      There are many parts to keep in mind, which are listed below.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Flow Rate[/head]
+      [color=#AAAAAA][italic]Note the fact it is locked at 200 for now until we iron out the bug in the software from the update we conducted to them.[/color][/italic]
+
+      The amount of gas flowing into the turbine. The higher it is, the more gas the turbine both inputs and outputs through itself for power.
+
+      The way this is formulated however is the following;
+      100 + (100*Gas Exchanger Amount) = X
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Stator Load[/head]
+      The primary way to control the Gas Turbine. As the higher the Stator Load is, the more gas/heat it needs for the turbine to keep its current RPM.
+
+      The Stator Load also controls the amount of power the Turbine Produces per revolution. So the higher the Stator Load can be while remaining at peak RPM, the more power that's produced.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• RPM[/head]
+      Located on the left side of the UI is 12 Dashes of varying color's. The main one that is to be focused on is the green one, which is the 3rd dash down from the top.
+
+      That is the dash that is considered "Peak RPM."
+
+      The Red Dash located at the very top is considered the "Overspeed RPM" where the Gas Turbine begins to take damage.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Turbine States[/head]
+      Overspeed is a state where the turbine's Stator Load is too low, and the RPM is too high. Causing the Turbine to shake itself apart.
+
+      Stalling is a state where the Stator Load is too high, resulting in it coming to a stop as it no longer produces any power.
+
+      Overtemp is a state where the gasses going inside the turbine are too hot. Resulting in it starting to melt and eventually break open.
+
+      Undertemp is a state where the gasses going inside are too cold. Resulting in it being unable to push the turbine and making no power.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Turbine Parts[/head]
+      Each part has its own reactions within the Gas Turbine, however Gold Parts are the most efficient for power generation. 
+
+      It is to note you can still experiment, as there are no "Bad" part. Just only inefficient for the setup. 
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Gas Turbine Repair[/head]
+      To Repair a Gas Turbine, you only need a welder. However be warry of the gasses as the Turbine will continuously leak any gas that goes through it until it is repaired.
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [head=2]• Self-Throttling[/head]
+
+      [color=#AAAAAA][italic]Note the fact this is non-functional currently, and should not be used under any circumstances.
+
+      This will be re-included in the future once it can be confirmed it works reliably once again.[/color][/italic]
+
+      [color=#f39f27]──────────────────────────────────────────[/color]
+      [color=#AAAAAA][italic][bold]Thank You, [/bold]for reading this document. As; 
+      "Ignorance is only harmful if you do not seek to learn."[/color][/italic]

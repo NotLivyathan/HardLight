@@ -1,0 +1,32 @@
+- type: entity
+  parent: BaseItem
+  id: Clicker
+  name: clicker
+  description: A clicker used for training animals, it also doubles as a nice stim toy.
+  components:
+  - type: Sprite
+    sprite: _DEN/Objects/Fun/clicker.rsi
+    state: icon
+  - type: Item
+    sprite: _DEN/Objects/Fun/clicker.rsi
+    size: Tiny
+  - type: Tag
+    tags:
+      - Payload
+  - type: EmitSoundOnUse
+    sound:
+      path: /Audio/_DEN/Items/clicker.ogg
+  - type: EmitSoundOnActivate
+    sound:
+      path: /Audio/_DEN/Items/clicker.ogg
+  - type: EmitSoundOnLand
+    sound:
+      path: /Audio/_DEN/Items/clicker.ogg
+  - type: EmitSoundOnTrigger
+    sound:
+      path: /Audio/_DEN/Items/clicker.ogg
+  - type: UseDelay
+    delay: 0.5 # Hardlight 1.5>0.5
+  - type: StaticPrice # HL
+    price: 125 # HL
+    vendPrice: 500 # HL

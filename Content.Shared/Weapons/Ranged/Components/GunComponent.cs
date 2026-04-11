@@ -269,6 +269,48 @@ public sealed partial class GunComponent : Component
     /// </summary>
     [DataField]
     public LocId? ExamineCaliber;
+
+    /// <summary>
+    /// Goobstation
+    /// Whether the system won't change gun target when we stop aiming at it while firing in burst mode.
+    /// </summary>
+    [DataField]
+    public bool LockOnTargetBurst;
+
+    /// <summary>
+    /// Goobstation
+    /// Muzzle flash will be rotated by this angle if the weapon is dropped
+    /// </summary>
+    [DataField]
+    public Angle MuzzleFlashRotationOffset;
+
+    /// <summary>
+    /// Mono
+    /// Recoil to incur per ammo shot, kg*m/s.
+    /// </summary>
+    [DataField]
+    public float Recoil = 0f;
+
+    // HardLight start
+    /// <summary>
+    /// Cooldown state for handling-rule failure popups.
+    /// Stored on the weapon like normal GunRequiresWield popup state.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan HandlingLastPopup;
+
+    [DataField, AutoNetworkedField]
+    public TimeSpan HandlingPopupCooldown = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// Cooldown state for failed wield-attempt popups.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public TimeSpan WieldFailLastPopup;
+
+    [DataField, AutoNetworkedField]
+    public TimeSpan WieldFailPopupCooldown = TimeSpan.FromSeconds(1);
+    // HardLight end
 }
 
 [Flags]

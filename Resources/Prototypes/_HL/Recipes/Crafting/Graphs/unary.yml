@@ -1,0 +1,27 @@
+- type: constructionGraph
+  id: GasUnaryHL
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: portstorage
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
+  - node: portstorage
+    entity: GasPortStorage
+    edges:
+    - to: start
+      conditions:
+      - !type:EntityAnchored
+        anchored: false
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:DeleteEntity
+      steps:
+      - tool: Welding
+        doAfter: 1

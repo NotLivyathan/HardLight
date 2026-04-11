@@ -1,0 +1,138 @@
+- type: entity
+  name: aberrant spike rifle
+  parent: [BaseC3ExpeditionContraband, BaseGunWieldable, BaseItem]
+  id: AberrantSpikeGun
+  description: Horrible parody of a real rifle, constantly generates new poisoned darts untill full.
+  components:
+  - type: Item
+    size: Large
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantguns.rsi 
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantguns.rsi 
+    layers:
+      - state: base
+  - type: Clothing
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantguns.rsi 
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 2
+    rechargeSound:
+      path: /Audio/Effects/Fluids/blood2.ogg
+  - type: BasicEntityAmmoProvider
+    proto: HLDartAberrantBone 
+    capacity: 30
+    count: 30
+  - type: Gun
+    minAngle: 5
+    maxAngle: 10
+    fireRate: 4
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+      - SemiAuto
+    soundGunshot:
+      path: /Audio/Items/bow_pull.ogg
+    soundEmpty: null
+    projectileSpeed: 30
+  - type: GunRequiresWield
+  - type: GunWieldBonus
+    minAngle: -0
+    maxAngle: -0
+ 
+- type: entity
+  name: aberrant spike shotgun
+  parent: [BaseC3ExpeditionContraband, BaseGunWieldable, BaseItem]
+  id: AberrantSpikeShotgun
+  description: Horrible parody on a real shotgun, constantly generates new poisoned darts untill full.
+  components:
+  - type: Item
+    size: Large
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/aberrantshotgun.rsi 
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/aberrantshotgun.rsi 
+    layers:
+      - state: icon
+  - type: Clothing
+    sprite: _HL/Objects/Weapons/Guns/Shotguns/aberrantshotgun.rsi 
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 5
+    rechargeSound:
+      path: /Audio/Effects/Fluids/blood2.ogg
+  - type: BasicEntityAmmoProvider
+    proto: HLDartAberrantBonePelletSpread 
+    capacity: 4
+    count: 4
+  - type: Gun
+    minAngle: 1
+    maxAngle: 2
+    fireRate: 2
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+      - SemiAuto
+    soundGunshot:
+      path: /Audio/Items/bow_pull.ogg
+    soundEmpty: null
+    projectileSpeed: 30
+  - type: GunRequiresWield
+  - type: GunWieldBonus
+    minAngle: -0
+    maxAngle: -0
+    
+- type: entity
+  name: aberrant spike sniper rifle
+  parent: [BaseC3ExpeditionContraband, BaseGunWieldable, BaseItem]
+  id: AberrantSpikeSniper
+  description: Horrible parody on a real sniper rifle, complete with a wierd-looking scope. Constantly generates new poisoned darts untill full.
+  components:
+  - type: Item
+    size: Large
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantsniper.rsi 
+  - type: Sprite
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantsniper.rsi 
+    layers:
+      - state: icon
+  - type: Clothing
+    sprite: _HL/Objects/Weapons/Guns/Rifles/aberrantsniper.rsi 
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: RechargeBasicEntityAmmo
+    rechargeCooldown: 10
+    rechargeSound:
+      path: /Audio/Effects/Fluids/blood2.ogg
+  - type: BasicEntityAmmoProvider
+    proto: HLDartAberrantBoneLong 
+    capacity: 5
+    count: 5
+  - type: Gun
+    minAngle: 3
+    maxAngle: 6
+    fireRate: 0.7
+    selectedMode: SemiAuto
+    availableModes:
+      - SemiAuto
+    soundGunshot:
+      path: /Audio/Items/bow_pull.ogg
+    soundEmpty: null
+    projectileSpeed: 30
+  - type: GunRequiresWield
+  - type: CursorOffsetRequiresWield
+  - type: EyeCursorOffset
+    maxOffset: 3
+    pvsIncrease: 1
+  - type: SpeedModifiedOnWield
+    walkModifier: 0.8
+    sprintModifier: 0.8
+  - type: GunWieldBonus
+    minAngle: -0
+    maxAngle: -0
+    

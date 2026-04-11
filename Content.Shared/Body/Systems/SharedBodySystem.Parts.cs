@@ -25,7 +25,6 @@ namespace Content.Shared.Body.Systems;
 public partial class SharedBodySystem
 {
     [Dependency] private readonly RandomHelperSystem _randomHelper = default!; // Shitmed Change
-    [Dependency] private readonly InventorySystem _inventorySystem = default!; // Shitmed Change
     private static readonly ProtoId<DamageTypePrototype> BloodlossDamageId = "Bloodloss";
 
     private void InitializeParts()
@@ -130,7 +129,7 @@ public partial class SharedBodySystem
             && TryGetPartSlotContainerName(partEnt.Comp.PartType, out var containerNames))
         {
             foreach (var containerName in containerNames)
-                _inventorySystem.DropSlotContents(partEnt.Comp.Body.Value, containerName, inventory);
+                _inventory.DropSlotContents(partEnt.Comp.Body.Value, containerName, inventory);
         }
 
     }
@@ -196,17 +195,38 @@ public partial class SharedBodySystem
 
     protected virtual void DropPart(Entity<BodyPartComponent> partEnt)
     {
+        var body = partEnt.Comp.Body;
+
+        if (TerminatingOrDeleted(partEnt)
+            || EntityManager.IsQueuedForDeletion(partEnt)
+            || body is { Valid: true } && (TerminatingOrDeleted(body.Value) || EntityManager.IsQueuedForDeletion(body.Value)))
+        {
+            return;
+        }
+
         DropSlotContents(partEnt);
         // I don't know if this can cause issues, since any part that's being detached HAS to have a Body.
         // though I really just want the compiler to shut the fuck up.
-        var body = partEnt.Comp.Body.GetValueOrDefault();
+        var bodyUid = body.GetValueOrDefault();
         if (TryComp(partEnt, out TransformComponent? transform) && _gameTiming.IsFirstTimePredicted)
         {
             var enableEvent = new BodyPartEnableChangedEvent(false);
             RaiseLocalEvent(partEnt, ref enableEvent);
             var droppedEvent = new BodyPartDroppedEvent(partEnt);
-            RaiseLocalEvent(body, ref droppedEvent);
-            SharedTransform.AttachToGridOrMap(partEnt, transform);
+            RaiseLocalEvent(bodyUid, ref droppedEvent);
+
+            if (bodyUid != EntityUid.Invalid)
+            {
+                var bodyTransform = Transform(bodyUid);
+                if (bodyTransform.MapUid != null)
+                    SharedTransform.DropNextTo((partEnt.Owner, transform), (bodyUid, bodyTransform));
+            }
+
+            if (transform.MapUid != null)
+            {
+                SharedTransform.AttachToGridOrMap(partEnt, transform);
+            }
+
             _randomHelper.RandomOffset(partEnt, 0.5f);
         }
 

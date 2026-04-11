@@ -162,7 +162,8 @@ public sealed class FollowerSystem : EntitySystem
 
     private void OnFollowedPolymorphed(Entity<FollowedComponent> entity, ref PolymorphedEvent args)
     {
-        foreach (var follower in entity.Comp.Following)
+        var followers = entity.Comp.Following.ToArray();
+        foreach (var follower in followers)
         {
             // Stop following the target's old entity and start following the new one
             StartFollowingEntity(follower, args.NewEntity);
@@ -176,11 +177,13 @@ public sealed class FollowerSystem : EntitySystem
     /// <param name="entity">The entity to be followed</param>
     public void StartFollowingEntity(EntityUid follower, EntityUid entity)
     {
-        if (follower == entity || TerminatingOrDeleted(entity))
+        if (!follower.IsValid() || !entity.IsValid() || follower == entity || Deleted(follower) || TerminatingOrDeleted(entity))
+            return;
+
+        if (!TryComp(entity, out TransformComponent? targetXform))
             return;
 
         // No recursion for you
-        var targetXform = Transform(entity);
         while (targetXform.ParentUid.IsValid())
         {
             if (targetXform.ParentUid == follower)
@@ -292,7 +295,8 @@ public sealed class FollowerSystem : EntitySystem
         if (!Resolve(uid, ref followed))
             return;
 
-        foreach (var player in followed.Following)
+        var followers = followed.Following.ToArray();
+        foreach (var player in followers)
         {
             StopFollowingEntity(player, uid, followed);
         }

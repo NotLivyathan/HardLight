@@ -1,4 +1,5 @@
 using Content.Shared.Light.Components;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 
@@ -28,6 +29,9 @@ public sealed class LightCollideSystem : EntitySystem
     {
         // TODO: Check this on the event.
         if (TerminatingOrDeleted(ent.Owner))
+            return;
+
+        if (!HasComp<FixturesComponent>(ent.Owner))
             return;
 
         // Regenerate contacts for everything we were colliding with.

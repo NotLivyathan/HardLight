@@ -1,0 +1,125 @@
+## Component example
+- type: spawnCharacterOverrideRule
+  id: LivyathanComponentOnSpawn
+  match: Livyathan
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Livyathan
+  components:
+  - type: HLLivyathan
+
+## Entity example
+- type: spawnCharacterOverrideRule
+  id: MobDragonLivyathanOnSpawn
+  match: LivyathanDragon
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Livyathan
+  entity: MobDragonLivyathan
+  
+- type: spawnCharacterOverrideRule
+  id: Bananatalononspawn
+  match: RaAmpwave
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - RaAmpwave
+  entity: BananaTalon
+  
+- type: spawnCharacterOverrideRule
+  id: Featheredonspawn
+  match: FeatheredMenace
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - FeatheredMenace
+  entity: PlayerBorgQuadfeathered
+
+- type: spawnCharacterOverrideRule
+  id: Glitzonspawn
+  match: RUINtheDRAGON
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - RUINtheDRAGON
+  entity: PlayerBorgQuadGlitz
+  
+- type: spawnCharacterOverrideRule
+  id: Dogborgonspawn
+  match: Rhealis 
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - MyNameIsRune 
+  entity: PlayerBorgQuaddog
+  
+- type: spawnCharacterOverrideRule
+  id: Petalborgonspawn
+  match: Petalpool
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Petalpool
+  entity: BorgChassisPetal
+  
+- type: spawnCharacterOverrideRule
+  id: mossborgonspawn
+  match: MystiCanine
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - MystiCanine
+  entity: PlayerBorgQuadMoss
+
+
+- type: spawnCharacterOverrideRule
+  id: Quadvizonspawn
+  match: VexonOrkali
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - VexonOrkali
+  entity: PlayerBorgQuadViz
+
+- type: spawnCharacterOverrideRule
+  id: orchidonspawn
+  match: Vytian
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Vytian
+  entity: PlayerBorgQuadorchid
+
+- type: spawnCharacterOverrideRule
+  id: engiservspawn
+  match: potato3s
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - potato3s
+  entity: PlayerBorgQuadengiserv
+  
+## Component example
+- type: spawnCharacterOverrideRule
+  id: abyssbloodverzi
+  match: Verzical The Watcher
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - VexonOrkali
+  components:
+  - type: DamagedByFlashing
+    flashDamage:
+        types:
+           Heat: 120
+  - type: Bloodstream
+    bloodReagent: AbyssalBlood
+    bloodMaxVolume: 650
+    bloodlossDamage:
+      types:
+        Bloodloss: 0.5
+    bloodlossHealDamage:
+      types:
+        Bloodloss: -1

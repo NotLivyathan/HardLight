@@ -4,6 +4,7 @@
   parent: BaseGlobal
   priority: -100 # Very specific ERP meaning, should be at the bottom
   requiresHands: false
+  requiresUnblocked: false
   requiresCanInteract: false
   contactInteraction: false
   icon: /Textures/Interface/Actions/eyeopen.png

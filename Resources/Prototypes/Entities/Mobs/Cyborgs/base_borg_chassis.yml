@@ -34,7 +34,7 @@
     baseWalkSpeed : 2.5
     baseSprintSpeed : 4.5
   - type: Sprite
-    sprite: Mobs/Silicon/chassis.rsi
+    sprite: Mobs/Silicon/Chassis/generic/default.rsi
   - type: RotationVisuals
     horizontalRotation: 90
   - type: MobState
@@ -70,12 +70,15 @@
         type: BorgBoundUserInterface
       enum.StrippingUiKey.Key:
         type: StrippableBoundUserInterface
+      # Only used for NT borgs that can switch type, defined here to avoid copy-pasting the rest of this component.
+      enum.BorgSwitchableTypeUiKey.SelectBorgType:
+        type: BorgSelectTypeUserInterface
       enum.SurgeryUIKey.Key:
         type: SurgeryBui
   - type: ActivatableUI
     key: enum.BorgUiKey.Key
-  - type: Targeting # Shitmed Change
-  - type: SurgeryTarget
+  - type: Targeting # Shitmed
+  - type: SurgeryTarget # HardLight: Necessary for Cyborgs to perform surgery.
   - type: SiliconLawBound
   - type: ActionGrant
     actions:
@@ -86,7 +89,7 @@
   - type: SiliconLawProvider
     laws: Crewsimov
   - type: Inventory
-    templateId: borgnorm # Hardlight. Edits regular borgs to use our Inventories.
+    templateId: borgnorm # Hardlight: Edits regular borgs to use our inventories.
   - type: Hands
     showInHands: false
     disableExplosionRecursion: true
@@ -101,7 +104,6 @@
       - BorgChassis
       - RoboticsConsole
   - type: WiresPanel
-    openingTool: Prying
   - type: ActivatableUIRequiresPanel
   - type: NameIdentifier
     group: Silicon
@@ -174,6 +176,7 @@
       collection: FootstepBorg
   - type: Construction
     graph: Cyborg
+    node: cyborg
     containers:
     - part-container
     - cell_slot
@@ -260,8 +263,20 @@
     damageProtection:
       flatReductions:
         Heat: 10 # capable of touching light bulbs and stoves without feeling pain!
-  - type: PreventDropOnDowned # Frontier: borgs don't drop items when falling (e.g. critical/dead)
-  - type: InteractionPopup   # Hardlight change should be able to pet the borgs now
+  #region Starlight
+  # - type: CyborgSparkEffect # Hardlight we don't have these yet...
+  # - type: StationAIShunt #Starlight allow shunting into all borgs # Hardlight TOO SOON
+  # - type: Crawler # Hardlight TOO SOON
+  # end region starlight
+  - type: BorgSwitchableSubtype # CD change
+  - type: BypassLock
+    openWiresPanel: true
+  - type: BypassLockRequiresMobState
+    requiredMobState:
+    - Critical
+    - Dead
+  - type: PreventDropOnDowned # Frontier: borgs don't drop items when falling
+  - type: InteractionPopup   # Hardlight: should be able to pet the borgs now
     interactSuccessString: petting-success-generic-cyborg
     interactFailureString: petting-failure-generic-cyborg
     interactSuccessSound:
@@ -347,6 +362,9 @@
   - type: AccessReader
     access: [["Command"], ["Research"]]
   - type: ShowJobIcons
+  - type: InteractionPopup
+    interactSuccessSound:
+      path: /Audio/Ambience/Objects/periodic_beep.ogg
 
 - type: entity
   id: BaseBorgChassisSyndicate
@@ -393,6 +411,8 @@
       Unsexed: UnisexSiliconSyndicate
   - type: PointLight
     color: "#dd200b"
+  - type: BypassLock
+    bypassDelay: 15 # We don't want people to easily be able to remove syndieborg brains.
 
 - type: entity
   id: BaseBorgChassisDerelict
@@ -444,7 +464,7 @@
   - type: NameIdentifier
     group: Xenoborg
   - type: Sprite
-    sprite: Mobs/Silicon/chassis.rsi
+    sprite: Mobs/Silicon/Chassis/xeno_engi.rsi
   - type: MobThresholds
     thresholds: # slightly tankier than a normal borg
       0: Alive
@@ -557,3 +577,5 @@
     interactSuccessSound:
       path: /Audio/Ambience/Objects/periodic_beep.ogg
   - type: Xenoborg
+  - type: BypassLock
+    bypassDelay: 15 # We don't want people to easily be able to remove xenoborg brains.

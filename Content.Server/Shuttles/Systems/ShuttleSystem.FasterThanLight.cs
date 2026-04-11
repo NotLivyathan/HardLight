@@ -51,7 +51,8 @@ public sealed partial class ShuttleSystem
     public float DefaultStartupTime;
     public float DefaultTravelTime;
     public float DefaultArrivalTime;
-    private float _ftlCooldown;
+    private TimeSpan FTLCooldown;
+    private TimeSpan ArrivalsFTLCooldown;
     public float FTLMassLimit;
     private TimeSpan _hyperspaceKnockdownTime = TimeSpan.FromSeconds(5);
 
@@ -108,7 +109,8 @@ public sealed partial class ShuttleSystem
         _cfg.OnValueChanged(CCVars.FTLStartupTime, time => DefaultStartupTime = time, true);
         _cfg.OnValueChanged(CCVars.FTLTravelTime, time => DefaultTravelTime = time, true);
         _cfg.OnValueChanged(CCVars.FTLArrivalTime, time => DefaultArrivalTime = time, true);
-        _cfg.OnValueChanged(CCVars.FTLCooldown, time => _ftlCooldown = time, true);
+        _cfg.OnValueChanged(CCVars.FTLCooldown, time => FTLCooldown = TimeSpan.FromSeconds(time), true);
+        _cfg.OnValueChanged(CCVars.ArrivalsFTLCooldown, time => ArrivalsFTLCooldown = TimeSpan.FromSeconds(time), true);
         _cfg.OnValueChanged(CCVars.FTLMassLimit, time => FTLMassLimit = time, true);
         _cfg.OnValueChanged(CCVars.HyperspaceKnockdownTime, time => _hyperspaceKnockdownTime = TimeSpan.FromSeconds(time), true);
     }
@@ -463,7 +465,7 @@ public sealed partial class ShuttleSystem
         comp.StateTime = StartEndTime.FromCurTime(_gameTiming, DefaultArrivalTime);
         comp.State = FTLState.Arriving;
 
-        if (entity.Comp1.VisualizerProto != null)
+        if (entity.Comp1.VisualizerProto != null && entity.Comp1.TargetCoordinates.IsValid(EntityManager))
         {
             comp.VisualizerEntity = SpawnAttachedTo(entity.Comp1.VisualizerProto, entity.Comp1.TargetCoordinates);
             DebugTools.Assert(Transform(comp.VisualizerEntity.Value).ParentUid == entity.Comp1.TargetCoordinates.EntityId);
@@ -472,6 +474,10 @@ public sealed partial class ShuttleSystem
             Dirty(comp.VisualizerEntity.Value, visuals);
             _transform.SetLocalRotation(comp.VisualizerEntity.Value, entity.Comp1.TargetAngle);
             _pvs.AddGlobalOverride(comp.VisualizerEntity.Value);
+        }
+        else if (entity.Comp1.VisualizerProto != null)
+        {
+            Log.Warning($"Skipping FTL visualizer spawn for {ToPrettyString(entity.Owner)} due to invalid target coordinates {entity.Comp1.TargetCoordinates}.");
         }
 
         _thruster.DisableLinearThrusters(shuttle);
@@ -568,7 +574,10 @@ public sealed partial class ShuttleSystem
         }
 
         comp.State = FTLState.Cooldown;
-        comp.StateTime = StartEndTime.FromCurTime(_gameTiming, _ftlCooldown);
+        var cooldown = entity.Comp2.FTLCooldownOverride ?? (HasComp<ArrivalsShuttleComponent>(uid)
+                ? ArrivalsFTLCooldown
+                : FTLCooldown);
+        comp.StateTime = StartEndTime.FromCurTime(_gameTiming, cooldown);
         _console.RefreshShuttleConsoles(uid);
         _mapManager.SetMapPaused(mapId, false);
         Smimsh(uid, xform: xform);
@@ -586,10 +595,25 @@ public sealed partial class ShuttleSystem
     private void UpdateHyperspace()
     {
         var curTime = _gameTiming.CurTime;
-        var query = EntityQueryEnumerator<FTLComponent, ShuttleComponent>();
-
-        while (query.MoveNext(out var uid, out var comp, out var shuttle))
+        var toProcess = new List<EntityUid>();
+        try
         {
+            var query = EntityQueryEnumerator<FTLComponent, ShuttleComponent>();
+            while (query.MoveNext(out var uid, out _, out _))
+            {
+                toProcess.Add(uid);
+            }
+        }
+        catch (Exception e) when (e is InvalidOperationException || e.Message.Contains("Collection was modified"))
+        {
+            return;
+        }
+
+        foreach (var uid in toProcess)
+        {
+            if (!TryComp<FTLComponent>(uid, out var comp) || !TryComp<ShuttleComponent>(uid, out var shuttle))
+                continue;
+
             if (curTime < comp.StateTime.End)
                 continue;
 

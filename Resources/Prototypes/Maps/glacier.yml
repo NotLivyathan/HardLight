@@ -8,8 +8,8 @@
     Glacier:
       stationProto: StandardNanotrasenStation
       components:
-      - type: StationEmergencyShuttle #floofstation
-        emergencyShuttlePath: /Maps/Shuttles/emergency.yml #floofstation
+      #- type: StationEmergencyShuttle #floofstation
+      #  emergencyShuttlePath: /Maps/Shuttles/emergency.yml #floofstation
       - type: StationNameSetup
         mapNameTemplate: '{0} Glacier Station {1}'
         nameGenerator:

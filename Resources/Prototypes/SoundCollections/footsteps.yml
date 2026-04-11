@@ -168,6 +168,11 @@
   id: FootstepThud
   files:
   - /Audio/Effects/Footsteps/largethud.ogg
+  
+- type: soundCollection
+  id: FootstepSmallThud
+  files:
+  - /Audio/_HL/Effects/smallerthud.ogg
 
 - type: soundCollection
   id: FootstepSnake

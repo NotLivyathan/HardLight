@@ -5,6 +5,7 @@ using Content.Shared.Salvage;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Procedural;
 using Content.Shared.Salvage.Expeditions.Modifiers;
+using Content.Shared.Shuttles.Components; // HardLight
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
@@ -64,6 +65,13 @@ public sealed class ExpeditionDiskSystem : EntitySystem
         if (consoleXform.GridUid == null)
         {
             _popupSystem.PopupEntity(Loc.GetString("expedition-disk-no-grid"), consoleUid, PopupType.MediumCaution);
+            return false;
+        }
+
+        // HardLight: Do not allow expedition starts while shuttle FTL is unavailable.
+        if (TryComp<FTLComponent>(consoleXform.GridUid.Value, out _))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("shuttle-console-in-ftl"), consoleUid, PopupType.MediumCaution); // TODO: A better message for this.
             return false;
         }
 

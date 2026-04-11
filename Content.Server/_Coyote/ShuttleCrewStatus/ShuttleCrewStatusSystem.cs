@@ -32,7 +32,7 @@ public sealed class ShuttleCrewStatusSystem : EntitySystem
     /// <summary>
     /// The color to use when a shuttle has no active crew.
     /// </summary>
-    private readonly Color _inactiveCrewColor = Color.Gray;
+    private readonly Color _inactiveCrewColor = Color.LightGray;
 
     public override void Initialize()
     {

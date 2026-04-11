@@ -118,9 +118,18 @@ public sealed class BloodstreamSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        var toUpdate = new List<EntityUid>();
         var query = EntityQueryEnumerator<BloodstreamComponent>();
         while (query.MoveNext(out var uid, out var bloodstream))
         {
+            toUpdate.Add(uid);
+        }
+
+        foreach (var uid in toUpdate)
+        {
+            if (!TryComp(uid, out BloodstreamComponent? bloodstream))
+                continue;
+
             if (_gameTiming.CurTime < bloodstream.NextUpdate)
                 continue;
 

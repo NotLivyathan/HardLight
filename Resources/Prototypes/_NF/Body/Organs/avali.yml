@@ -30,6 +30,7 @@
     maxReagents: 2
     metabolizerTypes: [Avali]
     groups:
+    - id: Cryogenic # Frontier
     - id: Medicine
     - id: Poison
     - id: Narcotic

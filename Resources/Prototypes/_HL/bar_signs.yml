@@ -1,0 +1,7 @@
+- type: barSign
+  id: Va11HallA
+  name: barsign-prototype-name-va11halla
+  icon:
+    sprite: _HL/Structures/Wallmounts/barsign.rsi
+    state: va11halla
+  description: barsign-prototype-description-va11halla

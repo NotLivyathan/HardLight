@@ -322,6 +322,23 @@
   color: "#00ff04"
   meltingPoint: 700.0
   boilingPoint: 1737.0
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Dreadtalon
+        damage:
+          groups:
+            Burn: -3
+            Toxin: -3
+            Airloss: -3
+            Brute: -3
+      - !type:HealthChange
+        damage:
+          types:
+            Radiation: 2
 
 - type: reagent
   id: Silicon
@@ -404,6 +421,16 @@
   metabolisms:
     Poison:
       effects:
+      - !type:HealthChange
+        conditions:
+        - !type:OrganType
+          type: Dreadtalon
+        damage:
+          groups:
+            Burn: -3
+            Toxin: -3
+            Airloss: -3
+            Brute: -3
       - !type:HealthChange
         damage:
           types:

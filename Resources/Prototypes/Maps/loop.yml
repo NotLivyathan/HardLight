@@ -13,8 +13,8 @@
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: '14'
-        - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency_wode.yml
+        #- type: StationEmergencyShuttle
+        #  emergencyShuttlePath: /Maps/Shuttles/emergency_wode.yml
         - type: StationJobs
           availableJobs: # 66 jobs total w/o latejoins & interns, 85 jobs total w/ latejoins & interns
             #command (7)

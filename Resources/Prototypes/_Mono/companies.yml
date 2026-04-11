@@ -7,11 +7,11 @@
 
 # ====DO NOT TOUCH - ADMIN COMPANIES====
 - type: company
-  id: TSF
+  id: StationCommand
   form: Protagonist
-  name: TSF
-  color: "#047ABD"
-  disabled: true
+  name: Station Command
+  color: "#00709C"
+  disabled: true  #Applies to Station Command staff, such as Captainl, Head of Personnel Harbor Master, Chief Medical Officer, etc.
 
 - type: company
   id: Rogue
@@ -21,21 +21,20 @@
   disabled: true
 
 - type: company
-  id: TSFHighComm
+  id: CC
   form: Protagonist
-  name: Winter Solstice
-  color: "#008CE3"
+  name: Colonial Command
+  color: "#2E9935"
   disabled: true
-  logins: # admins only here !!! or your PR will be CLOSED!!!! also serves as a example for ur whitelisted factions
-  - starch
-  - localhost@starch
-  - localhost@Ark
-  - Ark
-  - Tikibomb
-  - DisguisedBear
-  - JuneCat
-  - Erol509
-  - SuperJoelDood
+  # logins: - admins only here !!! or your PR will be CLOSED!!!! also serves as a example for ur whitelisted factions
+
+
+- type: company
+  id: ColSec
+  form: Protagonist
+  name: Colonial Security
+  color: "#00FFFB"
+  disabled: true #Applies to Security. HoS has this instead of Station Command.
 # DO NOT TOUCH
 
 # ==== Canon Companies =====
@@ -171,6 +170,33 @@
   name: Church of the Shattered Stars
   color: "#8A0303" # crimson
   
+- type: company
+  id: MARR
+  form: Protagonist
+  name: Dusk Enclave
+  color: "#ff930a" # Orange
+  
+- type: company
+  id: GOLD
+  form: Protagonist
+  name: Golden Flotilla
+  color: "#EDA500" # Gold
+  
+- type: company
+  id: UNSA
+  form: Protagonist
+  name: United Nation Sectors of America
+  color: "#89CFF0" # Light Blue
+
+- type: company
+  id: AED
+  form: Protagonist
+  name: Andromeda Engineering & Development # See https://discord.com/channels/1380477227912925194/1482867383592030462
+  color: "#BF7F40" # orange (Purple and Yellow mixed for both Engineering and Science)
+  disabled: true # Open to devs, technical oriented mappers, and architecture oriented engineers.
+  logins:
+  - Notarin
+
 # ====Rogue / Antag. Companies====
 - type: company
   id: TheViperGroup
@@ -194,6 +220,12 @@
   - Traildog
 
 - type: company
+  id: SIN
+  form: Antagonist
+  name: Solaris Intelligence Network
+  color: "#b80b0b" # bright blood red
+
+- type: company
   id: USSP
   form: Antagonist
   name: Union of Soviet Socialist Planets
@@ -212,6 +244,7 @@
   form: Antagonist
   name: Animal Rights Consortium
   color: "#65BEDB" # sky blue
+  disabled: true # Locked per lore.
 
 - type: company
   id: Gorlex

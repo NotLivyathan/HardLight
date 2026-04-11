@@ -131,18 +131,18 @@
     tags:
     - CentralCommand
     - Directorate
-    - Intelligence
-    
+    - Naval
+
 - type: entity
   parent: CentcomIDCardDeathsquad
-  id: IntelIDCard
-  name: CACD ID Card
+  id: NavalIDCard
+  name: Naval ID Card
   components:
   - type: PresetIdCard
-    job: CentralCommandIntel
+    job: ColonialNavyman
   - type: Access
     groups:
     - AllAccess
     tags:
     - CentralCommand
-    - Intelligence
+    - Naval

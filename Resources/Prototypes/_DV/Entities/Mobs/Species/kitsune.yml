@@ -22,7 +22,7 @@
     damageModifierSet: Kitsune
   - type: Speech
     speechSounds: Alto
-    allowedEmotes: ['Growl', 'Squeak', 'Yip', 'Whine', 'Yap', 'Howl'] #HL
+    allowedEmotes: ['Growl', 'Squeak', 'Yip', 'Whine', 'Pout', 'Yap', 'Howl', 'Purr'] #HL
   - type: Vocal
     sounds:
       Male: MaleKitsune

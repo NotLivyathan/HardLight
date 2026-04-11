@@ -16,21 +16,30 @@ public sealed class CompanySystem : EntitySystem
 
     // Dictionary to store original company preferences for players
     private readonly Dictionary<string, string> _playerOriginalCompanies = new();
-
-    private readonly HashSet<string> _ngcJobs = new()
+// Hardlight start
+    private readonly HashSet<string> _commandJobs = new()
     {
-        "Sheriff",
-        "StationRepresentative",
+        "StationCaptain",
+        "HeadOfPersonnel",
         "StationTrafficController",
-        "Bailiff",
-        "SeniorOfficer", // Sergeant
-        "Deputy",
-        "Brigmedic",
-        "NFDetective",
-        "PublicAffairsLiaison",
-        "DirectorOfCare"
+        "ResearchDirector",
+        "ChiefMedicalOfficer", 
+        "ChiefEngineer",   
+        "Quartermaster"
+       
     };
-
+    private readonly HashSet<string> _colsecJobs = new()
+    {
+        "HeadOfSecurity",
+        "Warden",
+        "SecurityOfficer",
+        "SecurityQuadBorg",
+        "Detective",
+        "Warden",
+        "BrigMedic",
+        "SecurityCadet"
+    };
+// Hardlight end
     private readonly HashSet<string> _rogueJobs = new()
     {
         "PirateCaptain",
@@ -79,13 +88,20 @@ public sealed class CompanySystem : EntitySystem
         {
             _playerOriginalCompanies[playerId] = profileCompany;
         }
-
-        // Check if player's job is one of the TSF jobs
-        if (args.JobId != null && _ngcJobs.Contains(args.JobId))
+        // Hardlight Start
+        // Check if player's job is a command member, 
+        if (args.JobId != null && _commandJobs.Contains(args.JobId))
         {
-            // Assign TSF company
-            companyComp.CompanyName = "TSF";
+            // Assign Station Command company
+            companyComp.CompanyName = "StationCommand";
         }
+         // Check if player's job is a ColSec job, 
+        else if (args.JobId != null && _colsecJobs.Contains(args.JobId))
+        {
+            // Assign ColSec company
+            companyComp.CompanyName = "ColSec";
+        }
+        // Hardlight End
         // Check if player's job is one of the Rogue jobs
         else if (args.JobId != null && _rogueJobs.Contains(args.JobId))
         {

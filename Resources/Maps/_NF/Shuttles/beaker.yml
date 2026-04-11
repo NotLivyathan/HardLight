@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/02/2025 20:24:51
-  entityCount: 428
+  entityCount: 427
 maps: []
 grids:
 - 1
@@ -335,6 +335,7 @@ entities:
     - type: GasTileOverlay
     - type: BecomesStation
       id: Beaker
+    - type: InitRepairSnapshot
 - proto: AirAlarm
   entities:
   - uid: 172
@@ -2434,13 +2435,6 @@ entities:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -0.5,-7.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 379
-    components:
-    - type: Transform
-      pos: -0.5,-1.5
       parent: 1
 - proto: Stairs
   entities:

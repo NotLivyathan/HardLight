@@ -37,3 +37,20 @@ hl-trait-egglayer-infertile-desc = You produce eggs very slowly and seldomly (50
 
 pooltoy-name = Pool Toy!
 pooltoy-text = You're a living inflatable, whether by some weird mutation or by being a synthetic being. You are quite resillient to blunt and naturally insulated, but are extra susceptible to pierce and slash, and you are easily knocked about by sudden forces!
+
+big-name = Big
+big-text = You are noticeably larger than average.
+small-name = Small
+small-text = You are noticeably smaller than average.
+tiny-name = Tiny
+tiny-text = You are substantially smaller than average.
+
+big-trait-cannot-wield-ranged = You are too large to wield this weapon.
+small-trait-cannot-use-wield-required = You are too small to use { THE($item) }.
+small-trait-must-wield-weapon = You are too small to use { THE($item) } unless it's wielded.
+small-trait-cannot-wield-weapon = You are too small to wield { THE($item) }.
+tiny-trait-cannot-pickup-weapon = You are too small to pick up { THE($item) }.
+tiny-trait-cannot-attack-with-tool = You are too small to attack with { THE($item) }.
+tiny-trait-cannot-wield = You are too small to wield { THE($item) }.
+tiny-trait-requires-two-hands = You are too small to hold { THE($item) } with only one hand.
+

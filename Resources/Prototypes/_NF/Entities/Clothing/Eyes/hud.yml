@@ -55,3 +55,4 @@
   - type: ShowHealthBars
     damageContainers:
     - Biological
+    - Synth #HL

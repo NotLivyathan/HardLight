@@ -230,6 +230,16 @@ namespace Content.Client.Lobby.UI
                 OnSkinColorOnValueChanged();
             };
 
+            // Far Horizons start
+            UpdateSubspecies();
+            SubspeciesButton.OnItemSelected += args =>
+            {
+                SubspeciesButton.SelectId(args.Id);
+                SetSpecies(_subspecies[args.Id].ID);
+                UpdateHairPickers();
+            };
+            // Far Horizons end
+
             #region Skin
 
             Skin.OnValueChanged += _ =>
@@ -1052,23 +1062,33 @@ namespace Content.Client.Lobby.UI
             _species.Clear();
 
             _species.AddRange(_prototypeManager.EnumeratePrototypes<SpeciesPrototype>().Where(o => o.RoundStart));
+            _species.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.CurrentCultureIgnoreCase)); // Far Horizons
             var speciesIds = _species.Select(o => o.ID).ToList();
 
             for (var i = 0; i < _species.Count; i++)
             {
+                // Far Horizons Start - subspecies
+                if (_species[i].SubspeciesOf != null)
+                    continue;
+
                 var name = Loc.GetString(_species[i].Name);
                 SpeciesButton.AddItem(name, i);
 
-                if (Profile?.Species.Equals(_species[i].ID) == true)
+                if (Profile?.Species.Equals(_species[i].ID) == true ||
+                    _species.Find(p => p.ID == Profile?.Species)?.SubspeciesOf == _species[i].ID)
                 {
                     SpeciesButton.SelectId(i);
                 }
+                // Far Horizons End
             }
 
             // If our species isn't available then reset it to default.
             if (Profile != null)
             {
-                if (!speciesIds.Contains(Profile.Species))
+                // Far Horizons-Start - resolve parent species for subspecies
+                var parentSpecies = _species.Find(p => p.ID == Profile?.Species)?.SubspeciesOf ?? Profile.Species;
+                if (!speciesIds.Contains(parentSpecies))
+                // Far Horizons-End
                 {
                     SetSpecies(SharedHumanoidAppearanceSystem.DefaultSpecies);
                 }
@@ -1222,6 +1242,8 @@ namespace Content.Client.Lobby.UI
             JobOverride = null;
 
             UpdateNameEdit();
+            UpdateSubspecies(); // Far Horizons
+            UpdateSpeciesLoadout(); // Far Horizons
             UpdateCustomSpeciesEdit();
             UpdateFlavorTextEdit();
             UpdateSexControls();
@@ -1275,10 +1297,14 @@ namespace Content.Client.Lobby.UI
             // I.e., do what jobs/antags do.
 
             var guidebookController = UserInterfaceManager.GetUIController<GuidebookUIController>();
-            var species = Profile?.Species ?? SharedHumanoidAppearanceSystem.DefaultSpecies;
+            // Far Horizons Start - Subspecies
+            var speciesId = Profile?.Species ?? SharedHumanoidAppearanceSystem.DefaultSpecies;
+            var speciesProto = _species.Find(p => p.ID == speciesId) ?? _species.First();
+            var species = speciesProto.SubspeciesOf ?? speciesProto.ID;
             var page = DefaultSpeciesGuidebook;
             if (_prototypeManager.HasIndex<GuideEntryPrototype>(species))
-                page = species;
+                page = new ProtoId<GuideEntryPrototype>(species.Id);
+            // Far Horizons End
 
             if (_prototypeManager.TryIndex<GuideEntryPrototype>(DefaultSpeciesGuidebook, out var guideRoot))
             {
@@ -1631,6 +1657,20 @@ namespace Content.Client.Lobby.UI
                     break;
                 }
                 // End Frontier
+                case HumanoidSkinColor.AnimalFur: // Einstein Engines - Tajaran
+                    {
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        var color = SkinColor.ClosestAnimalFurColor(_rgbSkinColorSelector.Color);
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                        break;
+                }
             }
 
             ReloadProfilePreview();
@@ -1696,6 +1736,8 @@ namespace Content.Client.Lobby.UI
         private void SetSpecies(string newSpecies)
         {
             Profile = Profile?.WithSpecies(newSpecies);
+            UpdateSubspecies(); // Far Horizons
+            UpdateSpeciesLoadout(); // Far Horizons
             OnSkinColorOnValueChanged(); // Species may have special color prefs, make sure to update it.
             Markings.SetSpecies(newSpecies); // Repopulate the markings tab as well.
             EnforceSpeciesTraitRestrictions();
@@ -1938,6 +1980,18 @@ namespace Content.Client.Lobby.UI
                     break;
                 }
                 // End Frontier
+                case HumanoidSkinColor.AnimalFur: // Einstein Engines - Tajaran
+                    {
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        _rgbSkinColorSelector.Color = SkinColor.ClosestAnimalFurColor(Profile.Appearance.SkinColor);
+
+                        break;
+                }
             }
 
         }
@@ -1954,7 +2008,7 @@ namespace Content.Client.Lobby.UI
                 return;
 
             // Don't display the info button if no guide entry is found
-            if (!_prototypeManager.HasIndex<GuideEntryPrototype>(species))
+            if (!_prototypeManager.HasIndex<GuideEntryPrototype>(speciesProto.SubspeciesOf ?? species)) // Far Horizons - Subspecies
                 return;
 
             const string style = "SpeciesInfoDefault";

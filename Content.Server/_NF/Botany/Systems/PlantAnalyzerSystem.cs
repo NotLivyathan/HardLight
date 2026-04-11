@@ -37,7 +37,13 @@ public sealed class PlantAnalyzerSystem : EntitySystem
             return;
 
         if (ent.Comp.DoAfter != null)
-            return;
+        {
+            // If the referenced DoAfter already finished or was cancelled, clear the stale reference.
+            if (!_doAfterSystem.IsRunning(ent.Comp.DoAfter.Value))
+                ent.Comp.DoAfter = null;
+            else
+                return;
+        }
 
         if (HasComp<SeedComponent>(args.Target) || TryComp<PlantHolderComponent>(args.Target, out var plantHolder) && plantHolder.Seed != null || TryComp<BotanySwabComponent>(args.Target, out var swabComp) && swabComp.SeedData != null)
         {
@@ -119,7 +125,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                             SeedChem = state.SeedChem,
                             HarvestType = state.HarvestType,
                             ExudeGases = state.ExudeGases,
+                            ExudeGasRates = state.ExudeGasRates,
                             ConsumeGases = state.ConsumeGases,
+                            ConsumeGasRates = state.ConsumeGasRates,
                             Endurance = state.Endurance,
                             SeedYield = state.SeedYield,
                             Lifespan = state.Lifespan,
@@ -145,7 +153,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                         SeedChem = state.SeedChem,
                         HarvestType = state.HarvestType,
                         ExudeGases = state.ExudeGases,
+                        ExudeGasRates = state.ExudeGasRates,
                         ConsumeGases = state.ConsumeGases,
+                        ConsumeGasRates = state.ConsumeGasRates,
                         Endurance = state.Endurance,
                         SeedYield = state.SeedYield,
                         Lifespan = state.Lifespan,
@@ -174,7 +184,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
                     ExudeGases = state.ExudeGases,
+                    ExudeGasRates = state.ExudeGasRates,
                     ConsumeGases = state.ConsumeGases,
+                    ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -204,7 +216,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
                     ExudeGases = state.ExudeGases,
+                    ExudeGasRates = state.ExudeGasRates,
                     ConsumeGases = state.ConsumeGases,
+                    ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -246,7 +260,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
                     ExudeGases = state.ExudeGases,
+                    ExudeGasRates = state.ExudeGasRates,
                     ConsumeGases = state.ConsumeGases,
+                    ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -271,7 +287,9 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
                     ExudeGases = state.ExudeGases,
+                    ExudeGasRates = state.ExudeGasRates,
                     ConsumeGases = state.ConsumeGases,
+                    ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -298,8 +316,10 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedName = state.SeedName,
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
-                    ExudeGases = state.ExudeGases,
-                    ConsumeGases = state.ConsumeGases,
+                        ExudeGases = state.ExudeGases,
+                        ExudeGasRates = state.ExudeGasRates,
+                        ConsumeGases = state.ConsumeGases,
+                        ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -327,8 +347,10 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                     SeedName = state.SeedName,
                     SeedChem = state.SeedChem,
                     HarvestType = state.HarvestType,
-                    ExudeGases = state.ExudeGases,
-                    ConsumeGases = state.ConsumeGases,
+                        ExudeGases = state.ExudeGases,
+                        ExudeGasRates = state.ExudeGasRates,
+                        ConsumeGases = state.ConsumeGases,
+                        ConsumeGasRates = state.ConsumeGasRates,
                     Endurance = state.Endurance,
                     SeedYield = state.SeedYield,
                     Lifespan = state.Lifespan,
@@ -385,6 +407,8 @@ public sealed class PlantAnalyzerSystem : EntitySystem
             HarvestType = harvestType,
             ExudeGases = GetGasFlags(seedData.ExudeGasses.Keys),
             ConsumeGases = GetGasFlags(seedData.ConsumeGasses.Keys),
+            ExudeGasRates = seedData.ExudeGasses.Select(kv => new GasRate(kv.Key, kv.Value)).ToArray(),
+            ConsumeGasRates = seedData.ConsumeGasses.Select(kv => new GasRate(kv.Key, kv.Value)).ToArray(),
             Endurance = seedData.Endurance,
             SeedYield = seedData.Yield,
             Lifespan = seedData.Lifespan,
@@ -412,7 +436,10 @@ public sealed class PlantAnalyzerSystem : EntitySystem
                 WeedTolerance = seedData.WeedTolerance,
                 Mutations = GetMutationFlags(seedData)
             };
-
+            for(int i=0;i<ret.SeedChem.Length;i++)
+            {
+                ret.SeedChem[i] += seedData.Chemicals[ret.SeedChem[i]].Max;
+            }
             ret.AdvancedInfo = advancedInfo;
         }
         return ret;

@@ -124,3 +124,32 @@
       prob: 0.002
     - id: MobSnailInstantDeath
       prob: 0.00001 #  ~ 1:2000 snails
+
+- type: entity
+  id: IrradiatedPests
+  parent: BaseStationEventShortDelay
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 15
+    weight: 4
+    duration: 50
+  - type: RadCrittersRule
+    entries:
+    - id: dreadtalonbase
+      prob: 0.012
+    - id: BlueTalon
+      prob: 0.01
+    - id: LavaTalon
+      prob: 0.01
+    - id: PlasmaTalon
+      prob: 0.01
+    - id: TriTalon
+      prob: 0.01
+    specialEntries:
+    - id: SuperTalon
+      prob: 0.001
+    - id: GravTalon
+      prob: 0.001

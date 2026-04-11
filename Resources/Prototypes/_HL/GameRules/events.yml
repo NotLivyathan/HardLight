@@ -20,17 +20,17 @@
     - id: BluespaceArtifact
     - id: BluespaceLocker
     - id: BreakerFlip
-    - id: BureaucraticError
-    - id: ClericalError
+    #- id: BureaucraticError
+    #- id: ClericalError
     - id: CockroachMigration # Sever phobia present in staff # can resprite/rename them later, for now, let's not remove content.
     - id: GasLeak
     - id: GreytideVirus
     - id: IonStorm # its calm like 90% of the time smh
     - id: KudzuGrowth
     - id: MassHallucinations
-    - id: MimicVendorRule
+   # - id: MimicVendorRule
     - id: PowerGridCheck
-    - id: RandomSentience
+   # - id: RandomSentience
     - id: SlimesSpawn
     - id: SolarFlare
     - id: SnakeSpawn
@@ -41,7 +41,7 @@
     - id: NFGasLeak
     - id: NFIonStorm
     - id: NFPowerGridCheck
-    - id: NFRandomSentience
+    #- id: NFRandomSentience
     - id: NFSolarFlare
     - id: NFVentClog
     - id: NFBluespaceCargoCrate
@@ -50,35 +50,35 @@
     - id: NFBluespaceBrokenMcDelivery
     - id: NFSmugglingFax
     - id: BluespaceCacheError
-    - id: BluespaceCave
+    #- id: BluespaceCave
     - id: BluespaceVaultError
     - id: BluespaceVaultSmallError
     - id: BluespaceSyndicateFTLInterception
     #- id: BluespaceWizardFederationScout
     - id: BluespaceBloodMoon
-    - id: BluespaceDungeonBasalt
-    - id: BluespaceDungeonChromite
-    - id: BluespaceDungeonSnow
-    - id: BluespaceDungeonCave
-    - id: BluespaceSalvage
+    #- id: BluespaceDungeonBasalt
+    #- id: BluespaceDungeonChromite
+    #- id: BluespaceDungeonSnow
+    #- id: BluespaceDungeonCave
+    #- id: BluespaceSalvage
     - id: NFSmugglingFaxBig
-    - id: UnknownShuttleCargoLost
-    - id: UnknownShuttleTravelingCuisine
-    - id: UnknownShuttleDisasterEvacPod
-    - id: UnknownShuttleHonki
-    - id: UnknownShuttleNTQuark
-    - id: UnknownShuttleCruiser
-    - id: UnknownShuttleCryptid
-    - id: UnknownShuttleEternal
-    - id: UnknownShuttleFlatline
-    - id: UnknownShuttleGym
-    - id: UnknownShuttleNTIncorporation
-    - id: UnknownShuttleJoe
-    - id: UnknownShuttleLambordeere
-    - id: UnknownShuttleMeatZone
-    - id: UnknownShuttleMicroshuttle
-    - id: UnknownShuttleSpacebus
-    - id: UnknownShuttleSyndieEvacPod
+    # - id: UnknownShuttleCargoLost
+    # - id: UnknownShuttleTravelingCuisine
+    # - id: UnknownShuttleDisasterEvacPod
+    # - id: UnknownShuttleHonki
+    # - id: UnknownShuttleNTQuark
+    # - id: UnknownShuttleCruiser
+    # - id: UnknownShuttleCryptid
+    # - id: UnknownShuttleEternal
+    # - id: UnknownShuttleFlatline
+    # - id: UnknownShuttleGym
+    # - id: UnknownShuttleNTIncorporation
+    # - id: UnknownShuttleJoe
+    # - id: UnknownShuttleLambordeere
+    # - id: UnknownShuttleMeatZone
+    # - id: UnknownShuttleMicroshuttle
+    # - id: UnknownShuttleSpacebus
+    # - id: UnknownShuttleSyndieEvacPod
     - id: ArgocyteVents
     - id: XenoVents
     - id: reagentslimeVents
@@ -88,6 +88,17 @@
     - id: AiVents
     - id: LizardVents
     - id: WawaVents
+    - id: IrradiatedPests
+    # - id: GiftsEngineering
+    # - id: GiftsFireProtection
+    # - id: GiftsJanitor
+    # - id: GiftsMedical
+    # - id: GiftsPizzaPartyLarge
+    # - id: GiftsPizzaPartySmall
+    # - id: GiftsSecurityGuns
+    # - id: GiftsSecurityRiot
+    # - id: GiftsSpacingSupplies
+    # - id: GiftsVendingRestock
 
 - type: entityTable
   id: BasicAntagEventsTable
@@ -107,9 +118,9 @@
     - id: ZombieOutbreak
     - id: LoneOpsSpawn
     #- id: WizardSpawn
-    - id: LoneOpsSpawn
-    - id: UnknownShuttleManOWar
-    - id: UnknownShuttleInstigator
+    #- id: LoneOpsSpawn
+    # - id: UnknownShuttleManOWar
+    # - id: UnknownShuttleInstigator
 
 - type: entity
   id: BaseStationEvent
@@ -1947,6 +1958,176 @@
       prob: 0.001
 
 - type: entity
+  id: Syndivents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobSyndicateNavalCaptain
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalEngineer
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalMedic
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalSecondOfficer
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalOperator
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalGrenadier
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalSaboteur
+      prob: 0.001
+    - id: SpawnMobExperimentationVictim
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalCommander
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalDeckhand
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalChemwarrior
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalHorror
+      prob: 0.001
+    - id: SpawnMobSyndicateNavalHardVoid
+      prob: 0.001
+
+- type: entity
+  id: Dinosaurvents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobDinosaurSmall
+      prob: 0.07
+    - id: SpawnMobDinosaurMedium
+      prob: 0.03
+    - id: SpawnMobDinosaurBig
+      prob: 0.01
+
+- type: entity
+  id: Fleshvents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobAberrantFleshExpeditions
+      prob: 0.07
+    - id: SpawnMobAberrantFleshNewbornExpeditions
+      prob: 0.03
+
+- type: entity
+  id: Explorervents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobExplorerT1
+      prob: 0.05
+    - id: SpawnMobExplorerT2
+      prob: 0.03
+    - id: SpawnMobExplorerT3
+      prob: 0.01
+
+- type: entity
+  id: Mercvents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobMercenaryT1
+      prob: 0.05
+    - id: SpawnMobMercenaryT2
+      prob: 0.03
+    - id: SpawnMobMercenaryT3
+      prob: 0.01
+
+- type: entity
+  id: Punkvents
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 10
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+    requiredJobs:
+      HeadOfSecurity: 1
+  - type: VentCrittersRule
+    entries:
+    - id: SpawnMobPunkT1
+      prob: 0.07
+    - id: SpawnMobPunkT2
+      prob: 0.05
+    - id: SpawnMobPunkT3
+      prob: 0.03
+    - id: SpawnMobPunkLeader
+      prob: 0.01
+
+- type: entity
   id: LizardVents
   parent: [VentCrittersBase, BaseGameRule]
   categories: [ HideSpawnMenu ]
@@ -2012,6 +2193,25 @@
     - id: MobEmotionalSupportScurret
       prob: 0.05
 
+- type: entity
+  id: Beehallucination
+  parent: [VentCrittersBase, BaseGameRule]
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: StationEvent
+    startAnnouncement: station-event-vent-creatures-start-announcement
+    startAudio:
+      path: /Audio/Announcements/attention.ogg
+    earliestStart: 30
+    reoccurrenceDelay: 200
+    minimumPlayers: 40
+    weight: 6 # Really weak compared to other critters
+    duration: 60
+  - type: VentCrittersRule
+    entries:
+    - id: MobAngryBeeTimed
+      prob: 0.9
+
 # Dynamic Job Allocation Rule
 # Adjusts Mercenary slots based on active staffed crew
 # Runs at round start and every 10 minutes
@@ -2024,4 +2224,4 @@
   - type: DynamicJobAllocationRule
     checkInterval: 600  # Check every 10 minutes (600 seconds)
     mercenaryJob: Mercenary
-    mercenaryCap: 50  # Maximum slots
+    mercenaryCap: 40  # Maximum slots

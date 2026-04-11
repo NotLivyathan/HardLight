@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 10/02/2025 20:16:22
-  entityCount: 743
+  entityCount: 742
 maps: []
 grids:
 - 1
@@ -41,6 +41,7 @@ entities:
       pos: -1.6066288,-0.53125
     - type: BecomesStation
       id: Akupara
+    - type: InitRepairSnapshot
     - type: MapGrid
       chunks:
         0,0:
@@ -4675,14 +4676,6 @@ entities:
     components:
     - type: Transform
       pos: 7.5,-10.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 558
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -5.5,3.5
       parent: 1
 - proto: SprayBottleSpaceCleaner
   entities:

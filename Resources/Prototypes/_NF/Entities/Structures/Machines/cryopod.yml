@@ -6,7 +6,6 @@
   components:
   - type: Sprite
     sprite: _NF/Structures/Machines/cryopod.rsi
-    snapCardinals: true # Frontier
     layers:
     - state: closed
   - type: Physics

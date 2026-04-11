@@ -6,15 +6,18 @@
   cooldown: 5
   globalCooldown: true
   range: {max: 0.666} # Very close-range
+  requiresUnblocked: false
+  exemptFromInteractionBlocker: true
   hideByRequirement: true
   requirement:
     !type:ComplexRequirement
     requirements:
+    - !type:SlotObstructionRequirement
+      slot: mask
+      checkUser: true
     - !type:EntityWhitelistRequirement
       whitelist:
         components: [MobState, Edible] # Don't go around biting inanimate objects.
-#    - !type:SlotObstructionRequirement | Appropriate systems not implemented
-#      slot: MASK
   action:
     !type:ComplexAction
     actions:

@@ -6,6 +6,7 @@ using Content.Shared.Gravity;
 using Content.Shared.Input;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Systems;
+using Content.Shared._DV.Abilities; // HardLight
 using Content.Shared.Body.Components;
 using Content.Shared._Shitmed.Body.Organ;
 using Content.Shared.Standing;
@@ -13,8 +14,10 @@ using Content.Shared.Popups;
 using Content.Shared.Stunnable;
 using Robust.Shared.Configuration;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Network; // HardLight
 using Robust.Shared.Player;
 using Robust.Shared.Serialization;
+using Robust.Shared.Timing; // HardLight
 
 namespace Content.Shared.Standing;
 
@@ -28,6 +31,8 @@ public abstract class SharedLayingDownSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popups = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
     [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private readonly IGameTiming _timing = default!; // HardLight
+    [Dependency] private readonly INetManager _net = default!; // HardLight
 
     public override void Initialize()
     {
@@ -52,6 +57,9 @@ public abstract class SharedLayingDownSystem : EntitySystem
 
     private void ToggleStanding(ICommonSession? session)
     {
+        if (_net.IsClient && !_timing.IsFirstTimePredicted) // HardLight
+            return;
+
         if (session is not { AttachedEntity: { Valid: true } uid } _
             || !Exists(uid)
             || !HasComp<LayingDownComponent>(session.AttachedEntity)
@@ -63,16 +71,36 @@ public abstract class SharedLayingDownSystem : EntitySystem
 
     private void HandleCrawlUnderRequest(ICommonSession? session)
     {
-        if (session == null
-            || session.AttachedEntity is not {} uid
-            || !TryComp<StandingStateComponent>(uid, out var standingState)
-            || !TryComp<LayingDownComponent>(uid, out var layingDown)
-            || !_actionBlocker.CanConsciouslyPerformAction(uid)) // Floof - replaced CanInteract with consciousness
+        if (_net.IsClient && !_timing.IsFirstTimePredicted) // HardLight
             return;
+
+        // HardLight start
+        if (session?.AttachedEntity is not { } uid || !_actionBlocker.CanConsciouslyPerformAction(uid))
+            return;
+
+        if (!TryComp<StandingStateComponent>(uid, out var standingState))
+            return;
+
+        // Context-sensitive behavior:
+        // - Standing: use squeeze/crouch ability (CrawlUnderObjects).
+        // - Lying/crawling: keep the original crawl-under-furniture toggle.
+        if (standingState.CurrentState is StandingState.Standing && HasComp<CrawlUnderObjectsComponent>(uid))
+        {
+            var ev = new ToggleCrawlingStateEvent();
+            RaiseLocalEvent(uid, ev, true);
+            return;
+        }
+
+        if (!TryComp<LayingDownComponent>(uid, out var layingDown))
+            return;
+        // HardLight end
 
         var newState = !layingDown.IsCrawlingUnder;
         if (standingState.CurrentState is StandingState.Standing)
             newState = false; // If the entity is already standing, this function only serves a fallback method to fix its draw depth
+
+        if (layingDown.IsCrawlingUnder == newState) // HardLight
+            return;
 
         // Do not allow to begin crawling under if it's disabled in config. We still, however, allow to stop it, as a failsafe.
         if (newState && !_config.GetCVar(CCVars.CrawlUnderTables))

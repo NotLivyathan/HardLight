@@ -16,7 +16,6 @@ entities:
       name: Hunter
     - type: Transform
       pos: -1.6250114,-0.453125
-      parent: invalid
     - type: MapGrid
       chunks:
         0,0:
@@ -229,6 +228,7 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Hunter
+    - type: InitRepairSnapshot
 - proto: AirAlarm
   entities:
   - uid: 2
@@ -1937,13 +1937,6 @@ entities:
     components:
     - type: Transform
       pos: 3.5,-9.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 257
-    components:
-    - type: Transform
-      pos: 0.5,-6.5
       parent: 1
 - proto: SubstationWallBasic
   entities:

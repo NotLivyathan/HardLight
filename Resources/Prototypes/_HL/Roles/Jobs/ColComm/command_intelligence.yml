@@ -1,10 +1,10 @@
 - type: job
-  id: CentralCommandIntel
-  name: job-name-intelligence
-  description: job-description-intelligence
-  playTimeTracker: JobCentralCommandIntel
+  id: ColonialNavyman
+  name: job-name-naval
+  description: job-description-naval
+  playTimeTracker: JobColonialNavyman
   setPreference: false
-  startingGear: CentcomGear
+  startingGear: ColonialNavymanGear
   icon: "JobIconColComm"
   supervisors: job-supervisors-hos
   canBeAntag: false
@@ -12,21 +12,20 @@
   - AllAccess
   access:
   - CentralCommand
-  - Intelligence
+  - Naval
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant, DeathRattleImplantColcomm ]
 
 - type: startingGear
-  id: CentralCommandIntelGear
+  id: ColonialNavymanGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitCentcomOfficerBlack
+    jumpsuit: ClothingUniformColonialNavy
     shoes: ClothingShoesBootsCombatFilled
-    head: ClothingHeadHatBeretCommander
     eyes: ClothingEyesGlassesSunglasses
-    gloves: ClothingHandsGlovesColorBlack
-    outerClothing: ClothingOuterArmorBasic
-    id: IntelPDA
+    belt: ClothingBeltAssault
+    gloves: ClothingHandsGlovesCombat
+    id: NavalPDA
     ears: ClothingHeadsetAltColCom
-    pocket1: BoxFolderBlack
-    pocket2: PenCentcom
+    pocket1: WeaponPistolMk58
+    pocket2: Magazine45_ACPPistolHighCapacityFMJ

@@ -155,6 +155,7 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Canister
+    - type: InitRepairSnapshot
 - proto: AirAlarm
   entities:
   - uid: 62
@@ -591,13 +592,6 @@ entities:
     components:
     - type: Transform
       pos: 0.5,-0.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 54
-    components:
-    - type: Transform
-      pos: 0.5,0.5
       parent: 1
 - proto: SubstationWallBasic
   entities:

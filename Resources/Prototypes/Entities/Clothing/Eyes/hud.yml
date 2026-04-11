@@ -177,6 +177,7 @@
     damageContainers:
     - Biological
     - Inorganic
+    - Synth #HL
   - type: ShowSyndicateIcons
 
 - type: entity
@@ -193,6 +194,7 @@
     damageContainers:
     - Biological
     - Inorganic
+    - Synth #HL
   - type: ShowHungerIcons
   - type: ShowThirstIcons
   - type: ShowSyndicateIcons

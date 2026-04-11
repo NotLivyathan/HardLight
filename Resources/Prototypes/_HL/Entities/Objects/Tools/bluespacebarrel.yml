@@ -104,3 +104,9 @@
   - type: Sealable
   - type: StaticPrice
     price: 1000
+  - type: AutomationSlots # Goobstation
+    slots:
+    - !type:AutomatedSolution
+      solutionName: tank
+      input: PlumbingInput
+      output: PlumbingOutput

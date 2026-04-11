@@ -69,3 +69,43 @@
     Telecrystal: 8
   categories:
     - UplinkWeaponry
+    
+- type: listing
+  id: UplinkSyndieOmniHandRight
+  name: uplink-syndie-omnihand-right-name
+  description: uplink-syndie-omnihand-desc
+  icon: { sprite: /Textures/_HL/Objects/Tools/syndie_omnihand.rsi, state: omnihand }
+  productEntity: CyberneticsSyndieOmnihandRight
+  discountDownTo:
+    Telecrystal: 3
+  cost:
+    Telecrystal: 6
+  categories:
+  - UplinkCybernetics
+  
+- type: listing
+  id: UplinkSyndieOmniHandLeft
+  name: uplink-syndie-omnihand-left-name
+  description: uplink-syndie-omnihand-desc
+  icon: { sprite: /Textures/_HL/Objects/Tools/syndie_omnihand.rsi, state: omnihand }
+  productEntity: CyberneticsSyndieOmnihandLeft
+  discountDownTo:
+    Telecrystal: 3
+  cost:
+    Telecrystal: 6
+  categories:
+  - UplinkCybernetics
+
+#How can you have thieving gloves that just give you away instantly?
+- type: listing
+  id: UplinkgClothingThievingGloves
+  name: uplink-clothing-chameleon-thieving-gloves-name
+  description: uplink-clothing-chameleon-thieving-gloves-desc
+  productEntity: ClothingHandsChameleonThief
+  discountCategory: veryRareDiscounts
+  discountDownTo:
+    Telecrystal: 3
+  cost:
+    Telecrystal: 5
+  categories:
+    - UplinkWearables

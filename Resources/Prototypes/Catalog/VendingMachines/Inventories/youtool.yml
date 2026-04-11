@@ -18,6 +18,7 @@
     GasAnalyzer: 15
     SprayPainter: 15
     SprayPainterAmmo: 15
+    BoxFolderEngiForms: 10 # Hardlight
   # Some engineer forgot to take the multitool out the youtool when working on it, happens.
   contrabandInventory:
     Multitool: 5

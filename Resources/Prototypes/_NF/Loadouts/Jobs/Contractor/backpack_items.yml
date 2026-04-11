@@ -562,3 +562,10 @@
   storage:
     back:
     - ClothingHeadHatHairflower
+
+- type: loadout
+  id: ContractorClicker
+  price: 500 # HL 0>500
+  storage:
+    back:
+    - Clicker

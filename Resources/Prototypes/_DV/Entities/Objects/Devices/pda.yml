@@ -20,9 +20,10 @@
     accentVColor: "#050c4d"
   - type: Icon
     state: pda-mailcarrier
-  # - type: CartridgeLoader # DeltaV - Courier Performance # Frontier - pushed to cartridge loadouts
-    # preinstalled:
-      # - CrewManifestCartridge
-      # - NotekeeperCartridge
-      # - NewsReaderCartridge
-      # - MailMetricsCartridge
+  - type: CartridgeLoader # DeltaV - Courier Performance # Frontier - pushed to cartridge loadouts
+    preinstalled:
+      - CrewManifestCartridge
+      - NotekeeperCartridge
+      - NewsReaderCartridge
+      - MailMetricsCartridge
+      - NanoChatCartridge

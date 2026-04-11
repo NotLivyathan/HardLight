@@ -28,14 +28,6 @@ public sealed partial class SupermatterComponent : Component
     [DataField]
     public bool SliverRemoved = false;
 
-    public string[] LightningPrototypes =
-    {
-        "Lightning",
-        "ChargedLightning",
-        "SuperchargedLightning",
-        "HyperchargedLightning"
-    };
-
     [DataField]
     public string SingularitySpawnPrototype = "Singularity";
 
@@ -80,7 +72,7 @@ public sealed partial class SupermatterComponent : Component
     ///     The portion of the gasmix we're on
     /// </summary>
     [DataField]
-    public float GasEfficiency = 0.15f;
+    public float GasEfficiency = 0.2f;
 
     /// <summary>
     ///     Based on CO2 percentage, this slowly moves between 0 and 1.
@@ -142,13 +134,13 @@ public sealed partial class SupermatterComponent : Component
     ///     We yell if over 50 damage every YellTimer Seconds
     /// </summary>
     [DataField]
-    public float YellTimer = 60f;
+    public float YellTimer = 30f;
 
     /// <summary>
     ///     Set to YellTimer at first so it doesnt yell a minute after being hit
     /// </summary>
     [DataField]
-    public float YellAccumulator = 60f;
+    public float YellAccumulator = 30f;
 
     /// <summary>
     ///     Timer for delam
@@ -173,12 +165,6 @@ public sealed partial class SupermatterComponent : Component
 
     [DataField]
     public float UpdateTimer = 1f;
-
-    [DataField]
-    public float ZapAccumulator = 0f;
-
-    [DataField]
-    public float ZapTimer = 10f;
 
     #endregion
 
@@ -336,9 +322,9 @@ public sealed partial class SupermatterComponent : Component
     {
         { Gas.Oxygen,        (1.5f, 1f,    1f)  },
         { Gas.Nitrogen,      (0f,   -1.5f, -1f) },
-        { Gas.CarbonDioxide, (0f,   0.1f,  1f)  },
+        { Gas.CarbonDioxide, (2f,   0.1f,  1f)  },
         { Gas.Plasma,        (4f,   15f,   1f)  },
-        { Gas.Tritium,       (30f,  10f,   1f)  },
+        { Gas.Tritium,       (50f,  20f,   1f)  },
         { Gas.WaterVapor,    (2f,   12f,   1f)  },
         { Gas.Frezon,        (3f,   -10f,  -1f) },
         { Gas.Ammonia,       (0f,   .5f,   1f)  },

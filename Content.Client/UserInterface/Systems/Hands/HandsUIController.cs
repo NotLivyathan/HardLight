@@ -4,9 +4,12 @@ using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Hands.Controls;
 using Content.Client.UserInterface.Systems.Hotbar.Widgets;
 using Content.Shared.Hands.Components;
+using Content.Shared.Item; // HardLight
 using Content.Shared.Input;
 using Content.Shared.Inventory.VirtualItem;
 using Content.Shared.Timing;
+using Content.Shared._HL.Traits.Physical; // HardLight
+using Content.Shared.Silicons.Borgs.Components; // HardLight
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
@@ -28,6 +31,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
     private readonly List<HandsContainer> _handsContainers = new();
     private readonly Dictionary<string, int> _handContainerIndices = new();
     private readonly Dictionary<string, HandButton> _handLookup = new();
+    private readonly HashSet<string> _tinyDerivedBlockedHands = new(); // HardLight
+    private readonly HashSet<string> _tinyDesiredBlockedHands = new(); // HardLight
     private HandsComponent? _playerHandsComponent;
     private HandButton? _activeHand = null;
 
@@ -115,6 +120,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
         _handContainerIndices.Clear();
         _handLookup.Clear();
+        _tinyDerivedBlockedHands.Clear(); // HardLight
+        _tinyDesiredBlockedHands.Clear(); // HardLight
         _playerHandsComponent = null;
 
         foreach (var container in _handsContainers)
@@ -157,6 +164,8 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         if (activeHand == null)
             return;
         SetActiveHand(activeHand.Name);
+
+        ReconcileTinyDerivedBlockedHands(); // HardLight
     }
 
     private void HandBlocked(string handName)
@@ -211,6 +220,7 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         }
 
         UpdateHandStatus(hand, entity);
+        ReconcileTinyDerivedBlockedHands(); // HardLight
     }
 
     private void OnItemRemoved(string name, EntityUid entity)
@@ -220,13 +230,106 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
             return;
 
         hand.SetEntity(null);
-        UpdateHandStatus(hand, null);
+        hand.Blocked = false; // HardLight
+        UpdateHandStatus(hand, null); // HardLight
+
+        ReconcileTinyDerivedBlockedHands(); // HardLight
     }
+
+    // HardLight start
+    private void ReconcileTinyDerivedBlockedHands()
+    {
+        if (_playerHandsComponent == null)
+            return;
+
+        var local = _player.LocalEntity;
+        var isTiny = local != null
+                 && _entities.TryGetComponent<TinyWeaponHandlingComponent>(local, out _)
+                 && !IsBorgChassis(local.Value);
+
+        _tinyDesiredBlockedHands.Clear();
+
+        // If not Tiny and we don't currently render synthetic blocked slots, nothing to do.
+        if (!isTiny && _tinyDerivedBlockedHands.Count == 0)
+            return;
+
+        if (isTiny)
+        {
+            var hasRealHeldItem = false;
+
+            foreach (var handState in _playerHandsComponent.Hands.Values)
+            {
+                if (handState.HeldEntity is not { } held)
+                    continue;
+
+                if (!IsRealHeldHandItem(held))
+                    continue;
+
+                hasRealHeldItem = true;
+                break;
+            }
+
+            if (hasRealHeldItem)
+            {
+                foreach (var (handName, handState) in _playerHandsComponent.Hands)
+                {
+                    if (handState.HeldEntity == null)
+                        _tinyDesiredBlockedHands.Add(handName);
+                }
+            }
+        }
+
+        // Nothing changed; avoid redundant hand UI updates.
+        if (_tinyDerivedBlockedHands.SetEquals(_tinyDesiredBlockedHands))
+            return;
+
+        foreach (var old in _tinyDerivedBlockedHands)
+        {
+            if (_tinyDesiredBlockedHands.Contains(old))
+                continue;
+
+            var hand = GetHand(old);
+            if (hand == null)
+                continue;
+
+            hand.Blocked = false;
+            UpdateHandStatus(hand, null);
+        }
+
+        foreach (var add in _tinyDesiredBlockedHands)
+        {
+            if (_tinyDerivedBlockedHands.Contains(add))
+                continue;
+
+            var hand = GetHand(add);
+            if (hand == null)
+                continue;
+
+            hand.Blocked = true;
+            hand.SetEntity(null);
+            UpdateHandStatus(hand, null);
+        }
+
+        _tinyDerivedBlockedHands.Clear();
+        _tinyDerivedBlockedHands.UnionWith(_tinyDesiredBlockedHands);
+    }
+
+    private bool IsRealHeldHandItem(EntityUid held)
+    {
+        return _entities.HasComponent<ItemComponent>(held)
+               && !_entities.HasComponent<VirtualItemComponent>(held);
+    }
+
+    private bool IsBorgChassis(EntityUid uid)
+    {
+        return _entities.HasComponent<BorgChassisComponent>(uid);
+    }
+    // HardLight end
 
     private HandsContainer GetFirstAvailableContainer()
     {
-        if (_handsContainers.Count == 0)
-            throw new Exception("Could not find an attached hand hud container");
+        // if (_handsContainers.Count == 0) // HardLight
+        //     throw new Exception("Could not find an attached hand hud container"); // HardLight
         foreach (var container in _handsContainers)
         {
             if (container.IsFull)
@@ -247,7 +350,7 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         return true;
     }
 
-    //propagate hand activation to the hand system.
+    // Propagate hand activation to the hand system.
     private void StorageActivate(GUIBoundKeyEventArgs args, SlotControl handControl)
     {
         _handsSystem.UIHandActivate(handControl.SlotName);

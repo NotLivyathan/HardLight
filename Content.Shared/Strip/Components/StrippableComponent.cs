@@ -39,7 +39,24 @@ namespace Content.Shared.Strip.Components
         public TimeSpan Additive = TimeSpan.Zero;
         public bool Stealth = stealth;
 
-        public TimeSpan Time => TimeSpan.FromSeconds(Math.Round(Math.Max(InitialTime.TotalSeconds * Multiplier + Additive.TotalSeconds, 0.5f), 3, MidpointRounding.ToZero));
+        /// <summary>
+        /// If set, the final strip time will never be slower than this value.
+        /// This is used for cases where multiple independent strip-speed sources should pick the best one instead of stacking.
+        /// </summary>
+        public TimeSpan? BestTimeOverride;
+
+        public TimeSpan Time
+        {
+            get
+            {
+                var time = TimeSpan.FromSeconds(Math.Round(Math.Max(InitialTime.TotalSeconds * Multiplier + Additive.TotalSeconds, 3.0f), 3, MidpointRounding.ToZero));
+                if (BestTimeOverride is { } best && best < time)
+                {
+                    time = best;
+                }
+                return time;
+            }
+        }
 
         public SlotFlags TargetSlots { get; } = SlotFlags.GLOVES;
     }

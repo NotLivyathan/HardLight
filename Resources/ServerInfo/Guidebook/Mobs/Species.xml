@@ -43,14 +43,13 @@
   <GuideEntityEmbed Entity="MobShadekin" Caption="Shadekin"/>
   </Box>
 
-  # Monolith specific species
-  <Box>
-    <GuideEntityEmbed Entity="MobProtogen" Caption="Protogen"/>
-  </Box>
-
   #Impstation specific species
   <Box>
     <GuideEntityEmbed Entity="MobThaven" Caption="Thaven"/>
   </Box>
 
+  # FarHorizons specific species
+  <Box>
+    <GuideEntityEmbed Entity="MobProtogen" Caption="Protogen"/>
+  </Box>
 </Document>

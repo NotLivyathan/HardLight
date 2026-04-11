@@ -13,9 +13,12 @@ public sealed partial class CauseZombieInfection : EntityEffect
     // Adds the Zombie Infection Components
     public override void Effect(EntityEffectBaseArgs args)
     {
-        var entityManager = args.EntityManager;
-        entityManager.EnsureComponent<ZombifyOnDeathComponent>(args.TargetEntity);
-        entityManager.EnsureComponent<PendingZombieComponent>(args.TargetEntity);
+		var entityManager = args.EntityManager;
+		if (entityManager.HasComponent<ZombieImmuneComponent>(args.TargetEntity))
+			return;
+			
+		entityManager.EnsureComponent<ZombifyOnDeathComponent>(args.TargetEntity);
+		entityManager.EnsureComponent<PendingZombieComponent>(args.TargetEntity);
     }
 }
 

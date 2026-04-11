@@ -9,6 +9,7 @@
   id: BaseMobSpecies
   abstract: true
   components:
+  - type: Wagging # Coyote: Wagging my tail :3
   - type: Sprite
     layers:
     - map: [ "enum.HumanoidVisualLayers.TailBehind" ]
@@ -209,6 +210,10 @@
       enum.SurgeryUIKey.Key:
         type: SurgeryBui
   - type: Puller
+  - type: CrawlUnderObjects # HardLight
+    sneakSpeedModifier: 0.55
+    squeezeRadiusScale: 0.9
+    unsqueezedRadiusScale: 1.0
   - type: Speech
     speechSounds: Alto
   - type: DamageForceSay
@@ -243,6 +248,7 @@
   - type: PseudoItem # Hardlight change, technically cribbed from Den
     shape:
       - 0,0,20,5 # 1 too wide to fit inside ClothingBackpackDuffelHolding, so only bags designed to carry people can actually fit them inside
+  - type: AutoImplanter # Far Horizons - Autoimplanter System
 
 - type: entity
   save: false

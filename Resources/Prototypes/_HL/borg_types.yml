@@ -1,0 +1,39 @@
+# Security borg
+- type: borgType
+  id: security
+
+  # Description
+  dummyPrototype: BorgChassisSecurity
+
+  # Functional
+  extraModuleCount: 3
+  moduleWhitelist:
+    tags:
+    - BorgModuleGeneric
+    - BorgModuleSecurity
+    - BorgModuleSyndicate
+    - BorgModuleSyndicateAssault
+    - XenoborgModuleGeneric
+
+  defaultModules:
+    - BorgModuleTool
+    - BorgModuleStun
+    - BorgModuleKill
+    - BorgModuleInvestigation
+
+  radioChannels:
+  - Science
+  - ColSec
+  - Security
+
+  
+  addComponents:
+  - type: FlashImmunity
+  - type: SiliconLawProvider
+    laws: RobocopLawset
+  - type: ShowMindShieldIcons
+  - type: ShowCriminalRecordIcons
+
+  # Visual
+  inventoryTemplateId: borgShortHL
+  spritePath: _HL/Mobs/Silicon/Chassis/Security/security.rsi # TODO fix this 

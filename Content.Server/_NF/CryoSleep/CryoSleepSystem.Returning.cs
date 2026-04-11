@@ -102,6 +102,7 @@ public sealed partial class CryoSleepSystem
         var body = _storedBodies.GetValueOrDefault(id, null);
 
         _storedBodies.Remove(id);
+        var pausedMap = _cryostorage.GetPausedMap(); // HardLight
 
         // If the user's a ghost, let them know their body's been removed.
         if (_mind.TryGetMind(id, out _, out var mindComp)
@@ -111,7 +112,9 @@ public sealed partial class CryoSleepSystem
         }
 
         if (body != null
-            && Transform(body.Value.Body).MapUid == _storageMap)
+            && pausedMap != null // HardLight
+            && TryComp<TransformComponent>(body.Value.Body, out var bodyXform)
+            && bodyXform.MapUid == pausedMap) // HardLight
         {
             QueueDel(body.Value.Body);
         }

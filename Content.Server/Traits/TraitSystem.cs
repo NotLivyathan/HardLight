@@ -10,6 +10,7 @@ using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Movement.Systems; // HardLight
 using Content.Shared.Players;
 using Content.Shared.Roles;
 using Content.Shared.Traits;
@@ -37,6 +38,7 @@ public sealed class TraitSystem : EntitySystem
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly SharedHandsSystem _sharedHandsSystem = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeed = default!; // HardLight
 
     public override void Initialize()
     {
@@ -116,7 +118,10 @@ public sealed class TraitSystem : EntitySystem
             return;
 
         // Add all components required by the prototype
-        EntityManager.AddComponents(uid, traitPrototype.Components, traitPrototype.ReplaceComponents); // Hardlight, ReplaceComponents change
+        EntityManager.AddComponents(uid, traitPrototype.Components, traitPrototype.ReplaceComponents); // Hardlight: Added ReplaceComponents
+
+        // HardLight: Force an immediate refresh so movement penalties/bonuses apply on spawn.
+        _movementSpeed.RefreshMovementSpeedModifiers(uid);
 
         // Add item required by the trait
         if (traitPrototype.TraitGear != null && TryComp(uid, out HandsComponent? handsComponent))

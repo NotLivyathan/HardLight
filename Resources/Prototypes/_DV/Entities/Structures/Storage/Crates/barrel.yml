@@ -124,6 +124,12 @@
         - MachineLayer
   - type: Transform
     noRot: false
+  - type: AutomationSlots # Goobstation
+    slots:
+    - !type:AutomatedSolution
+      solutionName: tank
+      input: PlumbingInput
+      output: PlumbingOutput
 
 - type: entity
   parent: WoodenKeg

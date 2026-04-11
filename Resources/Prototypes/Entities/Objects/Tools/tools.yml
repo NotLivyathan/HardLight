@@ -452,6 +452,11 @@
     - Deconstruct
     #Hardlight
     - AtmosDeviceFanDirectional
+    - PuckLight
+    - PlatingNE
+    - PlatingNW
+    - PlatingSE
+    - PlatingSW
   - type: LimitedCharges
     maxCharges: 30
   - type: Sprite

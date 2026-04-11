@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 11/22/2025 09:07:09
-  entityCount: 1081
+  entityCount: 1080
 maps: []
 grids:
 - 1
@@ -649,6 +649,7 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: Apollo
+    - type: InitRepairSnapshot
 - proto: AirAlarm
   entities:
   - uid: 2
@@ -5775,14 +5776,6 @@ entities:
     components:
     - type: Transform
       pos: -1.5,1.5
-      parent: 1
-- proto: SpawnPointLatejoin
-  entities:
-  - uid: 759
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 1.5,3.5
       parent: 1
 - proto: StasisBed
   entities:

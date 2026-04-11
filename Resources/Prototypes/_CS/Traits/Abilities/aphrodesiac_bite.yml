@@ -1,0 +1,52 @@
+- type: entity
+  id: ActionAphrodesiacBite
+  name: Aphrodesiac Bite
+  description: Inject aphrodesiac venom into someone.
+  components:
+  - type: EntityTargetAction
+    icon:
+      sprite: _CS/Traits/Abilities.rsi
+      state: aphrodesiac
+    itemIconStyle: BigAction
+    useDelay: 2
+    event: !type:AphrodesiacBiteEvent
+
+- type: trait
+  id: AbilityAphrodesiacBite
+  name: trait-aphrodesiacbite-name
+  description: trait-aphrodesiacbite-desc
+  category: Physical
+  mutuallyExclusiveTraits:
+  - AbilityPhilterexBite
+  - AbilityPomelustineBite
+  cost: 0
+  components:
+  - type: AphrodesiacBite
+
+- type: trait
+  id: AbilityPhilterexBite
+  name: trait-philterexbite-name
+  description: trait-philterexbite-desc
+  category: Physical
+  mutuallyExclusiveTraits:
+  - AbilityAphrodesiacBite
+  - AbilityPomelustineBite
+  cost: 0
+  components:
+  - type: AphrodesiacBite
+    reagent: Philterex
+    amount: 10
+
+- type: trait
+  id: AbilityPomelustineBite
+  name: trait-pomelustinebite-name
+  description: trait-pomelustinebite-desc
+  category: Physical
+  mutuallyExclusiveTraits:
+  - AbilityAphrodesiacBite
+  - AbilityPhilterexBite
+  cost: 0
+  components:
+  - type: AphrodesiacBite
+    reagent: Pomelustine
+    amount: 10

@@ -16,6 +16,8 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
     [Dependency] private readonly StandingStateSystem _standing = default!;
     [Dependency] private readonly AnimationPlayerSystem _animation = default!;
     [Dependency] private readonly SharedBuckleSystem _buckle = default!;
+    [Dependency] private readonly SpriteSystem _sprite = default!; // HardLight
+    [Dependency] private readonly SharedTransformSystem _xform = default!; // HardLight
 
     public override void Initialize()
     {
@@ -28,16 +30,26 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
     public override void Update(float frameTime)
     {
         // Update draw depth of laying down entities as necessary
-        var query = EntityQueryEnumerator<LayingDownComponent, StandingStateComponent, SpriteComponent, DrawDepthVisualizerComponent>();
-        while (query.MoveNext(out var uid, out var layingDown, out var standing, out var sprite, out var drawDepth))
+        var query = EntityQueryEnumerator<LayingDownComponent, StandingStateComponent, SpriteComponent>(); // HardLight: Removed DrawDepthVisualizerComponent
+        while (query.MoveNext(out var uid, out var layingDown, out var standing, out var sprite)) // HardLight: Removed out var drawDepth
         {
             // Do not modify the entities draw depth if it's modified externally
             if (sprite.DrawDepth != layingDown.NormalDrawDepth && sprite.DrawDepth != layingDown.CrawlingUnderDrawDepth)
                 continue;
 
-            sprite.DrawDepth = (standing.CurrentState is StandingState.Lying && layingDown.IsCrawlingUnder || drawDepth.OriginalDrawDepth != null)
+            // HardLight start
+            var squeezeDepthOverride = TryComp<DrawDepthVisualizerComponent>(uid, out var drawDepth)
+                && drawDepth.OriginalDrawDepth != null;
+
+            var drawDepthTarget = (standing.CurrentState is StandingState.Lying && layingDown.IsCrawlingUnder || squeezeDepthOverride)
                 ? layingDown.CrawlingUnderDrawDepth
                 : layingDown.NormalDrawDepth;
+
+            if (sprite.DrawDepth == drawDepthTarget)
+                continue;
+
+            _sprite.SetDrawDepth((uid, sprite), drawDepthTarget);
+            // HardLight end
         }
 
         query.Dispose();
@@ -49,22 +61,21 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
             || !_standing.IsDown(uid)
             || _buckle.IsBuckled(uid)
             || _animation.HasRunningAnimation(uid, "rotate")
-            || !TryComp<TransformComponent>(uid, out var transform)
+            // || !TryComp<TransformComponent>(uid, out var transform) // HardLight
             || !TryComp<SpriteComponent>(uid, out var sprite)
             || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
             return;
 
-        var rotation = transform.LocalRotation + (_eyeManager.CurrentEye.Rotation - (transform.LocalRotation - transform.WorldRotation));
+        var rotation = _eyeManager.CurrentEye.Rotation + _xform.GetWorldRotation(Transform(uid));
+        var targetRotation = rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North
+            ? Angle.FromDegrees(270)
+            : Angle.FromDegrees(90);
 
-        if (rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North)
-        {
-            rotationVisuals.HorizontalRotation = Angle.FromDegrees(270);
-            sprite.Rotation = Angle.FromDegrees(270);
+        if (rotationVisuals.HorizontalRotation == targetRotation && sprite.Rotation == targetRotation)
             return;
-        }
 
-        rotationVisuals.HorizontalRotation = Angle.FromDegrees(90);
-        sprite.Rotation = Angle.FromDegrees(90);
+        rotationVisuals.HorizontalRotation = targetRotation;
+        _sprite.SetRotation((uid, sprite), targetRotation);
     }
 
     private void OnCheckAutoGetUp(CheckAutoGetUpEvent ev, EntitySessionEventArgs args)
@@ -74,17 +85,19 @@ public sealed class LayingDownSystem : SharedLayingDownSystem
 
         var uid = GetEntity(ev.User);
 
-        if (!TryComp<TransformComponent>(uid, out var transform) || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
+        // HardLight start
+        if (!Exists(uid) || !TryComp<RotationVisualsComponent>(uid, out var rotationVisuals))
             return;
 
-        var rotation = transform.LocalRotation + (_eyeManager.CurrentEye.Rotation - (transform.LocalRotation - transform.WorldRotation));
+        var rotation = _eyeManager.CurrentEye.Rotation + _xform.GetWorldRotation(Transform(uid));
+        var targetRotation = rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North
+            ? Angle.FromDegrees(270)
+            : Angle.FromDegrees(90);
 
-        if (rotation.GetDir() is Direction.SouthEast or Direction.East or Direction.NorthEast or Direction.North)
-        {
-            rotationVisuals.HorizontalRotation = Angle.FromDegrees(270);
+        if (rotationVisuals.HorizontalRotation == targetRotation)
             return;
-        }
 
-        rotationVisuals.HorizontalRotation = Angle.FromDegrees(90);
+        rotationVisuals.HorizontalRotation = targetRotation;
+        // HardLight end
     }
 }

@@ -24,8 +24,8 @@
       prob: 0.5
     #- id: SubWizard
     #  prob: 0.05
-    #- id: Xenoborgs
-     # prob: 0.05
+    - id: Xenoborgs
+      prob: 0.05
 
 - type: entity
   parent: BaseGameRule
@@ -390,7 +390,9 @@
       - !type:NestedSelector
         tableId: BasicAntagEventsTable
       - !type:NestedSelector
-        tableId: CargoGiftsTable
+        tableId: GlimmerEventsTable
+      #- !type:NestedSelector
+       # tableId: CargoGiftsTable
       # - !type:NestedSelector
         # tableId: CalmPestEventsTable
       # - !type:NestedSelector

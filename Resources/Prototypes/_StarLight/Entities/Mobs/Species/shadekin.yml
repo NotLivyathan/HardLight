@@ -10,7 +10,7 @@
     - type: Thirst
     - type: LayingDown
     - type: Genetics # Funkystation - Genetics
-      mutationSlots: 4
+      mutationSlots: 8
     - type: Shadekin
     - type: HumanoidAppearance
       species: Shadekin

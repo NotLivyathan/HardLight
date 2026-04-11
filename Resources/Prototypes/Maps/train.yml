@@ -15,8 +15,8 @@
           nameGenerator:
             !type:NanotrasenNameGenerator
             prefixCreator: 'ED'
-        - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency_omega.yml # TODO - add railway station
+        #- type: StationEmergencyShuttle
+        #  emergencyShuttlePath: /Maps/Shuttles/emergency_omega.yml # TODO - add railway station
         - type: StationJobs
           availableJobs: # 53 jobs total w/o latejoins & interns, 65 jobs total w/ latejoins & interns
             #command (7)

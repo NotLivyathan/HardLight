@@ -1,4 +1,4 @@
-﻿- type: vendingMachineInventory
+- type: vendingMachineInventory
   id: passionDrobeInventory
   startingInventory:
     AvianDildo: 4
@@ -31,6 +31,7 @@
     BlindfoldBDSM: 3
     BallGag: 3
     LeashAdvanced: 2
+    Clicker: 4
     ChemistryBottlePomelustine: 1
     ClothingUniformJumpsuitCatsuit: 1
     ClothingUniformJumpsuitCatsuitBlank: 1

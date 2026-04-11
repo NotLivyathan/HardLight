@@ -1,0 +1,9 @@
+- type: construction
+  id: GasPortStorage
+  graph: GasUnaryHL
+  startNode: start
+  targetNode: portstorage
+  category: construction-category-structures
+  description: storage-port-construction-desc
+  placementMode: SnapgridCenter
+  objectType: Structure

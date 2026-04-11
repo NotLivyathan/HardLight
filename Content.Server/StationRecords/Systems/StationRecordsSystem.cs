@@ -177,7 +177,28 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
         // this happens when respawning as the same character
         if (GetRecordByName(station, name, records) is {} id)
         {
-            SetIdKey(idUid, new StationRecordKey(id, station));
+            // HardLight start
+            // Reuse and refresh existing record fields when respawning as the same character.
+            var existingKey = new StationRecordKey(id, station);
+
+            if (TryGetRecord<GeneralStationRecord>(existingKey, out var existingRecord, records))
+            {
+                existingRecord.Name = name;
+                existingRecord.Age = age;
+                existingRecord.Species = species;
+                existingRecord.Gender = gender;
+                existingRecord.JobTitle = jobPrototype.LocalizedName;
+                existingRecord.JobIcon = jobPrototype.Icon;
+                existingRecord.JobPrototype = jobId;
+                existingRecord.DisplayPriority = jobPrototype.RealDisplayWeight;
+                existingRecord.Fingerprint = mobFingerprint;
+                existingRecord.DNA = dna;
+
+                RaiseLocalEvent(new RecordModifiedEvent(existingKey));
+            }
+            // HardLight end
+
+            SetIdKey(idUid, existingKey); // HardLight
             return;
         }
 
@@ -258,7 +279,7 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     {
         entry = default;
 
-        if (!Resolve(key.OriginStation, ref records))
+        if (!Resolve(key.OriginStation, ref records, false))
             return false;
 
         return records.Records.TryGetRecordEntry(key.Id, out entry);

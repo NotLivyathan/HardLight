@@ -61,6 +61,13 @@
                                                    ToolTip="{Loc 'humanoid-profile-editor-guidebook-button-tooltip'}"/>
                                     <OptionButton Name="SpeciesButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
+                                <!-- Far Horizons - subspecies -->
+                                <BoxContainer Name="CSubspecies" HorizontalExpand="True">
+                                    <Label Text="{Loc 'humanoid-profile-editor-subspecies-label'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <OptionButton Name="SubspeciesButton" HorizontalAlignment="Right" />
+                                </BoxContainer>
+                                <!-- Far Horizons end -->
                                 <!-- Custom species display string (examined text override) -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-custom-species-label'}" />
@@ -97,6 +104,13 @@
                                     <Control HorizontalExpand="True"/>
                                     <OptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
+                                <!--Far Horizons species loadouts-->
+                                <BoxContainer HorizontalExpand="True" Name="CSpeciesLoadout">
+                                    <Label Text="{Loc 'humanoid-profile-editor-species-loadout'}" />
+                                    <Control HorizontalExpand="True"/>
+                                    <Button Name="SpeciesLoadout" Text="{Loc 'loadout-window'}" HorizontalAlignment="Right" />
+                                </BoxContainer>
+                                <!-- Far Horizons end -->
                                 <!-- Height -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-height-label'}" />
