@@ -374,7 +374,6 @@ namespace Content.Server.Construction
                 // Copy non-count properties first
                 newStack.Unlimited = oldStack.Unlimited;
                 newStack.MaxCountOverride = oldStack.MaxCountOverride;
-                newStack.Lingering = oldStack.Lingering;
                 newStack.ThrowIndividually = oldStack.ThrowIndividually;
                 newStack.BaseLayer = oldStack.BaseLayer;
                 newStack.IsComposite = oldStack.IsComposite;
