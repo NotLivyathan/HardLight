@@ -866,3 +866,35 @@
       Plasteel: 10
   - type: Item
     size: Tiny
+ 
+- type: entity
+  parent: MaterialBase
+  id: MaterialArgocytePlateHeavy
+  name: heavy argocyte plate
+  description: A large dark plate gathered from a heavy argocyte.
+  components:
+  - type: Material
+  - type: Stack
+    stackType: ArgocytePlateHeavy
+    count: 1
+  - type: Sprite
+    sprite: Objects/Materials/Shards/piece.rsi
+    state: piecelarge
+    color: "#4A5056"
+  - type: Item
+
+- type: entity
+  parent: MaterialBase
+  id: MaterialArgocytePlateLight
+  name: light argocyte plate
+  description: A large dark plate gathered from a light argocyte.
+  components:
+  - type: Material
+  - type: Stack
+    stackType: ArgocytePlateLight
+    count: 1
+  - type: Sprite
+    sprite: Objects/Materials/Shards/piece.rsi
+    state: piecemedium
+    color: "#D4D8A0"
+  - type: Item

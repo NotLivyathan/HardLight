@@ -1,0 +1,213 @@
+- type: constructionGraph
+  id: ArgoArmorHardGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - tag: BoneArmor
+        icon:
+          sprite: Clothing/OuterClothing/Armor/bone_armor.rsi
+          state: icon
+        name: crafting-menu-name-bone-armor
+      - material: ArgocytePlateHeavy
+        amount: 50
+        doAfter: 20
+      - material: Plasteel
+        amount: 30
+        doAfter: 15
+  - node: finish
+    entity: ClothingOuterArmorArgocyteHeavy
+    
+- type: constructionGraph
+  id: ArgoArmorLightGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - tag: BoneArmor
+        icon:
+          sprite: Clothing/OuterClothing/Armor/bone_armor.rsi
+          state: icon
+        name: crafting-menu-name-bone-armor
+      - material: ArgocytePlateLight
+        amount: 50
+        doAfter: 20
+      - material: Durathread
+        amount: 30
+        doAfter: 15
+  - node: finish
+    entity: ClothingOuterArmorArgocyteLight
+   
+- type: constructionGraph
+  id: ArgoGauntletsHeavyGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateHeavy
+        amount: 10
+        doAfter: 5
+      - material: Plasteel
+        amount: 5
+        doAfter: 5
+  - node: finish
+    entity: ClothingHandsGlovesArgocyteHeavy
+   
+- type: constructionGraph
+  id: ArgoGauntletsLightGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateLight
+        amount: 10
+        doAfter: 5
+      - material: Durathread
+        amount: 5
+        doAfter: 5
+  - node: finish
+    entity: ClothingHandsGlovesArgocyteLight
+   
+- type: constructionGraph
+  id: ArgoHelmetHeavyGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateHeavy
+        amount: 15
+        doAfter: 5
+      - material: Plasteel
+        amount: 10
+        doAfter: 5
+  - node: finish
+    entity: HLClothingHeadHelmetArgoHeavy
+   
+- type: constructionGraph
+  id: ArgoHelmetLightGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateLight
+        amount: 15
+        doAfter: 5
+      - material: Durathread
+        amount: 10
+        doAfter: 5
+  - node: finish
+    entity: HLClothingHeadHelmetArgoLight
+   
+- type: constructionGraph
+  id: ArgoBootsHeavyGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateHeavy
+        amount: 20
+        doAfter: 5
+      - material: Plasteel
+        amount: 10
+        doAfter: 10
+  - node: finish
+    entity: HLClothingShoesArgocyteHeavy
+   
+- type: constructionGraph
+  id: ArgoBootsLightGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateLight
+        amount: 20
+        doAfter: 5
+      - material: Durathread
+        amount: 10
+        doAfter: 10
+  - node: finish
+    entity: HLClothingShoesArgocyteLight
+   
+- type: constructionGraph
+  id: ArgoShieldHeavyGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateHeavy
+        amount: 30
+        doAfter: 15
+      - material: Plasteel
+        amount: 20
+        doAfter: 10
+  - node: finish
+    entity: ArgoShieldHeavy
+   
+- type: constructionGraph
+  id: ArgoShieldLightGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateLight
+        amount: 30
+        doAfter: 15
+      - material: Plasteel
+        amount: 20
+        doAfter: 10
+  - node: finish
+    entity: ArgoShieldLight
+   
+- type: constructionGraph
+  id: ArgoHammerGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateHeavy
+        amount: 40
+        doAfter: 20
+      - material: Plasteel
+        amount: 25
+        doAfter: 15
+  - node: finish
+    entity: ArgocyteHammer
+   
+- type: constructionGraph
+  id: ArgoTwinswordGraph
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finish
+      steps:
+      - material: ArgocytePlateLight
+        amount: 40
+        doAfter: 20
+      - material: Durathread
+        amount: 25
+        doAfter: 15
+  - node: finish
+    entity: ArgocyteTwinsword

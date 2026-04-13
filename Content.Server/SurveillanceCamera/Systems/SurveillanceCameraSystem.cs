@@ -128,6 +128,9 @@ public sealed partial class SurveillanceCameraSystem : EntitySystem // HardLight
 
     private void AddVerbs(EntityUid uid, SurveillanceCameraComponent component, GetVerbsEvent<AlternativeVerb> verbs)
     {
+        var ev = new SurveillanceCameraAlternativeVerbsEvent(verbs);
+        RaiseLocalEvent(uid, ev);
+
         if (!_actionBlocker.CanInteract(verbs.User, uid))
         {
             return;
@@ -431,6 +434,11 @@ public sealed partial class SurveillanceCameraSystem : EntitySystem // HardLight
 
         _appearance.SetData(uid, SurveillanceCameraVisualsKey.Key, key, appearance);
     }
+}
+
+public sealed class SurveillanceCameraAlternativeVerbsEvent(GetVerbsEvent<AlternativeVerb> args) : EntityEventArgs
+{
+    public GetVerbsEvent<AlternativeVerb> Args { get; } = args;
 }
 
 public sealed class OnSurveillanceCameraViewerAddEvent : EntityEventArgs

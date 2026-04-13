@@ -101,7 +101,7 @@
   - type: LockingWhitelist
     blacklist:
       components:
-      - BorgChassis
+      # - BorgChassis Hardlight if quads can do it then so can we damn it.
       - RoboticsConsole
   - type: WiresPanel
   - type: ActivatableUIRequiresPanel
@@ -358,7 +358,7 @@
     tags:
     - Borg
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: ShowJobIcons
   - type: InteractionPopup
     interactSuccessSound:

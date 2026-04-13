@@ -3,7 +3,7 @@
   mapName: 'Plasma'
   mapPath: /Maps/plasma.yml
   minPlayers: 0
-  maxPlayers: 80
+  maxPlayers: 200
   stations:
     Plasma:
       stationProto: StandardNanotrasenStation

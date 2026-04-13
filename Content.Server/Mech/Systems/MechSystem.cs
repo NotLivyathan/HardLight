@@ -193,6 +193,9 @@ public sealed partial class MechSystem : SharedMechSystem
         if (!args.CanAccess || !args.CanInteract || component.Broken)
             return;
 
+        var ev = new MechAlternativeVerbsEvent(args);
+        RaiseLocalEvent(uid, ev);
+
         if (CanInsert(uid, args.User, component))
         {
             var enterVerb = new AlternativeVerb
@@ -469,4 +472,9 @@ public sealed partial class MechSystem : SharedMechSystem
         args.Air = comp.Air;
     }
     #endregion
+}
+
+public sealed class MechAlternativeVerbsEvent(GetVerbsEvent<AlternativeVerb> args) : EntityEventArgs
+{
+    public GetVerbsEvent<AlternativeVerb> Args { get; } = args;
 }

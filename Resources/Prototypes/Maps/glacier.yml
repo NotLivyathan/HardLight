@@ -3,7 +3,7 @@
   mapName: Glacier
   mapPath: /Maps/glacier.yml # Floofstation
   minPlayers: 0
-  maxPlayers: 70
+  maxPlayers: 200
   stations:
     Glacier:
       stationProto: StandardNanotrasenStation

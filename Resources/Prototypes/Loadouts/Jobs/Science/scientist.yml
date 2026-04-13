@@ -75,6 +75,17 @@
   equipment:
     jumpsuit: ClothingUniformJumpskirtSeniorResearcher
 
+# Jumpsuit - Funky
+- type: loadout
+  id: RoboticistJumpsuitInterfacing
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitRoboticistInterfacing
+
+- type: loadout
+  id: RoboticistJumpskirtInterfacing
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtRoboticistInterfacing
+
 # Back
 - type: loadout
   id: ScientistBackpack
@@ -135,6 +146,12 @@
   id: RobohandsGloves
   equipment:
     gloves: ClothingHandsGlovesRobohands
+
+# Gloves - Funky
+- type: loadout
+  id: RobohandsGlovesInterfacing
+  equipment:
+    gloves: ClothingHandsGlovesRobohandsInterfacing
 
 # Shoes
 - type: loadout

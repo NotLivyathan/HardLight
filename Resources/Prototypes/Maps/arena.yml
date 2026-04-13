@@ -3,7 +3,7 @@
   mapName: 'Arena'
   mapPath: /Maps/arena.yml # Floofstation
   minPlayers: 0
-  maxPlayers: 80
+  maxPlayers: 200
   stations:
     Arena:
       stationProto: StandardNanotrasenStation

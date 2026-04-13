@@ -3,7 +3,7 @@
   mapName: 'Marathon Station'
   mapPath: /Maps/marathon.yml
   minPlayers: 0
-  maxPlayers: 70
+  maxPlayers: 200
   stations:
     Marathon:
       stationProto: StandardNanotrasenStation

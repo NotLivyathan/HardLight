@@ -6,7 +6,7 @@ roles-antag-rev-head-objective = Your objective is to take over the station by c
 head-rev-role-greeting =
     You are a Head Revolutionary.
     You are tasked with removing all of Command from station via conversion, death or imprisonment.
-    The Syndicate has sponsored you with a flash that converts the crew to your side.
+    Nanotrasen has sponsored you with a flash that converts the crew to your side.
     Beware, this won't work on those with a mindshield or wearing eye protection.
     Viva la revolución!
 

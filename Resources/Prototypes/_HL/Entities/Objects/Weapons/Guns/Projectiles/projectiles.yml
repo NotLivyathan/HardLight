@@ -88,7 +88,7 @@
         color: red
     - type: Ammo
       muzzleFlash: null
-      
+
 - type: entity
   id: HLDartAberrantBone
   name: bone spike
@@ -118,7 +118,7 @@
     damage:
       types:
         Piercing: 10
-        
+
 - type: entity
   id: HLDartAberrantBonePellet
   name: bone spike
@@ -148,7 +148,7 @@
     damage:
       types:
         Piercing: 7
-        
+
 - type: entity
   id: HLDartAberrantBonePelletSpread
   categories: [ HideSpawnMenu ]
@@ -158,7 +158,7 @@
     proto: HLDartAberrantBonePellet
     count: 6
     spread: 10
-    
+
 - type: entity
   id: HLDartAberrantBoneLong
   name: bone spike
@@ -179,7 +179,7 @@
       ammo:
         maxVol: 5
         reagents:
-        - ReagentId: Ipecac 
+        - ReagentId: Ipecac
           Quantity: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 1
@@ -191,3 +191,25 @@
     damage:
       types:
         Piercing: 25
+
+- type: entity
+  name: subfloor emitter bolt
+  id: EmitterBoltSubfloor
+  parent: EmitterBolt
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: Structures/Power/Generation/Singularity/emitter.rsi
+    drawdepth: ThinWire
+    layers:
+      - state: projectile
+        shader: unshaded
+  - type: Tag
+    tags:
+    - EmitterBolt
+  - type: ProjectileTargetWhitelist
+    whitelist:
+      components:
+      - ContainmentFieldGenerator
+      tags:
+      - Wall

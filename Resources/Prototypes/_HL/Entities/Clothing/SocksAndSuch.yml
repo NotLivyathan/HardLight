@@ -464,6 +464,9 @@
     sprite: _HL/Clothing/Socks/clothwraptransparent.rsi
   - type: Clothing
     sprite: _HL/Clothing/Socks/clothwraptransparent.rsi
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: BarestepHard
 
 #Evening Wear
 - type: entity

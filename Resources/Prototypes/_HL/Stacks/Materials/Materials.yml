@@ -200,3 +200,17 @@
   icon: { sprite: /Textures/Objects/Fun/Darts/dart_red.rsi, state: icon }
   spawn: MaterialBulletFlechette
   maxCount: 60
+
+- type: stack
+  id: ArgocytePlateHeavy
+  name: stack-argocyte-plate-heavy
+  icon: { sprite: /Textures/Objects/Materials/Shards/piece.rsi, state: piecelarge }
+  spawn: MaterialArgocytePlateHeavy
+  maxCount: 50
+ 
+- type: stack
+  id: ArgocytePlateLight
+  name: stack-argocyte-plate-light
+  icon: { sprite: /Textures/Objects/Materials/Shards/piece.rsi, state: piecemedium }
+  spawn: MaterialArgocytePlateLight
+  maxCount: 50

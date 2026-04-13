@@ -48,3 +48,6 @@
   - type: Construction
     graph: CraftShoesClothwrap
     node: CraftShoesClothwrap
+  - type: FootstepModifier # HL Change
+    footstepSoundCollection:
+      collection: BarestepHard

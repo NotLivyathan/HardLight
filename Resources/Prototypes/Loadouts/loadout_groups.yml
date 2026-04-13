@@ -1075,6 +1075,8 @@
   - RoboticistJumpskirt
   - SeniorResearcherJumpsuit
   - SeniorResearcherJumpskirt
+  - RoboticistJumpsuitInterfacing
+  - RoboticistJumpskirtInterfacing
   subgroups:
   - ScienceJumpsuit # HL - Add departmental NF-style loadouts
   - ContractorJumpsuit # HL - Add departmental NF-style loadouts
@@ -1121,6 +1123,7 @@
   - LatexGloves
   - PurpleGloves
   - RobohandsGloves
+  - RobohandsGlovesInterfacing
   subgroups:
   - ScienceGloves # HL - Add departmental NF-style loadouts
   - ContractorGloves # HL - Add departmental NF-style loadouts

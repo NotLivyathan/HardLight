@@ -4,10 +4,16 @@
   name: red-tie
   description: A neosilk clip-on red tie.
   components:
+  - type: Handcuff # Hardlight, Tie cuff
+    breakoutTime: 3 # Hardlight, Tie cuff
+    cuffedRSI: Clothing/Neck/Ties/redtie.rsi # Hardlight, Tie cuff
+    bodyIconState: body-overlay # Hardlight, Tie cuff
   - type: Sprite
     sprite: Clothing/Neck/Ties/redtie.rsi
   - type: Clothing
     sprite: Clothing/Neck/Ties/redtie.rsi
+  - type: UseDelay # Hardlight, Tie cuff
+    delay: 3 # Hardlight, Tie cuff
   - type: Tag
     tags:
     - HamsterWearable
@@ -24,6 +30,11 @@
     sprite: Clothing/Neck/Ties/dettie.rsi
   - type: Clothing
     sprite: Clothing/Neck/Ties/dettie.rsi
+  - type: Handcuff # Hardlight, Tie cuff
+    cuffedRSI: Clothing/Neck/Ties/dettie.rsi # Hardlight, Tie cuff
+    bodyIconState: body-overlay # Hardlight, Tie cuff
+  - type: UseDelay # Hardlight, Tie cuff
+    delay: 3 # Hardlight, Tie cuff
     
 - type: entity
   parent: ClothingNeckBase
@@ -35,6 +46,12 @@
     sprite: Clothing/Neck/Ties/scitie.rsi
   - type: Clothing
     sprite: Clothing/Neck/Ties/scitie.rsi
+  - type: Handcuff # Hardlight, Tie cuff
+    breakoutTime: 3 # Hardlight, Tie cuff
+    cuffedRSI: Clothing/Neck/Ties/scitie.rsi # Hardlight, Tie cuff
+    bodyIconState: body-overlay # Hardlight, Tie cuff
+  - type: UseDelay # Hardlight, Tie cuff
+    delay: 3 # Hardlight, Tie cuff
   - type: Tag
     tags:
     - ClothMade
