@@ -1,0 +1,99 @@
+- type: entity
+  parent: ClothingShoesBase
+  id: HLClothingShoesArgocyteHeavy
+  name: heavy argocyte boots
+  description: Hard-looking boots made out of argocyte armor plates . They're very heavy.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Shoes/argocyteheavy.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Shoes/argocyteheavy.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 0.8
+  - type: ClothingSpeedModifier
+    walkModifier: 0.8 #Less effective than the helmet, but hey, wearing heavy hand-made shoes will make you slow, duuh
+    sprintModifier: 0.8
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 80
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 60
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateHeavy:
+                min: 1
+                max: 5
+  - type: Construction
+    graph: ArgoBootsHeavyGraph
+    node: finish
+       
+- type: entity
+  parent: ClothingShoesBase
+  id: HLClothingShoesArgocyteLight
+  name: light argocyte boots
+  description: Brittle-looking boots made out of argocyte armor plates . They're very light, but may break when exploded.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Shoes/argocytelight.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Shoes/argocytelight.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 1.15
+  - type: ClothingSpeedModifier
+    walkModifier: 1.25 #reverse of heavy 
+    sprintModifier: 1.25
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.95
+        Slash: 0.95
+        Piercing: 0.95
+        Heat: 0.95
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 40
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 30
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateLight:
+                min: 1
+                max: 5
+  - type: Construction
+    graph: ArgoBootsLightGraph
+    node: finish

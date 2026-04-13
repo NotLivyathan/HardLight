@@ -6,7 +6,7 @@ namespace Content.Shared.Silicons.Laws.Components;
 /// <summary>
 /// This is used for an entity which grants laws to a <see cref="SiliconLawBoundComponent"/>
 /// </summary>
-[RegisterComponent, Access(typeof(SharedSiliconLawSystem))]
+[RegisterComponent, Access(typeof(SharedSiliconLawSystem), Self = AccessPermissions.ReadWriteExecute, Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.ReadWriteExecute)]
 public sealed partial class SiliconLawProviderComponent : Component
 {
     /// <summary>
@@ -19,8 +19,12 @@ public sealed partial class SiliconLawProviderComponent : Component
     /// Lawset created from the prototype id.
     /// Cached when getting laws and modified during an ion storm event and when emagged.
     /// </summary>
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public SiliconLawset? Lawset;
+    [DataField, ViewVariables(VVAccess.ReadWrite), Access(Self = AccessPermissions.ReadWriteExecute, Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.ReadWriteExecute)]
+    public SiliconLawset? Lawset
+    {
+        [Access(Self = AccessPermissions.ReadWriteExecute, Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.ReadWriteExecute)] get;
+        [Access(Self = AccessPermissions.ReadWriteExecute, Friend = AccessPermissions.ReadWriteExecute, Other = AccessPermissions.ReadWriteExecute)] set;
+    }
 
     /// <summary>
     /// The sound that plays for the Silicon player

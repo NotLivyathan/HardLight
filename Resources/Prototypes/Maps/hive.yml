@@ -3,7 +3,7 @@
   mapName: 'The Hive'
   mapPath: /Maps/hive.yml # Floofstation
   minPlayers: 0
-  #maxPlayers: 80 Temporary maybe
+  #maxPlayers: 200 Temporary maybe
   stations:
     TheHive:
       stationProto: StandardNanotrasenStation

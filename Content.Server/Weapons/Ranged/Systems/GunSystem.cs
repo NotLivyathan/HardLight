@@ -224,8 +224,17 @@ public sealed partial class GunSystem : SharedGunSystem
 
                     if (hitscan.Reflective != ReflectType.None)
                     {
-                        for (var reflectAttempt = 0; reflectAttempt < 3; reflectAttempt++)
+                        var reflectAttempts = 0;
+                        var allowUnlimitedBounces = false;
+
+                        while (true)
                         {
+                            if (reflectAttempts >= 20)
+                                break;
+
+                            if (reflectAttempts >= 3 && !allowUnlimitedBounces)
+                                break;
+
                             var ray = new CollisionRay(from.Position, dir, hitscan.CollisionMask);
                             var rayCastResults =
                                 Physics.IntersectRay(from.MapId, ray, hitscan.MaxLength, lastUser, false).ToList();
@@ -252,7 +261,6 @@ public sealed partial class GunSystem : SharedGunSystem
                             }
 
                             var hit = result.HitEntity;
-                            lastHit = hit;
 
                             FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user);
 
@@ -260,12 +268,17 @@ public sealed partial class GunSystem : SharedGunSystem
                             RaiseLocalEvent(hit, ref ev);
 
                             if (!ev.Reflected)
+                            {
+                                lastHit = hit;
                                 break;
+                            }
 
+                            allowUnlimitedBounces = TryComp<BeamPrismComponent>(hit, out _);
                             fromEffect = Transform(hit).Coordinates;
                             from = TransformSystem.ToMapCoordinates(fromEffect);
                             dir = ev.Direction;
                             lastUser = hit;
+                            reflectAttempts++;
                         }
                     }
 

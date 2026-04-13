@@ -23,3 +23,6 @@ stack-bullet-casing-8x65mmSKR = brass casing (8x65mm SKR)
 stack-bullet-casing-23x75mm = brass shotgun shell (4 gauge)
 stack-bullet-casing-12_gauge = brass shotgun shell (12 gauge)
 stack-bullet-flechette = flechette(s)
+stack-argocyte-plate-heavy = heavy argocyte plate(s)
+stack-argocyte-plate-light = light argocyte plate(s)
+crafting-menu-name-bone-armor = bone armor

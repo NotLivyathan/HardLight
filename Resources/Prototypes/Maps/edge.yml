@@ -3,7 +3,7 @@
   mapName: 'Edge'
   mapPath: /Maps/edge.yml # Floofstation
   minPlayers: 0
-  maxPlayers: 80
+  maxPlayers: 200
   stations:
     Edge:
       stationProto: StandardNanotrasenStation

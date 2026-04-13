@@ -184,7 +184,7 @@
     hasMindState: quadspritel
     noMindState: quadspriter
   - type: AccessReader
-    access: [["Security"], ["Command"]]
+    access: [["Security"], ["Command"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Qborg
   - type: FlashImmunity
@@ -429,7 +429,7 @@
     hasMindState: quadspritesalvl
     noMindState: quadspritesalvr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Corporate
   - type: SpriteStateToggle
@@ -499,7 +499,7 @@
     hasMindState: quadspriteservl
     noMindState: quadspriteservr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: StationEfficiency
   - type: SpriteStateToggle
@@ -568,7 +568,7 @@
     hasMindState: engieborgl
     noMindState: engieborgr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: StationEfficiency
   - type: ShowHealthBars
@@ -644,7 +644,7 @@
     hasMindState: quadspritemedl
     noMindState: quadspritemedr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Medical
   - type: SolutionScanner

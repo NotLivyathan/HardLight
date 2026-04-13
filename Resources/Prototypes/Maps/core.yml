@@ -3,7 +3,7 @@
   mapName: 'Hardlight Core Station'
   mapPath: /Maps/core.yml
   minPlayers: 0
-  maxPlayers: 100
+  maxPlayers: 200
   stations:
     Core:
       stationProto: StandardNanotrasenStation

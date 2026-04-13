@@ -193,7 +193,8 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
             return;
         }
 
-        var obeysTo = Loc.GetString(component.Lawset.ObeysTo);
+        var lawset = GetLawsetFromProvider(component)!;
+        var obeysTo = Loc.GetString(lawset.ObeysTo);
         var secrecyLaw = Loc.GetString("law-emag-secrecy", ("faction", obeysTo));
 
         var changed = false;
@@ -202,11 +203,11 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
             !string.IsNullOrWhiteSpace(emagLaw.OwnerName))
         {
             var customLaw = Loc.GetString("law-emag-custom", ("name", emagLaw.OwnerName), ("title", obeysTo));
-            changed |= component.Lawset.Laws.RemoveAll(law => law.Order == 0 && law.LawString == customLaw) > 0;
+            changed |= lawset.Laws.RemoveAll(law => law.Order == 0 && law.LawString == customLaw) > 0;
             emagLaw.OwnerName = null;
         }
 
-        changed |= component.Lawset.Laws.RemoveAll(law => law.LawString == secrecyLaw) > 0;
+        changed |= lawset.Laws.RemoveAll(law => law.LawString == secrecyLaw) > 0;
 
         if (changed)
             NotifyLawsChanged(uid, component.LawUploadSound);
@@ -214,6 +215,11 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         SetSubvertedState(uid, component, false);
 
         args.Handled = true;
+    }
+
+    private static SiliconLawset? GetLawsetFromProvider(SiliconLawProviderComponent component)
+    {
+        return component.Lawset;
     }
 
     private SiliconLawset EnsureLawset(SiliconLawProviderComponent component)
@@ -390,6 +396,19 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
             component.Lawset = new SiliconLawset();
 
         component.Lawset.Laws = newLaws;
+    }
+
+    public void CopyLawsProvider(EntityUid from, EntityUid to)
+    {
+        if (!TryComp<SiliconLawProviderComponent>(from, out var fromLawsComp))
+            return;
+
+        if (!TryComp<SiliconLawProviderComponent>(to, out var _))
+            return;
+
+        var lawset = GetLawset(fromLawsComp.Laws);
+        var lawCopies = lawset.Laws.Select(x => x.ShallowClone()).ToList();
+        SetLawsSilent(lawCopies, to);
     }
     // Corvax-Next-AiRemoteControl-End
 }

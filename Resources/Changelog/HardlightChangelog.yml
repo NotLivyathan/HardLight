@@ -2446,3 +2446,33 @@ Entries:
       message: Peregrine mags being general use batteries
   id: 269
   time: '2026-04-09T21:27:02.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Pettable trait!
+  id: 270
+  time: '2026-04-13T01:01:47.0000000+00:00'
+- author: VoidedDevNull
+  changes:
+    - type: Tweak
+      message: Rev sponsorship change
+  id: 271
+  time: '2026-04-13T01:02:44.0000000+00:00'
+- author: SeaborneProto
+  changes:
+    - type: Add
+      message: Adds the ability for ties to restrain humanoids
+  id: 272
+  time: '2026-04-13T01:03:08.0000000+00:00'
+- author: SquishyEmmaaaa
+  changes:
+    - type: Fix
+      message: >-
+        Items inside Freezer Pouches no longer rot if the pouch is stored inside
+        another container.
+    - type: Fix
+      message: >-
+        Freezers and Medical Pods can now be carried and stored in mechs without
+        rotting.
+  id: 273
+  time: '2026-04-13T01:04:51.0000000+00:00'

@@ -1647,3 +1647,17 @@
 
 # ALPHABETICAL
 
+
+- type: Tag
+  id: ShoesRequiredStepTriggerImmune
+# Mono
+
+- type: Tag
+  id: CartridgeMachineGun
+
+- type: Tag
+  id: CartridgeShell
+  
+- type: Tag
+  id: BoneArmor
+

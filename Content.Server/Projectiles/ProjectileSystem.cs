@@ -10,6 +10,7 @@ using Content.Shared.Database;
 using Content.Shared.FixedPoint;
 using Content.Shared.Projectiles;
 using Content.Shared.Physics;
+using Content.Shared.Whitelist; // HardLight
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
@@ -24,6 +25,7 @@ namespace Content.Server.Projectiles;
 public sealed class ProjectileSystem : SharedProjectileSystem
 {
     [Dependency] private readonly DestructibleSystem _destructibleSystem = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!; // HardLight
 
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
@@ -55,6 +57,12 @@ public sealed class ProjectileSystem : SharedProjectileSystem
         // Check if projectile is already spent (server-specific check)
         if (component.ProjectileSpent)
             return null;
+
+        if (TryComp<ProjectileTargetWhitelistComponent>(uid, out var targetFilter) // HardLight
+            && !_whitelist.CheckBoth(target, targetFilter.Blacklist, targetFilter.Whitelist))
+        {
+            return null;
+        }
 
         var otherName = ToPrettyString(target);
         // Get damage required for destructible before base applies damage
@@ -159,6 +167,11 @@ public sealed class ProjectileSystem : SharedProjectileSystem
             if (projectileComp.IgnoreShooter && projectileComp.Shooter.HasValue)
             {
                 hits.RemoveAll(hit => hit.HitEntity == projectileComp.Shooter.Value);
+            }
+
+            if (TryComp<ProjectileTargetWhitelistComponent>(uid, out var targetFilter)) // HardLight
+            {
+                hits.RemoveAll(hit => !_whitelist.CheckBoth(hit.HitEntity, targetFilter.Blacklist, targetFilter.Whitelist));
             }
 
             if (hits.Count > 0)

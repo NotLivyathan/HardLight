@@ -3,7 +3,7 @@
   mapName: Lighthouse
   mapPath: /Maps/lighthouse.yml # Floofstation
   minPlayers: 0
-  maxPlayers: 55
+  maxPlayers: 200
   stations:
     Lighthouse:
       stationProto: StandardNanotrasenStation

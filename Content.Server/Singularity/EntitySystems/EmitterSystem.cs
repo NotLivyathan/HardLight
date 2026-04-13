@@ -46,6 +46,7 @@ namespace Content.Server.Singularity.EntitySystems
         {
             base.Initialize();
 
+            SubscribeLocalEvent<EmitterComponent, ComponentStartup>(OnStartup); // HardLight
             SubscribeLocalEvent<EmitterComponent, PowerConsumerReceivedChanged>(ReceivedChanged);
             SubscribeLocalEvent<EmitterComponent, PowerChangedEvent>(OnApcChanged);
             SubscribeLocalEvent<EmitterComponent, ActivateInWorldEvent>(OnActivate);
@@ -55,6 +56,26 @@ namespace Content.Server.Singularity.EntitySystems
             SubscribeLocalEvent<EmitterComponent, UpgradeExamineEvent>(OnUpgradeExamine);
             SubscribeLocalEvent<EmitterComponent, AnchorStateChangedEvent>(OnAnchorStateChanged);
             SubscribeLocalEvent<EmitterComponent, SignalReceivedEvent>(OnSignalReceived);
+        }
+
+        // HardLight: Ship load can restore stale runtime power values while the emitter itself starts in an off state.
+        // Normalize runtime state so the first toggle always performs a real power transition.
+        private void OnStartup(EntityUid uid, EmitterComponent component, ComponentStartup args)
+        {
+            component.TimerCancel?.Cancel();
+            component.TimerCancel = null;
+            component.IsPowered = false;
+
+            if (TryComp<PowerConsumerComponent>(uid, out var powerConsumer))
+                powerConsumer.DrawRate = component.IsOn ? component.PowerUseActive : 1;
+
+            if (TryComp<ApcPowerReceiverComponent>(uid, out var apcReceiver))
+                apcReceiver.Load = component.IsOn ? component.PowerUseActive : 1;
+
+            if (component.IsOn && TryComp<ApcPowerReceiverComponent>(uid, out apcReceiver) && apcReceiver.Powered)
+                PowerOn(uid, component);
+
+            UpdateAppearance(uid, component);
         }
 
         private void OnAnchorStateChanged(EntityUid uid, EmitterComponent component, ref AnchorStateChangedEvent args)

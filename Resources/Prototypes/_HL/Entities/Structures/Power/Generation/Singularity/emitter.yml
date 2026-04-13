@@ -1,0 +1,12 @@
+- type: entity
+  id: EmitterSubfloor
+  name: subfloor emitter
+  parent: Emitter
+  components:
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Sprite
+    drawdepth: ThinWire
+  - type: Emitter
+    boltType: EmitterBoltSubfloor

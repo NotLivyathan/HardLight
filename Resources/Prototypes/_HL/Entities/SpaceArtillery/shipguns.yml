@@ -457,6 +457,69 @@
         path: /Audio/Effects/double_beep.ogg
         
 - type: entity
+  id: BeamPrism
+  name: beam prism
+  description: A crystal turret that absorbs incoming hitscan beams and redirects them along its current facing.
+  parent: [ BaseC2ContrabandUnredeemable ]
+  components:
+  - type: StaticPrice
+    price: 5000
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape: !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 60
+        mask:
+          - MachineMask
+        layer:
+          - MachineLayer
+          - HitscanImpassable
+  - type: Sprite
+    sprite: _HL/Objects/ShuttleWeapons/beamprism.rsi
+    layers:
+    - state: artillerygem
+  - type: Appearance
+  - type: Anchorable
+    flags:
+      - Anchorable
+  - type: Rotatable
+  - type: MouseRotator
+    angleTolerance: 5
+    rotationSpeed: 180
+    simple4DirMode: false
+  - type: NoRotateOnInteract
+  - type: NoRotateOnMove
+  - type: Input
+    context: "human"
+  - type: BeamPrism
+
+- type: entity
+  id: AIBeamPrism
+  name: Hostile beam prism
+  parent: [ BeamPrism ]
+  description: An AI controlled prism turret that rotates to direct incoming beams.
+  components:
+  - type: NpcFactionMember
+    factions:
+    - Xenoborg
+  - type: Tag
+    tags:
+    - AIShipWeapon
+  - type: HTN
+    rootTask:
+      task: ShuttleDeedTurretCompound
+    blackboard:
+      RotateSpeed: !type:Single
+        3.141
+      SoundTargetInLOS: !type:SoundPathSpecifier
+        path: /Audio/Effects/double_beep.ogg
+
+- type: entity
   id: AIWeaponTurretScythe
   name: Hostile energy thrower
   parent: [ WeaponTurretScythe ]

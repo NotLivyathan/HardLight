@@ -7,6 +7,7 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: CombatMode
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic
