@@ -85,6 +85,9 @@
 - type: Tag
   id: BodyBag
 
+- type: Tag # HardLight
+  id: BoneArmor
+
 - type: Tag
   id: Book
 
@@ -1646,14 +1649,3 @@
   id: XenoborgModuleStealth # Cyborg module category for evil stealth xenoborg
 
 # ALPHABETICAL
-
-# Mono
-
-- type: Tag
-  id: CartridgeMachineGun
-
-- type: Tag
-  id: CartridgeShell
-
-- type: Tag
-  id: BoneArmor
