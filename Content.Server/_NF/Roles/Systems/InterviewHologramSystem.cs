@@ -5,6 +5,7 @@ using Content.Server.GameTicking;
 using Content.Server.PDA.Ringer;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
+using Content.Server._HL.ColComm; // HardLight
 using Content.Shared._NF.Roles.Components;
 using Content.Shared._NF.Roles.Events;
 using Content.Shared.Chat;
@@ -44,6 +45,7 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
     [Dependency] private StationJobsSystem _stationJobs = default!;
     [Dependency] private StationSpawningSystem _stationSpawning = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private ColcommJobSystem _colcommJobs = default!; // HardLight
 
     public override void Initialize()
     {
@@ -116,7 +118,14 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
         if (TryComp<JobTrackingComponent>(ent, out var jobTracking))
         {
             if (jobTracking.Job != null)
-                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job, 1);
+            // HardLight start
+            {
+                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job.Value, 1);
+                _colcommJobs.TryGetColcommRegistry(out var colcomm);
+                if (colcomm != default)
+                    _colcommJobs.TryAdjustJobSlot(colcomm, jobTracking.Job.Value, 1);
+            }
+            // HardLight end
             RemComp<JobTrackingComponent>(ent);
         }
 
@@ -139,7 +148,7 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
             ApplyAppearanceForSession(ent, session);
         }
 
-        // Notify all relevant captains if they have their PDA that someone is applying for a job. 
+        // Notify all relevant captains if they have their PDA that someone is applying for a job.
         if (!ent.Comp.NotificationsSent)
         {
             string jobTitle;
@@ -311,7 +320,14 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
         if (TryComp<JobTrackingComponent>(ent, out var jobTracking))
         {
             if (jobTracking.Job != null && reopenSlot)
-                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job, 1);
+            // HardLight start
+            {
+                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job.Value, 1);
+                _colcommJobs.TryGetColcommRegistry(out var colcomm);
+                if (colcomm != default)
+                    _colcommJobs.TryAdjustJobSlot(colcomm, jobTracking.Job.Value, 1);
+            }
+            // HardLight end
             RemComp<JobTrackingComponent>(ent);
         }
 

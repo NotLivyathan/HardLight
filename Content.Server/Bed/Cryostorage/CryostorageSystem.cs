@@ -172,10 +172,13 @@ public sealed class CryostorageSystem : SharedCryostorageSystem
         var station = _station.GetOwningStation(ent);
         var name = Name(ent.Owner);
 
+        if (station is not { } stationUid) // HardLight
+            return;
+
         if (!TryComp<CryostorageComponent>(cryostorageEnt, out var cryostorageComponent))
             return;
 
-        // if we have a session, we use that to add back in all the job slots the player had.
+        // If we have a session, we use that to add back in all the job slots the player had.
         if (userId != null)
         {
             foreach (var uniqueStation in _station.GetStationsSet())
@@ -220,21 +223,18 @@ public sealed class CryostorageSystem : SharedCryostorageSystem
         UpdateCryostorageUIState((cryostorageEnt.Value, cryostorageComponent));
         AdminLog.Add(LogType.Action, LogImpact.High, $"{ToPrettyString(ent):player} was entered into cryostorage inside of {ToPrettyString(cryostorageEnt.Value)}");
 
-        if (!TryComp<StationRecordsComponent>(station, out var stationRecords))
-            return;
-
         var jobName = Loc.GetString("earlyleave-cryo-job-unknown");
-        var recordId = _stationRecords.GetRecordByName(station.Value, name);
+        var recordId = _stationRecords.GetRecordByName(stationUid, name); // HardLight: station.Value<stationUid
         if (recordId != null)
         {
-            var key = new StationRecordKey(recordId.Value, station.Value);
-            if (_stationRecords.TryGetRecord<GeneralStationRecord>(key, out var entry, stationRecords))
+            var key = new StationRecordKey(recordId.Value, stationUid); // HardLight: station.Value<stationUid
+            if (_stationRecords.TryGetRecord<GeneralStationRecord>(key, out var entry)) // HardLight: Removed stationRecords
                 jobName = entry.JobTitle;
 
-            _stationRecords.RemoveRecord(key, stationRecords);
+            _stationRecords.RemoveRecord(key); // HardLight: Removed stationRecords
         }
 
-        _chatSystem.DispatchStationAnnouncement(station.Value,
+        _chatSystem.DispatchStationAnnouncement(stationUid, // HardLight: station.Value<stationUid
             Loc.GetString(
                 "earlyleave-cryo-announcement",
                 ("character", name),
@@ -251,7 +251,7 @@ public sealed class CryostorageSystem : SharedCryostorageSystem
         if (!CryoSleepRejoiningEnabled || !IsInPausedMap(uid))
             return;
 
-        // how did you destroy these? they're indestructible.
+        // How did you destroy these? they're indestructible.
         if (comp.Cryostorage is not { } cryostorage ||
             TerminatingOrDeleted(cryostorage) ||
             !TryComp<CryostorageComponent>(cryostorage, out var cryostorageComponent))

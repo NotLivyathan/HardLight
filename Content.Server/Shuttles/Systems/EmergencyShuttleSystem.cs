@@ -68,6 +68,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly Content.Server._HL.ColComm.ColcommJobSystem _colcommJobs = default!; // HardLight
 
     private const float ShuttleSpawnBuffer = 1f;
 
@@ -547,6 +548,14 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         _metaData.SetEntityName(map, Loc.GetString("map-name-Colcomm"));
         _shuttle.TryAddFTLDestination(mapId, true, out _);
         Log.Info($"Created Colcomm grid {ToPrettyString(grid)} on map {ToPrettyString(map)} for station {ToPrettyString(station)}");
+
+        // HardLight: Seed the persistent job registry on the ColComm grid entity.
+        // SetupColcommRegistry handles the [Access] boundary for ConfiguredJobs.
+        if (component.JobRegistryConfig.Count > 0)
+        {
+            var colcommRegistry = EnsureComp<Content.Server._HL.ColComm.ColcommJobRegistryComponent>(grid.Value);
+            _colcommJobs.SetupColcommRegistry((grid.Value, colcommRegistry), component.JobRegistryConfig);
+        }
     }
 
     public HashSet<EntityUid> GetColcommMaps()

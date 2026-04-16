@@ -1,5 +1,4 @@
 using Content.Shared._NF.SectorServices.Prototypes;
-using Content.Shared.GameTicking;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 
@@ -25,7 +24,6 @@ public sealed class SectorServiceSystem : EntitySystem
 
         SubscribeLocalEvent<StationSectorServiceHostComponent, ComponentInit>(OnComponentInit);
         SubscribeLocalEvent<StationSectorServiceHostComponent, ComponentRemove>(OnComponentRemove);
-        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnCleanup);
     }
 
     private void OnComponentInit(EntityUid uid, StationSectorServiceHostComponent component, ComponentInit args)
@@ -42,27 +40,14 @@ public sealed class SectorServiceSystem : EntitySystem
                 _entityManager.AddComponents(_entity, servicePrototype.Components, false); // removeExisting false - do not override existing components.
             }
         }
+
+        // HardLight: Always point the current host at the active service entity.
+        component.SectorUid = _entity;
     }
 
     private void OnComponentRemove(EntityUid uid, StationSectorServiceHostComponent component, ComponentRemove args)
     {
-        Log.Debug($"ComponentRemove called! Entity: {_entity}");
-        DeleteServiceEntity();
-    }
-
-    public void OnCleanup(RoundRestartCleanupEvent _)
-    {
-        Log.Debug($"RoundRestartCleanup called! Entity: {_entity}");
-        DeleteServiceEntity();
-    }
-
-    private void DeleteServiceEntity()
-    {
-        if (EntityManager.EntityExists(_entity) && !Terminating(_entity))
-        {
-            QueueDel(_entity);
-        }
-        _entity = EntityUid.Invalid;
+        Log.Debug($"ComponentRemove called for host {uid}. Keeping sector service entity {_entity} alive."); // HardLight: Editted
     }
 
     public EntityUid GetServiceEntity()

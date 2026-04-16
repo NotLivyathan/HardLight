@@ -19,10 +19,18 @@ public sealed class ClericalErrorRule : StationEventSystem<ClericalErrorRuleComp
         if (!TryGetRandomStation(out var chosenStation))
             return;
 
-        if (!TryComp<StationRecordsComponent>(chosenStation, out var stationRecords))
+        if (!_stationRecords.TryGetAuthoritativeRecords(out var station, out _)) // HardLight: Editted
             return;
 
-        var recordCount = stationRecords.Records.Keys.Count;
+        // HardLight start
+        var allIds = new List<uint>();
+        foreach (var (id, _) in _stationRecords.GetRecordsOfType<GeneralStationRecord>(station))
+        {
+            allIds.Add(id);
+        }
+
+        var recordCount = allIds.Count;
+        // HardLight end
 
         if (recordCount == 0)
             return;
@@ -33,13 +41,13 @@ public sealed class ClericalErrorRule : StationEventSystem<ClericalErrorRuleComp
         var keys = new List<uint>();
         for (var i = 0; i < toRemove; i++)
         {
-            keys.Add(RobustRandom.Pick(stationRecords.Records.Keys));
+            keys.Add(RobustRandom.Pick(allIds)); // HardLight: stationRecords.Records.Keys<allIds
         }
 
         foreach (var id in keys)
         {
-            var key = new StationRecordKey(id, chosenStation.Value);
-            _stationRecords.RemoveRecord(key, stationRecords);
+            var key = new StationRecordKey(id, station); // HardLight: chosenStation.Value<stationRecords
+            _stationRecords.RemoveRecord(key); // HardLight: Removed stationRecords
         }
     }
 }

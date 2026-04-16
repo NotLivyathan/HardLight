@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Components;
+using Content.Server._HL.ColComm; // HardLight
 using Content.Shared.StationRecords;
 using Robust.Server.GameObjects;
 using Content.Shared.Roles; // Frontier
@@ -20,6 +21,7 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     [Dependency] private readonly StationJobsSystem _stationJobsSystem = default!; // Frontier
+    [Dependency] private readonly ColcommJobSystem _colcommJobs = default!; // HardLight
     [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier
     [Dependency] private readonly IPrototypeManager _proto = default!; // Frontier
     [Dependency] private readonly IAdminLogManager _adminLog = default!; // Frontier
@@ -46,10 +48,9 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         if (!ent.Comp.CanDeleteEntries)
             return;
 
-        var owning = _station.GetOwningStation(ent.Owner);
+        if (_stationRecords.TryGetAuthoritativeRecords(out var recordsStation, out _)) // HardLight
+            _stationRecords.RemoveRecord(new StationRecordKey(args.Id, recordsStation));
 
-        if (owning != null)
-            _stationRecords.RemoveRecord(new StationRecordKey(args.Id, owning.Value));
         UpdateUserInterface(ent); // Apparently an event does not get raised for this.
     }
 
@@ -67,13 +68,13 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         UpdateUserInterface(ent);
     }
 
-    // Frontier: job counts, advertisements
+    // Frontier: Job counts, advertisements
     private void OnAdjustJob(Entity<GeneralStationRecordConsoleComponent> ent, ref AdjustStationJobMsg msg)
     {
         var stationUid = _station.GetOwningStation(ent);
         if (stationUid is EntityUid station)
         {
-            // Frontier: check access - hack because we don't have an AccessReaderComponent, it's the station
+            // Frontier start: Check access; hack because we don't have an AccessReaderComponent, it's the station
             if (TryComp(stationUid, out StationJobsComponent? stationJobs) &&
                 (stationJobs.Groups.Count > 0 || stationJobs.Tags.Count > 0))
             {
@@ -101,8 +102,13 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
                     return;
                 }
             }
-            // End Frontier
-            _stationJobsSystem.TryAdjustJobSlot(station, msg.JobProto, msg.Amount, false, true);
+            // Frontier end
+            if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
+            {
+                _colcommJobs.TryAdjustJobSlot(colcomm, msg.JobProto, msg.Amount, clamp: true);
+                _stationJobsSystem.UpdateJobsAvailable();
+            }
+
             UpdateUserInterface(ent);
         }
     }
@@ -138,20 +144,22 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         // Frontier: jobs, advertisements
         IReadOnlyDictionary<ProtoId<JobPrototype>, int?>? jobList = null;
         string? advertisement = null;
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
+            jobList = colcomm.Comp.CurrentSlots;
+
         if (owningStation != null)
         {
-            jobList = _stationJobsSystem.GetJobs(owningStation.Value);
             if (TryComp<ExtraShuttleInformationComponent>(owningStation, out var extraVessel))
                 advertisement = extraVessel.Advertisement;
         }
 
-        if (!TryComp<StationRecordsComponent>(owningStation, out var stationRecords))
+        if (!_stationRecords.TryGetAuthoritativeRecords(out var stationUid, out var stationRecords)) // HardLight: TryComp<StationRecordsComponent>(owningStation<_stationRecords.TryGetAuthoritativeRecords; added out var stationUid
         {
             _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, new GeneralStationRecordConsoleState(null, null, null, jobList, console.Filter, ent.Comp.CanDeleteEntries, advertisement)); // Frontier: add as many args as we can
             return;
         }
 
-        var listing = _stationRecords.BuildListing((owningStation.Value, stationRecords), console.Filter);
+        var listing = _stationRecords.BuildListing((stationUid, stationRecords), console.Filter); // HardLight: owningStation.Value<stationUid
 
         switch (listing.Count)
         {
@@ -171,7 +179,7 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
             return;
         }
 
-        var key = new StationRecordKey(id, owningStation.Value);
+        var key = new StationRecordKey(id, stationUid); // HardLight: owningStation.Value<stationUid
         _stationRecords.TryGetRecord<GeneralStationRecord>(key, out var record, stationRecords);
 
         GeneralStationRecordConsoleState newState = new(id, record, listing, jobList, console.Filter, ent.Comp.CanDeleteEntries, advertisement);

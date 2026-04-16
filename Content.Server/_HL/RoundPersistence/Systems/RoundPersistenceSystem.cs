@@ -3,7 +3,6 @@ using System.Numerics;
 using System.Threading;
 using Content.Server.Administration.Systems;
 using Content.Server.CharacterInfo; // For CharacterInfo updates
-using Content.Server.CrewManifest;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Events;
 using Content.Server.Mind; // For MindSystem
@@ -63,7 +62,6 @@ public sealed class RoundPersistenceSystem : EntitySystem
     [Dependency] private GameTicker _gameTicker = default!;
     [Dependency] private StationSystem _station = default!;
     [Dependency] private StationRecordsSystem _stationRecords = default!;
-    [Dependency] private CrewManifestSystem _crewManifest = default!;
     [Dependency] private ShuttleRecordsSystem _shuttleRecords = default!;
     [Dependency] private UserInterfaceSystem _ui = default!;
     [Dependency] private IConfigurationManager _cfg = default!;
@@ -304,8 +302,6 @@ public sealed class RoundPersistenceSystem : EntitySystem
             return;
 
         //_sawmill.Info("Round started, will restore data when stations are created");
-
-
     }
 
     /// <summary>

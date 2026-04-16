@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Server._HL.ColComm; // HardLight
 using Content.Server._NF.Station.Components;
 using Content.Server.GameTicking;
 using Content.Server.Station.Components;
@@ -25,6 +26,7 @@ namespace Content.Server.Station.Systems;
 public sealed partial class StationJobsSystem : EntitySystem
 {
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;
+    [Dependency] private readonly ColcommJobSystem _colcommJobs = default!; // HardLight
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
@@ -108,6 +110,34 @@ public sealed partial class StationJobsSystem : EntitySystem
     {
         if (!Resolve(station, ref stationJobs, false))
             return false;
+
+        // HardLight start
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)
+            && IsConfiguredJob(station, jobPrototypeId, stationJobs))
+        {
+            if (_colcommJobs.IsPlayerJobTracked(colcomm, netUserId, jobPrototypeId))
+                return true;
+
+            if (!_colcommJobs.TryGetJobSlot(colcomm, jobPrototypeId, out var globalSlots))
+                return false;
+
+            if (globalSlots == 0)
+                return false;
+
+            if (!_colcommJobs.TryAdjustJobSlot(colcomm, jobPrototypeId, -1, clamp: true))
+                return false;
+
+            _colcommJobs.TryTrackPlayerJob(colcomm, netUserId, jobPrototypeId);
+
+            if (!IsPlayerJobTracked(station, netUserId, jobPrototypeId, stationJobs))
+            {
+                TryAdjustJobSlot(station, jobPrototypeId, -1, false, true, stationJobs);
+                TryTrackPlayerJob(station, netUserId, jobPrototypeId, stationJobs);
+            }
+
+            return true;
+        }
+        // HardLight end
 
         if (!TryAdjustJobSlot(station, jobPrototypeId, -1, false, false, stationJobs))
             return false;
@@ -268,6 +298,74 @@ public sealed partial class StationJobsSystem : EntitySystem
     }
 
     /// <summary>
+    /// HardLight: Returns true when the given job is present in the station's configured job list
+    /// (<see cref="StationJobsComponent.SetupAvailableJobs"/>).  Use this from systems that only
+    /// have Read access to <see cref="StationJobsComponent"/> to avoid RA0002 violations.
+    /// </summary>
+    public bool IsConfiguredJob(EntityUid station,
+        ProtoId<JobPrototype> jobPrototypeId,
+        StationJobsComponent? stationJobs = null)
+    {
+        if (!Resolve(station, ref stationJobs, false))
+            return false;
+
+        return stationJobs.SetupAvailableJobs.ContainsKey(jobPrototypeId);
+    }
+
+    /// <summary>
+    /// HardLight: Returns true if this station already tracks the given player's assignment for the job.
+    /// </summary>
+    public bool IsPlayerJobTracked(EntityUid station,
+        NetUserId userId,
+        ProtoId<JobPrototype> jobPrototypeId,
+        StationJobsComponent? stationJobs = null)
+    {
+        if (!Resolve(station, ref stationJobs, false))
+            return false;
+
+        return stationJobs.PlayerJobs.TryGetValue(userId, out var jobs) && jobs.Contains(jobPrototypeId);
+    }
+
+    /// <summary>
+    /// HardLight: Ensures this station tracks the given player's assignment for the job.
+    /// </summary>
+    public bool TryTrackPlayerJob(EntityUid station,
+        NetUserId userId,
+        ProtoId<JobPrototype> jobPrototypeId,
+        StationJobsComponent? stationJobs = null)
+    {
+        if (!Resolve(station, ref stationJobs, false))
+            return false;
+
+        stationJobs.PlayerJobs.TryAdd(userId, new());
+        if (!stationJobs.PlayerJobs[userId].Contains(jobPrototypeId))
+            stationJobs.PlayerJobs[userId].Add(jobPrototypeId);
+
+        return true;
+    }
+
+    /// <summary>
+    /// HardLight: Removes this player's assignment tracking for the given job on the station.
+    /// </summary>
+    public bool TryUntrackPlayerJob(EntityUid station,
+        NetUserId userId,
+        ProtoId<JobPrototype> jobPrototypeId,
+        StationJobsComponent? stationJobs = null)
+    {
+        if (!Resolve(station, ref stationJobs, false))
+            return false;
+
+        if (!stationJobs.PlayerJobs.TryGetValue(userId, out var jobs))
+            return false;
+
+        jobs.Remove(jobPrototypeId);
+        if (jobs.Count == 0)
+            stationJobs.PlayerJobs.Remove(userId);
+
+        return true;
+    }
+
+    /// <summary>
     /// HardLight: Attempts to set the configured mid-round maximum slots for a job in <see cref="StationJobsComponent.SetupAvailableJobs"/>.
     /// This controls logic that references setup max values (e.g. job reopening checks).
     /// </summary>
@@ -358,6 +456,13 @@ public sealed partial class StationJobsSystem : EntitySystem
         if (!Resolve(station, ref stationJobs))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm) // HardLight
+            && stationJobs.SetupAvailableJobs.ContainsKey(jobPrototypeId)
+            && _colcommJobs.TryGetJobSlot(colcomm, jobPrototypeId, out var globalJob))
+        {
+            return globalJob == null;
+        }
+
         return stationJobs.JobList.TryGetValue(jobPrototypeId, out var job) && job == null;
     }
 
@@ -386,6 +491,14 @@ public sealed partial class StationJobsSystem : EntitySystem
         if (!Resolve(station, ref stationJobs))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm) // HardLight
+            && stationJobs.SetupAvailableJobs.ContainsKey(jobPrototypeId)
+            && _colcommJobs.TryGetJobSlot(colcomm, jobPrototypeId, out var globalSlots))
+        {
+            slots = globalSlots;
+            return true;
+        }
+
         return stationJobs.JobList.TryGetValue(jobPrototypeId, out slots);
     }
 
@@ -400,6 +513,13 @@ public sealed partial class StationJobsSystem : EntitySystem
     {
         if (!Resolve(station, ref stationJobs))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
+
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
+        {
+            return stationJobs.SetupAvailableJobs.Keys
+                .Where(job => _colcommJobs.TryGetJobSlot(colcomm, job, out var slots) && slots != 0)
+                .ToArray();
+        }
 
         return stationJobs.JobList
             .Where(x => x.Value != 0)
@@ -432,6 +552,14 @@ public sealed partial class StationJobsSystem : EntitySystem
     {
         if (!Resolve(station, ref stationJobs))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
+
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
+        {
+            return stationJobs.SetupAvailableJobs.Keys
+                .Select(job => (job, found: _colcommJobs.TryGetJobSlot(colcomm, job, out var slots), slots))
+                .Where(entry => entry.found)
+                .ToDictionary(entry => entry.job, entry => entry.slots);
+        }
 
         return stationJobs.JobList;
     }
@@ -540,7 +668,7 @@ public sealed partial class StationJobsSystem : EntitySystem
         while (query.MoveNext(out var station, out var comp))
         {
             var stationNetEntity = GetNetEntity(station);
-            var list = comp.JobList.ToDictionary(x => x.Key, x => x.Value);
+            var list = GetJobs(station, comp).ToDictionary(x => x.Key, x => x.Value); // HardLight: Editted
 
             // Frontier: overwrite station/vessel information generation
             var isLateJoinStation = false;

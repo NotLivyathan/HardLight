@@ -1,11 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
+using Content.Server._HL.ColComm; // HardLight
 using Content.Server._NF.SectorServices; // Frontier
 using Content.Server.Access.Systems;
 using Content.Server.Forensics;
 using Content.Shared.Access.Components;
 using Content.Shared.Forensics.Components;
 using Content.Shared.GameTicking;
+using Content.Shared.Humanoid; // HardLight
 using Content.Shared.Inventory;
+using Content.Shared._NF.Roles.Components; // HardLight
 using Content.Shared.PDA;
 using Content.Shared.Preferences;
 using Content.Shared.Roles;
@@ -53,14 +56,12 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
 
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawn);
         SubscribeLocalEvent<EntityRenamedEvent>(OnRename);
+        SubscribeLocalEvent<ColcommRegistryRoundStartEvent>(OnColcommRoundStart); // HardLight
     }
 
     private void OnPlayerSpawn(PlayerSpawnCompleteEvent args)
     {
-        if (!TryComp<StationRecordsComponent>(args.Station, out var stationRecords))
-            return;
-
-        CreateGeneralRecord(args.Station, args.Mob, args.Profile, args.JobId, stationRecords);
+        CreateGeneralRecord(args.Station, args.Mob, args.Profile, args.JobId); // HardLight: Removed stationRecords
     }
 
     private void OnRename(ref EntityRenamedEvent ev)
@@ -88,8 +89,26 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
         }
     }
 
+    /// <summary>
+    /// HardLight: Gets the single authoritative records store used by cross-round consoles and systems.
+    /// </summary>
+    public bool TryGetAuthoritativeRecords(
+        out EntityUid stationUid,
+        [NotNullWhen(true)] out StationRecordsComponent? stationRecords)
+    {
+        stationUid = _sectorService.GetServiceEntity();
+        if (stationUid == EntityUid.Invalid || !TryComp<StationRecordsComponent>(stationUid, out stationRecords))
+        {
+            stationUid = EntityUid.Invalid;
+            stationRecords = null;
+            return false;
+        }
+
+        return true;
+    }
+
     public void CreateGeneralRecord(EntityUid station, EntityUid player, HumanoidCharacterProfile profile,
-        string? jobId, StationRecordsComponent records) // Frontier: private<public
+        string? jobId) // HardLight: Removed StationRecordsComponent records
     {
         // TODO make PlayerSpawnCompleteEvent.JobId a ProtoId
         if (string.IsNullOrEmpty(jobId)
@@ -102,31 +121,35 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
         TryComp<FingerprintComponent>(player, out var fingerprintComponent);
         TryComp<DnaComponent>(player, out var dnaComponent);
 
-        CreateGeneralRecord(station, idUid.Value, profile.Name, profile.Age, profile.Species, profile.Gender, jobId, fingerprintComponent?.Fingerprint, dnaComponent?.DNA, profile, records);
-
-        /// Frontier: generate sector-wide station record
+        /// Frontier start: Generate sector-wide station record
         if (TryComp<SpecialSectorStationRecordComponent>(player, out var specialRecord) && specialRecord.RecordGeneration == RecordGenerationType.NoRecord)
             return;
 
-        EntityUid serviceEnt = _sectorService.GetServiceEntity();
+        if (!TryGetAuthoritativeRecords(out var serviceEnt, out var stationRecords))
+            return;
 
-        if (TryComp(serviceEnt, out StationRecordsComponent? stationRecords))
+        // HardLight: Checks if certain information should be faked, if so, fake it.
+        string playerJob = jobId;
+        string? fingerprint = fingerprintComponent?.Fingerprint;
+        string? dna = dnaComponent?.DNA;
+        if (specialRecord != null
+            && specialRecord.RecordGeneration == RecordGenerationType.FalseRecord)
         {
-            //Checks if certain information should be faked, if so, fake it.
-            string playerJob = jobId;
-            string? fingerprint = fingerprintComponent?.Fingerprint;
-            string? dna = dnaComponent?.DNA;
-            if (specialRecord != null
-                && specialRecord.RecordGeneration == RecordGenerationType.FalseRecord)
-            {
-                playerJob = _random.Pick(FakeJobIds);
-                fingerprint = _forensics.GenerateFingerprint();
-                dna = _forensics.GenerateDNA();
-            }
-
-            CreateGeneralRecord(serviceEnt, idUid.Value, profile.Name, profile.Age, profile.Species, profile.Gender, playerJob, fingerprint, dna, profile, stationRecords);
+            playerJob = _random.Pick(FakeJobIds);
+            fingerprint = _forensics.GenerateFingerprint();
+            dna = _forensics.GenerateDNA();
         }
-        /// End Frontier
+
+        CreateGeneralRecord(serviceEnt, idUid.Value, profile.Name, profile.Age, profile.Species, profile.Gender, playerJob, fingerprint, dna, profile, stationRecords);
+
+        // HardLight: Mirror the record key onto the character so lifecycle cleanup can remove stale records
+        // even when the ID card moves away or is deleted separately.
+        if (TryComp<StationRecordKeyStorageComponent>(idUid.Value, out var keyStorage)
+            && keyStorage.Key is { } key)
+        {
+            SetEntityKey(player, key);
+        }
+        /// Frontier end
     }
 
 
@@ -246,23 +269,95 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     }
 
     /// <summary>
-    ///     Removes a record from this station.
+    /// HardLight: Set the station records key for an entity that should be treated as the character owner of a record.
+    /// </summary>
+    public void SetEntityKey(EntityUid uid, StationRecordKey key)
+    {
+        _keyStorage.AssignKey(uid, key);
+    }
+
+    /// <summary>
+    /// HardLight: At round restart, clear stale records and rebuild from all currently-active tracked crew.
+    /// This ensures persisted characters appear immediately without waiting for a spawn event.
+    /// </summary>
+    private void OnColcommRoundStart(ColcommRegistryRoundStartEvent ev)
+    {
+        if (!TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+            return;
+
+        // Clear all existing records in O(1) by replacing the set.
+        authorityRecords.Records = new StationRecordSet();
+
+        // Rebuild from every currently active tracked crew member.
+        var jobQuery = AllEntityQuery<JobTrackingComponent>();
+        while (jobQuery.MoveNext(out var uid, out var job))
+        {
+            if (!job.Active || job.Job is not { } jobId)
+                continue;
+
+            if (!_prototypeManager.TryIndex<JobPrototype>(jobId, out var jobPrototype))
+                continue;
+
+            var name = MetaData(uid).EntityName;
+            if (name.Length == 0)
+                continue;
+
+            TryComp<HumanoidAppearanceComponent>(uid, out var humanoid);
+            TryComp<FingerprintComponent>(uid, out var fingerprint);
+            TryComp<DnaComponent>(uid, out var dna);
+
+            var record = new GeneralStationRecord()
+            {
+                Name = name,
+                Age = humanoid?.Age ?? 18,
+                JobTitle = jobPrototype.LocalizedName,
+                JobIcon = jobPrototype.Icon,
+                JobPrototype = jobId,
+                Species = humanoid?.Species ?? "Human",
+                Gender = humanoid?.Gender ?? Gender.Epicene,
+                DisplayPriority = jobPrototype.RealDisplayWeight,
+                Fingerprint = fingerprint?.Fingerprint,
+                DNA = dna?.DNA,
+            };
+
+            var id = authorityRecords.Records.AddRecordEntry(record);
+            if (id == null)
+                continue;
+
+            SetEntityKey(uid, new StationRecordKey(id.Value, authority));
+        }
+    }
+
+    /// <summary>
+    /// Removes a record from this station.
     /// </summary>
     /// <param name="key">The station and key to remove.</param>
     /// <param name="records">Station records component.</param>
     /// <returns>True if the record was removed, false otherwise.</returns>
     public bool RemoveRecord(StationRecordKey key, StationRecordsComponent? records = null)
     {
+        // HardLight: Prefer authoritative dataset for all removals.
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+        {
+            var authoritativeKey = key.OriginStation == authority ? key : new StationRecordKey(key.Id, authority);
+            if (authorityRecords.Records.RemoveAllRecords(authoritativeKey.Id))
+            {
+                RaiseLocalEvent(new RecordRemovedEvent(authoritativeKey));
+                return true;
+            }
+        }
+
+        // HardLight: Backward compatibility fallback.
         if (!Resolve(key.OriginStation, ref records))
             return false;
 
-        if (records.Records.RemoveAllRecords(key.Id))
-        {
-            RaiseLocalEvent(new RecordRemovedEvent(key));
-            return true;
-        }
+        // HardLight start: Slightly edited.
+        if (!records.Records.RemoveAllRecords(key.Id))
+            return false;
 
-        return false;
+        RaiseLocalEvent(new RecordRemovedEvent(key));
+        return true;
+        // HardLight end
     }
 
     /// <summary>
@@ -299,7 +394,7 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     }
 
     /// <summary>
-    ///     Adds a new record entry to a station's record set.
+    /// Adds a new record entry to a station's record set.
     /// </summary>
     /// <param name="station">The station to add the record to.</param>
     /// <param name="record">The record to add.</param>
@@ -307,14 +402,24 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     /// <typeparam name="T">The type of record to add.</typeparam>
     public StationRecordKey AddRecordEntry<T>(EntityUid station, T record, StationRecordsComponent? records = null)
     {
+        // HardLight: Authoritative writes first.
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+        {
+            var id = authorityRecords.Records.AddRecordEntry(record);
+            if (id == null)
+                return StationRecordKey.Invalid;
+
+            return new StationRecordKey(id.Value, authority);
+        }
+
         if (!Resolve(station, ref records))
             return StationRecordKey.Invalid;
 
-        var id = records.Records.AddRecordEntry(record);
-        if (id == null)
+        var fallbackId = records.Records.AddRecordEntry(record);
+        if (fallbackId == null)
             return StationRecordKey.Invalid;
 
-        return new StationRecordKey(id.Value, station);
+        return new StationRecordKey(fallbackId.Value, station);
     }
 
     /// <summary>
@@ -327,6 +432,14 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     public void AddRecordEntry<T>(StationRecordKey key, T record,
         StationRecordsComponent? records = null)
     {
+        // HardLight: Authoritative writes first.
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+        {
+            var authoritativeKey = key.OriginStation == authority ? key : new StationRecordKey(key.Id, authority);
+            authorityRecords.Records.AddRecordEntry(authoritativeKey.Id, record);
+            return;
+        }
+
         if (!Resolve(key.OriginStation, ref records))
             return;
 
@@ -340,6 +453,18 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     /// <param name="records">Station records component.</param>
     public void Synchronize(EntityUid station, StationRecordsComponent? records = null)
     {
+        // HardLight: Authoritative synchronization first.
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+        {
+            foreach (var key in authorityRecords.Records.GetRecentlyAccessed())
+            {
+                RaiseLocalEvent(new RecordModifiedEvent(new StationRecordKey(key, authority)));
+            }
+
+            authorityRecords.Records.ClearRecentlyAccessed();
+            return;
+        }
+
         if (!Resolve(station, ref records))
             return;
 
@@ -358,6 +483,15 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     /// <param name="records">Station records component.</param>
     public void Synchronize(StationRecordKey key, StationRecordsComponent? records = null)
     {
+        // HardLight: Authoritative synchronization first.
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+        {
+            var authoritativeKey = key.OriginStation == authority ? key : new StationRecordKey(key.Id, authority);
+            RaiseLocalEvent(new RecordModifiedEvent(authoritativeKey));
+            authorityRecords.Records.RemoveFromRecentlyAccessed(authoritativeKey.Id);
+            return;
+        }
+
         if (!Resolve(key.OriginStation, ref records))
             return;
 
@@ -408,7 +542,12 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
     {
         var listing = new Dictionary<uint, string>();
 
-        var records = GetRecordsOfType<GeneralStationRecord>(station, station.Comp);
+        // HardLight start: Build listings from the authoritative dataset whenever available.
+        var records = TryGetAuthoritativeRecords(out var authority, out var authorityRecords)
+            ? GetRecordsOfType<GeneralStationRecord>(authority, authorityRecords)
+            : GetRecordsOfType<GeneralStationRecord>(station, station.Comp);
+        // HardLight end
+
         foreach (var pair in records)
         {
             if (IsSkipped(filter, pair.Item2))
@@ -418,6 +557,41 @@ public sealed class StationRecordsSystem : SharedStationRecordsSystem
         }
 
         return listing;
+    }
+
+    // HardLight: Resolve lookups against authoritative records while keeping legacy station-local keys readable.
+    public new bool TryGetRecord<T>(StationRecordKey key, [NotNullWhen(true)] out T? entry, StationRecordsComponent? records = null)
+    {
+        // First try the provided/original key so legacy station-local keys keep working during migration.
+        if (base.TryGetRecord(key, out entry, records))
+            return true;
+
+        if (!TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+            return false;
+
+        if (key.OriginStation == authority)
+            return false;
+
+        var authoritativeKey = new StationRecordKey(key.Id, authority);
+        return base.TryGetRecord(authoritativeKey, out entry, authorityRecords);
+    }
+
+    // HardLight: Enumerate from authoritative records first so manifests are unified across all consumers.
+    public new IEnumerable<(uint, T)> GetRecordsOfType<T>(EntityUid station, StationRecordsComponent? records = null)
+    {
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+            return base.GetRecordsOfType<T>(authority, authorityRecords);
+
+        return base.GetRecordsOfType<T>(station, records);
+    }
+
+    // HardLight: Name-based queries should target authoritative records to avoid split datasets.
+    public new uint? GetRecordByName(EntityUid station, string name, StationRecordsComponent? records = null)
+    {
+        if (TryGetAuthoritativeRecords(out var authority, out var authorityRecords))
+            return base.GetRecordByName(authority, name, authorityRecords);
+
+        return base.GetRecordByName(station, name, records);
     }
 
     #endregion

@@ -15,7 +15,6 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Security.Components;
 using System.Linq;
 using Content.Shared.Roles.Jobs;
-using Content.Server._NF.SectorServices; // Frontier
 
 namespace Content.Server.CriminalRecords.Systems;
 
@@ -29,9 +28,7 @@ public sealed class CriminalRecordsConsoleSystem : SharedCriminalRecordsConsoleS
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
-    // [Dependency] private readonly StationSystem _station = default!; // Frontier
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly SectorServiceSystem _sectorService = default!; // Frontier
 
     public override void Initialize()
     {
@@ -208,9 +205,7 @@ public sealed class CriminalRecordsConsoleSystem : SharedCriminalRecordsConsoleS
     private void UpdateUserInterface(Entity<CriminalRecordsConsoleComponent> ent)
     {
         var (uid, console) = ent;
-        var owningStation = _sectorService.GetServiceEntity(); // Frontier: _station.GetOwningStation < _sectorService.GetServiceEntity
-
-        if (!TryComp<StationRecordsComponent>(owningStation, out var stationRecords))
+        if (!_records.TryGetAuthoritativeRecords(out var owningStation, out var stationRecords)) // HardLight: TryComp<StationRecordsComponent><_records.TryGetAuthoritativeRecords; added out var
         {
             _ui.SetUiState(uid, CriminalRecordsConsoleKey.Key, new CriminalRecordsConsoleState());
             return;
@@ -220,7 +215,7 @@ public sealed class CriminalRecordsConsoleSystem : SharedCriminalRecordsConsoleS
         var listing = _records.BuildListing((owningStation, stationRecords), console.Filter); // Frontier: owningStation.Value<owningStation
 
         // filter the listing by the selected criminal record status
-        //if NONE, dont filter by status, just show all crew
+        // if NONE, dont filter by status, just show all crew
         if (console.FilterStatus != SecurityStatus.None)
         {
             listing = listing
@@ -263,15 +258,8 @@ public sealed class CriminalRecordsConsoleSystem : SharedCriminalRecordsConsoleS
         if (ent.Comp.ActiveKey is not { } id)
             return false;
 
-        // Frontier: sector-wide records
-        // checking the console's station since the user might be off-grid using on-grid console
-        // if (_station.GetOwningStation(ent) is not { } station)
-        //     return false;
-        var station = _sectorService.GetServiceEntity();
-
-        if (!TryComp<StationRecordsComponent>(station, out var stationRecords))
+        if (!_records.TryGetAuthoritativeRecords(out var station, out var stationRecords)) // HardLight
             return false;
-        // End Frontier
 
         key = new StationRecordKey(id, station);
         mob = user;

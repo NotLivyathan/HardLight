@@ -283,7 +283,7 @@ public sealed partial class StationJobsSystem
 
         foreach (var job in jobs.Distinct())
         {
-            var count = _jobTracking.GetNumberOfActiveRoles(job, includeAfk: true);
+            var count = _jobTracking.GetNumberOfActiveRoles(job, includeAfk: true, includeOutsideDefaultMap: true); // HardLight: Added includeOutsideDefaultMap: true
             if (count > 0)
                 counts[job] = count;
         }
