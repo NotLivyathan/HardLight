@@ -255,5 +255,11 @@ public sealed partial class CCVars : CVars
 
     #endregion
 
+    /// <summary>
+    /// HardLight: Whether to show custom borg subtype sprites, or render all borgs with their base chassis sprites.
+    /// </summary>
+    public static readonly CVarDef<bool> ShowCyborgSubtypeSprites =
+        CVarDef.Create("display.show_cyborg_subtypes", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
 }
 #endregion
