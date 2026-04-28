@@ -24,7 +24,7 @@
   id: UplinkDualettaBundle
   name: uplink-dualetta-bundle-name
   description: uplink-dualetta-bundle-desc
-  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Pistols/Dualetta.rsi, state: icon }
+  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Pistols/dualetta.rsi, state: icon }
   productEntity: BriefcaseSyndieDualettaBundleFilled
   cost:
     Telecrystal: 50
@@ -35,7 +35,7 @@
   id: UplinkDualettaKit
   name: uplink-dualetta-kit-name
   description: uplink-dualetta-kit-desc
-  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Pistols/Dualetta.rsi, state: icon }
+  icon: { sprite: /Textures/_Goobstation/Objects/Weapons/Guns/Pistols/dualetta.rsi, state: icon }
   productEntity: BoxDualettaKit
   cost:
     Telecrystal: 30
