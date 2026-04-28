@@ -239,7 +239,7 @@
   - type: CritThresholdModifier
     critThresholdDelta: 25
   - type: GunAccuracyModifier
-    spreadMultiplier: 2.5
+    spreadMultiplier: 1.25
   - type: MeleeDamageModifier
     flatBonus: 2
     damageType: Blunt
