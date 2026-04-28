@@ -238,7 +238,8 @@
     cosmeticOnly: false
   - type: CritThresholdModifier
     critThresholdDelta: 25
-  - type: BigWeaponHandling
+  - type: GunAccuracyModifier
+    spreadMultiplier: 2.5
   - type: MeleeDamageModifier
     flatBonus: 2
     damageType: Blunt
@@ -333,7 +334,6 @@
     sprintMultiplier: 0.55
   - type: TraitCyborgPowerDrawModifier
     multiplier: 0.5
-
 
 - type: trait
   id: Pettable

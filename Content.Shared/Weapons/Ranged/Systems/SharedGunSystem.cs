@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2025 BombasterDS <deniskaporoshok@gmail.com>
+// SPDX-FileCopyrightText: 2025 GoobBot <uristmchands@proton.me>
+// SPDX-FileCopyrightText: 2025 Plykiya <58439124+Plykiya@users.noreply.github.com>
+// SPDX-FileCopyrightText: 2025 pheenty <fedorlukin2006@gmail.com>
+
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Shared.ActionBlocker;
@@ -40,6 +45,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using Content.Goobstation.Common.Weapons.Multishot;
 
 namespace Content.Shared.Weapons.Ranged.Systems;
 
@@ -142,6 +148,12 @@ public abstract partial class SharedGunSystem : EntitySystem
 
     private void OnShootRequest(RequestShootEvent msg, EntitySessionEventArgs args)
     {
+        // Goobstation start: Multishot; Ensures that guns shoot at same time. // HardLight: Fixed typo
+        var gunUid = GetEntity(msg.Gun);
+
+        if (HasComp<MultishotComponent>(gunUid))
+            return;
+        // Goobstation end
         var user = args.SenderSession.AttachedEntity;
 
         if (user == null || !_combatMode.IsInCombatMode(user))
@@ -158,11 +170,11 @@ public abstract partial class SharedGunSystem : EntitySystem
             return;
 
         gun.ShootCoordinates = GetCoordinates(msg.Coordinates);
-        // Goob edit start
+        // Goob start
         var potentialTarget = GetEntity(msg.Target);
         if (gun.Target == null || !gun.BurstActivated || !gun.LockOnTargetBurst)
             gun.Target = potentialTarget;
-        // Goob edit end
+        // Goob end
         AttemptShoot(user.Value, ent, gun);
     }
 
@@ -513,6 +525,8 @@ public abstract partial class SharedGunSystem : EntitySystem
         RaiseLocalEvent(gunUid, ref shotEv);
 
         CauseImpulse(toCoordinates.Value, (gunUid, gun), ev.Ammo.Count);
+
+        UpdateAmmoCount(gunUid); // GoobStation: Multishot
     }
 
     public void Shoot(
@@ -653,7 +667,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         }
     }
 
-    protected IShootable EnsureShootable(EntityUid uid)
+    public IShootable EnsureShootable(EntityUid uid) // Goobstation: protected<public
     {
         if (TryComp<CartridgeAmmoComponent>(uid, out var cartridge))
             return cartridge;
@@ -710,7 +724,7 @@ public abstract partial class SharedGunSystem : EntitySystem
         Physics.ApplyLinearImpulse(toEnt, -dirVec * totalImpulse, pos);
     }
 
-    public void RefreshModifiers(Entity<GunComponent?> gun, EntityUid? User = null) // GoobStation change - User for NoWieldNeeded
+    public void RefreshModifiers(Entity<GunComponent?> gun, EntityUid? User = null) // GoobStation: User for NoWieldNeeded
     {
         if (!Resolve(gun, ref gun.Comp))
             return;
@@ -726,7 +740,8 @@ public abstract partial class SharedGunSystem : EntitySystem
             comp.MinAngle,
             comp.ShotsPerBurst,
             comp.FireRate,
-            comp.ProjectileSpeed
+            comp.ProjectileSpeed,
+            User // Goobstation: User for NoWieldNeeded
         );
 
         // Begin DeltaV additions
