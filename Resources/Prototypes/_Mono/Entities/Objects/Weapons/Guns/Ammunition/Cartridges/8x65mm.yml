@@ -6,16 +6,16 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge8x65mmSKR
+    - Cartridge
+    - Cartridge8x65mmSKR
   - type: CartridgeAmmo
     proto: Bullet8x65mmSKR
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice

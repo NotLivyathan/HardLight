@@ -1,6 +1,6 @@
 - type: entity
   id: WeaponShotgunBulldogPocket
-  parent: [BaseItem, BaseGunWieldable, BaseC3SyndicateContraband]
+  parent: [ BaseItem, BaseGunWieldable, BaseC3SyndicateContraband ]
   name: Pocket Bulldog (12 gauge)
   description: A pocket-sized automatic magazine-fed shotgun. Fitted with a bluespace ammo drum and expiremental slugs.
   suffix: Admeme only, FoxS
@@ -33,9 +33,9 @@
     sprite: Objects/Weapons/Guns/Shotguns/bulldog.rsi
     layers:
     - state: base
-      map: ["enum.GunVisualLayers.Base"]
+      map: [ "enum.GunVisualLayers.Base" ]
     - state: mag-0
-      map: ["enum.GunVisualLayers.Mag"]
+      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
     sprite: Objects/Weapons/Guns/Shotguns/bulldog.rsi
     quickEquip: false
@@ -56,8 +56,6 @@
   - type: StaticPrice
     price: 500
 
-
-
 - type: entity
   id: Magazine12_gaugeSlugUpgraded
   parent: BaseMagazine12_gaugeUpgraded
@@ -69,11 +67,9 @@
   - type: Sprite
     layers:
     - state: slug
-      map: ["enum.GunVisualLayers.Base"]
+      map: [ "enum.GunVisualLayers.Base" ]
     - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-
-
+      map: [ "enum.GunVisualLayers.Mag" ]
 
 - type: entity
   id: BaseMagazine12_gaugeUpgraded
@@ -88,13 +84,12 @@
     mayTransfer: true
     whitelist:
       tags:
-        - ShellShotgun12_gauge
+      - ShellShotgun12_gauge
     capacity: 64
     soundRack:
       path: /Audio/Weapons/Guns/Cock/smg_cock.ogg
   - type: Item
     size: Tiny
-
 
 - type: entity
   id: ShellShotgun12_gaugeSlugUpgraded
@@ -106,8 +101,6 @@
   components:
   - type: CartridgeAmmo
     proto: PelletShotgunSlugUpgraded
-    deleteOnSpawn: true
-
 
 - type: entity
   id: PelletShotgunSlugUpgraded

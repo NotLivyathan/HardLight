@@ -11,12 +11,12 @@
     - CartridgeDMR
   - type: CartridgeAmmo
     proto: Bullet556x45mmFMJ
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice

@@ -10,12 +10,12 @@
     - CartridgeAntiMateriel
   - type: CartridgeAmmo
     proto: BulletAntiMateriel # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/large_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice

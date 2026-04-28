@@ -9,12 +9,12 @@
     - GrenadeRiotGun
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeFlash
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: spent
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: StaticPrice
     price: 20
@@ -26,7 +26,7 @@
   components:
   - type: CartridgeAmmo
     proto: BulletRiotGunTearGas
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
 
 - type: entity
   id: GrenadeRiotStinger
@@ -35,4 +35,4 @@
   components:
   - type: CartridgeAmmo
     proto: BulletRiotGunStinger
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight

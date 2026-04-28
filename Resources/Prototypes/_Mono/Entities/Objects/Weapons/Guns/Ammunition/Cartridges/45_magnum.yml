@@ -6,17 +6,17 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge45Magnum
-      - Cartridge45_magnumFMJ
+    - Cartridge
+    - Cartridge45Magnum
+    - Cartridge45_magnumFMJ
   - type: CartridgeAmmo
     proto: Bullet45_magnumFMJ
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -39,10 +39,10 @@
     proto: Bullet45_magnumPractice
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#dbdbdb"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#dbdbdb"
 
 - type: entity
   id: Cartridge45_magnumIncendiary
@@ -53,10 +53,10 @@
     proto: Bullet45_magnumIncendiary
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#ff6e52"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#ff6e52"
 
 - type: entity
   id: Cartridge45_magnumAP
@@ -67,10 +67,10 @@
     proto: Bullet45_magnumAP
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#0a0a0a"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#0a0a0a"
 
 - type: entity
   id: Cartridge45_magnumUranium
@@ -81,10 +81,10 @@
     proto: Bullet45_magnumUranium
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#65fe08"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#65fe08"
 
 - type: entity
   id: Cartridge45_magnumRubber
@@ -95,32 +95,32 @@
     proto: Bullet45_magnumRubber
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#43c4f7"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#43c4f7"
 
-# Hardlight - Improvised
+# HardLight - Improvised
 - type: entity
   id: Cartridge45MagnumImprovised
   name: improvised cartridge (.45 magnum)
   description: A handmade revolver bullet, stuffed to the brim with phosphorus for extra 'oomph'. Still not as good as a normal magnum bullet.
-  parent: [BaseCartridge45_magnum, BaseC1Contraband]
+  parent: [ BaseCartridge45_magnum, BaseC1Contraband ]
   components:
   - type: CartridgeAmmo
     proto: Bullet45_magnumImprovised
   - type: Sprite
     sprite: _Starlight/Objects/Weapons/Guns/Ammunition/Casings/improvised_casing.rsi
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#717171"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#717171"
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge45Magnum
-      - Cartridge45MagnumImprovised
+    - Cartridge
+    - Cartridge45Magnum
+    - Cartridge45MagnumImprovised
   - type: Construction
     graph: Improvised45MagnumBulletGraph
     node: shell

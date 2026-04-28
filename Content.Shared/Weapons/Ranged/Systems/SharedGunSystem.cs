@@ -28,6 +28,7 @@ using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Whitelist;
 using Content.Shared._RMC14.Weapons.Ranged.Prediction;
 using Robust.Shared.Audio;
+using Robust.Shared.Spawners; // HardLight
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
@@ -650,6 +651,13 @@ public abstract partial class SharedGunSystem : EntitySystem
         if (playSound && TryComp<CartridgeAmmoComponent>(entity, out var cartridge))
         {
             Audio.PlayPvs(cartridge.EjectSound, entity, AudioParams.Default.WithVariation(SharedContentAudioSystem.DefaultVariation).WithVolume(-1f));
+        }
+
+        // HardLight: Apply timed despawn if specified, for spent casings.
+        if (TryComp<CartridgeAmmoComponent>(entity, out var ammo) && ammo.DeleteOnDelay.HasValue && ammo.Spent)
+        {
+            var despawn = EnsureComp<TimedDespawnComponent>(entity);
+            despawn.Lifetime = ammo.DeleteOnDelay.Value;
         }
     }
 

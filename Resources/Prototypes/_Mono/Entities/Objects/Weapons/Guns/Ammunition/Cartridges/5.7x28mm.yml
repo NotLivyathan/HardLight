@@ -6,16 +6,16 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge57x28mmFMJ
+    - Cartridge
+    - Cartridge57x28mmFMJ
   - type: CartridgeAmmo
     proto: Bullet57x28mmFMJ
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -36,12 +36,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet57x28mmPractice
-  -  type: Sprite
-     layers:
-       - state: base
-         map: [ "enum.AmmoVisualLayers.Base" ]
-       - state: tip
-         color: "#dbdbdb"
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#dbdbdb"
 
 - type: entity
   id: Cartridge57x28mmIncendiary
@@ -52,10 +52,10 @@
     proto: Bullet57x28mmIncendiary
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#ff6e52"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#ff6e52"
 
 - type: entity
   id: Cartridge57x28mmUranium
@@ -66,10 +66,10 @@
     proto: Bullet57x28mmUranium
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#65fe08"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#65fe08"
 
 # Upstream
 - type: entity
@@ -81,10 +81,10 @@
     proto: Bullet57x28mmRubber
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#43c4f7"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#43c4f7"
 
 # Frontier
 - type: entity

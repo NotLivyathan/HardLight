@@ -9,14 +9,14 @@
     - Cartridge
     - ShellShotgun23x75mmBuckshot
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
     soundEject:
       collection: ShellEject
   - type: Sprite
     sprite: _Mono/Objects/Weapons/Guns/Ammunition/Casings/4_gauge_shell.rsi
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
     scale: 0.65, 0.65
   - type: Appearance
   - type: SpentAmmoVisuals
@@ -34,11 +34,11 @@
     - ShellShotgun23x75mmBuckshot
   - type: Sprite
     layers:
-      - state: beanbag
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: beanbag
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmBeanbag
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: SpentAmmoVisuals
     state: "beanbag"
 
@@ -49,11 +49,11 @@
   components:
   - type: Sprite
     layers:
-      - state: dozd
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: dozd
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmDozdSpread
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: SpentAmmoVisuals
     state: "dozd"
 
@@ -64,8 +64,8 @@
   components:
   - type: Sprite
     layers:
-      - state: slug
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: slug
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmSlug
   - type: SpentAmmoVisuals
@@ -82,8 +82,8 @@
     - ShellShotgun23x75mmBuckshot
   - type: Sprite
     layers:
-      - state: flare
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: flare
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmFlare
   - type: SpentAmmoVisuals
@@ -96,8 +96,8 @@
   components:
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmBuckshotSpread
 
@@ -108,8 +108,8 @@
   components:
   - type: Sprite
     layers:
-      - state: incendiary
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: incendiary
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmIncendiarySpread
   - type: SpentAmmoVisuals
@@ -122,8 +122,8 @@
   components:
   - type: Sprite
     layers:
-      - state: practice
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: practice
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmPracticeSpread
   - type: SpentAmmoVisuals
@@ -136,8 +136,8 @@
   components:
     - type: Sprite
       layers:
-        - state: depleted-uranium
-          map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: depleted-uranium
+        map: [ "enum.AmmoVisualLayers.Base" ]
     - type: CartridgeAmmo
       proto: Pellet23x75mmUraniumSpread
     - type: SpentAmmoVisuals
@@ -154,11 +154,9 @@
     - ShellShotgun23x75mmBuckshot
   - type: Sprite
     layers:
-      - state: flashbang
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: flashbang
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: Pellet23x75mmFlashbang
   - type: SpentAmmoVisuals
     state: "flashbang"
-
-

@@ -5,7 +5,7 @@
 # - type: entity
   # id: CartridgeRocket
   # name: PG-7VL grenade
-  # parent: [BaseItem] # Frontier: removed BaseMajorContraband
+  # parent: BaseItem # Frontier: removed BaseMajorContraband
   # description: A 1.5 warhead designed for the RPG-7 launcher. Has tubular shape.
   # components:
   # - type: Tag
@@ -25,7 +25,7 @@
 # - type: entity
   # id: CartridgeRocketSlow
   # name: PG-7VL grenade "Snail-Rocket"
-  # parent: [BaseItem] # Frontier: removed BaseMajorContraband
+  # parent: BaseItem # Frontier: removed BaseMajorContraband
   # description: A 1.5 warhead designed for the RPG-7 launcher. It's unusually slow.
   # components:
     # - type: Tag
@@ -47,7 +47,7 @@
 # - type: entity
   # id: BaseGrenade
   # name: base grenade
-  # parent: [BaseItem, BaseC2ContrabandUnredeemable] # Frontier: BaseMajorContraband<BaseC2ContrabandUnredeemable
+  # parent: [ BaseItem, BaseC2ContrabandUnredeemable ] # Frontier: BaseMajorContraband<BaseC2ContrabandUnredeemable
   # abstract: true
   # components:
   # - type: Tag
@@ -64,12 +64,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeBaton # Frontierd
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: baton
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
     state: baton
@@ -82,12 +82,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeThermobaric # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: blast
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
     state: blast
@@ -100,12 +100,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeFlash # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: flash
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
     state: flash
@@ -118,12 +118,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeFragmentation # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: frag
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
     state: frag
@@ -136,7 +136,7 @@
   components:
   - type: CartridgeAmmo
     proto: NFBulletGrenadeCleanade # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
@@ -154,12 +154,12 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet40mmGrenadeEMP # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
     layers:
     - state: emp
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
     state: frag
@@ -170,7 +170,7 @@
 # - type: entity
   # id: BaseCannonBall
   # name: base cannon ball
-  # parent: [BaseItem, BaseC3PirateContrabandNoValue] # Frontier: BaseMajorContraband<BaseC3PirateContrabandNoValue
+  # parent: [ BaseItem, BaseC3PirateContrabandNoValue ] # Frontier: BaseMajorContraband<BaseC3PirateContrabandNoValue
   # abstract: true
   # components:
   # - type: Tag

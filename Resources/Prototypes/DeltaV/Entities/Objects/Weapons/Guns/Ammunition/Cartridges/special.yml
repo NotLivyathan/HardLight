@@ -6,16 +6,16 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - CartridgeSpecial
+    - Cartridge
+    - CartridgeSpecial
   - type: CartridgeAmmo
     proto: BulletSpecial
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -38,10 +38,10 @@
     proto: BulletSpecialPractice
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#dbdbdb"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#dbdbdb"
 
 - type: entity
   id: CartridgeSpecialIncendiary
@@ -52,10 +52,10 @@
     proto: BulletSpecialIncendiary
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#ff6e52"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#ff6e52"
 
 - type: entity
   id: CartridgeSpecialUranium
@@ -66,10 +66,10 @@
     proto: BulletSpecialUranium
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#65fe08"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#65fe08"
 
 - type: entity
   id: CartridgeSpecialHoly
@@ -80,10 +80,10 @@
     proto: BulletSpecialHoly
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#fff600"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#fff600"
 
 - type: entity
   id: CartridgeSpecialMindbreaker
@@ -94,10 +94,10 @@
     proto: BulletSpecialMindbreaker
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#950ea9"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#950ea9"
   - type: ChemicalAmmo
   - type: SolutionContainerManager
     solutions:

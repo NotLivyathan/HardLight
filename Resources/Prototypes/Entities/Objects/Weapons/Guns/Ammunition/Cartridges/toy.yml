@@ -6,15 +6,15 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - CartridgeCap
+    - Cartridge
+    - CartridgeCap
   - type: CartridgeAmmo
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/capgun_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: SpentAmmoVisuals
   - type: Appearance
   - type: StaticPrice

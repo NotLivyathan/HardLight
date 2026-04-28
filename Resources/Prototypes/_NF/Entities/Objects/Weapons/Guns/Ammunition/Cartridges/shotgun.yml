@@ -1,4 +1,4 @@
-#region Base
+# region Base
 - type: entity
   id: NFBaseShellShotgun
   name: shell (.50)
@@ -21,7 +21,7 @@
     - ShellShotgun
     - ShellShotgunLight
 
-#region Pellets
+# region Pellets
 - type: entity
   id: NFShellShotgunBuckshot
   name: shell (.50 buckshot)
@@ -29,11 +29,11 @@
   components:
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFPelletShotgunSpread
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
 
 - type: entity
   id: NFShellShotgunIncendiary
@@ -42,8 +42,8 @@
   components:
   - type: Sprite
     layers:
-      - state: incendiary
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: incendiary
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFPelletShotgunIncendiarySpread
   - type: SpentAmmoVisuals
@@ -56,8 +56,8 @@
   components:
   - type: Sprite
     layers:
-      - state: practice
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: practice
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFPelletShotgunPracticeSpread
   - type: SpentAmmoVisuals
@@ -70,8 +70,8 @@
   components:
   - type: Sprite
     layers:
-      - state: depleted-uranium
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: depleted-uranium
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFPelletShotgunUraniumSpread
   - type: SpentAmmoVisuals
@@ -84,8 +84,8 @@
   components:
   - type: Sprite
     layers:
-      - state: improvised
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: improvised
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFPelletShotgunImprovisedSpread
   - type: SpentAmmoVisuals
@@ -94,7 +94,7 @@
     graph: ImprovisedShotgunShellGraph
     node: shell
 
-#region Slugs
+# region Slugs
 - type: entity
   id: NFShellShotgunSlug
   name: shell (.50 slug)
@@ -102,8 +102,8 @@
   components:
   - type: Sprite
     layers:
-      - state: slug
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: slug
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFShotgunSlug
   - type: SpentAmmoVisuals
@@ -116,8 +116,8 @@
   components:
   - type: Sprite
     layers:
-      - state: beanbag
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: beanbag
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFShotgunSlugBeanbag
   - type: SpentAmmoVisuals
@@ -130,8 +130,8 @@
   components:
   - type: Sprite
     layers:
-      - state: flare
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: flare
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFShotgunSlugFlare
   - type: SpentAmmoVisuals
@@ -144,8 +144,8 @@
   components:
   - type: Sprite
     layers:
-      - state: tranquilizer
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tranquilizer
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: NFShotgunSlugTranquilizer
   - type: SpentAmmoVisuals

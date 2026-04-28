@@ -12,12 +12,12 @@
   - type: CartridgeAmmo
     soundEject:
       collection: ShellEject
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/shotgun_shell.rsi
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -36,8 +36,8 @@
     - ShellShotgunLight
   - type: Sprite
     layers:
-      - state: beanbag
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: beanbag
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunBeanbag # Frontier
   - type: SpentAmmoVisuals
@@ -51,8 +51,8 @@
   components:
   - type: Sprite
     layers:
-      - state: slug
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: slug
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunSlug # Frontier
   - type: SpentAmmoVisuals
@@ -71,8 +71,8 @@
     - ShellShotgunLight
   - type: Sprite
     layers:
-      - state: flare
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: flare
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunFlare # Frontier
   - type: SpentAmmoVisuals
@@ -86,8 +86,8 @@
   components:
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunSpread # Frontier
 
@@ -99,8 +99,8 @@
   components:
   - type: Sprite
     layers:
-      - state: incendiary
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: incendiary
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunIncendiarySpread # Frontier
   - type: SpentAmmoVisuals
@@ -114,8 +114,8 @@
   components:
   - type: Sprite
     layers:
-      - state: practice
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: practice
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunPracticeSpread # Frontier
   - type: SpentAmmoVisuals
@@ -134,8 +134,8 @@
     - ShellShotgunLight
   - type: Sprite
     layers:
-      - state: tranquilizer
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tranquilizer
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: CartridgeAmmo
     proto: PelletShotgunTranquilizer # Frontier
   - type: ChemicalAmmo
@@ -164,8 +164,8 @@
     - ShellShotgunLight
   - type: Sprite
     layers:
-      - state: improvised
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: improvised
+      map: [ "enum.AmmoVisualLayers.Base" ]
   # - type: Construction # Frontier: swapped out for NF variant
   #   graph: ImprovisedShotgunShellGraph # Frontier
   #   node: shell # Frontier
@@ -182,8 +182,8 @@
   components:
     - type: Sprite
       layers:
-        - state: depleted-uranium
-          map: [ "enum.AmmoVisualLayers.Base" ]
+      - state: depleted-uranium
+        map: [ "enum.AmmoVisualLayers.Base" ]
     - type: CartridgeAmmo
       proto: PelletShotgunUraniumSpread # Frontier
     - type: SpentAmmoVisuals

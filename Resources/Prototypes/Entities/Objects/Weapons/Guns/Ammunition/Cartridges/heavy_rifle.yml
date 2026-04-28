@@ -6,16 +6,16 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - CartridgeHeavyRifle
+    - Cartridge
+    - CartridgeHeavyRifle
   - type: CartridgeAmmo
     proto: BulletHeavyRifle # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -29,4 +29,4 @@
   components:
   - type: CartridgeAmmo
     proto: BulletMinigun # Frontier
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight

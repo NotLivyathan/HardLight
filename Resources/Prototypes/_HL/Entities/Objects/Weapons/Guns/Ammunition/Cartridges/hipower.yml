@@ -5,13 +5,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet9x19mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge9x19mmHiPowerGraph
     node: shell
@@ -23,13 +23,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet9x19mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge9x19mmFlechetteGraph
     node: shell
@@ -41,13 +41,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet45_ACPHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge45_ACPHiPowerGraph
     node: shell
@@ -59,13 +59,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet45_ACPFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge45_ACPFlechetteGraph
     node: shell
@@ -77,13 +77,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet46x30mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge46x30mmHiPowerGraph
     node: shell
@@ -95,13 +95,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet46x30mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge46x30mmFlechetteGraph
     node: shell
@@ -113,13 +113,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet45_magnumHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge45_magnumHiPowerGraph
     node: shell
@@ -131,13 +131,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet45_magnumFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge45_magnumFlechetteGraph
     node: shell
@@ -149,13 +149,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet556x45mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge556x45mmHiPowerGraph
     node: shell
@@ -167,13 +167,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet556x45mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge556x45mmFlechetteGraph
     node: shell
@@ -185,13 +185,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet57x28mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge57x28mmHiPowerGraph
     node: shell
@@ -203,13 +203,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet57x28mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge57x28mmFlechetteGraph
     node: shell
@@ -221,13 +221,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x39mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge762x39mmHiPowerGraph
     node: shell
@@ -239,13 +239,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x39mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge762x39mmFlechetteGraph
     node: shell
@@ -257,13 +257,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x51mmHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge762x51mmHiPowerGraph
     node: shell
@@ -275,13 +275,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x51mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge762x51mmFlechetteGraph
     node: shell
@@ -293,13 +293,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x54mmRHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge762x54mmRHiPowerGraph
     node: shell
@@ -311,13 +311,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet762x54mmRFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge762x54mmRFlechetteGraph
     node: shell
@@ -329,13 +329,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet8x65mmSKRHiPower
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#B22222"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#B22222"
   - type: Construction
     graph: Cartridge8x65mmSKRHiPowerGraph
     node: shell
@@ -347,13 +347,13 @@
   components:
   - type: CartridgeAmmo
     proto: Bullet8x65mmSKRFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#808080"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#808080"
   - type: Construction
     graph: Cartridge8x65mmSKRFlechetteGraph
     node: shell
@@ -365,15 +365,15 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet23x75mmHiPowerSpread
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun23x75mmHiPowerBuckshotGraph
     node: shell
-    
+
 - type: entity
   id: ShellShotgun23x75mmHiPowerSlug
   name: shotgun shell (4 gauge high-power slug)
@@ -381,11 +381,11 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet23x75mmHiPowerSlug
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun23x75mmHiPowerSlugGraph
     node: shell
@@ -397,15 +397,15 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet23x75mmFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun23x75mmFlechetteGraph
     node: shell
-    
+
 - type: entity
   id: ShellShotgun12_gaugeHiPowerSlug
   name: shotgun shell (12 gauge high-power slug)
@@ -413,15 +413,15 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet12_gaugeHiPowerSlug
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun12_gaugeHiPowerSlugGraph
     node: shell
-    
+
 - type: entity
   id: ShellShotgun12_gaugeHiPowerBuckshot
   name: shotgun shell (12 gauge high-power buckshot)
@@ -429,11 +429,11 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet12_gaugeHiPowerSpread
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun12_gaugeHiPowerBuckshotGraph
     node: shell
@@ -445,11 +445,11 @@
   components:
   - type: CartridgeAmmo
     proto: Pellet12_gaugeFlechette
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight
   - type: Sprite
     layers:
-      - state: blank
-        map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: blank
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Construction
     graph: ShellShotgun12_gaugeFlechetteGraph
     node: shell

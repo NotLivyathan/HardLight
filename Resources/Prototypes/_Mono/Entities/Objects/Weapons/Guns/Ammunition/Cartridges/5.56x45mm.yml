@@ -6,17 +6,17 @@
   components:
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge556x45mm
-      - Cartridge556x45mmFMJ
+    - Cartridge
+    - Cartridge556x45mm
+    - Cartridge556x45mmFMJ
   - type: CartridgeAmmo
     proto: Bullet556x45mmFMJ
-    deleteOnSpawn: true
+    deleteOnDelay: 10 # HardLight: 10 seconds after spawning, for automatic cleanup.
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
-      map: ["enum.AmmoVisualLayers.Base"]
+      map: [ "enum.AmmoVisualLayers.Base" ]
   - type: Appearance
   - type: SpentAmmoVisuals
   - type: StaticPrice
@@ -39,10 +39,10 @@
     proto: Bullet556x45mmPractice
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#dbdbdb"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#dbdbdb"
 
 - type: entity
   id: Cartridge556x45mmIncendiary
@@ -53,10 +53,10 @@
     proto: Bullet556x45mmIncendiary
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#ff6e52"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#ff6e52"
 
 - type: entity
   id: Cartridge556x45mmUranium
@@ -67,10 +67,10 @@
     proto: Bullet556x45mmUranium
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#65fe08"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#65fe08"
 
 - type: entity
   id: Cartridge556x45mmRubber
@@ -81,32 +81,32 @@
     proto: Bullet556x45mmRubber
   - type: Sprite
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#43c4f7"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#43c4f7"
 
-# Hardlight - Improvised
+# HardLight - Improvised
 - type: entity
   id: Cartridge556x45mmImprovised
   name: improvised cartridge (5.56x45mm)
   description: A handmade rifle bullet, uses phosphorus as a propellent instead of gunpowder which makes it much less effective.
-  parent: [BaseCartridge556x45mm, BaseC1Contraband]
+  parent: [ BaseCartridge556x45mm, BaseC1Contraband ]
   components:
   - type: CartridgeAmmo
     proto: Bullet556x45mmImprovised
   - type: Sprite
     sprite: _Starlight/Objects/Weapons/Guns/Ammunition/Casings/improvised_casing.rsi
     layers:
-      - state: base
-        map: [ "enum.AmmoVisualLayers.Base" ]
-      - state: tip
-        color: "#717171"
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+    - state: tip
+      color: "#717171"
   - type: Tag
     tags:
-      - Cartridge
-      - Cartridge556x45mm
-      - Cartridge556x45mmImprovised
+    - Cartridge
+    - Cartridge556x45mm
+    - Cartridge556x45mmImprovised
   - type: Construction
     graph: Improvised556x45mmBulletGraph
     node: shell

@@ -36,6 +36,12 @@ public sealed partial class CartridgeAmmoComponent : AmmoComponent
     [DataField]
     public bool DeleteOnSpawn;
 
+    /// <summary>
+    /// HardLight: If set, the spawned casing will be deleted after this many seconds.
+    /// </summary>
+    [DataField]
+    public float? DeleteOnDelay;
+
     [DataField("soundEject")]
     public SoundSpecifier? EjectSound = new SoundCollectionSpecifier("CasingEject");
 }
