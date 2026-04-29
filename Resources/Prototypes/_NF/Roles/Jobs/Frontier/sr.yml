@@ -1,3 +1,48 @@
+# HardLight start: Station Representative<Harbor Master; migrate to _HL in the future
+# - type: job
+#   id: StationRepresentative
+#   name: job-name-sr
+#   description: job-description-sr
+#   playTimeTracker: JobHeadOfPersonnelOld
+#   requirements:
+#     - !type:OverallPlaytimeRequirement
+#       time: 72000 # 20 hrs
+#     - !type:RoleTimeRequirement
+#       role: JobSecurityGuard
+#       time: 10800 # 3 hrs as security guard
+#   whitelisted: true
+#   startingGear: SrGear
+#   alwaysUseSpawner: true
+#   icon: "JobIconHeadOfPersonnel"
+#   requireAdminNotify: true
+#   setPreference: false # Frontier
+#   supervisors: job-supervisors-centcom
+#   weight: 170
+#   displayWeight: 60 # Top
+#   canBeAntag: false
+#   accessGroups:
+#   - AllAccess
+#   special:
+#   - !type:AddImplantSpecial
+#     implants: [ MindShieldImplant, TrackingImplant ]
+#   - !type:AddComponentSpecial
+#     components:
+#       - type: CommandStaff
+#   - !type:GiveItemOnHolidaySpecial
+#     holiday: FrontierBirthday
+#     prototype: FrontierBirthdayGift
+#
+# - type: startingGear
+#   id: SrGear
+#   equipment:
+#     pocket1: NFWeaponEnergyPistolDisabler
+#   storage:
+#     back:
+#     - Flash
+#     - RubberStampSr
+#     - DoorRemoteCommand
+#     - EncryptionKeyStationMaster
+
 - type: job
   id: StationRepresentative
   name: job-name-sr
@@ -7,26 +52,50 @@
     - !type:OverallPlaytimeRequirement
       time: 72000 # 20 hrs
     - !type:RoleTimeRequirement
-      role: JobSecurityGuard
-      time: 10800 # 3 hrs as security guard
-  whitelisted: true
+      role: JobSecurityOfficer
+      time: 10800 # 3 hrs
+    - !type:RoleTimeRequirement
+      role: JobMercenary
+      time: 72000 # 20 hrs
+    - !type:RoleTimeRequirement
+      role: JobQuartermaster
+      time: 36000 # 10 hrs
   startingGear: SrGear
   alwaysUseSpawner: true
-  icon: "JobIconHeadOfPersonnel"
-  requireAdminNotify: true
-  setPreference: false # Frontier
-  supervisors: job-supervisors-centcom
+  icon: "JobIconHarborMaster"
+  setPreference: true
+  supervisors: job-supervisors-captain
   weight: 170
   displayWeight: 60 # Top
   canBeAntag: false
   accessGroups:
-  - AllAccess
+    - Command
+    - HeadOfPersonnel
+    - Bar
+    - Service
+    - Maintenance
+    - Janitor
+    - Theatre
+    - Kitchen
+    - Chapel
+    - Hydroponics
+    - External
+    - Cryogenics
+    - Chemistry
+    - Engineering
+    - Research
+    - Detective
+    - Salvage
+    - Security
+    - Brig
+    - Lawyer
+    - Cargo
+    - Atmospherics
+    - Medical
+    - Frontier
   special:
   - !type:AddImplantSpecial
-    implants: [ MindShieldImplant, TrackingImplant ]
-  - !type:AddComponentSpecial
-    components:
-      - type: CommandStaff
+    implants: [ MindShieldImplant ]
   - !type:GiveItemOnHolidaySpecial
     holiday: FrontierBirthday
     prototype: FrontierBirthdayGift
@@ -39,5 +108,4 @@
     back:
     - Flash
     - RubberStampSr
-    - DoorRemoteCommand
-    - EncryptionKeyStationMaster
+# HardLight end

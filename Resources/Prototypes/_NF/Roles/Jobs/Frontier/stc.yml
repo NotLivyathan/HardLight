@@ -25,7 +25,7 @@
   supervisors: job-supervisors-captain
   weight: 160
   displayWeight: 50 # Second from the top
-  setPreference: true
+  setPreference: false # HardLight: true<false
   access:
     - Command
     - HeadOfPersonnel

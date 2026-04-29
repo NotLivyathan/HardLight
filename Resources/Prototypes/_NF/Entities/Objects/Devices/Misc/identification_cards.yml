@@ -177,9 +177,9 @@
     - state: ert_mailcarrier
 
 - type: entity
-  parent: [HoPIDCard, BaseCommandContraband]
+  parent: [StcIDCard, BaseCommandContraband] # HardLight: HoPIDCard<StcIDCard
   id: SrIDCard
-  name: station representative ID card
+  name: harbor master ID card # HardLight: station representative<harbor master; migrate to _HL in the future
   components:
   - type: PresetIdCard
     job: StationRepresentative
