@@ -50,7 +50,7 @@
 - type: department # HardLight
   id: Service
   name: department-Service
-  description: department-Service-description
+  description: department-Civilian-description
   color: "#9FED58"
   weight: 80
   roles:
