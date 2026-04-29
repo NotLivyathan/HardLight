@@ -5,11 +5,11 @@
 #   description: job-description-sr
 #   playTimeTracker: JobHeadOfPersonnelOld
 #   requirements:
-#     - !type:OverallPlaytimeRequirement
-#       time: 72000 # 20 hrs
-#     - !type:RoleTimeRequirement
-#       role: JobSecurityGuard
-#       time: 10800 # 3 hrs as security guard
+#   - !type:OverallPlaytimeRequirement
+#     time: 72000 # 20 hrs
+#   - !type:RoleTimeRequirement
+#     role: JobSecurityGuard
+#     time: 10800 # 3 hrs as security guard
 #   whitelisted: true
 #   startingGear: SrGear
 #   alwaysUseSpawner: true
@@ -49,17 +49,17 @@
   description: job-description-sr
   playTimeTracker: JobHeadOfPersonnelOld
   requirements:
-    - !type:OverallPlaytimeRequirement
-      time: 72000 # 20 hrs
-    - !type:RoleTimeRequirement
-      role: JobSecurityOfficer
-      time: 10800 # 3 hrs
-    - !type:RoleTimeRequirement
-      role: JobMercenary
-      time: 72000 # 20 hrs
-    - !type:RoleTimeRequirement
-      role: JobQuartermaster
-      time: 36000 # 10 hrs
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20 hrs
+  - !type:RoleTimeRequirement
+    role: JobSecurityOfficer
+    time: 10800 # 3 hrs
+  - !type:RoleTimeRequirement
+    role: JobMercenary
+    time: 72000 # 20 hrs
+  - !type:RoleTimeRequirement
+    role: JobQuartermaster
+    time: 36000 # 10 hrs
   weight: 10
   startingGear: SrGear
   alwaysUseSpawner: true
@@ -67,31 +67,14 @@
   setPreference: true
   supervisors: job-supervisors-centcom
   canBeAntag: false
-  accessGroups:
-    - Command
-    - HeadOfPersonnel
-    - Bar
-    - Service
-    - Maintenance
-    - Janitor
-    - Theatre
-    - Kitchen
-    - Chapel
-    - Hydroponics
-    - External
-    - Cryogenics
-    - Chemistry
-    - Engineering
-    - Research
-    - Detective
-    - Salvage
-    - Security
-    - Brig
-    - Lawyer
-    - Cargo
-    - Atmospherics
-    - Medical
-    - Frontier
+  access:
+  - Command
+  - Service
+  - Maintenance
+  - External
+  - Brig
+  - Frontier
+  - Mercenary
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
@@ -102,7 +85,7 @@
 - type: startingGear
   id: SrGear
   equipment:
-    pocket1: NFWeaponEnergyPistolDisabler
+    pocket1: WeaponRevolverLucky
   storage:
     back:
     - Flash

@@ -149,13 +149,13 @@
   - StcHead
   - ContractorNeck
   - StcJumpsuit
-  - ContractorGloves
+  - StcGloves # HardLight: Add lingerie
   - ContractorBackpack
   - ContractorOuterClothing
   - StcForcedOuterClothing
-  - ContractorShoes # HardLight: StcShoes<ContractorShoes
+  - StcShoes
   - ContractorFace
-  - StcGlasses
+  - ContractorGlasses
   - ContractorBelt
   - StcEars
   - ContractorBoxSurvival
