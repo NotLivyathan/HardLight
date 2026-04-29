@@ -256,6 +256,12 @@ public sealed partial class CCVars : CVars
     #endregion
 
     /// <summary>
+    /// HardLight: Whether or not to render extended structure smoothing.
+    /// </summary>
+    public static readonly CVarDef<bool> ShowStructureSmoothing =
+        CVarDef.Create("display.show_structure_smoothing", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>
     /// HardLight: Whether to show custom borg subtype sprites, or render all borgs with their base chassis sprites.
     /// </summary>
     public static readonly CVarDef<bool> ShowCyborgSubtypeSprites =
