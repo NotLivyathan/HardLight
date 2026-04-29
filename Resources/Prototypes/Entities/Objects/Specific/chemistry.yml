@@ -498,12 +498,14 @@
       injector:
         maxVol: 150
   - type: Injector
+    activeModeProtoId: BluespaceSyringeDrawMode
+    allowedModes:
+    - BluespaceSyringeInjectMode
+    - BluespaceSyringeDrawMode
     delay: 2.5
     injectOnly: false
     maxTransferAmount: 150
     minTransferAmount: 5
-    activeModeProtoId: InjectorModeInject
-    allowedModes: [InjectorModeInject, InjectorModeDraw]
     currentTransferAmount: 5
   - type: SolutionContainerVisuals
     maxFillLevels: 2

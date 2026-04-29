@@ -12,6 +12,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
+using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Content.Shared.Verbs;
 using System;
@@ -47,10 +48,28 @@ public sealed class RoomGridSpawnerSystem : EntitySystem
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _xformQuery = GetEntityQuery<TransformComponent>();
 
+        _player.PlayerStatusChanged += OnPlayerStatusChanged;
+
         SubscribeLocalEvent<RoomGridSpawnerConsoleComponent, InteractHandEvent>(OnConsoleInteract);
         SubscribeLocalEvent<RoomGridSpawnerConsoleComponent, GetVerbsEvent<AlternativeVerb>>(OnGetAlternativeVerbs);
         SubscribeLocalEvent<MindContainerComponent, MindRemovedMessage>(OnMindRemoved);
         SubscribeNetworkEvent<SendRoomGridDataMessage>(OnRoomGridData);
+    }
+
+    public override void Shutdown()
+    {
+        base.Shutdown();
+        _player.PlayerStatusChanged -= OnPlayerStatusChanged;
+    }
+
+    private void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
+    {
+        if (e.NewStatus is not (SessionStatus.Disconnected or SessionStatus.Zombie))
+            return;
+
+        // Only clear stale pending loads for disconnected players.
+        // Active sessions are intentionally left untouched to avoid impacting live room state.
+        _pendingLoads.Remove(e.Session.UserId);
     }
 
     private void OnConsoleInteract(EntityUid uid, RoomGridSpawnerConsoleComponent component, InteractHandEvent args)

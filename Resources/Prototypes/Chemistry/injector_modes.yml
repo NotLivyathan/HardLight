@@ -22,6 +22,25 @@
   popupTargetAttempt: injector-component-drawing-target
 
 - type: injectorMode
+  abstract: true
+  id: BaseBluespaceSyringeMode
+  mobTime: 2.5
+  delayPerVolume: 0.03
+  transferAmounts: [5, 10, 15, 75, 150]
+
+- type: injectorMode
+  parent: [ BaseBluespaceSyringeMode, InjectorModeInject ]
+  id: BluespaceSyringeInjectMode
+  name: injector-mode-inject-name
+  behavior: Inject
+
+- type: injectorMode
+  parent: [ BaseBluespaceSyringeMode, InjectorModeDraw ]
+  id: BluespaceSyringeDrawMode
+  name: injector-mode-draw-name
+  behavior: Draw
+
+- type: injectorMode
   id: InjectorModeDynamicInject
   parent: InjectorModeBase
   name: injector-mode-dynamic-name
