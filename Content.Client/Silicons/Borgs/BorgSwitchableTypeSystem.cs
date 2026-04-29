@@ -1,4 +1,5 @@
-﻿using Content.Shared._CD.Silicons.Borgs;
+﻿using System.Linq; // HardLight
+using Content.Shared._CD.Silicons.Borgs;
 using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
@@ -38,13 +39,30 @@ public sealed class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeSystem
         UpdateEntityAppearance(ent);
     }
 
+    public void RefreshEntityAppearance(Entity<BorgSwitchableTypeComponent> entity, bool ignoreSubtype = false) // HardLight
+    {
+        if (!Prototypes.TryIndex(entity.Comp.SelectedBorgType, out var prototype))
+            return;
+
+        ApplyEntityAppearance(entity, prototype, ignoreSubtype);
+    }
+
     protected override void UpdateEntityAppearance(
         Entity<BorgSwitchableTypeComponent> entity,
         BorgTypePrototype prototype)
     {
+        ApplyEntityAppearance(entity, prototype, false); // HardLight
+    }
+
+    private void ApplyEntityAppearance( // HardLight
+        Entity<BorgSwitchableTypeComponent> entity,
+        BorgTypePrototype prototype,
+        bool ignoreSubtype)
+    {
         // CD - added checks to stop sprite state errors
-        if (!TryComp<BorgSwitchableSubtypeComponent>(entity, out var subtype) ||
-            subtype.BorgSubtype != null)
+        if (!ignoreSubtype && // HardLight
+            (!TryComp<BorgSwitchableSubtypeComponent>(entity, out var subtype) || // HardLight
+             subtype.BorgSubtype != null))
             return;
 
         if (TryComp(entity, out SpriteComponent? sprite))
@@ -55,6 +73,10 @@ public sealed class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeSystem
             {
                 sprite.BaseRSI = res.RSI;
             }
+
+            if (ignoreSubtype) // HardLight
+                ResetBaseLayers((entity, sprite), prototype);
+
             _sprite.LayerSetRsiState((entity, sprite), BorgVisualLayers.Body, prototype.SpriteBodyState);
             _sprite.LayerSetRsiState((entity, sprite), BorgVisualLayers.LightStatus, prototype.SpriteToggleLightState);
         }
@@ -93,5 +115,33 @@ public sealed class BorgSwitchableTypeSystem : SharedBorgSwitchableTypeSystem
         }
 
         base.UpdateEntityAppearance(entity, prototype);
+    }
+
+    // HardLight: Rebuild the default chassis layer stack so subtype sprites can revert cleanly at runtime.
+    private void ResetBaseLayers(Entity<SpriteComponent?> sprite, BorgTypePrototype prototype)
+    {
+        var spriteComp = sprite.Comp;
+        if (spriteComp == null)
+            return;
+
+        for (var i = spriteComp.AllLayers.Count() - 1; i >= 0; i--)
+        {
+            _sprite.RemoveLayer(sprite, i);
+        }
+
+        var body = _sprite.AddRsiLayer(sprite, prototype.SpriteBodyState);
+        _sprite.LayerMapSet(sprite, BorgVisualLayers.Body, body);
+        _sprite.LayerMapSet(sprite, "movement", body);
+
+        var light = _sprite.AddRsiLayer(sprite, prototype.SpriteNoMindState);
+        _sprite.LayerMapSet(sprite, BorgVisualLayers.Light, light);
+        spriteComp.LayerSetShader(light, "unshaded");
+        _sprite.LayerSetVisible(sprite, light, false);
+
+        var lightStatus = _sprite.AddRsiLayer(sprite, prototype.SpriteToggleLightState);
+        _sprite.LayerMapSet(sprite, BorgVisualLayers.LightStatus, lightStatus);
+        _sprite.LayerMapSet(sprite, "light", lightStatus);
+        spriteComp.LayerSetShader(lightStatus, "unshaded");
+        _sprite.LayerSetVisible(sprite, lightStatus, false);
     }
 }

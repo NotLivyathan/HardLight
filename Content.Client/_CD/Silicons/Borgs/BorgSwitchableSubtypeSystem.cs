@@ -7,11 +7,8 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Silicons.Borgs.Components;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
-using Robust.Client.ResourceManagement;
 using Robust.Shared.Configuration; // HardLight
-using Robust.Shared.Physics.Systems;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
-using Robust.Shared.Utility;
 
 namespace Content.Client._CD.Silicons.Borgs;
 
@@ -22,17 +19,26 @@ public sealed class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSubtypeSys
 {
     [Dependency] private readonly SpriteSystem _sprite = default!;
     [Dependency] private readonly BorgSystem _borg = default!;
+    [Dependency] private readonly BorgSwitchableTypeSystem _borgTypeSystem = default!; // HardLight
     [Dependency] private readonly AppearanceSystem _appearance = default!;
-    [Dependency] private readonly IResourceCache _resourceCache = default!;
-    [Dependency] private readonly FixtureSystem _fixture = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!; // HardLight
 
     public override void Initialize()
     {
         base.Initialize();
 
+        Subs.CVar(_cfg, CCVars.ShowCyborgSubtypeSprites, OnShowCyborgSubtypeSpritesChanged); // HardLight
         SubscribeLocalEvent<BorgSwitchableSubtypeComponent, ComponentStartup>(OnComponentStartup);
         SubscribeLocalEvent<BorgSwitchableSubtypeComponent, AfterAutoHandleStateEvent>(OnAutoHandleEvent);
+    }
+
+    private void OnShowCyborgSubtypeSpritesChanged(bool _) // HardLight
+    {
+        var query = EntityQueryEnumerator<BorgSwitchableSubtypeComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            SelectBorgSubtype((uid, comp));
+        }
     }
 
     private void OnAutoHandleEvent(Entity<BorgSwitchableSubtypeComponent> ent, ref AfterAutoHandleStateEvent args)
@@ -50,7 +56,9 @@ public sealed class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSubtypeSys
         // HardLight: Check if player has disabled custom borg sprites
         if (!_cfg.GetCVar(CCVars.ShowCyborgSubtypeSprites))
         {
-            // Don't apply custom appearance for remote entities
+            if (TryComp<BorgSwitchableTypeComponent>(entity, out var typeComp))
+                _borgTypeSystem.RefreshEntityAppearance((entity.Owner, typeComp), ignoreSubtype: true);
+
             return;
         }
 
@@ -63,12 +71,12 @@ public sealed class BorgSwitchableSubtypeSystem : SharedBorgSwitchableSubtypeSys
             return;
 
         // remove all existing layers
-        for (int i = chassisSprite.AllLayers.Count() - 1; i >= 0; i--)
+        for (var i = chassisSprite.AllLayers.Count() - 1; i >= 0; i--) // HardLight: int<var
         {
             _sprite.RemoveLayer((entity, chassisSprite), i);
         }
 
-        for (int i = 0; i < borgSubtypePrototype.LayerData.Length; i++)
+        for (var i = 0; i < borgSubtypePrototype.LayerData.Length; i++) // HardLight: int<var
         {
             var layerData = borgSubtypePrototype.LayerData[i];
 
