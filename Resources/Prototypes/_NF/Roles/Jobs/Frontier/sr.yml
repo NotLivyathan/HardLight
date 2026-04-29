@@ -44,7 +44,7 @@
 #     - EncryptionKeyStationMaster
 
 - type: job
-  id: StationRepresentative
+  id: StationRepresentative # Harbor Master
   name: job-name-sr
   description: job-description-sr
   playTimeTracker: JobHeadOfPersonnelOld
@@ -60,13 +60,12 @@
     - !type:RoleTimeRequirement
       role: JobQuartermaster
       time: 36000 # 10 hrs
+  weight: 10
   startingGear: SrGear
   alwaysUseSpawner: true
   icon: "JobIconHarborMaster"
   setPreference: true
-  supervisors: job-supervisors-captain
-  weight: 170
-  displayWeight: 60 # Top
+  supervisors: job-supervisors-centcom
   canBeAntag: false
   accessGroups:
     - Command

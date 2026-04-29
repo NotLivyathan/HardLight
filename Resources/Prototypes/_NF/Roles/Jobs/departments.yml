@@ -3,11 +3,13 @@
   name: department-Frontier
   description: department-NF-description
   color: "#334E6D"
-  weight: 0 # HardLight: 50<0
+  weight: 20 # HardLight: 50<20
   roles:
   - StationRepresentative
   # HardLight start
   - Mercenary
+  - Pilot
+  - Contractor
   # - DirectorOfCare
   # - Valet # nyano
   # - NFJanitor # nyano
