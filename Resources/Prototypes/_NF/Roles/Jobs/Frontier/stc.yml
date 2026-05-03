@@ -4,7 +4,7 @@
   description: job-description-stc
   playTimeTracker: JobStc
   startingGear: StcGear
-  alwaysUseSpawner: true
+  alwaysUseSpawner: false # HardLight: true<false
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 72000 # 20 hrs

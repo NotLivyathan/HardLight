@@ -4,6 +4,7 @@
   description: job-description-anomaly
   playTimeTracker: RoleAnomaly
   overrideConsoleVisibility: true
+  alwaysUseSpawner: true
   canBeAntag: false
   icon: "JobIconNoId"
   joinNotifyCrew: false
