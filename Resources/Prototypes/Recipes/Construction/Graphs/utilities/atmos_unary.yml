@@ -93,7 +93,7 @@
       steps:
       - anyTags:
           - PowerCellSmall
-        name: construction-graph-tag-power-cell
+        name: construction-graph-tag-power-cell-small
         icon:
           sprite: "Objects/Power/power_cells.rsi"
           state: "small"
