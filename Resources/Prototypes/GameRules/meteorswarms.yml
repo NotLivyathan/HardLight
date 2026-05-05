@@ -33,7 +33,7 @@
     - id: GameRuleMeteorSwarmMedium
     - id: GameRuleMeteorSwarmLarge
     - id: GameRuleUristSwarm
-    #- id: ImmovableRodSpawn
+    - id: ImmovableRodSpawn
 
 - type: weightedRandomEntity
   id: MeteorSpawnAsteroidWallTable
@@ -203,7 +203,7 @@
     startAnnouncement: station-event-immovable-rod-start-announcement
     startAudio:
       path: /Audio/Announcements/attention.ogg
-    weight: 0
+    weight: 3.5
     reoccurrenceDelay: 200
     duration: 1
     earliestStart: 30
