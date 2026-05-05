@@ -45,6 +45,38 @@
     repairTime: 5
     repairCost: 10
 
+- type: entity # HardLight
+  id: AtmosDeviceFanDirectionalAssembly
+  name: directional fan assembly
+  description: An unfinished directional fan assembly.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Sprite
+    sprite: Structures/Piping/Atmospherics/directionalfan.rsi
+    state: icon-off
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+            bounds: "-0.48,-0.48,0.48,-0.40"
+  - type: Clickable
+  - type: Tag
+    tags:
+      - SpreaderIgnore
+  - type: Construction
+    graph: GasUnary
+    node: directionalfanFrame
+  - type: Anchorable
+    delay: 6
+  - type: Pullable
+  - type: Rotatable
+
 - type: entity
   id: AtmosDeviceFanDirectional
   name: directional fan
@@ -58,7 +90,18 @@
     bodyType: Static
   - type: Sprite
     sprite: Structures/Piping/Atmospherics/directionalfan.rsi
-    state: icon
+  # HardLight start
+    layers:
+    - state: icon-off
+      map: [ "enum.PowerDeviceVisualLayers.Powered" ]
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.PowerDeviceVisuals.Powered:
+        enum.PowerDeviceVisualLayers.Powered:
+          True: { state: icon-on }
+          False: { state: icon-off }
+  # HardLight end
   - type: Fixtures
     fixtures:
       fix1:
@@ -69,14 +112,32 @@
     noAirWhenFullyAirBlocked: false
     airBlockedDirection:
       - South
+    airBlocked: false # HardLight
   - type: Clickable
   - type: Tag
     tags:
       - SpreaderIgnore
-  - type: RCDDeconstructable # HARDLIGHT
-    cost: 10 # HARDLIGHT
-    delay: 10 # HARDLIGHT
-  - type: Destructible # Mono - destructible tiny/directional fans
+  # HardLight start
+  - type: PoweredDirectionalFan
+  - type: Battery
+    maxCharge: 360
+    startingCharge: 360
+  - type: ExaminableBattery
+  - type: ApcPowerReceiverBattery
+    idleLoad: 6
+    batteryRechargeRate: 6
+    batteryRechargeEfficiency: 1
+  - type: ApcPowerReceiver
+    powerLoad: 6
+  - type: ExtensionCableReceiver
+  - type: Construction
+    graph: GasUnary
+    node: directionalfan
+  - type: RCDDeconstructable
+    cost: 10
+    delay: 10
+  # HardLight end
+  - type: Destructible # Mono: Destructible tiny/directional fans
     thresholds:
     - trigger:
         !type:DamageTrigger

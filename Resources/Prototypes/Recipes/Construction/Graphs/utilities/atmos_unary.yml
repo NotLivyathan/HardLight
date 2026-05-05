@@ -10,6 +10,12 @@
         amount: 2
         doAfter: 1
 
+    - to: directionalfanFrame # HardLight
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 1
+
     - to: passivevent
       steps:
       - material: Steel
@@ -45,6 +51,103 @@
         doAfter: 1
       - tool: Welding
         doAfter: 1
+
+  # HardLight start
+  - node: directionalfanFrame
+    entity: AtmosDeviceFanDirectionalAssembly
+    edges:
+    - to: directionalfanBaffle
+      steps:
+      - material: MetalRod
+        amount: 2
+        doAfter: 1
+    - to: start
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:DeleteEntity
+      steps:
+      - tool: Welding
+        doAfter: 1
+
+  - node: directionalfanBaffle
+    edges:
+    - to: directionalfanWired
+      steps:
+      - material: Cable
+        amount: 1
+        doAfter: 0.5
+    - to: directionalfanFrame
+      completed:
+      - !type:SpawnPrototype
+        prototype: PartRodMetal1
+        amount: 2
+      steps:
+      - tool: Cutting
+        doAfter: 0.5
+
+  - node: directionalfanWired
+    edges:
+    - to: directionalfanCell
+      steps:
+      - anyTags:
+          - PowerCellSmall
+        name: construction-graph-tag-power-cell
+        icon:
+          sprite: "Objects/Power/power_cells.rsi"
+          state: "small"
+        doAfter: 0.5
+    - to: directionalfanBaffle
+      completed:
+      - !type:SpawnPrototype
+        prototype: CableApcStack1
+        amount: 1
+      steps:
+      - tool: Cutting
+        doAfter: 0.5
+
+  - node: directionalfanCell
+    edges:
+    - to: directionalfan
+      steps:
+      - tool: Anchoring
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+    - to: directionalfanWired
+      completed:
+      - !type:SpawnPrototype
+        prototype: PowerCellSmallPrinted
+        amount: 1
+      steps:
+      - tool: Prying
+        doAfter: 0.5
+
+  - node: directionalfan
+    entity: AtmosDeviceFanDirectional
+    edges:
+    - to: start
+      completed:
+      - !type:SpawnPrototype
+        prototype: SheetSteel1
+        amount: 2
+      - !type:SpawnPrototype
+        prototype: PartRodMetal1
+        amount: 2
+      - !type:SpawnPrototype
+        prototype: CableApcStack1
+        amount: 1
+      - !type:SpawnPrototype
+        prototype: PowerCellSmallPrinted
+        amount: 1
+      - !type:DeleteEntity
+      steps:
+      - tool: Screwing
+        doAfter: 1
+      - tool: Welding
+        doAfter: 1
+  # HardLight end
 
   - node: passivevent
     entity: GasPassiveVent

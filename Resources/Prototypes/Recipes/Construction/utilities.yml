@@ -556,6 +556,19 @@
   conditions:
   - !type:NoUnstackableInTile
 
+- type: construction # HardLight
+  id: AtmosDeviceFanDirectional
+  name: construction-recipe-atmos-device-fan-directional
+  graph: GasUnary
+  startNode: start
+  targetNode: directionalfan
+  category: construction-category-utilities
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  conditions:
+  - !type:NoUnstackableInTile
+
 # ATMOS BINARY
 - type: construction
   id: GasPressurePump

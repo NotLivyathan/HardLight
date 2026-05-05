@@ -402,20 +402,3 @@
   fx: EffectRCDConstruct0
 
 
-# HardLight
-
-# Airlocks
-- type: rcd
-  id: AtmosDeviceFanDirectional
-  category: Airlocks
-  sprite:
-    sprite: /Textures/Structures/Piping/Atmospherics/directionalfan.rsi
-    state: icon
-  mode: ConstructObject
-  prototype: AtmosDeviceFanDirectional
-  cost: 10
-  delay: 5
-  collisionMask: FullTileMask
-  rotation: User
-  fx: EffectRCDConstruct3
-  allowMultiDirection: true

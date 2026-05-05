@@ -451,7 +451,6 @@
     - CableTerminal
     - Deconstruct
     #Hardlight
-    - AtmosDeviceFanDirectional
     - PuckLight
     - PlatingNE
     - PlatingNW
@@ -567,7 +566,6 @@
     - CableTerminal
     - Deconstruct
     #Hardlight
-    - AtmosDeviceFanDirectional
 
 - type: entity
   id: RCDExperimental
