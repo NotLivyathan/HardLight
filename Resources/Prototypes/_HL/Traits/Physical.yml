@@ -342,13 +342,7 @@
   category: Physical
   cost: 0
   components:
-  - type: InteractionPopup
-    successChance: 1
-    interactSuccessString: petting-success-soft-floofy
-    interactFailureString: petting-failure-generic
-    interactSuccessSpawn: EffectHearts
-    interactSuccessSound:
-      path: /Audio/Animals/fox_squeak.ogg
+  - type: PettableInteractionOverride
 
 - type: trait
   id: ArmAmputeeL
