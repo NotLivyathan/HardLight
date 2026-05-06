@@ -20,6 +20,7 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceLinking.Components;
+using Content.Shared.Doors.Components; // HardLight
 using Content.Shared.Implants.Components; // HardLight
 using Content.Shared.Light.Components; // HardLight
 using Content.Shared.Mind.Components; // HardLight
@@ -883,6 +884,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 return true; // Found stash root above.
             if (HasComp<MachineComponent>(owner))
                 return true; // This is so machines keep their upgraded parts.
+            if (HasComp<DoorComponent>(owner))
+                return true; // Keep inserted door electronics boards so constructed doors retain configured access.
             if (HasComp<PoweredLightComponent>(owner)) // HardLight
                 return true; // Keep bulbs inside powered lights so ship loads don't depend on ContainerFill.
             current = owner;
