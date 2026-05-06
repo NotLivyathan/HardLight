@@ -36,7 +36,6 @@ namespace Content.Server.Zombies
         [Dependency] private readonly IPrototypeManager _protoManager = default!;
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
-        [Dependency] private readonly BloodSolutionModifierSystem _bloodSolutionModifier = default!;
         [Dependency] private readonly DamageableSystem _damageable = default!;
         [Dependency] private readonly ChatSystem _chat = default!;
         [Dependency] private readonly ActionsSystem _actions = default!;
