@@ -6,11 +6,11 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._CD.Traits;
 
-public sealed class SynthSystem : EntitySystem
+public sealed class SyntheticSystem : EntitySystem // HardLight: Synth<Synthetic
 {
     // Begin DeltaV - make strings static readonly
     private static readonly ProtoId<TypingIndicatorPrototype> RobotTypingIndicator = "robot";
-    private static readonly ProtoId<ReagentPrototype> SynthBloodReagent = "SynthBlood";
+    private static readonly ProtoId<ReagentPrototype> SyntheticBloodReagent = "SyntheticBlood"; // HardLight: Synth<Synthetic
     // End DeltaV
 
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;
@@ -19,10 +19,10 @@ public sealed class SynthSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SynthComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<SyntheticComponent, ComponentStartup>(OnStartup); // HardLight: Synth<Synthetic
     }
 
-    private void OnStartup(EntityUid uid, SynthComponent component, ComponentStartup args)
+    private void OnStartup(EntityUid uid, SyntheticComponent component, ComponentStartup args) // HardLight: Synth<Synthetic
     {
         if (TryComp<TypingIndicatorComponent>(uid, out var indicator))
         {
@@ -30,7 +30,7 @@ public sealed class SynthSystem : EntitySystem
             Dirty(uid, indicator);
         }
 
-        // Give them synth blood. Ion storm notif is handled in that system
-        _bloodstream.ChangeBloodReagent(uid, SynthBloodReagent); // DeltaV - make strings static readonly
+        // Give them synthetic blood. Ion storm notif is handled in that system, // HardLight: synth<synthetic
+        _bloodstream.ChangeBloodReagent(uid, SyntheticBloodReagent); // DeltaV - make strings static readonly, // HardLight: Synth<Synthetic
     }
 }

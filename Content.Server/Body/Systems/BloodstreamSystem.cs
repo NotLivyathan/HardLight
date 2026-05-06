@@ -190,15 +190,22 @@ public sealed class BloodstreamSystem : EntitySystem
                 // Reset the drunk and stutter time to zero
                 bloodstream.StatusTime = TimeSpan.Zero;
             }
-            
-            // Generic blood restoration system - restore original blood when no blood-changing effects remain
-            if (bloodstream.OriginalBloodReagent != null && bloodstream.BloodReagent != bloodstream.OriginalBloodReagent)
+
+            // HardLight start
+            // Only auto-restore blood for temporary reagent-driven changes.
+            // Permanent blood swaps (i.e. species/traits/zombification) call ChangeBloodReagent directly
+            // without adding a BloodModificationTrackerComponent and should not be reverted here.
+            if (HasComp<BloodModificationTrackerComponent>(uid)
+                && bloodstream.OriginalBloodReagent != null
+                && bloodstream.BloodReagent != bloodstream.OriginalBloodReagent)
+            // HardLight end
             {
                 // Check if any blood-changing reagents are still present
                 if (ShouldRestoreBlood(uid, bloodstream))
                 {
                     ChangeBloodReagent(uid, bloodstream.OriginalBloodReagent.Value, bloodstream);
                     bloodstream.OriginalBloodReagent = null;
+                    RemCompDeferred<BloodModificationTrackerComponent>(uid); // HardLight
                 }
             }
         }
@@ -211,7 +218,7 @@ public sealed class BloodstreamSystem : EntitySystem
     private void BuildBloodAffectingReagentsCache()
     {
         _bloodAffectingReagents.Clear();
-        
+
         foreach (var reagentProto in _prototypeManager.EnumeratePrototypes<ReagentPrototype>())
         {
             // Check all metabolism effects for ChangeBloodReagent
@@ -234,7 +241,7 @@ public sealed class BloodstreamSystem : EntitySystem
     private bool ShouldRestoreBlood(EntityUid uid, BloodstreamComponent bloodstream)
     {
         // Get the entity's chemical solution
-        if (!_solutionContainerSystem.ResolveSolution(uid, bloodstream.ChemicalSolutionName, 
+        if (!_solutionContainerSystem.ResolveSolution(uid, bloodstream.ChemicalSolutionName,
             ref bloodstream.ChemicalSolution, out var chemSolution))
             return true; // No chemicals = safe to restore
 
@@ -244,7 +251,7 @@ public sealed class BloodstreamSystem : EntitySystem
             if (quantity > FixedPoint2.Zero && _bloodAffectingReagents.Contains(reagentId.Prototype))
                 return false; // Found active blood-changing reagent
         }
-        
+
         return true; // No blood-affecting reagents found
     }
 

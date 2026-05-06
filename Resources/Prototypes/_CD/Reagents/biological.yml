@@ -1,8 +1,8 @@
 - type: reagent
-  id: SynthBlood
-  name: reagent-name-synth-blood
+  id: SyntheticBlood
+  name: reagent-name-synthetic-blood
   group: Biological
-  desc: reagent-desc-synth-blood
+  desc: reagent-desc-synthetic-blood
   flavor: metallic
   color: "#00b8f5"
   recognizable: true
