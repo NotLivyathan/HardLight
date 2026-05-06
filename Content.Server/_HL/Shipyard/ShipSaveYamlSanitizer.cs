@@ -15,7 +15,7 @@ public static class ShipSaveYamlSanitizer
     /// can skip a redundant sanitizer pass for already-clean saves. Bump the version suffix
     /// when the sanitizer rules change in a way that should re-scrub previously-saved ships.
     /// </summary>
-    public const string SanitizedMarkerComment = "# hl-sanitized: 1";
+    public const string SanitizedMarkerComment = "# hl-sanitized: 2";
 
     // Implants that should not persist when found inside implanters during ship save.
     private static readonly HashSet<string> BlockedContainedImplantPrototypes = new(StringComparer.Ordinal)
@@ -367,13 +367,20 @@ public static class ShipSaveYamlSanitizer
                 }
 
                 var hasDoorComponent = false;
+                var hasDockingComponent = false;
                 foreach (var c in compsNotNull)
                 {
-                    if (c is MappingDataNode cm && cm.TryGet("type", out ValueDataNode? t) && t != null && t.Value == "Door")
+                    if (c is not MappingDataNode cm || !cm.TryGet("type", out ValueDataNode? t) || t == null)
+                        continue;
+
+                    if (t.Value == "Door")
                     {
                         hasDoorComponent = true;
-                        break;
+                        continue;
                     }
+
+                    if (t.Value == "Docking")
+                        hasDockingComponent = true;
                 }
 
                 if (hasDoorComponent)
@@ -417,6 +424,15 @@ public static class ShipSaveYamlSanitizer
 
                     if (typeName == "Transform" && hasMapGrid)
                         compMap.Remove("rot");
+
+                    if (hasDockingComponent)
+                    {
+                        if (typeName == "Door")
+                            ResetDockDoorState(compMap);
+
+                        if (typeName == "DoorBolt")
+                            ResetDockDoorBoltState(compMap);
+                    }
 
                     if (typeName == "Appearance" && paintStylePrototype != null)
                         ApplyPaintStyleToAppearance(compMap, paintStylePrototype);
@@ -869,5 +885,22 @@ public static class ShipSaveYamlSanitizer
         }
 
         appearanceDataInit["enum.PaintableVisuals.Prototype"] = new ValueDataNode(stylePrototype);
+    }
+
+    /// <summary>
+    /// Ship saves should never preserve the "held open because currently docked" runtime state.
+    /// Resetting these fields makes docking airlocks load from their normal prototype defaults.
+    /// </summary>
+    private static void ResetDockDoorState(MappingDataNode doorComp)
+    {
+        doorComp.Remove("state");
+        doorComp.Remove("partial");
+        doorComp.Remove("secondsUntilStateChange");
+        doorComp.Remove("changeAirtight");
+    }
+
+    private static void ResetDockDoorBoltState(MappingDataNode boltComp)
+    {
+        boltComp.Remove("boltsDown");
     }
 }
