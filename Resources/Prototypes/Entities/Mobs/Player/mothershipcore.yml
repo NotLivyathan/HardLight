@@ -14,6 +14,7 @@
     damageContainer: Inorganic
   - type: ContentEye
   - type: Examiner
+  - type: DoAfter # Required: this entity is used as a DoAfter user (e.g. when tools are used on it).
   - type: RotationVisuals
     defaultRotation: 90
     horizontalRotation: 90
@@ -157,11 +158,13 @@
     - Mothership
     - Xenoborg
     - Binary
+    - Trinary # Hardlight
   - type: ActiveRadio
     channels:
     - Mothership
     - Xenoborg
     - Binary
+    - Trinary # Hardlight
   - type: Xenoborg
     mindRole: MindRoleMothershipCore
     briefingText: mothership-welcome
@@ -181,7 +184,7 @@
     factions:
     - Xenoborg
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: Hands
     showInHands: false
     disableExplosionRecursion: true

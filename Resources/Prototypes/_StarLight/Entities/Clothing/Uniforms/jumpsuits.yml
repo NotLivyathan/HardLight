@@ -52,3 +52,48 @@
     sprite: _Starlight/Clothing/Uniforms/Jumpsuit/formal_blueshield.rsi
   - type: Clothing
     sprite: _Starlight/Clothing/Uniforms/Jumpsuit/formal_blueshield.rsi
+
+- type: entity
+  parent: [ClothingUniformBase]
+  id: ClothingUniformJumpsuitBlueShield
+  name: blueshield suit
+  description: The suit of a glorified bodyguard.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/blueshield.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/blueshield.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+
+- type: entity
+  parent: [ClothingUniformBase]
+  id: ClothingUniformJumpsuitEliteBlueShield
+  name: elite blueshield suit
+  description: The suit of an elite BSO. To reach such a level, you must have protected Command from [REDACTED].
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/eliteblueshield.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/eliteblueshield.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+
+- type: entity
+  parent: [ClothingUniformBase]
+  id: ClothingUniformJumpsuitBlueShieldShirt
+  name: blueshield officer's shirt
+  description: A collared shirt and pants for the blueshield officer who likes to keep it business casual.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/blueshieldshirt.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpsuit/blueshieldshirt.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon

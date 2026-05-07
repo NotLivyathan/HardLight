@@ -3,7 +3,7 @@
   parent: BaseBorgChassisNT
   components:
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: Sprite
     sprite: _HL/Mobs/Silicon/RaptBorg.rsi
     scale: 0.5, 0.5
@@ -37,12 +37,14 @@
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: ActiveRadio
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: BorgChassis
@@ -88,7 +90,7 @@
   parent: BaseBorgChassisNT
   components:
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: Sprite
     sprite: _HL/Mobs/Silicon/RaptBorg.rsi
     scale: 0.5, 0.5
@@ -122,12 +124,14 @@
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: ActiveRadio
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: BorgChassis
@@ -173,7 +177,7 @@
   parent: BaseBorgChassisNT
   components:
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: Sprite
     sprite: _HL/Mobs/Silicon/RaptBorg.rsi
     scale: 0.5, 0.5
@@ -207,12 +211,14 @@
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: ActiveRadio
     channels:
     - Security
     - Binary
+    - Trinary
     - Common
     - Science
   - type: BorgChassis

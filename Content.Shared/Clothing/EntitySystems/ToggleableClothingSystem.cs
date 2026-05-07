@@ -481,11 +481,12 @@ public sealed class ToggleableClothingSystem : EntitySystem
         {
             if (component.Container!.ContainedEntity is { } ent)
             {
-                DebugTools.Assert(component.ClothingUid == ent, "Unexpected entity present inside of a toggleable clothing container.");
-                return;
-            }
+                component.ClothingUid = ent;
 
-            if (component.ClothingUid != null && component.ActionEntity != null)
+                DebugTools.Assert(TryComp(component.ClothingUid, out AttachedClothingComponent? existingAttached), "Toggleable clothing is missing an attached component");
+                DebugTools.Assert(existingAttached?.AttachedUid == uid, "Toggleable clothing uid mismatch");
+            }
+            else if (component.ClothingUid != null && Exists(component.ClothingUid.Value))
             {
                 DebugTools.Assert(Exists(component.ClothingUid), "Toggleable clothing is missing expected entity.");
                 DebugTools.Assert(TryComp(component.ClothingUid, out AttachedClothingComponent? comp), "Toggleable clothing is missing an attached component");

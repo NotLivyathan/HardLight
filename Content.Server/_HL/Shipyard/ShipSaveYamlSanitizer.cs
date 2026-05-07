@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Sequence;
@@ -12,6 +10,13 @@ namespace Content.Server._HL.Shipyard;
 /// </summary>
 public static class ShipSaveYamlSanitizer
 {
+    /// <summary>
+    /// Marker line stamped at the top of newly-sanitized ship-save YAML so the load path
+    /// can skip a redundant sanitizer pass for already-clean saves. Bump the version suffix
+    /// when the sanitizer rules change in a way that should re-scrub previously-saved ships.
+    /// </summary>
+    public const string SanitizedMarkerComment = "# hl-sanitized: 3";
+
     // Implants that should not persist when found inside implanters during ship save.
     private static readonly HashSet<string> BlockedContainedImplantPrototypes = new(StringComparer.Ordinal)
     {
@@ -22,6 +27,12 @@ public static class ShipSaveYamlSanitizer
 
     // Components stripped from all entities during ship-save export.
     // Add new always-remove component types here.
+    //
+    // The runtime-only block at the end holds components whose [DataField] persists
+    // EntityUid references that only make sense at runtime (action grants, in-flight
+    // projectiles, currently-playing sound entities, etc.). On load these refs resolve
+    // to EntityUid.Invalid (uid 0), which leaks into transform child sets and spams
+    // "system.entity_lookup: Encountered deleted entity 0" on every spatial query.
     private static readonly HashSet<string> FilteredTypes = new(StringComparer.Ordinal)
     {
         "Joint",
@@ -30,7 +41,6 @@ public static class ShipSaveYamlSanitizer
         "ShuttleDeed",
         "IFF",
         "LinkedLifecycleGridParent",
-        "AccessReader",
         "DeviceNetwork",
         "DeviceNetworkComponent",
         "UserInterface",
@@ -40,6 +50,21 @@ public static class ShipSaveYamlSanitizer
         "MindContainer",
         "VendingMachine",
         "Forensics",
+        "ContainmentFieldGenerator",
+        // Runtime-only entity-ref state — stripping prevents stale-uid spam at load.
+        // NOTE: NetworkConfigurator is intentionally NOT in this list. Its Devices
+        // dictionary is player-configured persistent state (device address -> entity
+        // UID for manually-scanned grid devices); stripping it would silently lose the
+        // operator's setup. On-grid Devices entries are already remapped correctly by
+        // the engine's EntityDeserializer.UidMap. Cross-grid entries that resolve to
+        // EntityUid.Invalid only show up as a UI inconsistency in the configurator,
+        // not as the per-tick lookup spam this filter is fixing.
+        "Actions",
+        "Projectile",
+        "ItemToggleActiveSound",
+        "Blocking",
+        "Turnstile",
+        "SubdermalImplant",
     };
 
     // Fill components that are normally removed from ship saves.
@@ -109,10 +134,18 @@ public static class ShipSaveYamlSanitizer
         "VendingMachineVendomatPOI",
         "VendingMachineYouToolPOI",
         // Everything else
+        "ContainmentField",
         "PortalBlue",
         "PortalRed",
         "ReactorGasPipe",
+        "TurbineGasPipe",
         "ShipShield",
+        // NullSpace items
+        "ClothingEyesGlassesNullSpace",
+        "BluespaceFlasher",
+        "ClothingNullHarness",
+        "ClothingNullSpaceTeleporter",
+        "BluespaceAnchor",
     };
 
     // Entity-level exclusion by component signature.
@@ -138,6 +171,14 @@ public static class ShipSaveYamlSanitizer
         "Pda",
         "ShipyardConsole",
         "Store",
+    };
+
+    private static readonly HashSet<string> ActionEntityComponentTypes = new(StringComparer.Ordinal)
+    {
+        "InstantAction",
+        "EntityTargetAction",
+        "WorldTargetAction",
+        "EntityWorldTargetAction",
     };
 
     // Component exclusion exceptions: keep entity when both component and its paired exception component exist.
@@ -221,9 +262,6 @@ public static class ShipSaveYamlSanitizer
                             break;
                         }
 
-                        if (!allowFillComponents && proto.Components.ContainsKey("Door"))
-                            allowFillComponents = true;
-
                         if (!allowFillComponents)
                         {
                             foreach (var name in ForcedMissingComponents)
@@ -239,6 +277,16 @@ public static class ShipSaveYamlSanitizer
                 }
 
                 if (!entMap.TryGet("components", out SequenceDataNode? comps) || comps == null)
+                {
+                    if (entMap.TryGet("uid", out ValueDataNode? removedUidNode) && removedUidNode != null && !removedUidNode.IsNull)
+                        removedEntityUids.Add(removedUidNode.Value);
+
+                    entitiesSeq.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+
+                if (HasActionEntityComponentNode(comps))
                 {
                     if (entMap.TryGet("uid", out ValueDataNode? removedUidNode) && removedUidNode != null && !removedUidNode.IsNull)
                         removedEntityUids.Add(removedUidNode.Value);
@@ -315,20 +363,14 @@ public static class ShipSaveYamlSanitizer
                     }
                 }
 
-                var hasDoorComponent = false;
+                var hasDockingComponent = false;
                 foreach (var c in compsNotNull)
                 {
-                    if (c is MappingDataNode cm && cm.TryGet("type", out ValueDataNode? t) && t != null && t.Value == "Door")
-                    {
-                        hasDoorComponent = true;
-                        break;
-                    }
-                }
+                    if (c is not MappingDataNode cm || !cm.TryGet("type", out ValueDataNode? t) || t == null)
+                        continue;
 
-                if (hasDoorComponent)
-                {
-                    allowFillComponents = true;
-                    protoMissing = null;
+                    if (t.Value == "Docking")
+                        hasDockingComponent = true;
                 }
 
                 // Build sanitized component list for this entity.
@@ -348,6 +390,8 @@ public static class ShipSaveYamlSanitizer
 
                     var typeName = typeNode.Value;
 
+                    RemoveRuntimeActionReferenceFields(compMap);
+
                     if (FilteredTypes.Contains(typeName))
                     {
                         if (allowFillComponents && FillComponentTypes.Contains(typeName))
@@ -364,6 +408,24 @@ public static class ShipSaveYamlSanitizer
 
                     if (typeName == "Transform" && hasMapGrid)
                         compMap.Remove("rot");
+
+                    if (typeName == "AccessReader")
+                    {
+                        // Keep the configured access behavior, but do not persist historical access logs.
+                        compMap.Remove("accessLog");
+                        compMap.Remove("AccessLog");
+                        compMap.Remove("loggingDisabled");
+                        compMap.Remove("LoggingDisabled");
+                    }
+
+                    if (hasDockingComponent)
+                    {
+                        if (typeName == "Door")
+                            ResetDockDoorState(compMap);
+
+                        if (typeName == "DoorBolt")
+                            ResetDockDoorBoltState(compMap);
+                    }
 
                     if (typeName == "Appearance" && paintStylePrototype != null)
                         ApplyPaintStyleToAppearance(compMap, paintStylePrototype);
@@ -405,6 +467,21 @@ public static class ShipSaveYamlSanitizer
                         compMap.Remove("CurrentTechnologyCards");
                         compMap.Remove("mainDiscipline");
                         compMap.Remove("MainDiscipline");
+                    }
+
+                    if (typeName == "Shuttle")
+                    {
+                        // Strip WEP runtime state — these fields are never [DataField] but guard against future changes.
+                        compMap.Remove("wepBoostActive");
+                        compMap.Remove("wepBoostExpiry");
+                        compMap.Remove("wepBoostMaxVelocity");
+                        compMap.Remove("wepBleedExpiry");
+                        compMap.Remove("wepCooldownExpiry");
+                        compMap.Remove("wepThrustMultiplier");
+                        compMap.Remove("wepAudioStream");
+                        compMap.Remove("wepPowerApplied");
+                        compMap.Remove("wepCurrentLoad");
+                        compMap.Remove("wepLastLoadUpdateTime");
                     }
 
                     if (typeName == "Battery")
@@ -509,8 +586,44 @@ public static class ShipSaveYamlSanitizer
             }
         }
 
-        // Final pass: remove stale container/storage references to entities dropped above.
-        PruneContainerReferencesToRemovedEntities(protoSeq, removedEntityUids);
+        // Final pass: remove stale container/storage references to entities dropped above
+        // OR to entities that were never in this grid to begin with (e.g. mobs that despawned
+        // mid-flight, players who logged off while in storage, parented sub-grids that got
+        // cleaned up). Without this, those refs deserialize to EntityUid.Invalid (uid 0) and
+        // the engine's RecursiveAdd in EntityLookupSystem spams "Encountered deleted entity 0"
+        // on every spatial query for the lifetime of the loaded grid.
+        var declaredEntityUids = CollectDeclaredEntityUids(protoSeq);
+        PruneContainerReferencesToRemovedEntities(protoSeq, removedEntityUids, declaredEntityUids);
+    }
+
+    /// <summary>
+    /// Returns the set of every uid string declared as an entity in the save's
+    /// <c>entities</c> sequence. Used by <see cref="PruneContainerReferencesToRemovedEntities"/>
+    /// to detect dangling references to entities that were never present in this save.
+    /// </summary>
+    private static HashSet<string> CollectDeclaredEntityUids(SequenceDataNode protoSeq)
+    {
+        var declared = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var protoNode in protoSeq)
+        {
+            if (protoNode is not MappingDataNode protoMap)
+                continue;
+
+            if (!protoMap.TryGet("entities", out SequenceDataNode? entitiesSeq) || entitiesSeq == null)
+                continue;
+
+            foreach (var entityNode in entitiesSeq)
+            {
+                if (entityNode is not MappingDataNode entMap)
+                    continue;
+
+                if (entMap.TryGet("uid", out ValueDataNode? uidNode) && uidNode != null && !uidNode.IsNull)
+                    declared.Add(uidNode.Value);
+            }
+        }
+
+        return declared;
     }
 
     private static string? GetPaintStylePrototype(SequenceDataNode components)
@@ -548,6 +661,42 @@ public static class ShipSaveYamlSanitizer
         }
 
         return false;
+    }
+
+    private static bool HasActionEntityComponentNode(SequenceDataNode components)
+    {
+        foreach (var compNode in components)
+        {
+            if (compNode is not MappingDataNode compMap)
+                continue;
+
+            if (!compMap.TryGet("type", out ValueDataNode? typeNode) || typeNode == null)
+                continue;
+
+            if (ActionEntityComponentTypes.Contains(typeNode.Value))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static void RemoveRuntimeActionReferenceFields(MappingDataNode compMap)
+    {
+        var removeKeys = new List<string>();
+
+        foreach (var (key, _) in compMap)
+        {
+            if (key.EndsWith("ActionEntity", StringComparison.OrdinalIgnoreCase)
+                || key.EndsWith("ActionEntities", StringComparison.OrdinalIgnoreCase))
+            {
+                removeKeys.Add(key);
+            }
+        }
+
+        foreach (var key in removeKeys)
+        {
+            compMap.Remove(key);
+        }
     }
 
     private static HashSet<string> CollectBlockedContainedImplantEntityUids(SequenceDataNode protoSeq)
@@ -628,10 +777,16 @@ public static class ShipSaveYamlSanitizer
         return false;
     }
 
-    private static void PruneContainerReferencesToRemovedEntities(SequenceDataNode protoSeq, HashSet<string> removedEntityUids)
+    private static void PruneContainerReferencesToRemovedEntities(
+        SequenceDataNode protoSeq,
+        HashSet<string> removedEntityUids,
+        HashSet<string> declaredEntityUids)
     {
-        if (removedEntityUids.Count == 0)
-            return;
+        // A reference is stale if it points at an entity we explicitly removed during
+        // sanitation, OR at an entity that was never declared in this save at all.
+        // The latter happens for runtime refs that were captured at save time but
+        // pointed outside the grid (despawned mobs, off-grid players, parent stations).
+        bool IsStale(string uid) => removedEntityUids.Contains(uid) || !declaredEntityUids.Contains(uid);
 
         // Remove dangling references from both ContainerContainer and Storage serialized structures.
         foreach (var protoNode in protoSeq)
@@ -677,14 +832,14 @@ public static class ShipSaveYamlSanitizer
                                     if (entsNode[idx] is not ValueDataNode entValue || entValue.IsNull)
                                         continue;
 
-                                    if (removedEntityUids.Contains(entValue.Value))
+                                    if (IsStale(entValue.Value))
                                         entsNode.RemoveAt(idx);
                                 }
                             }
 
                             if (containerMap.TryGet("ent", out ValueDataNode? entNode) && entNode != null && !entNode.IsNull)
                             {
-                                if (removedEntityUids.Contains(entNode.Value))
+                                if (IsStale(entNode.Value))
                                     containerMap["ent"] = ValueDataNode.Null();
                             }
                         }
@@ -697,7 +852,7 @@ public static class ShipSaveYamlSanitizer
                         var removeKeys = new List<string>();
                         foreach (var (itemUid, _) in storedItemsMap)
                         {
-                            if (removedEntityUids.Contains(itemUid))
+                            if (IsStale(itemUid))
                                 removeKeys.Add(itemUid);
                         }
 
@@ -723,5 +878,22 @@ public static class ShipSaveYamlSanitizer
         }
 
         appearanceDataInit["enum.PaintableVisuals.Prototype"] = new ValueDataNode(stylePrototype);
+    }
+
+    /// <summary>
+    /// Ship saves should never preserve the "held open because currently docked" runtime state.
+    /// Resetting these fields makes docking airlocks load from their normal prototype defaults.
+    /// </summary>
+    private static void ResetDockDoorState(MappingDataNode doorComp)
+    {
+        doorComp.Remove("state");
+        doorComp.Remove("partial");
+        doorComp.Remove("secondsUntilStateChange");
+        doorComp.Remove("changeAirtight");
+    }
+
+    private static void ResetDockDoorBoltState(MappingDataNode boltComp)
+    {
+        boltComp.Remove("boltsDown");
     }
 }

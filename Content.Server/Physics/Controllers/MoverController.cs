@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
@@ -6,12 +7,15 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
 using DroneConsoleComponent = Content.Server.Shuttles.DroneConsoleComponent;
 using DependencyAttribute = Robust.Shared.IoC.DependencyAttribute;
-using Robust.Shared.Map.Components;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Physics.Controllers;
 
@@ -19,6 +23,9 @@ public sealed class MoverController : SharedMoverController
 {
     [Dependency] private readonly ThrusterSystem _thruster = default!;
     [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private Dictionary<EntityUid, (ShuttleComponent, List<(EntityUid, PilotComponent, InputMoverComponent, TransformComponent)>)> _shuttlePilots = new();
 
@@ -123,6 +130,17 @@ public sealed class MoverController : SharedMoverController
                 continue;
             }
 
+            // HardLight: guard against a stale parent chain. HandleMobMovement walks up the
+            // parent chain via _transform.GetWorldRotation(xform), which throws KeyNotFoundException
+            // if any ancestor's TransformComponent has been deleted (chaotic round shutdown,
+            // grid cleanup races, etc.). The mover's own xform can survive its parent dying for
+            // a tick before re-parenting catches up. Skip this mover for the tick instead of
+            // spamming the runtime log every frame for every affected entity.
+            if (xform.ParentUid != EntityUid.Invalid && !XformQuery.HasComponent(xform.ParentUid))
+            {
+                continue;
+            }
+
             PhysicsComponent? body;
             var xformMover = xform;
 
@@ -141,6 +159,18 @@ public sealed class MoverController : SharedMoverController
             {
                 continue;
             }
+
+            // perf: if the physics body is asleep, no movement keys are held, and there is no
+            // pending rotation lerp, HandleMobMovement has nothing to do this tick (no velocity
+            // changes, no friction, no lerp progress). Any code that wakes the body earlier in
+            // the same tick (damage, interactions, etc.) sets body.Awake = true before
+            // UpdateBeforeSolve runs, so the guard won't fire for those cases.
+            if (!body.Awake
+                && mover.HeldMoveButtons == MoveButtons.None
+                && mover.CurTickWalkMovement.LengthSquared() == 0f
+                && mover.CurTickSprintMovement.LengthSquared() == 0f
+                && mover.TargetRelativeRotation == mover.RelativeRotation)
+                continue;
 
             HandleMobMovement((uid, mover), frameTime);
         }
@@ -198,6 +228,15 @@ public sealed class MoverController : SharedMoverController
     {
         if (!TryComp<PilotComponent>(uid, out var pilot) || pilot.Console == null)
             return;
+
+        // WEP is a one-shot activation, not a held state
+        if (button == ShuttleButtons.Wep && state)
+        {
+            var consoleXform = Transform(pilot.Console.Value);
+            if (consoleXform.GridUid is { } gridUid && TryComp<ShuttleComponent>(gridUid, out var wepShuttle))
+                ActivateWEP(gridUid, wepShuttle);
+            return;
+        }
 
         ResetSubtick(pilot);
 
@@ -315,13 +354,46 @@ public sealed class MoverController : SharedMoverController
     }
 
     /// <summary>
-    /// Helper function to extrapolate max velocity for a given Vector2 (really, its angle) and shuttle.
-    /// Takes local direction.
+    /// Activates WEP boost on a shuttle. Returns false if on cooldown.
+    /// Speed is scaled by grid tile count: 250 tiles → 100 m/s, log2-linear, clamped 50–125.
     /// </summary>
+    public bool ActivateWEP(EntityUid gridUid, ShuttleComponent shuttle)
+    {
+        if (_timing.CurTime < shuttle.WepCooldownExpiry)
+            return false;
+
+        // Compute WEP max velocity from grid tile count.
+        var tileCount = ShuttleComponent.WepBaseGridSize;
+        if (TryComp<MapGridComponent>(gridUid, out var mapGrid))
+            tileCount = MathF.Max(1f, _mapSystem.GetAllTiles(gridUid, mapGrid).Count());
+
+        var rawVel = ShuttleComponent.WepBaseVelocity - 25f * MathF.Log2(tileCount / ShuttleComponent.WepBaseGridSize);
+        shuttle.WepBoostMaxVelocity = Math.Clamp(rawVel, ShuttleComponent.WepLowerVelocity, ShuttleComponent.WepUpperVelocity);
+
+        shuttle.WepBoostActive = true;
+        shuttle.WepBoostExpiry = _timing.CurTime + TimeSpan.FromSeconds(ShuttleComponent.WepBoostDuration);
+        shuttle.WepBleedExpiry = shuttle.WepBoostExpiry + TimeSpan.FromSeconds(ShuttleComponent.WepBleedDuration);
+        shuttle.WepCooldownExpiry = shuttle.WepBoostExpiry + TimeSpan.FromSeconds(ShuttleComponent.WepCooldownDuration);
+        shuttle.WepThrustMultiplier = shuttle.WepBoostMaxVelocity / ShuttleComponent.WepLowerVelocity;
+
+        // Play looping WEP audio on the grid.
+        shuttle.WepAudioStream = _audio.Stop(shuttle.WepAudioStream);
+        var stream = _audio.PlayPvs(new SoundPathSpecifier("/Audio/_HL/Effects/wep_buzz.ogg")
+            { Params = AudioParams.Default.WithLoop(true).WithVolume(-3f) }, gridUid);
+        shuttle.WepAudioStream = stream?.Entity;
+        _audio.SetGridAudio(stream);
+
+        EntityManager.System<ShuttleConsoleSystem>().OnWEPActivated(gridUid);
+        return true;
+    }
+
     public Vector2 ObtainMaxVel(Vector2 vel, ShuttleComponent shuttle, PhysicsComponent body) // mono
     {
         vel.Normalize(); // Vector2 is a struct so this acts on a copy
-        return vel * shuttle.BaseMaxLinearVelocity;
+        var maxVel = (shuttle.WepBoostActive && _timing.CurTime < shuttle.WepBoostExpiry)
+            ? shuttle.WepBoostMaxVelocity
+            : shuttle.BaseMaxLinearVelocity;
+        return vel * maxVel;
     }
 
     private void HandleShuttleMovement(float frameTime)
@@ -350,6 +422,23 @@ public sealed class MoverController : SharedMoverController
             }
 
             var count = inputs.Count;
+
+            // HL: WEP bleed - decelerate to normal max speed over 1 second after WEP expires
+            if (!shuttle.WepBoostActive && _timing.CurTime < shuttle.WepBleedExpiry)
+            {
+                var speed = body.LinearVelocity.Length();
+                if (speed > shuttle.BaseMaxLinearVelocity)
+                {
+                    PhysicsSystem.SetSleepingAllowed(uid, body, false);
+                    var bleedTimeRemaining = (float)(shuttle.WepBleedExpiry - _timing.CurTime).TotalSeconds;
+                    var excessSpeed = speed - shuttle.BaseMaxLinearVelocity;
+                    var dv = MathF.Min(excessSpeed * frameTime / bleedTimeRemaining, excessSpeed);
+                    var brakeForce = -body.LinearVelocity.Normalized() * dv * body.Mass / frameTime;
+                    PhysicsSystem.ApplyForce(uid, brakeForce, body: body);
+                }
+            }
+            // End HL
+
             if (count == 0)
             {
                 _thruster.DisableLinearThrusters(shuttle);
@@ -503,6 +592,10 @@ public sealed class MoverController : SharedMoverController
                     var appliedLength = MathF.Min(totalForce.Length(), maxForceLength);
                     totalForce = velDelta.Length() == 0 ? Vector2.Zero : velDelta.Normalized() * appliedLength;
                 }
+
+                // HL: WEP thrust boost (pre-computed multiplier, no extra per-tick work)
+                if (shuttle.WepBoostActive)
+                    totalForce *= shuttle.WepThrustMultiplier;
 
                 totalForce = shuttleNorthAngle.RotateVec(totalForce);
 

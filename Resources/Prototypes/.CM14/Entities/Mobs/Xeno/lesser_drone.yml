@@ -17,13 +17,10 @@
   - type: Xeno
     actionIds:
     - ActionXenoRest
-    - ActionXenoPlantWeeds # TODO CM14 only near other weeds for lesser drones
     - ActionXenoAcid
     - ActionXenoRegurgitate
     - ActionXenoChooseStructure
     - ActionXenoSecreteStructure
-    maxPlasma: 300
-    plasmaRegen: 12
     restHealing:
       types:
         Blunt: -0.4

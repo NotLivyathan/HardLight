@@ -17,7 +17,6 @@ public sealed partial class ActionGunComponent : Component
     [DataField(required: true)]
     public EntProtoId Action = string.Empty;
 
-    [DataField]
     public EntityUid? ActionEntity;
 
     /// <summary>

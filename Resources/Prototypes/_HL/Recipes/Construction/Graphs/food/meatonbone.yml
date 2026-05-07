@@ -1,0 +1,16 @@
+- type: constructionGraph
+  id: MeatOnBone
+  start: start
+  graph:
+
+  - node: start
+    edges:
+    - to: meat on bone
+      completed:
+      - !type:PlaySound
+        sound: /Audio/Effects/sizzle.ogg
+      steps:
+      - minTemperature: 335
+
+  - node: meat on bone
+    entity: FoodMeatOnBoneCooked

@@ -75,8 +75,12 @@ public abstract class SharedNanoChatSystem : EntitySystem
         if (!Resolve(card, ref card.Comp) || card.Comp.Number == number)
             return;
 
+        var oldNumber = card.Comp.Number;
         card.Comp.Number = number;
         Dirty(card);
+
+        var ev = new NanoChatNumberChangedEvent(card.Owner, oldNumber, number);
+        RaiseLocalEvent(card.Owner, ref ev);
     }
 
     /// <summary>
@@ -181,7 +185,7 @@ public abstract class SharedNanoChatSystem : EntitySystem
     /// </summary>
     public void SetCurrentChat(Entity<NanoChatCardComponent?> card, uint? recipient)
     {
-        if (!Resolve(card, ref card.Comp))
+        if (!Resolve(card, ref card.Comp) || card.Comp.CurrentChat == recipient)
             return;
 
         card.Comp.CurrentChat = recipient;
@@ -322,6 +326,8 @@ public abstract class SharedNanoChatSystem : EntitySystem
         if (!Resolve(card, ref card.Comp))
             return false;
 
+        var changed = false;
+
         if (!card.Comp.Recipients.ContainsKey(recipientNumber))
         {
             // Only add if we have recipient info
@@ -329,13 +335,19 @@ public abstract class SharedNanoChatSystem : EntitySystem
                 return false;
 
             card.Comp.Recipients[recipientNumber] = recipientInfo.Value;
+            changed = true;
         }
 
         // Ensure message list exists for this recipient
         if (!card.Comp.Messages.ContainsKey(recipientNumber))
+        {
             card.Comp.Messages[recipientNumber] = new List<NanoChatMessage>();
+            changed = true;
+        }
 
-        Dirty(card);
+        if (changed)
+            Dirty(card);
+
         return true;
     }
 

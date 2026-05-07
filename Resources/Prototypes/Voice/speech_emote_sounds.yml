@@ -366,12 +366,24 @@
       collection: VulpkaninBarks
     Honk:
       collection: BikeHorn
-    Gasp:
-      collection: MaleGasp
+    # Gasp: # HL: SL sounds
+    #   collection: MaleGasp
     DefaultDeathgasp:
       collection: DeathGasp
     Belch: # Frontier
       collection: Belch # Frontier
+    #region Starlight
+    Crying:
+      path: /Audio/_Starlight/Voice/Arachnid/arachnid_cry.ogg
+    Cough:
+      path: /Audio/_Starlight/Voice/Arachnid/arachnid_cough.ogg
+    Yawn:
+      path: /Audio/_Starlight/Voice/Arachnid/arachnid_yawn.ogg
+    Sigh:
+      path: /Audio/_Starlight/Voice/Arachnid/arachnid_sigh.ogg
+    Gasp:
+      path: /Audio/_Starlight/Voice/Arachnid/arachnid_gasp.ogg
+    #endregion Starlight
 
 - type: emoteSounds
   id: UnisexDwarf
@@ -492,12 +504,24 @@
       collection: VulpkaninBarks
     Honk:
       collection: BikeHorn
-    Gasp:
-      collection: MaleGasp
+    # Gasp:
+    #   collection: MaleGasp
     DefaultDeathgasp:
       collection: MothDeathGasp
     Belch: # Frontier
       collection: Belch # Frontier
+    #region Starlight
+    Crying:
+      path: /Audio/_Starlight/Voice/Moth/moth_cry.ogg
+    Cough:
+      path: /Audio/_Starlight/Voice/Moth/moth_cough.ogg
+    Yawn:
+      path: /Audio/_Starlight/Voice/Moth/moth_yawn.ogg
+    Sigh:
+      path: /Audio/_Starlight/Voice/Moth/moth_sigh.ogg
+    Gasp:
+      path: /Audio/_Starlight/Voice/Moth/moth_gasp.ogg
+    #endregion Starlight
 
 - type: emoteSounds
   id: UnisexSilicon
@@ -621,7 +645,7 @@
     Gekker: # Floof
       collection: VulpkaninGekkers
     Pout: # HardLight
-        collection: Whine # Starlight
+      collection: Whine # Starlight
 
 - type: emoteSounds
   id: FemaleVulpkanin
@@ -677,7 +701,7 @@
     Gekker: # Floof
       collection: VulpkaninGekkers
     Pout: # HardLight
-        collection: Whine # Starlight
+      collection: Whine # Starlight
 
 # body emotes
 - type: emoteSounds

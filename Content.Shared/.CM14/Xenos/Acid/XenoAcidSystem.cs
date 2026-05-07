@@ -12,7 +12,6 @@ public sealed class XenoAcidSystem : EntitySystem
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly XenoSystem _xeno = default!;
 
     public override void Initialize()
     {
@@ -41,9 +40,6 @@ public sealed class XenoAcidSystem : EntitySystem
             return;
 
         if (!CheckCorrodablePopups(xeno, target))
-            return;
-
-        if (!_xeno.TryRemovePlasmaPopup(xeno, args.PlasmaCost))
             return;
 
         if (_net.IsClient)

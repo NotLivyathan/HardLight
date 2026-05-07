@@ -47,6 +47,9 @@ namespace Content.Server.Atmos.EntitySystems
         }
 
         private readonly List<Entity<GridAtmosphereComponent, GasTileOverlayComponent, MapGridComponent, TransformComponent>> _currentRunAtmosphere = new();
+        private readonly Dictionary<MapId, List<MapCoordinates>> _atmosDeviceActorPositionsByMap = new();
+        private readonly Stack<List<MapCoordinates>> _freeAtmosDeviceActorPositionLists = new();
+        private bool _atmosDeviceActorPositionsValid;
 
         /// <summary>
         ///     Revalidates all invalid coordinates in a grid atmosphere.
@@ -532,12 +535,21 @@ namespace Content.Server.Atmos.EntitySystems
                 }
             }
 
+            EnsureAtmosDeviceActorPositions();
+
+            if (!_atmosDeviceActorPositionsByMap.TryGetValue(ent.Comp4.MapID, out var actorPositions) || actorPositions.Count == 0)
+            {
+                atmosphere.CurrentRunAtmosDevices.Clear();
+                return true;
+            }
+
+            var range = _cfg.GetCVar(CVars.NetMaxUpdateRange) * 2f;
             var time = _gameTiming.CurTime;
             var number = 0;
             var ev = new AtmosDeviceUpdateEvent(RealAtmosTime(), (ent, ent.Comp1, ent.Comp2), map);
             while (atmosphere.CurrentRunAtmosDevices.TryDequeue(out var device))
             {
-                if (!HasPlayerInRange(device.Owner))
+                if (!HasPlayerInRange(device.Owner, actorPositions, range))
                     continue;
 
                 RaiseLocalEvent(device, ref ev);
@@ -557,17 +569,48 @@ namespace Content.Server.Atmos.EntitySystems
             return true;
         }
 
-        private bool HasPlayerInRange(EntityUid uid)
+        private void EnsureAtmosDeviceActorPositions()
         {
-            var range = _cfg.GetCVar(CVars.NetMaxUpdateRange) * 2f;
-            if (!TryComp<TransformComponent>(uid, out var xform))
-                return false;
+            if (_atmosDeviceActorPositionsValid)
+                return;
 
-            var coords = xform.Coordinates;
-
-            foreach (var _ in _lookup.GetEntitiesInRange<ActorComponent>(coords, range))
+            foreach (var positions in _atmosDeviceActorPositionsByMap.Values)
             {
-                return true;
+                positions.Clear();
+                _freeAtmosDeviceActorPositionLists.Push(positions);
+            }
+
+            _atmosDeviceActorPositionsByMap.Clear();
+
+            var actors = EntityQueryEnumerator<ActorComponent>();
+            while (actors.MoveNext(out var actorUid, out _))
+            {
+                var actorCoords = _transformSystem.GetMapCoordinates(actorUid);
+                if (actorCoords.MapId == MapId.Nullspace)
+                    continue;
+
+                if (!_atmosDeviceActorPositionsByMap.TryGetValue(actorCoords.MapId, out var actorPositions))
+                {
+                    actorPositions = _freeAtmosDeviceActorPositionLists.Count > 0
+                        ? _freeAtmosDeviceActorPositionLists.Pop()
+                        : new List<MapCoordinates>();
+                    _atmosDeviceActorPositionsByMap.Add(actorCoords.MapId, actorPositions);
+                }
+
+                actorPositions.Add(actorCoords);
+            }
+
+            _atmosDeviceActorPositionsValid = true;
+        }
+
+        private bool HasPlayerInRange(EntityUid uid, IReadOnlyList<MapCoordinates> actorPositions, float range)
+        {
+            var devicePosition = _transformSystem.GetMapCoordinates(uid);
+
+            foreach (var actorPosition in actorPositions)
+            {
+                if (actorPosition.InRange(devicePosition, range))
+                    return true;
             }
 
             return false;
@@ -576,6 +619,7 @@ namespace Content.Server.Atmos.EntitySystems
         private void UpdateProcessing(float frameTime)
         {
             _simulationStopwatch.Restart();
+            _atmosDeviceActorPositionsValid = false;
 
             if (!_simulationPaused)
             {

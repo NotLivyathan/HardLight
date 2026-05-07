@@ -396,11 +396,6 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
 
         if (session != null)
         {
-            if (!ent.Comp.PreSelectedSessions.TryGetValue(def, out var set))
-                ent.Comp.PreSelectedSessions.Add(def, set = new HashSet<ICommonSession>());
-            set.Add(session);
-            ent.Comp.AssignedSessions.Add(session);
-
             // we shouldn't be blocking the entity if they're just a ghost or smth.
             if (!HasComp<GhostComponent>(session.AttachedEntity))
                 antagEnt = session.AttachedEntity;
@@ -421,15 +416,32 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
 
         if (antagEnt is not { } player)
         {
-            Log.Error($"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
-            _adminLogger.Add(LogType.AntagSelection, $"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
-            if (session != null && ent.Comp.RemoveUponFailedSpawn)
+            if (session != null)
             {
-                ent.Comp.AssignedSessions.Remove(session);
-                ent.Comp.PreSelectedSessions[def].Remove(session);
+                Log.Debug($"Skipping antagonist assignment for {session} in gamerule {ToPrettyString(ent)} because there is no valid attached entity yet.");
+
+                if (ent.Comp.RemoveUponFailedSpawn)
+                {
+                    ent.Comp.AssignedSessions.Remove(session);
+                    if (ent.Comp.PreSelectedSessions.TryGetValue(def, out var selected))
+                        selected.Remove(session);
+                }
+            }
+            else
+            {
+                Log.Error($"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
+                _adminLogger.Add(LogType.AntagSelection, $"Attempted to make {session} antagonist in gamerule {ToPrettyString(ent)} but there was no valid entity for player.");
             }
 
             return;
+        }
+
+        if (session != null)
+        {
+            if (!ent.Comp.PreSelectedSessions.TryGetValue(def, out var set))
+                ent.Comp.PreSelectedSessions.Add(def, set = new HashSet<ICommonSession>());
+            set.Add(session);
+            ent.Comp.AssignedSessions.Add(session);
         }
 
         // TODO: This is really messy because this part runs twice for midround events.

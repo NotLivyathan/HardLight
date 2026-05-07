@@ -12,7 +12,7 @@
     DrinkKegSteel: 2 # Frontier: kegs
     DrinkKegWood: 2 # Frontier: kegs
     DrinkKegPlastic: 2 # Frontier: kegs
-    CustomDrinkJug: 2 #to allow for custom drinks in the soda/booze dispensers
+    CustomDrinkJug: 4 #to allow for custom drinks in the soda/booze dispensers ## Coyote: 2 -> 4
     DrinkAbsintheBottleFull: 1
     DrinkAnisetteBottleFull: 2 # Floofstation
     DrinkAleBottleFull: 5
@@ -37,24 +37,29 @@
     DrinkMelonLiquorBottleFull: 3
     DrinkPatronBottleFull: 2
     DrinkRumBottleFull: 4
-    DrinkSodaWaterCan: 8
-    DrinkSolDryCan: 8
+    DrinkSodaWaterCan: 10 # Coyote: 8 -> 10 (300u)
+    DrinkSolDryCan: 10 # Coyote: 8 -> 10 (300u)
     DrinkSpaceMountainWindBottleFull: 3
     DrinkSpaceUpBottleFull: 3
     DrinkTequilaBottleFull: 3
-    DrinkTonicWaterCan: 8
+    DrinkTonicWaterCan: 10 # Coyote: 8 -> 10 (300u)
     DrinkVermouthBottleFull: 5
     DrinkVodkaBottleFull: 5
     DrinkWhiskeyBottleFull: 5
+    DrinkJaegermisterBottleFull: 5 # Den - Jaegerminsteeeer!
     DrinkWineBottleFull: 5
     DrinkChampagneBottleFull: 2 #because the premium drink
     DrinkSakeBottleFull: 3
     DrinkBeerCan: 5
     DrinkWineCan: 5
     DrinkDisposableCup: 5 # #imp
+    JugCaramexinin: 1 # Frontier ## Hardlight: Why was this emag only.
+    DrinkRootBeerJug: 2 # Coyote
+    DrinkAngobittersBottleFull: 3 # DeltaV - Angostura Bitters Bottle
   contrabandInventory:
     ChemistryBottleEthanol: 3
     DrinkBottleOfNothingFull: 1
+    DrinkNNNCan: 10 # Coyote
   emaggedInventory:
     DrinkPoisonWinebottleFull: 2
     DrinkPremiumAbsintheBottleFull: 1 # Frontier
@@ -63,4 +68,3 @@
     DrinkPremiumTequilaBottleFull: 1 # Frontier
     DrinkPremiumVodkaBottleFull: 1 # Frontier
     DrinkPremiumWhiskeyBottleFull: 1 # Frontier
-    JugCaramexinin: 1 # Frontier

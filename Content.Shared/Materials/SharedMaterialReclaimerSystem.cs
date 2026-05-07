@@ -112,8 +112,8 @@ public abstract class SharedMaterialReclaimerSystem : EntitySystem
         if (user != null)
         {
             _adminLog.Add(LogType.Action,
-                LogImpact.High,
-                $"{ToPrettyString(user.Value):player} destroyed {ToPrettyString(item)} in the material reclaimer, {ToPrettyString(uid)}");
+                LogImpact.Medium,
+                $"{ToPrettyString(user.Value):player} destroyed {ToPrettyString(item)} in the material reclaimer, {ToPrettyString(uid)}"); // Hardlight | High -> Medium. Not severe enough to require immediate alert, and spams chat if someone reclaims many items at once.
         }
 
         if (Timing.CurTime > component.NextSound)

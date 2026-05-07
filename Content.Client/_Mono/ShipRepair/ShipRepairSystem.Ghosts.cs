@@ -19,6 +19,9 @@ public sealed partial class ShipRepairSystem : SharedShipRepairSystem
 
     private readonly HashSet<GhostPosData> _visibleGhosts = new();
 
+    // Reused per-frame to avoid allocating a fresh List every Update for every player carrying a repair tool.
+    private List<Entity<MapGridComponent>> _scratchGrids = new();
+
     private Color ghostColor = new Color(255, 128, 0, 128);
 
     private EntProtoId RepairGhostId = "RepairGhost";
@@ -62,13 +65,13 @@ public sealed partial class ShipRepairSystem : SharedShipRepairSystem
 
         // find all grids in range so it displays for nearby grids and not just our own
         var searchBox = Box2.CenteredAround(playerMapPos.Position, new Vector2(maxRange * 2, maxRange * 2));
-        var grids = new List<Entity<MapGridComponent>>();
-        _mapMan.FindGridsIntersecting(playerMapPos.MapId, searchBox, ref grids, true, false);
+        _scratchGrids.Clear();
+        _mapMan.FindGridsIntersecting(playerMapPos.MapId, searchBox, ref _scratchGrids, true, false);
 
         var shiftVec = new Vector2(maxRange, maxRange);
 
         // might be a bit evil performance-wise but not sure how to do it otherwise
-        foreach (var grid in grids)
+        foreach (var grid in _scratchGrids)
         {
             if (!_dataQuery.TryComp(grid, out var data))
                 continue;

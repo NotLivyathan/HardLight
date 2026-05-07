@@ -12,3 +12,13 @@ trait-uncloneable-desc = You cannot be cloned.
 
 trait-unborgable-name = Machine Incompatible
 trait-unborgable-desc = Your brain cannot be put into a man-machine interface.
+
+trait-amputee-left-arm-name = Amputee (Arm, Left)
+trait-amputee-left-arm-desc =
+    Your left arm is missing!
+    (Note: Amputee traits do not appear in the character editor preview!)
+
+trait-amputee-right-arm-name = Amputee (Arm, Right)
+trait-amputee-right-arm-desc =
+    Your right arm is missing!
+    (Note: Amputee traits do not appear in the character editor preview!)

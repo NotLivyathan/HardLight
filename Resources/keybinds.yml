@@ -66,6 +66,9 @@ binds:
 - function: ShuttleBrake
   type: State
   key: Space
+- function: ShuttleWEP
+  type: State
+  key: Z
 - function: CameraRotateLeft
   type: State
   key: NumpadNum7

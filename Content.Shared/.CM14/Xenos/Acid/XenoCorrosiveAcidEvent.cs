@@ -9,8 +9,5 @@ public sealed partial class XenoCorrosiveAcidEvent : EntityTargetActionEvent
     public EntProtoId AcidId = "XenoAcid";
 
     [DataField]
-    public int PlasmaCost = 0;
-
-    [DataField]
     public TimeSpan Time = TimeSpan.FromSeconds(30);
 }

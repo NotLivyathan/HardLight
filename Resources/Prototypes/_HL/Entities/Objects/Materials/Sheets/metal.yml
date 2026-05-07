@@ -1,0 +1,61 @@
+- type: entity
+  parent: SheetMetalBase
+  id: SheetPlastitanium
+  name: plastitanium
+  suffix: Full
+  components:
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Plastitanium: 100
+  - type: Stack
+    stackType: Plastitanium
+    baseLayer: base
+    layerStates:
+    - plastitanium
+    - plastitanium_2
+    - plastitanium_3
+  - type: Sprite
+    state: plastitanium_3
+    layers:
+    - state: plastitanium_3
+      map: ["base"]
+  - type: Item
+    heldPrefix: plastitanium
+  - type: Appearance
+  - type: Extractable
+    grindableSolutionName: plastitanium
+  - type: SolutionContainerManager
+    solutions:
+      plastitanium:
+        reagents:
+        - ReagentId: Plasma
+          Quantity: 10
+        - ReagentId: Iron
+          Quantity: 9
+        - ReagentId: Carbon
+          Quantity: 1
+
+- type: entity
+  parent: SheetPlastitanium
+  id: SheetPlastitanium10
+  name: plastitanium
+  suffix: 10
+  components:
+  - type: Sprite
+    state: plastitanium
+  - type: Stack
+    stackType: Plastitanium
+    count: 10
+
+- type: entity
+  parent: SheetPlastitanium
+  id: SheetPlastitanium1
+  name: plastitanium
+  suffix: Single
+  components:
+  - type: Sprite
+    state: plastitanium
+  - type: Stack
+    stackType: Plastitanium
+    count: 1

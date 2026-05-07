@@ -1,4 +1,5 @@
 using Content.Server.Atmos.Components;
+using Content.Shared._HL.Body.Components;
 using Content.Server.Body.Components;
 using Content.Server.Chat;
 using Content.Server.Chat.Managers;
@@ -200,8 +201,16 @@ public sealed partial class ZombieSystem
         //This makes it so the zombie doesn't take bloodloss damage.
         //NOTE: they are supposed to bleed, just not take damage
         _bloodstream.SetBloodLossThreshold(target, 0f);
-        //Give them zombie blood
-        _bloodstream.ChangeBloodReagent(target, zombiecomp.NewBloodReagent);
+        // HardLight: Swap to zombie blood directly. Using BloodSolutionModifierComponent here
+        // triggers its startup logic immediately on add, which applies the default
+        // ClearExisting=true before we can configure it and wipes the bloodstream.
+        if (TryComp<BloodstreamComponent>(target, out var zombieBloodstream))
+        {
+            _bloodstream.ChangeBloodReagent(target, zombiecomp.NewBloodReagent, zombieBloodstream);
+            _bloodstream.ClearOriginalBloodReagent(target, zombieBloodstream);
+        }
+
+        RemComp<BloodSolutionModifierComponent>(target);
 
         //This is specifically here to combat insuls, because frying zombies on grilles is funny as shit.
         _inventory.TryUnequip(target, "gloves", true, true);

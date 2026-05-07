@@ -53,6 +53,16 @@
         state: station_map0
       - map: ["computerLayerScreen"]
         state: unshaded
+    # HardLight start
+    - type: GenericVisualizer
+      visuals:
+        enum.EdgeConnectionVisuals.ConnectionMask:
+          computerLayerBody:
+            None: { state: station_map0, sprite: Structures/Machines/station_map.rsi }
+            West: { state: station_map0, sprite: Structures/Machines/station_map.rsi }
+            East: { state: station_map0, sprite: Structures/Machines/station_map.rsi }
+            East, West: { state: station_map0, sprite: Structures/Machines/station_map.rsi }
+    # HardLight end
     - type: Icon
       sprite: Structures/Machines/station_map.rsi
       state: station_map0

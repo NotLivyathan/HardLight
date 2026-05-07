@@ -434,7 +434,8 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             return;
         }
 
-        steering.PathfindToken = new CancellationTokenSource();
+        var pathfindToken = new CancellationTokenSource();
+        steering.PathfindToken = pathfindToken;
 
         var flags = _pathfindingSystem.GetFlags(uid);
 
@@ -443,10 +444,20 @@ public sealed partial class NPCSteeringSystem : SharedNPCSteeringSystem
             xform.Coordinates,
             steering.Coordinates,
             steering.Range,
-            steering.PathfindToken.Token,
+            pathfindToken.Token,
             flags);
 
+        if (!ReferenceEquals(steering.PathfindToken, pathfindToken))
+        {
+            return;
+        }
+
         steering.PathfindToken = null;
+
+        if (pathfindToken.IsCancellationRequested)
+        {
+            return;
+        }
 
         if (result.Result == PathResult.NoPath)
         {

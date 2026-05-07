@@ -340,7 +340,7 @@ public sealed partial class ExplosionSystem
 
         var (area, iterationIntensity, spaceData, gridData, spaceMatrix) = results.Value;
 
-        Log.Info($"Generated explosion preview with {area} tiles in {stopwatch.Elapsed.TotalMilliseconds}ms");
+        Log.Debug($"Generated explosion preview with {area} tiles in {stopwatch.Elapsed.TotalMilliseconds}ms");
 
         Dictionary<NetEntity, Dictionary<int, List<Vector2i>>> tileLists = new();
         foreach (var (grid, data) in gridData)

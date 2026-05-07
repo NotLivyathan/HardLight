@@ -195,7 +195,7 @@ public sealed class DrinkSystem : SharedDrinkSystem
             _popup.PopupEntity(Loc.GetString("drink-component-force-feed", ("user", userName)), user, target);
 
             // logging
-            _adminLogger.Add(LogType.ForceFeed, LogImpact.High, $"{ToPrettyString(user):user} is forcing {ToPrettyString(target):target} to drink {ToPrettyString(item):drink} {SharedSolutionContainerSystem.ToPrettyString(drinkSolution)}");
+            _adminLogger.Add(LogType.ForceFeed, LogImpact.Medium, $"{ToPrettyString(user):user} is forcing {ToPrettyString(target):target} to drink {ToPrettyString(item):drink} {SharedSolutionContainerSystem.ToPrettyString(drinkSolution)}"); // Hardlight | High -> Medium. Force-feeding is rarely a round-affecting action, and thus does not need to be promptly visible. It also can and does frequently spam chat.
         }
         else
         {

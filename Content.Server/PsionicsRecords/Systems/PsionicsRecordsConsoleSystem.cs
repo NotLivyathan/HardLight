@@ -1,6 +1,5 @@
 using Content.Server.Popups;
 using Content.Server.Radio.EntitySystems;
-using Content.Server.Station.Systems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
 using Content.Shared.Access.Systems;
@@ -30,7 +29,6 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
-    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     public override void Initialize()
@@ -67,6 +65,19 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
         {
             ent.Comp.Filter = new StationRecordsFilter(msg.Type, msg.Value);
             UpdateUserInterface(ent);
+        }
+    }
+
+    public void ClearTransientStateOnGrid(EntityUid gridUid)
+    {
+        var query = EntityManager.EntityQueryEnumerator<PsionicsRecordsConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var console, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            console.ActiveKey = null;
+            console.Filter = null;
         }
     }
 
@@ -142,21 +153,19 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
     private void UpdateUserInterface(Entity<PsionicsRecordsConsoleComponent> ent)
     {
         var (uid, console) = ent;
-        var owningStation = _station.GetOwningStation(uid);
-
-        if (!TryComp<StationRecordsComponent>(owningStation, out var stationRecords))
+        if (!_stationRecords.TryGetAuthoritativeRecords(out var owningStation, out var stationRecords)) // HardLight: TryComp<StationRecordsComponent><_stationRecords.TryGetAuthoritativeRecords; added out var
         {
             _ui.SetUiState(uid, PsionicsRecordsConsoleKey.Key, new PsionicsRecordsConsoleState());
             return;
         }
 
-        var listing = _stationRecords.BuildListing((owningStation.Value, stationRecords), console.Filter);
+        var listing = _stationRecords.BuildListing((owningStation, stationRecords), console.Filter); // HardLight: owningStation.Value<owningStation
 
         var state = new PsionicsRecordsConsoleState(listing, console.Filter);
         if (console.ActiveKey is { } id)
         {
             // get records to display when a crewmember is selected
-            var key = new StationRecordKey(id, owningStation.Value);
+            var key = new StationRecordKey(id, owningStation); // HardLight: owningStation.Value<owningStation
             _stationRecords.TryGetRecord(key, out state.StationRecord, stationRecords);
             _stationRecords.TryGetRecord(key, out state.PsionicsRecord, stationRecords);
             state.SelectedKey = id;
@@ -184,8 +193,7 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
         if (ent.Comp.ActiveKey is not { } id)
             return false;
 
-        // checking the console's station since the user might be off-grid using on-grid console
-        if (_station.GetOwningStation(ent) is not { } station)
+        if (!_stationRecords.TryGetAuthoritativeRecords(out var station, out _)) // HardLight: Editted
             return false;
 
         key = new StationRecordKey(id, station);
@@ -211,14 +219,11 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
     public void CheckNewIdentity(EntityUid uid)
     {
         var name = Identity.Name(uid, EntityManager);
-        var xform = Transform(uid);
 
-        // TODO use the entity's station? Not the station of the map that it happens to currently be on?
-        var station = _station.GetStationInMap(xform.MapID);
-
-        if (station != null && _stationRecords.GetRecordByName(station.Value, name) is { } id)
+        if (_stationRecords.TryGetAuthoritativeRecords(out var station, out _) // HardLight
+            && _stationRecords.GetRecordByName(station, name) is { } id)
         {
-            if (_stationRecords.TryGetRecord<PsionicsRecord>(new StationRecordKey(id, station.Value),
+            if (_stationRecords.TryGetRecord<PsionicsRecord>(new StationRecordKey(id, station), // HardLight: station.Value<station
                     out var record))
             {
                 if (record.Status != PsionicsStatus.None)

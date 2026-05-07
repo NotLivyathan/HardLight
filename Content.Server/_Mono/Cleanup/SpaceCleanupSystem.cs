@@ -80,7 +80,7 @@ public sealed class SpaceCleanupSystem : BaseCleanupSystem<PhysicsComponent>
             && !_htnQuery.HasComp(uid) // handled by MobCleanupSystem
             && !_immuneQuery.HasComp(uid) // handled by GridCleanupSystem
             && !_mindQuery.HasComp(uid) // no deleting anything that can have a mind - should be handled by MobCleanupSystem anyway
-            && _pricing.GetPrice(uid) <= _maxPrice
+            && _pricing.GetPrice(uid, allowSideEffects: false) <= _maxPrice
             && (isStuck
                 || !_cleanup.HasNearbyGrids(xform.Coordinates, _maxGridDistance)
                     && !_cleanup.HasNearbyPlayers(xform.Coordinates, _maxDistance));

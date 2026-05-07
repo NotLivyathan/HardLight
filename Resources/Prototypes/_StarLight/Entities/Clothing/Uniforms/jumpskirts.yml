@@ -41,3 +41,48 @@
     sprite: _Starlight/Clothing/Uniforms/Jumpskirt/alt_purplebartender.rsi
   - type: Clothing
     sprite: _Starlight/Clothing/Uniforms/Jumpskirt/alt_purplebartender.rsi
+
+- type: entity
+  parent: [ ClothingUniformSkirtBase ]
+  id: ClothingUniformJumpskirtBlueShield
+  name: blue shield skirt
+  description: The skirt of a glorified bodyguard.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/blueshield.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/blueshield.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+
+- type: entity
+  parent: [ ClothingUniformSkirtBase ]
+  id: ClothingUniformJumpskirtEliteBlueShield
+  name: elite blue shield skirt
+  description: The skirt of an elite BSO. To reach such a level, you must have protected Command from [REDACTED].
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/eliteblueshield.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/eliteblueshield.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+
+- type: entity
+  parent: [ClothingUniformBase ]
+  id: ClothingUniformJumpskirtBlueShieldSkirt
+  name: blueshield officer's pencil skirt
+  description: A collared shirt and pencil skirt for the blueshield officer who likes to keep it business casual.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/blueshieldskirt.rsi
+  - type: Clothing
+    sprite: _Starlight/Clothing/Uniforms/Jumpskirt/blueshieldskirt.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon

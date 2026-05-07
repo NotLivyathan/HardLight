@@ -14,6 +14,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Maths;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
+using Content.Server._HL.Cleanup;
 
 namespace Content.Server.Trash;
 
@@ -208,7 +209,7 @@ public sealed class TrashCleanupSystem : EntitySystem
             return true;
 
         // Protect grids with important components that indicate they shouldn't be deleted
-        if (HasComp<WorldControllerComponent>(gridUid))
+        if (HasComp<WorldControllerComponent>(gridUid) || HasComp<CleanupProtectedGridComponent>(gridUid))
             return true;
 
         // Check if grid has any players on it

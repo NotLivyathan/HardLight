@@ -1,0 +1,30 @@
+- type: entity
+  parent: [ClothingHeadBase]
+  id: ClothingHeadHatBeretBlueShield
+  name: blueshield beret
+  description: This beret completes the outfit of any true Blueshield Officer.
+  components:
+    - type: Sprite
+      sprite: _Starlight/Clothing/Head/Hats/blueshield.rsi
+    - type: Clothing
+      sprite: _Starlight/Clothing/Head/Hats/blueshield.rsi
+    - type: Tag
+      tags:
+        - ClothMade
+        - WhitelistChameleon
+
+- type: entity
+  parent: [ClothingHeadBase]
+  id: ClothingHeadHatBlueShieldSheriff
+  name: blueshield bounty hunter's hat
+  description: For when your charges do not wish to be tracked down.
+  components:
+    - type: Sprite
+      sprite: _Starlight/Clothing/Head/Hats/BSO_Bounty_Hunter_hat.rsi
+    - type: Clothing
+      sprite: _Starlight/Clothing/Head/Hats/BSO_Bounty_Hunter_hat.rsi
+    - type: Tag
+      tags:
+        - HamsterWearable
+        - ClothMade
+        - WhitelistChameleon

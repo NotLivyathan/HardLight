@@ -378,7 +378,7 @@
   id: SynthWings
   bodyPart: Tail
   markingCategory: Chest
-  speciesRestriction: [Synth, Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid ]
+  speciesRestriction: [Synth, Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin ]
   sprites:
   - sprite: _HL/Mobs/Customization/Synth/wings.rsi
     state: synth_wings

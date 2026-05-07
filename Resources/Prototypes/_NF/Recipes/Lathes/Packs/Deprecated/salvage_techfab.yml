@@ -61,6 +61,7 @@
     - GlowstickYellow
     - OreBag
     - ConstructionBag
+    - DebrisBag
     - MiningDrill
     - NFWeaponPka
     - ClothingNeckIFFNeutral
@@ -99,12 +100,14 @@
     - OreBagOfHolding
     - ClothingBackpackExplorer #HL
     - ClothingRucksack #HL
+    - DebrisBagOfHolding
     - ClothingOuterHardsuitBasic
+    - DocumentCaseShortMagnet
     - ClothingOuterHardsuitSpatio
     - ClothingOuterHardsuitSalvage
     - ClothingOuterHardsuitLuxury
     - ClothingOuterHardsuitMaximPrototype
- 
+
 - type: latheRecipePack
   id: NFSalvageTechfabDeprecatedEmag
   recipes:

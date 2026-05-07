@@ -476,15 +476,18 @@
     - VendingMachinePottedPlantVend
     - WaterCooler
     - SpawnDungeonMachineFrame
-    #- VendingMachineChang # No food vendomats in expeds - buy from food ships or die
-    #- VendingMachineDonut
-    #- VendingMachineDiscount
-    #- VendingMachineSnack
-    #- VendingMachineSustenance
-    #- VendingMachineSnackBlue
-    #- VendingMachineSnackOrange
-    #- VendingMachineSnackGreen
-    #- VendingMachineSnackTeal
+    # HL Vendor Change Start - expeds should have snack machines
+    # No food vendomats in expeds - buy from food ships or die
+    - VendingMachineChang 
+    - VendingMachineDonut
+    - VendingMachineDiscount
+    - VendingMachineSnack
+    - VendingMachineSustenance
+    - VendingMachineSnackBlue
+    - VendingMachineSnackOrange
+    - VendingMachineSnackGreen
+    - VendingMachineSnackTeal
+    # HL Vendor Change End
     chance: 1
     offset: 0.0
     rarePrototypes:

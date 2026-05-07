@@ -46,6 +46,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             _menu.OnOrderApproved += ApproveOrder;
             _menu.OnSellShip += SellShip;
             _menu.OnSaveShip += SaveShip;
+            _menu.OnReloadShips += ReloadShips;
             _menu.TargetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent("ShipyardConsole-targetId"));
 
             // Disable the NFSD popup for now.
@@ -235,6 +236,11 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
     {
         // Send message to server to save the ship associated with the current deed
         SendMessage(new ShipyardConsoleSaveMessage());
+    }
+
+    private void ReloadShips(ButtonEventArgs args)
+    {
+        _shipFileManagementSystem.ReloadSavedShips();
     }
 
     [Obsolete]

@@ -3,7 +3,6 @@ using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
-using Content.Server.Station.Systems;
 using Content.Shared._NF.Shuttles.Events; // Frontier
 using Content.Shared.ActionBlocker;
 using Content.Shared.Alert;
@@ -32,8 +31,7 @@ using Content.Server.Salvage.Expeditions;
 using Content.Shared.Procedural;
 using Content.Shared.Salvage.Expeditions;
 using Content.Shared.Salvage.Expeditions.Modifiers;
-using Robust.Shared.Timing;
-using Content.Server.Salvage;
+using Robust.Shared.Audio.Systems;
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -55,6 +53,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly Content.Server.Salvage.SalvageSystem _salvage = default!;
     [Dependency] private readonly ExpeditionDiskSystem _expeditionDisks = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!; // HL
 
     private EntityQuery<MetaDataComponent> _metaQuery;
     private EntityQuery<TransformComponent> _xformQuery;
@@ -84,6 +83,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             subs.Event<ShuttleConsoleFTLStationDockMessage>(OnStationDockFTLMessage);
             subs.Event<ShuttleConsoleExpeditionDiskActivateMessage>(OnExpeditionDiskActivateMessage);
             subs.Event<ShuttleConsoleExpeditionEndMessage>(OnExpeditionEndMessage);
+            subs.Event<ShuttleConsoleWEPMessage>(OnWEPMessage); // HL
             subs.Event<BoundUIClosedEvent>(OnConsoleUIClose);
         });
 
@@ -383,7 +383,15 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         if (_ui.HasUi(consoleUid, ShuttleConsoleUiKey.Key))
         {
             var expeditionState = GetExpeditionDiskState(consoleUid);
-            _ui.SetUiState(consoleUid, ShuttleConsoleUiKey.Key, new ShuttleBoundUserInterfaceState(navState, mapState, dockState, expeditionState));
+            // HL: include WEP state
+            var wepActive = false;
+            var wepCooldown = TimeSpan.Zero;
+            if (shuttleGridUid is { } wepGrid && TryComp<ShuttleComponent>(wepGrid, out var wepShuttle))
+            {
+                wepActive = wepShuttle.WepBoostActive;
+                wepCooldown = wepShuttle.WepCooldownExpiry;
+            }
+            _ui.SetUiState(consoleUid, ShuttleConsoleUiKey.Key, new ShuttleBoundUserInterfaceState(navState, mapState, dockState, expeditionState, wepActive, wepCooldown));
         }
     }
 
@@ -445,9 +453,91 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         return (remaining > TimeSpan.Zero, remaining);
     }
 
+    // HL: WEP message handler
+    private void OnWEPMessage(Entity<ShuttleConsoleComponent> ent, ref ShuttleConsoleWEPMessage args)
+    {
+        var xform = Transform(ent.Owner);
+        if (xform.GridUid is not { } gridUid || !TryComp<ShuttleComponent>(gridUid, out var shuttle))
+            return;
+
+        var mover = EntityManager.System<Content.Server.Physics.Controllers.MoverController>();
+        mover.ActivateWEP(gridUid, shuttle);
+        // Note: OnWEPActivated is called by ActivateWEP on success.
+    }
+
+    private const float WepPowerDraw = 150_000f; // 150 kW peak recharge draw
+
+    /// <summary>
+    /// Called by MoverController after WEP successfully activates. Refreshes UI — power draw starts on expiry.
+    /// </summary>
+    public void OnWEPActivated(EntityUid gridUid)
+    {
+        RefreshShuttleConsoles();
+    }
+
+    private void AdjustWEPConsoleLoad(EntityUid gridUid, float delta)
+    {
+        var query = EntityQueryEnumerator<ShuttleConsoleComponent, ApcPowerReceiverComponent, TransformComponent>();
+        while (query.MoveNext(out _, out _, out var receiver, out var xform))
+        {
+            if (xform.GridUid == gridUid)
+                receiver.Load += delta;
+        }
+    }
+    // End HL
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // HL: expire WEP boosts, stop audio, restore power, refresh UI
+        var wepQuery = EntityQueryEnumerator<ShuttleComponent>();
+        while (wepQuery.MoveNext(out var gridUid, out var shuttle))
+        {
+            // Skip the vast majority of shuttles that have no active WEP state.
+            // WepBoostActive flips on activation; WepPowerApplied stays true through the recharge ramp.
+            if (!shuttle.WepBoostActive && !shuttle.WepPowerApplied)
+                continue;
+
+            // WEP boost expired — begin recharge ramp.
+            if (shuttle.WepBoostActive && _timing.CurTime >= shuttle.WepBoostExpiry)
+            {
+                shuttle.WepBoostActive = false;
+                shuttle.WepThrustMultiplier = 1f;
+                shuttle.WepAudioStream = _audio.Stop(shuttle.WepAudioStream);
+                shuttle.WepPowerApplied = true;
+                shuttle.WepCurrentLoad = 0f;
+                shuttle.WepLastLoadUpdateTime = _timing.CurTime;
+                RefreshShuttleConsoles();
+            }
+
+            // Recharge ramp: step load up every second until cooldown ends.
+            if (shuttle.WepPowerApplied)
+            {
+                if (_timing.CurTime >= shuttle.WepCooldownExpiry)
+                {
+                    // Cooldown done — remove remaining load and mark WEP ready.
+                    if (shuttle.WepCurrentLoad > 0f)
+                    {
+                        AdjustWEPConsoleLoad(gridUid, -shuttle.WepCurrentLoad);
+                        shuttle.WepCurrentLoad = 0f;
+                    }
+                    shuttle.WepPowerApplied = false;
+                    RefreshShuttleConsoles();
+                }
+                else if (_timing.CurTime >= shuttle.WepLastLoadUpdateTime + TimeSpan.FromSeconds(1))
+                {
+                    shuttle.WepLastLoadUpdateTime = _timing.CurTime;
+                    var elapsed = (float)(_timing.CurTime - shuttle.WepBoostExpiry).TotalSeconds;
+                    var fraction = Math.Clamp(elapsed / ShuttleComponent.WepCooldownDuration, 0f, 1f);
+                    var targetLoad = WepPowerDraw * fraction;
+                    var delta = targetLoad - shuttle.WepCurrentLoad;
+                    AdjustWEPConsoleLoad(gridUid, delta);
+                    shuttle.WepCurrentLoad = targetLoad;
+                }
+            }
+        }
+        // End HL
 
         var toRemove = new ValueList<(EntityUid, PilotComponent)>();
         var query = EntityQueryEnumerator<PilotComponent>();
@@ -478,6 +568,32 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     private void OnConsoleShutdown(EntityUid uid, ShuttleConsoleComponent component, ComponentShutdown args)
     {
         ClearPilots(component);
+
+        // HL: clean up WEP state so a destroyed console doesn't leave stuck audio or power load.
+        var xform = Transform(uid);
+        if (xform.GridUid is not { } gridUid || !TryComp<ShuttleComponent>(gridUid, out var shuttle))
+            return;
+
+        if (!shuttle.WepBoostActive && !shuttle.WepPowerApplied)
+            return;
+
+        shuttle.WepAudioStream = _audio.Stop(shuttle.WepAudioStream);
+        shuttle.WepBoostActive = false;
+        shuttle.WepThrustMultiplier = 1f;
+
+        if (shuttle.WepCurrentLoad > 0f)
+        {
+            var loadQuery = EntityQueryEnumerator<ShuttleConsoleComponent, ApcPowerReceiverComponent, TransformComponent>();
+            while (loadQuery.MoveNext(out var consoleUid, out _, out var receiver, out var consoleXform))
+            {
+                if (consoleXform.GridUid == gridUid && consoleUid != uid)
+                    receiver.Load = MathF.Max(0f, receiver.Load - shuttle.WepCurrentLoad);
+            }
+            shuttle.WepCurrentLoad = 0f;
+        }
+
+        shuttle.WepPowerApplied = false;
+        RefreshShuttleConsoles();
     }
 
     public void AddPilot(EntityUid uid, EntityUid entity, ShuttleConsoleComponent component)

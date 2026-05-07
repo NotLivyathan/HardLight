@@ -1,5 +1,5 @@
 - type: entity
-  parent: [Clothing, BaseC2Contraband]
+  parent: [Clothing, BaseC3Contraband]
   id: ClothingNullSpaceTeleporter
   name: nullspace teleporter
   description: Originally created while several research facilities were experimenting on Shadekin, this backpack allows the wearer to jump the gap between the "normal" dimension and NullSpace.
@@ -16,3 +16,5 @@
       slots: BACK
       sprite: _Starlight/Clothing/Back/nullspaceteleporter.rsi
     - type: NullPhase
+      cooldown: 120
+      shuntCooldown: 600

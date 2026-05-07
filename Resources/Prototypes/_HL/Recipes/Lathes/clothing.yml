@@ -26,3 +26,14 @@
   id: ClothingRucksack
   parent: HLBaseUpgradedBackpacks
   result: ClothingRucksack
+
+- type: latheRecipe
+  parent: HLBaseUpgradedBackpacks
+  id: ClothingBackpackTacticalHolding
+  result: ClothingBackpackTacticalHolding
+  completetime: 5
+  materials:
+    Cloth: 1250
+    Durathread: 2000
+    Plasteel: 800
+    Bluespace: 325

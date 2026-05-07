@@ -163,7 +163,8 @@ namespace Content.Server.Explosion.EntitySystems
                 return;
             }
 
-            _electrocution.TryDoElectrocution(containerEnt, null, shockOnTrigger.Comp.Damage, shockOnTrigger.Comp.Duration, true);
+            _electrocution.TryDoElectrocution(containerEnt, null, shockOnTrigger.Comp.Damage, shockOnTrigger.Comp.Duration, true,
+                ignoreInsulation: shockOnTrigger.Comp.IgnoreInsulation);
             shockOnTrigger.Comp.NextTrigger = curTime + shockOnTrigger.Comp.Cooldown;
         }
 
@@ -354,7 +355,7 @@ namespace Content.Server.Explosion.EntitySystems
                 return;
 
             // Check blacklist - if specified, entities on the blacklist cannot trigger
-            if (component.Blacklist != null && !_whitelist.IsBlacklistPass(component.Blacklist, args.OtherEntity))
+            if (component.Blacklist != null && _whitelist.IsBlacklistPass(component.Blacklist, args.OtherEntity))
                 return;
 
             Trigger(uid, args.OtherEntity);

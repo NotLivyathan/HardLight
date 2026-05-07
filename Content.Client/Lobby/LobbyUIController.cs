@@ -187,19 +187,28 @@ public sealed class LobbyUIController : UIController, IOnStateEntered<LobbyState
             return;
         }
 
-        // Verify company exists, if not set it to "None"
-        if (!string.IsNullOrEmpty(humanoid.Company) &&
-            humanoid.Company != "None" &&
-            !_prototypeManager.HasIndex<CompanyPrototype>(humanoid.Company))
+        // HardLight: Verify company exists, if not set it to "None".
+        // Wrapped in try/catch so a failure here can't abort ReloadCharacterSetup
+        // and leave the character picker empty (see character setup loading race).
+        try
         {
-            // Create a new profile with the company set to "None"
-            humanoid = humanoid.WithCompany("None");
-
-            // Update the character in preferences
-            if (_preferencesManager.Preferences != null)
+            if (!string.IsNullOrEmpty(humanoid.Company) &&
+                humanoid.Company != "None" &&
+                !_prototypeManager.HasIndex<CompanyPrototype>(humanoid.Company))
             {
-                _preferencesManager.UpdateCharacter(humanoid, _preferencesManager.Preferences.SelectedCharacterIndex);
+                // Create a new profile with the company set to "None"
+                humanoid = humanoid.WithCompany("None");
+
+                // Update the character in preferences
+                if (_preferencesManager.Preferences != null)
+                {
+                    _preferencesManager.UpdateCharacter(humanoid, _preferencesManager.Preferences.SelectedCharacterIndex);
+                }
             }
+        }
+        catch (Exception e)
+        {
+            _logManager.GetSawmill("lobby").Error($"Error validating company on lobby preview refresh: {e}");
         }
 
         var dummy = LoadProfileEntity(humanoid, null, true);

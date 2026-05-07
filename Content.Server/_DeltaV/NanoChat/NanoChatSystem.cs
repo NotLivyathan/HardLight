@@ -148,7 +148,6 @@ public sealed class NanoChatSystem : SharedNanoChatSystem
 
         // Assign a random number
         _name.GenerateUniqueName(ent, _nameIdentifierGroup, out var number);
-        ent.Comp.Number = (uint)number;
-        Dirty(ent);
+        SetNumber((ent.Owner, (NanoChatCardComponent?) ent.Comp), (uint) number);
     }
 }

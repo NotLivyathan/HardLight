@@ -1,0 +1,101 @@
+- type: entity
+  parent: ClothingHeadHelmetBase
+  id: HLClothingHeadHelmetArgoHeavy
+  name: heavy argocyte helmet
+  description: A heavy helmet made of argocyte plating.
+  components:
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 120
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 100
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateHeavy:
+                min: 1
+                max: 5
+  - type: Sprite
+    sprite: _HL/Clothing/Head/argocyteheavy.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 0.75
+  - type: ClothingSpeedModifier
+    walkModifier: 0.85
+    sprintModifier: 0.85
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.75
+  - type: HideLayerClothing
+    slots:
+    - Hair
+  - type: Construction
+    graph: ArgoHelmetHeavyGraph
+    node: finish
+   
+- type: entity
+  parent: ClothingHeadHelmetBase
+  id: HLClothingHeadHelmetArgoLight
+  name: light argocyte helmet
+  description: A light helmet made of argocyte plating. Feels light as a feather, but will easily shatter during explosions.
+  components:
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 60
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 50
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateLight:
+                min: 1
+                max: 5
+  - type: ExplosionResistance
+    damageCoefficient: 1.25
+  - type: ClothingSpeedModifier
+    walkModifier: 1.1
+    sprintModifier: 1.1
+  - type: Sprite
+    sprite: _HL/Clothing/Head/argocytelight.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.85
+        Piercing: 0.9
+        Heat: 0.9
+  - type: HideLayerClothing
+    slots:
+    - Hair
+  - type: Construction
+    graph: ArgoHelmetLightGraph
+    node: finish

@@ -60,12 +60,23 @@ internal sealed partial class PowerMonitoringConsoleSystem : SharedPowerMonitori
 
     private void OnConsoleInit(EntityUid uid, PowerMonitoringConsoleComponent component, ComponentInit args)
     {
+        EnsureNavMapForConsole(uid);
         RefreshPowerMonitoringConsole(uid, component);
     }
 
     private void OnConsoleParentChanged(EntityUid uid, PowerMonitoringConsoleComponent component, EntParentChangedMessage args)
     {
+        EnsureNavMapForConsole(uid);
         RefreshPowerMonitoringConsole(uid, component);
+    }
+
+    // Ensure the console's grid carries a NavMapComponent here instead of in the per-tick
+    // UpdateUIState path, so per-second UI refreshes don't pay an EnsureComp call.
+    private void EnsureNavMapForConsole(EntityUid uid)
+    {
+        var xform = Transform(uid);
+        if (xform.GridUid is { } gridUid && HasComp<MapGridComponent>(gridUid))
+            EnsureComp<NavMapComponent>(gridUid);
     }
 
     private void OnCableNetworksInit(EntityUid uid, PowerMonitoringCableNetworksComponent component, ComponentInit args)
@@ -304,8 +315,7 @@ internal sealed partial class PowerMonitoringConsoleSystem : SharedPowerMonitori
         if (!TryComp<MapGridComponent>(gridUid, out var mapGrid))
             return;
 
-        // The grid must have a NavMapComponent to visualize the map in the UI
-        EnsureComp<NavMapComponent>(gridUid);
+        // NavMapComponent is now ensured at console init / parent-change instead of every tick.
 
         // Initializing data to be send to the client
         var totalSources = 0d;

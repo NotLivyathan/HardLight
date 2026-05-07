@@ -30,7 +30,7 @@ public sealed class NFCCVars
     /// Whether or not returning from cryosleep is enabled.
     /// </summary>
     public static readonly CVarDef<bool> CryoReturnEnabled =
-        CVarDef.Create("nf14.uncryo.enabled", false, CVar.SERVER | CVar.REPLICATED);
+        CVarDef.Create("nf14.uncryo.enabled", true, CVar.SERVER | CVar.REPLICATED); // Livyathan: false<true; bodies in cryospace persist for 10 minutes. Might as well let them come back since the body is there, anyway.
 
     /// <summary>
     /// The time in seconds after which a cryosleeping body is considered expired and can be deleted from the storage map.
@@ -46,6 +46,16 @@ public sealed class NFCCVars
     /// </summary>
     public static readonly CVarDef<bool> GameShowObjectives =
         CVarDef.Create("nf14.game.showobjectives", true, CVar.ARCHIVE | CVar.SERVERONLY);
+
+    /// <summary>
+    /// HardLight: Seconds to wait after a player disconnects before reopening their tracked job slot
+    /// (per-station and ColComm pools). Set to 0 or negative to disable, in which case slots will only
+    /// reopen via the longer mind-wipe timer or when the body dies/cryos. Reconnecting within this
+    /// window cancels the release; reconnecting after it consumes a fresh slot via the normal
+    /// MindAddedMessage path (or fails gracefully if none is available).
+    /// </summary>
+    public static readonly CVarDef<float> JobSlotReleaseDelay =
+        CVarDef.Create("nf14.game.job_slot_release_delay", 120.0f, CVar.SERVERONLY);
 
     /*
      *  Public Transit

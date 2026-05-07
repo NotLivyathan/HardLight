@@ -17,7 +17,7 @@ public sealed partial class TeleportLocationsComponent : Component
     /// <summary>
     /// List of available warp points
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public HashSet<TeleportPoint> AvailableWarps = new();
 
     /// <summary>

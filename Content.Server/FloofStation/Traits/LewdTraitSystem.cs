@@ -1,6 +1,10 @@
 using Content.Server.Chemistry.Containers.EntitySystems;
+using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Server.Popups;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Content.Shared._Mono.Traits.Physical;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.DoAfter;
@@ -25,6 +29,8 @@ public sealed class LewdTraitSystem : EntitySystem
     [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly SharedSolutionContainerSystem _solutionContainer = default!;
+    [Dependency] private readonly PuddleSystem _puddle = default!; // HardLight
+    [Dependency] private readonly SharedAudioSystem _audio = default!; // HardLight
 
     public override void Initialize()
     {
@@ -40,12 +46,13 @@ public sealed class LewdTraitSystem : EntitySystem
         SubscribeLocalEvent<CumProducerComponent, GetVerbsEvent<InnateVerb>>(AddCumVerb);
         SubscribeLocalEvent<RefillableSolutionComponent, GetVerbsEvent<AlternativeVerb>>(AddRefillableInsideVerbs);
         SubscribeLocalEvent<InjectableSolutionComponent, GetVerbsEvent<AlternativeVerb>>(AddInjectableInsideVerbs);
-        SubscribeLocalEvent<MilkProducerComponent, GetVerbsEvent<InnateVerb>>(AddMilkVerb);
+        SubscribeLocalEvent<MilkProducerComponent, GetVerbsEvent<AlternativeVerb>>(AddMilkVerbs); // Hardlight added AlternativeVerb and additional Verb
         //SubscribeLocalEvent<SquirtProducerComponent, GetVerbsEvent<InnateVerb>>(AddSquirtVerb); //Unused-Trait is WIP
 
         //Events
         SubscribeLocalEvent<CumProducerComponent, CummingDoAfterEvent>(OnDoAfterCum);
         SubscribeLocalEvent<MilkProducerComponent, MilkingDoAfterEvent>(OnDoAfterMilk);
+        SubscribeLocalEvent<MilkProducerComponent, DrinkMilkDoAfterEvent>(OnDoAfterDrinkMilk); // Hardlight
         //SubscribeLocalEvent<SquirtProducerComponent, SquirtingDoAfterEvent>(OnDoAfterSquirt); //Unused-Trait is WIP
         SubscribeLocalEvent<PissProducerComponent, PissingDoAfterEvent>(OnDoAfterPiss);
     }
@@ -192,12 +199,20 @@ public sealed class LewdTraitSystem : EntitySystem
             args.Verbs.Add(verbPissInside);
         }
     }
+    // Hardlight Start
 
-    public void AddMilkVerb(Entity<MilkProducerComponent> entity, ref GetVerbsEvent<InnateVerb> args)
+    public void AddMilkVerbs(Entity<MilkProducerComponent> entity, ref GetVerbsEvent<AlternativeVerb> args)
+    {
+        AddMilkVerb(entity, ref args);
+        AddDrinkMilkVerb(entity, ref args);
+    }
+    // Hardlight End
+
+    public void AddMilkVerb(Entity<MilkProducerComponent> entity, ref GetVerbsEvent<AlternativeVerb> args) // Hardlight Changed to AlternativeVerb
     {
         if (args.Using == null ||
              !args.CanInteract ||
-             args.User != args.Target ||
+             // Hardlight removed self-cast only
              !EntityManager.HasComponent<RefillableSolutionComponent>(args.Using.Value)) //see if removing this part lets you milk on the ground.
             return;
 
@@ -206,7 +221,7 @@ public sealed class LewdTraitSystem : EntitySystem
         var user = args.User;
         var used = args.Using.Value;
 
-        InnateVerb verbMilk = new()
+        AlternativeVerb verbMilk = new() // Hardlight Changed to AlternativeVerb
         {
             Act = () => AttemptMilk(entity, user, used),
             Text = Loc.GetString($"milk-verb-get-text"),
@@ -214,6 +229,26 @@ public sealed class LewdTraitSystem : EntitySystem
         };
         args.Verbs.Add(verbMilk);
     }
+
+    // Hardlight Start
+    public void AddDrinkMilkVerb(Entity<MilkProducerComponent> entity, ref GetVerbsEvent<AlternativeVerb> args)
+    {
+        if (!args.CanInteract)
+            return;
+
+        _solutionContainer.EnsureSolution(entity.Owner, entity.Comp.SolutionName, out _);
+
+        var user = args.User;
+
+        AlternativeVerb verbDrinkMilk = new()
+        {
+            Act = () => AttemptDrinkMilk(entity, user),
+            Text = Loc.GetString($"drink-milk-verb-get-text"),
+            Priority = 1
+        };
+        args.Verbs.Add(verbDrinkMilk);
+    }
+    // Hardlight End
 
     //public void AddSquirtVerb(Entity<SquirtProducerComponent> entity, ref GetVerbsEvent<InnateVerb> args) //Unused-Trait is WIP
     //{
@@ -263,6 +298,7 @@ public sealed class LewdTraitSystem : EntitySystem
             var split = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, quantity);
             _solutionContainer.TryAddSolution(targetSoln.Value, split);
             _popupSystem.PopupEntity(Loc.GetString("cum-verb-success", ("amount", quantity), ("target", Identity.Entity(args.Args.Used.Value, EntityManager))), entity.Owner, args.Args.User, PopupType.Medium);
+
             return;
         }
 
@@ -277,12 +313,28 @@ public sealed class LewdTraitSystem : EntitySystem
                 return;
             }
 
-            if (quantity > injectSolution.AvailableVolume)
-                quantity = injectSolution.AvailableVolume;
+            // HardLight start
+            var available = injectSolution.AvailableVolume;
+            var injected = quantity > available ? available : quantity;
 
-            var split = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, quantity);
-            _solutionContainer.TryAddSolution(injectSoln.Value, split);
-            _popupSystem.PopupEntity(Loc.GetString("cum-verb-success", ("amount", quantity), ("target", Identity.Entity(args.Args.Used.Value, EntityManager))), entity.Owner, args.Args.User, PopupType.Medium);
+            if (injected > 0)
+            {
+                var splitInject = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, injected);
+                _solutionContainer.TryAddSolution(injectSoln.Value, splitInject);
+            }
+
+            var overflow = quantity - injected;
+            if (overflow > 0)
+            {
+                var splitOverflow = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, overflow);
+                _puddle.TrySpillAt(args.Args.Used.Value, splitOverflow, out _, sound: false);
+                _audio.PlayPvs(new SoundPathSpecifier("/Audio/Effects/Fluids/splat.ogg"), args.Args.Used.Value);
+                _popupSystem.PopupEntity(Loc.GetString("cum-verb-overflow", ("amount", overflow)), args.Args.Used.Value, PopupType.MediumCaution);
+            }
+
+            _popupSystem.PopupEntity(Loc.GetString("cum-verb-success", ("amount", injected), ("target", Identity.Entity(args.Args.Used.Value, EntityManager))), entity.Owner, args.Args.User, PopupType.Medium);
+            _popupSystem.PopupEntity(Loc.GetString("cum-verb-success-other", ("amount", injected), ("target", Identity.Entity(args.Args.User, EntityManager))), entity.Owner, args.Args.Used.Value, PopupType.Medium);
+            // HardLight end
             return;
         }
     }
@@ -302,7 +354,24 @@ public sealed class LewdTraitSystem : EntitySystem
         var quantity = solution.Volume;
         if (quantity == 0)
         {
-            _popupSystem.PopupEntity(Loc.GetString("milk-verb-dry"), entity.Owner, args.Args.User);
+            // Hardlight Start
+            if (entity.Owner == args.Args.User)
+            {
+                _popupSystem.PopupEntity(Loc.GetString("milk-verb-dry"), entity.Owner, args.Args.User);
+            }
+
+            else
+            {
+                _popupSystem.PopupEntity(
+                    Loc.GetString("milk-verb-dry-other",
+                        ("person", Identity.Entity(entity.Owner, EntityManager))),
+                    entity.Owner,
+                    args.Args.User,
+                    PopupType.Medium);
+                _popupSystem.PopupEntity(Loc.GetString("milk-verb-dry"), entity.Owner, entity.Owner);
+
+            }
+            // Hardlight End
             return;
         }
 
@@ -311,8 +380,109 @@ public sealed class LewdTraitSystem : EntitySystem
 
         var split = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, quantity);
         _solutionContainer.TryAddSolution(targetSoln.Value, split);
-        _popupSystem.PopupEntity(Loc.GetString("milk-verb-success", ("amount", quantity), ("target", Identity.Entity(args.Args.Used.Value, EntityManager))), entity.Owner, args.Args.User, PopupType.Medium);
+        // Hardlight Start
+        if (entity.Owner == args.Args.User)
+        {
+            _popupSystem.PopupEntity(
+                Loc.GetString("milk-verb-success",
+                    ("amount", quantity),
+                    ("target", Identity.Entity(args.Args.Used.Value, EntityManager))),
+                entity.Owner,
+                args.Args.User,
+                PopupType.Medium);
+        }
+        else
+        {
+            _popupSystem.PopupEntity(
+                Loc.GetString("milk-verb-success-other",
+                    ("amount", quantity),
+                    ("target", Identity.Entity(args.Args.Used.Value, EntityManager)),
+                    ("person", Identity.Entity(entity.Owner, EntityManager))),
+                entity.Owner,
+                args.Args.User,
+                PopupType.Medium);
+            _popupSystem.PopupEntity(
+                Loc.GetString("milk-verb-success-other-self",
+                    ("amount", quantity),
+                    ("target", Identity.Entity(args.Args.Used.Value, EntityManager)),
+                    ("person", Identity.Entity(args.Args.User, EntityManager))),
+                entity.Owner,
+                entity.Owner,
+                PopupType.Medium);
+        }
+        // Hardlight End
     }
+    // Hardlight Start
+    private void OnDoAfterDrinkMilk(Entity<MilkProducerComponent> entity, ref DrinkMilkDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled)
+            return;
+
+        if (!_solutionContainer.ResolveSolution(entity.Owner, entity.Comp.SolutionName, ref entity.Comp.Solution, out var solution))
+            return;
+
+        if (!_solutionContainer.TryGetInjectableSolution(args.Args.User, out var injectSoln, out var injectSolution))
+            return;
+
+        args.Handled = true;
+        var quantity = solution.Volume;
+        if (quantity == 0)
+        {
+            // Hardlight Start
+            if (entity.Owner == args.Args.User)
+            {
+                _popupSystem.PopupEntity(Loc.GetString("milk-verb-dry"), entity.Owner, args.Args.User);
+            }
+
+            else
+            {
+                _popupSystem.PopupEntity(
+                    Loc.GetString("milk-verb-dry-other",
+                        ("person", Identity.Entity(entity.Owner, EntityManager))),
+                    entity.Owner,
+                    args.Args.User,
+                    PopupType.Medium);
+                _popupSystem.PopupEntity(Loc.GetString("milk-verb-dry"), entity.Owner, entity.Owner);
+
+            }
+            return;
+        }
+
+        if (quantity > 5)
+            quantity = 5;
+
+        var split = _solutionContainer.SplitSolution(entity.Comp.Solution.Value, quantity);
+        _solutionContainer.TryAddSolution(injectSoln.Value, split);
+        if (entity.Owner == args.Args.User)
+        {
+            _popupSystem.PopupEntity(
+                Loc.GetString("drink-milk-verb-success",
+                    ("amount", quantity)),
+                entity.Owner,
+                args.Args.User,
+                PopupType.Medium);
+        }
+        else
+        {
+            _popupSystem.PopupEntity(
+                Loc.GetString("drink-milk-verb-success-other",
+                    ("amount", quantity),
+                    ("person", Identity.Entity(entity.Owner, EntityManager))),
+                entity.Owner,
+                args.Args.User,
+                PopupType.Medium);
+            _popupSystem.PopupEntity(
+                Loc.GetString("drink-milk-verb-success-other-self",
+                    ("amount", quantity),
+                    ("person", Identity.Entity(args.Args.User, EntityManager))),
+                entity.Owner,
+                entity.Owner,
+                PopupType.Medium);
+        }
+        AttemptDrinkMilk(entity, args.Args.User);
+    }
+    // Hardlight End
+
 
     //private void OnDoAfterSquirt(Entity<SquirtProducerComponent> entity, ref SquirtingDoAfterEvent args) //Unused-Trait is WIP
     //{
@@ -409,10 +579,30 @@ public sealed class LewdTraitSystem : EntitySystem
 
     private void AttemptMilk(Entity<MilkProducerComponent> lewd, EntityUid userUid, EntityUid containerUid)
     {
-        if (!HasComp<MilkProducerComponent>(userUid))
+        if (!Resolve(lewd, ref lewd.Comp!))
             return;
 
         var doargs = new DoAfterArgs(EntityManager, userUid, 5, new MilkingDoAfterEvent(), lewd, lewd, used: containerUid)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            MovementThreshold = 1.0f,
+        };
+
+        _doAfterSystem.TryStartDoAfter(doargs);
+    }
+
+    private void AttemptDrinkMilk(Entity<MilkProducerComponent> lewd, EntityUid userUid)
+    {
+        if (!Resolve(lewd, ref lewd.Comp!))
+            return;
+
+        var drinkSpeed = 2f;
+        if (HasComp<VoraciousComponent>(userUid))
+        {
+            drinkSpeed = 0.5f;
+        }
+        var doargs = new DoAfterArgs(EntityManager, userUid, drinkSpeed, new DrinkMilkDoAfterEvent(), lewd, lewd)
         {
             BreakOnMove = true,
             BreakOnDamage = true,
@@ -471,18 +661,30 @@ public sealed class LewdTraitSystem : EntitySystem
             if (_mobState.IsDead(uid))
                 continue;
 
+            if (!_solutionContainer.ResolveSolution(uid, containerCum.SolutionName, ref containerCum.Solution))
+                continue;
+
             if (EntityManager.TryGetComponent(uid, out HungerComponent? hunger))
             {
                 if (_hunger.GetHungerThreshold(hunger) < HungerThreshold.Okay)
                     continue;
+                _solutionContainer.TryAddReagent(containerCum.Solution.Value,
+                    containerCum.ReagentId,
+                    containerCum.QuantityPerUpdate,
+                    out var quantity);
+                if (quantity > 0)
+                {
+                    _hunger.ModifyHunger(uid, -containerCum.HungerUsage, hunger);
+                }
 
-                _hunger.ModifyHunger(uid, -containerCum.HungerUsage, hunger);
+                continue;
             }
 
-            if (!_solutionContainer.ResolveSolution(uid, containerCum.SolutionName, ref containerCum.Solution))
-                continue;
-
             _solutionContainer.TryAddReagent(containerCum.Solution.Value, containerCum.ReagentId, containerCum.QuantityPerUpdate, out _);
+
+
+
+
         }
 
         while (queryMilk.MoveNext(out var uid, out var containerMilk))
@@ -495,18 +697,24 @@ public sealed class LewdTraitSystem : EntitySystem
             if (_mobState.IsDead(uid))
                 continue;
 
+            if (!_solutionContainer.ResolveSolution(uid, containerMilk.SolutionName, ref containerMilk.Solution))
+                continue;
+
             if (EntityManager.TryGetComponent(uid, out HungerComponent? hunger))
             {
                 if (_hunger.GetHungerThreshold(hunger) < HungerThreshold.Okay)
                     continue;
-
+                _solutionContainer.TryAddReagent(containerMilk.Solution.Value, containerMilk.ReagentId, containerMilk.QuantityPerUpdate, out var quantity);
+                if(quantity > 0){
                 _hunger.ModifyHunger(uid, -containerMilk.HungerUsage, hunger);
-            }
-
-            if (!_solutionContainer.ResolveSolution(uid, containerMilk.SolutionName, ref containerMilk.Solution))
                 continue;
-
+                }
+            }
             _solutionContainer.TryAddReagent(containerMilk.Solution.Value, containerMilk.ReagentId, containerMilk.QuantityPerUpdate, out _);
+
+
+
+
         }
 
         while (queryPiss.MoveNext(out var uid, out var containerPiss))
@@ -519,16 +727,19 @@ public sealed class LewdTraitSystem : EntitySystem
             if (_mobState.IsDead(uid))
                 continue;
 
+            if (!_solutionContainer.ResolveSolution(uid, containerPiss.SolutionName, ref containerPiss.Solution))
+                continue;
             if (EntityManager.TryGetComponent(uid, out HungerComponent? hunger))
             {
                 if (_hunger.GetHungerThreshold(hunger) < HungerThreshold.Okay)
                     continue;
-
-                _hunger.ModifyHunger(uid, -containerPiss.HungerUsage, hunger);
-            }
-
-            if (!_solutionContainer.ResolveSolution(uid, containerPiss.SolutionName, ref containerPiss.Solution))
+                _solutionContainer.TryAddReagent(containerPiss.Solution.Value, containerPiss.ReagentId, containerPiss.QuantityPerUpdate, out var quantity);
+                if (quantity > 0)
+                {
+                    _hunger.ModifyHunger(uid, -containerPiss.HungerUsage, hunger);
+                }
                 continue;
+            }
 
             _solutionContainer.TryAddReagent(containerPiss.Solution.Value, containerPiss.ReagentId, containerPiss.QuantityPerUpdate, out _);
         }

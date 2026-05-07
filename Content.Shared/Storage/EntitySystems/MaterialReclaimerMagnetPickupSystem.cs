@@ -78,7 +78,6 @@ public sealed class MaterialReclaimerMagnetPickupSystem : EntitySystem
     // Frontier, used to toggle the magnet on the ore bag/box
     public bool ToggleMagnet(EntityUid uid, MaterialReclaimerMagnetPickupComponent comp)
     {
-        var query = EntityQueryEnumerator<MaterialReclaimerMagnetPickupComponent>();
         comp.MagnetEnabled = !comp.MagnetEnabled;
 
         return comp.MagnetEnabled;

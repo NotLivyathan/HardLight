@@ -1,0 +1,108 @@
+- type: constructionGraph
+  id: Plastitanium
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: plastitaniumWall
+          completed:
+            - !type:SnapToGrid {}
+          steps:
+            - material: Plastitanium
+              amount: 2
+              doAfter: 2
+
+        - to: plastitaniumWallDiagonal
+          completed:
+            - !type:SnapToGrid
+              southRotation: false
+          steps:
+            - material: Plastitanium
+              amount: 2
+              doAfter: 2
+
+        - to: plastitaniumWindow
+          steps:
+            - material: Plastitanium
+              amount: 1
+              doAfter: 1
+            - material: ReinforcedUraniumGlass
+              amount: 1
+              doAfter: 1
+
+        - to: plastitaniumWindowDiagonal
+          steps:
+            - material: Plastitanium
+              amount: 1
+              doAfter: 1
+            - material: ReinforcedUraniumGlass
+              amount: 1
+              doAfter: 1
+
+    - node: plastitaniumWall
+      entity: WallPlastitanium
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlastitanium1
+              amount: 2
+            - !type:DeleteEntity {}
+          steps:
+            - tool: Welding
+              doAfter: 10
+
+    - node: plastitaniumWallDiagonal
+      entity: WallPlastitaniumDiagonal
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlastitanium1
+              amount: 2
+            - !type:DeleteEntity {}
+          steps:
+            - tool: Welding
+              doAfter: 10
+
+    - node: plastitaniumWindow
+      entity: PlastitaniumWindow
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlastitanium1
+              amount: 1
+            - !type:SpawnPrototype
+              prototype: SheetRUGlass1
+              amount: 1
+            - !type:DeleteEntity {}
+          steps:
+            - tool: Welding
+              doAfter: 5
+            - tool: Screwing
+              doAfter: 2
+            - tool: Anchoring
+              doAfter: 3
+
+    - node: plastitaniumWindowDiagonal
+      entity: PlastitaniumWindowDiagonal
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPlastitanium1
+              amount: 1
+            - !type:SpawnPrototype
+              prototype: SheetRUGlass1
+              amount: 1
+            - !type:DeleteEntity {}
+          steps:
+            - tool: Welding
+              doAfter: 5
+            - tool: Screwing
+              doAfter: 2
+            - tool: Anchoring
+              doAfter: 3
+
+    # plastitanium walls use the canonical Girder graph (routes exist in Girder.yml)

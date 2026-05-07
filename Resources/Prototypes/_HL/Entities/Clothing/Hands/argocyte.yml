@@ -1,0 +1,122 @@
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesArgocyteHeavy
+  name: heavy argocyte gauntlets
+  description: Simple insulated gloves with large argocyte plates sewn on. Lends your fists some serious potential for harm.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Gloves/argocyteheavy.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Gloves/argocyteheavy.rsi
+  - type: StaminaDamageOnHit
+    damage: 19 #Barely 6 hits to stun
+  - type: MeleeWeapon
+    autoAttack: True
+    damage:
+      types:
+        Blunt: 16
+    soundHit:
+      collection: MetalThud
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Fiber
+    fiberMaterial: fibers-durathread
+    fiberColor: fibers-blue
+  - type: FingerprintMask
+  - type: Insulated
+  - type: ExplosionResistance
+    damageCoefficient: 0.9
+  - type: ClothingSpeedModifier
+    walkModifier: 0.95
+    sprintModifier: 0.95
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 60
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 40
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateHeavy:
+                min: 1
+                max: 5
+  - type: Construction
+    graph: ArgoGauntletsHeavyGraph
+    node: finish
+       
+- type: entity
+  parent: ClothingHandsBase
+  id: ClothingHandsGlovesArgocyteLight
+  name: light argocyte gauntlets
+  description: Simple insulated gloves with small argocyte plates sewn on. Lends your fists some potential for harm.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Gloves/argocytelight.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/Gloves/argocytelight.rsi
+  - type: StaminaDamageOnHit
+    damage: 7 
+  - type: MeleeWeapon
+    autoAttack: True
+    attackRate: 3
+    damage:
+      types:
+        Blunt: 6
+    soundHit:
+      collection: MetalThud
+    animation: WeaponArcFist
+    mustBeEquippedToUse: true
+  - type: Fiber
+    fiberMaterial: fibers-durathread
+    fiberColor: fibers-white
+  - type: FingerprintMask
+  - type: Insulated
+  - type: ExplosionResistance
+    damageCoefficient: 1.1
+  - type: Damageable
+    damageContainer: Shield
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 30
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+      - trigger:
+          !type:DamageTrigger
+          damage: 20
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+          - !type:PlaySoundBehavior
+            sound:
+              collection: MetalBreak
+          - !type:SpawnEntitiesBehavior
+            spawn:
+              MaterialArgocytePlateLight:
+                min: 1
+                max: 5
+  - type: Construction
+    graph: ArgoGauntletsLightGraph
+    node: finish

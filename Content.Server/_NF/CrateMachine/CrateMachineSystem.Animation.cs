@@ -27,6 +27,14 @@ public sealed partial class CrateMachineSystem : SharedCrateMachineSystem
             if (!receiver.Powered)
                 continue;
 
+            // Skip idle machines: no animation in progress and crate already taken.
+            // ProcessClosingAnimation needs to fire if crate is present (DidTakeCrate flips false),
+            // so only short-circuit when both timers are inactive AND we already think the crate is taken.
+            if (crateMachine.OpeningTimeRemaining <= 0 &&
+                crateMachine.ClosingTimeRemaining <= 0 &&
+                crateMachine.DidTakeCrate)
+                continue;
+
             ProcessOpeningAnimation(uid, frameTime, crateMachine);
             ProcessClosingAnimation(uid, frameTime, crateMachine);
         }

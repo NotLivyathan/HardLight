@@ -1,0 +1,36 @@
+- type: latheRecipe
+  id: DebrisBag
+  result: DebrisBag
+  completetime: 5
+  materials:
+    Steel: 500
+    Cloth: 500
+
+- type: latheRecipe
+  id: DebrisBagOfHolding
+  result: DebrisBagOfHolding
+  completetime: 5
+  materials:
+    Steel: 2000
+    Silver: 750
+    Plasma: 1000
+    Bluespace: 200
+
+- type: latheRecipe
+  id: ClothingWalletLeatherBlackMagnet
+  result: ClothingWalletLeatherBlackMagnet
+  completetime: 5
+  materials:
+    Steel: 1000
+    Silver: 375
+    Plasma: 500
+    Bluespace: 100
+
+- type: latheRecipe
+  id: DocumentCaseShortMagnet
+  result: DocumentCaseShortMagnet
+  completetime: 5
+  materials:
+    Steel: 2000
+    Silver: 750
+    Plasma: 1000

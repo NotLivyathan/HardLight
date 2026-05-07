@@ -1,2 +1,2 @@
-reagent-name-synth-blood = synth blood
-reagent-desc-synth-blood = Not quite coolant, not quite blue powerade.
+reagent-name-synthetic-blood = synthetic blood
+reagent-desc-synthetic-blood = Not quite coolant, not quite blue powerade.

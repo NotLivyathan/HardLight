@@ -1,4 +1,57 @@
 - type: construction
+  id: WallPlastitanium
+  graph: Girder
+  startNode: start
+  targetNode: plastitaniumWall
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
+  id: WallPlastitaniumDiagonal
+  graph: Girder
+  startNode: start
+  targetNode: plastitaniumWallDiagonal
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked
+
+- type: construction
+  id: PlastitaniumWindow
+  graph: Plastitanium
+  startNode: start
+  targetNode: plastitaniumWindow
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: false
+  canBuildInImpassable: true
+  conditions:
+    - !type:EmptyOrWindowValidInTile
+    - !type:NoWindowsInTile
+
+- type: construction
+  id: PlastitaniumWindowDiagonal
+  graph: Plastitanium
+  startNode: start
+  targetNode: plastitaniumWindowDiagonal
+  category: construction-category-structures
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true
+  conditions:
+    - !type:EmptyOrWindowValidInTile
+    - !type:NoWindowsInTile
+- type: construction
   id: GaslockHighFlow
   graph: Girder
   startNode: start

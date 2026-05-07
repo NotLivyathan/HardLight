@@ -122,26 +122,37 @@ public sealed class LinkedEntitySystem : EntitySystem
     public bool TryUnlink(EntityUid first, EntityUid second,
         LinkedEntityComponent? firstLink = null, LinkedEntityComponent? secondLink = null)
     {
-        if (!Resolve(first, ref firstLink))
+        var resolvedFirst = Resolve(first, ref firstLink, false);
+        var resolvedSecond = Resolve(second, ref secondLink, false);
+
+        if (!resolvedFirst && !resolvedSecond)
             return false;
 
-        if (!Resolve(second, ref secondLink))
-            return false;
+        var success = false;
 
-        var success = firstLink.LinkedEntities.Remove(second)
-                      && secondLink.LinkedEntities.Remove(first);
+        if (resolvedFirst)
+        {
+            var firstComponent = firstLink!;
+            success |= firstComponent.LinkedEntities.Remove(second);
 
-        _appearance.SetData(first, LinkedEntityVisuals.HasAnyLinks, firstLink.LinkedEntities.Any());
-        _appearance.SetData(second, LinkedEntityVisuals.HasAnyLinks, secondLink.LinkedEntities.Any());
+            _appearance.SetData(first, LinkedEntityVisuals.HasAnyLinks, firstComponent.LinkedEntities.Any());
+            Dirty(first, firstComponent);
 
-        Dirty(first, firstLink);
-        Dirty(second, secondLink);
+            if (firstComponent.LinkedEntities.Count == 0 && firstComponent.DeleteOnEmptyLinks)
+                QueueDel(first);
+        }
 
-        if (firstLink.LinkedEntities.Count == 0 && firstLink.DeleteOnEmptyLinks)
-            QueueDel(first);
+        if (resolvedSecond)
+        {
+            var secondComponent = secondLink!;
+            success |= secondComponent.LinkedEntities.Remove(first);
 
-        if (secondLink.LinkedEntities.Count == 0 && secondLink.DeleteOnEmptyLinks)
-            QueueDel(second);
+            _appearance.SetData(second, LinkedEntityVisuals.HasAnyLinks, secondComponent.LinkedEntities.Any());
+            Dirty(second, secondComponent);
+
+            if (secondComponent.LinkedEntities.Count == 0 && secondComponent.DeleteOnEmptyLinks)
+                QueueDel(second);
+        }
 
         return success;
     }

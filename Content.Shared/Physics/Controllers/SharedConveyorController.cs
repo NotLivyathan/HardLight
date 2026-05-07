@@ -40,6 +40,16 @@ public abstract class SharedConveyorController : VirtualController
 
     protected HashSet<EntityUid> Intersecting = new();
 
+    // Cached CVar value. Previously HasPlayerInRange called _cfg.GetCVar(CVars.NetMaxUpdateRange)
+    // for every conveyed entity, every tick - that's a dictionary lookup per item per frame.
+    // Refreshed via OnValueChanged so behavior is identical.
+    private float _netMaxUpdateRange;
+
+    // Reused per-tick scratch buffers for UpdateBeforeSolve. Replaces a fresh Dictionary +
+    // HashSet allocation every physics tick. Cleared at the top of each call.
+    private readonly Dictionary<EntityUid, int> _selected = new();
+    private readonly HashSet<EntityUid> _refreshConveyors = new();
+
     public override void Initialize()
     {
         _job = new ConveyorJob(this);
@@ -56,6 +66,8 @@ public abstract class SharedConveyorController : VirtualController
 
         SubscribeLocalEvent<ConveyorComponent, StartCollideEvent>(OnConveyorStartCollide);
         SubscribeLocalEvent<ConveyorComponent, ComponentStartup>(OnConveyorStartup);
+
+        _cfg.OnValueChanged(CVars.NetMaxUpdateRange, value => _netMaxUpdateRange = value, true);
 
         base.Initialize();
     }
@@ -136,7 +148,8 @@ public abstract class SharedConveyorController : VirtualController
 
         _parallel.ProcessNow(_job, _job.Conveyed.Count);
 
-        var selected = new Dictionary<EntityUid, int>();
+        // Reuse the per-tick scratch dictionary instead of allocating a fresh one.
+        _selected.Clear();
 
         for (var i = 0; i < _job.Conveyed.Count; i++)
         {
@@ -145,9 +158,9 @@ public abstract class SharedConveyorController : VirtualController
             if (!ent.Result || ent.BestConveyor == null)
                 continue;
 
-            if (!selected.TryGetValue(ent.BestConveyor.Value, out var existing) || ent.Priority > _job.Conveyed[existing].Priority)
+            if (!_selected.TryGetValue(ent.BestConveyor.Value, out var existing) || ent.Priority > _job.Conveyed[existing].Priority)
             {
-                selected[ent.BestConveyor.Value] = i;
+                _selected[ent.BestConveyor.Value] = i;
             }
         }
 
@@ -155,12 +168,16 @@ public abstract class SharedConveyorController : VirtualController
         {
             var ent = _job.Conveyed[i];
 
-            if (ent.BestConveyor != null && ent.Result && selected[ent.BestConveyor.Value] != i)
+            if (ent.BestConveyor != null && ent.Result && _selected[ent.BestConveyor.Value] != i)
             {
                 ent.Result = false;
                 _job.Conveyed[i] = ent;
             }
         }
+
+        // Reuse the per-tick scratch hashset.
+        _refreshConveyors.Clear();
+        var refreshConveyors = _refreshConveyors;
 
         foreach (var ent in _job.Conveyed)
         {
@@ -168,10 +185,15 @@ public abstract class SharedConveyorController : VirtualController
                 continue;
 
             var physics = ent.Entity.Comp3;
+            var wasConveying = ent.Entity.Comp1.Conveying;
 
             if (physics.BodyStatus != BodyStatus.OnGround)
             {
                 SetConveying(ent.Entity.Owner, ent.Entity.Comp1, false);
+
+                if (wasConveying && ent.BestConveyor != null)
+                    refreshConveyors.Add(ent.BestConveyor.Value);
+
                 continue;
             }
 
@@ -187,9 +209,11 @@ public abstract class SharedConveyorController : VirtualController
                 targetDir += wishDir;
             }
 
+            var isConveying = ent.Result && targetDir.LengthSquared() > 0f;
+
             if (ent.Result)
             {
-                SetConveying(ent.Entity.Owner, ent.Entity.Comp1, targetDir.LengthSquared() > 0f);
+                SetConveying(ent.Entity.Owner, ent.Entity.Comp1, isConveying);
 
                 // We apply friction here so when we push items towards the center of the conveyor they don't go overspeed.
                 // We also don't want this to apply to mobs as they apply their own friction and otherwise
@@ -215,10 +239,21 @@ public abstract class SharedConveyorController : VirtualController
             PhysicsSystem.SetAngularVelocity(ent.Entity.Owner, angularVelocity);
             PhysicsSystem.SetLinearVelocity(ent.Entity.Owner, velocity, wakeBody: false);
 
+            if (wasConveying && !isConveying && ent.BestConveyor != null)
+                refreshConveyors.Add(ent.BestConveyor.Value);
+
             if (!IsConveyed((ent.Entity.Owner, ent.Entity.Comp2)))
             {
+                if (ent.BestConveyor != null)
+                    refreshConveyors.Add(ent.BestConveyor.Value);
+
                 RemComp<ConveyedComponent>(ent.Entity.Owner);
             }
+        }
+
+        foreach (var conveyor in refreshConveyors)
+        {
+            WakeConveyed(conveyor);
         }
     }
 
@@ -245,15 +280,17 @@ public abstract class SharedConveyorController : VirtualController
         bestConveyorUid = null;
         priority = 0f;
 
+        // perf: check awake before HasPlayerInRange - the awake check is free while
+        // HasPlayerInRange does an AABB entity lookup every tick per conveyed entity.
+        if (!entity.Comp3.Awake)
+            return true;
+
         if (!HasPlayerInRange(entity.Owner))
             return true;
 
         var fixtures = entity.Comp2;
         var physics = entity.Comp3;
         var xform = entity.Comp4;
-
-        if (!physics.Awake)
-            return true;
 
         // Client moment
         if (!physics.Predict && prediction)
@@ -360,10 +397,11 @@ public abstract class SharedConveyorController : VirtualController
 
     private bool HasPlayerInRange(EntityUid uid)
     {
-        var range = _cfg.GetCVar(CVars.NetMaxUpdateRange);
+        // _netMaxUpdateRange is the cached CVar value; previously this was looked up via
+        // _cfg.GetCVar per call (called once per conveyed item per tick).
         var coords = Transform(uid).Coordinates;
 
-        foreach (var _ in Lookup.GetEntitiesInRange<ActorComponent>(coords, range))
+        foreach (var _ in Lookup.GetEntitiesInRange<ActorComponent>(coords, _netMaxUpdateRange))
         {
             return true;
         }

@@ -36,7 +36,6 @@ public sealed partial class EnergyDomeGeneratorComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public EntProtoId DomePrototype = "EnergyDomeSmallRed";
 
-    [DataField]
     public EntityUid? SpawnedDome;
 
     /// <summary>
@@ -44,14 +43,12 @@ public sealed partial class EnergyDomeGeneratorComponent : Component
     /// the item or the item itself. Determined when the shield is activated,
     /// it is stored in the component for changing the protected entity.
     /// </summary>
-    [DataField]
     public EntityUid? DomeParentEntity;
 
     //Action
     [DataField]
     public EntProtoId ToggleAction = "ActionToggleDome";
 
-    [DataField]
     public EntityUid? ToggleActionEntity;
 
     //Sounds

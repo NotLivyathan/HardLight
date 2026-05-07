@@ -56,9 +56,12 @@ public sealed class DiscordAuthManager
 
     private async void OnAuthCheck(DiscordAuthCheckMessage message)
     {
-        var isVerified = await IsVerified(message.MsgChannel.UserId);
-        if (isVerified)
+        try
         {
+            var isVerified = await IsVerified(message.MsgChannel.UserId);
+            if (!isVerified)
+                return;
+
             var session = _player.GetSessionById(message.MsgChannel.UserId);
 
             if (_configuration.GetCVar(CCVars.WhitelistEnabled))
@@ -84,7 +87,12 @@ public sealed class DiscordAuthManager
                 session.Channel.Disconnect(Loc.GetString("not-whitelisted"));
                 return;
             }
+
             PlayerVerified?.Invoke(this, session);
+        }
+        catch (Exception e)
+        {
+            _sawmill.Error($"Discord auth check failed: {e}");
         }
     }
 
@@ -93,14 +101,14 @@ public sealed class DiscordAuthManager
         if (e.NewStatus != SessionStatus.Connected)
             return;
 
-        if (!_isEnabled)
+        try
         {
-            PlayerVerified?.Invoke(this, e.Session);
-            return;
-        }
+            if (!_isEnabled)
+            {
+                PlayerVerified?.Invoke(this, e.Session);
+                return;
+            }
 
-        if (e.NewStatus == SessionStatus.Connected)
-        {
             var isVerified = await IsVerified(e.Session.UserId);
             if (isVerified)
             {
@@ -111,6 +119,10 @@ public sealed class DiscordAuthManager
             var authUrl = await GenerateAuthLink(e.Session.UserId);
             var msg = new DiscordAuthRequiredMessage { AuthUrl = authUrl };
             e.Session.Channel.SendMessage(msg);
+        }
+        catch (Exception ex)
+        {
+            _sawmill.Error($"Discord auth status update failed for {e.Session.UserId}: {ex}");
         }
     }
 

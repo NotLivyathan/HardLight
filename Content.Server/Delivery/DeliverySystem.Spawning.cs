@@ -2,6 +2,7 @@ using Content.Shared.Delivery;
 using Content.Shared.Power.EntitySystems;
 using Content.Server.StationRecords;
 using Content.Shared.EntityTable;
+using Content.Shared.StationRecords;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 
@@ -51,7 +52,7 @@ public sealed partial class DeliverySystem
 
     private void AdjustStationDeliveries(Entity<CargoDeliveryDataComponent> ent)
     {
-        if (!TryComp<StationRecordsComponent>(ent, out var records))
+        if (!_records.TryGetAuthoritativeRecords(out var recordsStation, out _)) // HardLight: Editted
             return;
 
         var spawners = GetValidSpawners(ent);
@@ -61,12 +62,20 @@ public sealed partial class DeliverySystem
             return;
 
         // Skip if there's nobody in crew manifest
-        if (records.Records.Keys.Count == 0)
+        // HardLight start
+        var recordCount = 0;
+        foreach (var _ in _records.GetRecordsOfType<GeneralStationRecord>(recordsStation))
+        {
+            recordCount++;
+        }
+
+        if (recordCount == 0) // records.Records.Keys.Count<recordCount
+        // HardLight end
             return;
 
         // We take the amount of mail calculated based on player amount or the minimum, whichever is higher.
         // We don't want stations with less than the player ratio to not get mail at all
-        var initialDeliveryCount = (int)Math.Ceiling(records.Records.Keys.Count / ent.Comp.PlayerToDeliveryRatio);
+        var initialDeliveryCount = (int)Math.Ceiling(recordCount / ent.Comp.PlayerToDeliveryRatio); // HardLight: records.Records.Keys.Count<recordCount
         var deliveryCount = Math.Max(initialDeliveryCount, ent.Comp.MinimumDeliverySpawn);
 
         if (!ent.Comp.DistributeRandomly)

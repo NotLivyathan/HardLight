@@ -35,7 +35,12 @@ public sealed partial class ReactorPartSystem
             // This viloates COE, but if energy is conserved, then pulling out a hot rod will instantly turn the room into an oven
             gasMix.Temperature += 0.1f * DeltaT * component.ThermalMass / _atmosphereSystem.GetHeatCapacity(gasMix, false);
 
-        var burncomp = EnsureComp<DamageOnInteractComponent>(uid);
+        var burncomp = CompOrNull<DamageOnInteractComponent>(uid);
+        if (burncomp is null)
+        {
+            burncomp = AddComp<DamageOnInteractComponent>(uid);
+            burncomp.Damage = new DamageSpecifier();
+        }
 
         burncomp.IsDamageActive = component.Temperature > Atmospherics.T0C + _hotTemp;
 

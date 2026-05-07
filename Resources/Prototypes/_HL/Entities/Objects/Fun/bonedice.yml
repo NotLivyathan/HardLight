@@ -1,0 +1,137 @@
+- type: entity
+  parent: BaseDice
+  id: d20DiceBone
+  name: bone d20
+  description: A die with twenty sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 20
+    currentValue: 20
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d20_20
+  - type: Construction
+    graph: BoneD20
+    node: BoneD20
+
+- type: entity
+  parent: BaseDice
+  id: d12DiceBone
+  name: bone d12
+  description: A die with twelve sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 12
+    currentValue: 12
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d12_12
+  - type: Construction
+    graph: BoneD12
+    node: BoneD12
+
+
+- type: entity
+  parent: BaseDice
+  id: d10DiceBone
+  name: bone d10
+  description: A die with ten sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 10
+    offset: 1
+    currentValue: 0
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d10_0
+  - type: Construction
+    graph: BoneD10
+    node: BoneD10
+
+
+- type: entity
+  parent: BaseDice
+  id: d8DiceBone
+  name: bone d8
+  description: A die with eight sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 8
+    currentValue: 8
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d8_8
+  - type: Construction
+    graph: BoneD8
+    node: BoneD8
+
+
+- type: entity
+  parent: BaseDice
+  id: d6DiceBone
+  name: bone d6
+  description: A die with six sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 6
+    currentValue: 6
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d6_6
+  - type: Construction
+    graph: BoneD6
+    node: BoneD6
+
+
+- type: entity
+  parent: BaseDice
+  id: d4DiceBone
+  name: bone d4
+  description: A die with four sides. Made out of a bone.
+  components:
+  - type: Dice
+    sides: 4
+    currentValue: 4
+  - type: Sprite
+    sprite: _HL/Objects/Fun/bonedice.rsi
+    noRot: true # If their sprites rotate, the number becomes even more illegible than usual.
+    state: d4_4
+  - type: CollisionWake
+    enabled: false
+  - type: Fixtures
+    fixtures:
+      slips:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,-0.2,0.2,0.2"
+        hard: false
+        layer:
+        - LowImpassable
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,-0.2,0.2,0.2"
+        density: 30
+        mask:
+        - ItemMask
+  - type: StepTrigger
+    intersectRatio: 0.2
+  - type: TriggerOnStepTrigger
+  - type: PreventableStepTrigger
+  - type: Slippery
+    slipSound:
+      path: /Audio/Effects/glass_step.ogg
+    slipData:
+      launchForwardsMultiplier: 0
+  - type: DamageUserOnTrigger
+    damage:
+      types:
+        Piercing: 8
+  - type: Construction
+    graph: BoneD4
+    node: BoneD4

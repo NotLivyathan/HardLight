@@ -248,6 +248,15 @@ public sealed class StationPaySystem : EntitySystem
             Log.Error("[stationpay] Failed to deposit station pay for uid: " + uid); */
     }
 
+    // HardLight: throttle accumulator. Payouts are tracked in whole seconds, so checking
+    // every second instead of every tick is gameplay-neutral.
+    private float _payoutCheckAccumulator;
+    private const float PayoutCheckInterval = 1f;
+
+    // Scratch buffers reused across Update calls to avoid per-tick allocation.
+    // Holds (uid, oldScheduledTime) for entries due this pass.
+    private readonly List<(EntityUid Uid, int Scheduled)> _duePayoutsScratch = new();
+
     public override void Update(float frameTime)
     {
         // HardLight: Run round-start resync once after entering InRound to restore missed schedules.
@@ -257,29 +266,61 @@ public sealed class StationPaySystem : EntitySystem
             ResyncScheduledPayoutsForCurrentRound();
         }
 
-        var now = (int)_gameTicker.RoundDuration().TotalSeconds;
-        var updated = new Lazy<OrderedDictionary<EntityUid, int>>(() => new OrderedDictionary<EntityUid, int>(_scheduledPayouts));
+        _payoutCheckAccumulator += frameTime;
+        if (_payoutCheckAccumulator < PayoutCheckInterval)
+        {
+            base.Update(frameTime);
+            return;
+        }
+        _payoutCheckAccumulator = 0f;
 
+        if (_scheduledPayouts.Count == 0)
+        {
+            base.Update(frameTime);
+            return;
+        }
+
+        var now = (int)_gameTicker.RoundDuration().TotalSeconds;
+
+        // _scheduledPayouts is maintained in ascending order by scheduled time, so if the
+        // earliest entry is in the future, nothing is due.
+        if (_scheduledPayouts.GetAt(0).Value > now)
+        {
+            base.Update(frameTime);
+            return;
+        }
+
+        // Collect due entries; bail out at the first not-due entry (sorted ascending).
+        _duePayoutsScratch.Clear();
         foreach (var (uid, scheduledPayoutTime) in _scheduledPayouts)
         {
             if (scheduledPayoutTime > now)
-                continue;
-
-            var dict = updated.Value;
-            dict.Remove(uid);
-            // schedule their next payout for 1 hour after the previous scheduled payout
-            dict.Insert(dict.Count, uid, scheduledPayoutTime + PayoutDelay);
-
-            PayoutFor(uid, PayoutDelay);
+                break;
+            _duePayoutsScratch.Add((uid, scheduledPayoutTime));
         }
 
-        if (updated.IsValueCreated)
+        // Remove all due entries; re-add at scheduledPayoutTime + PayoutDelay (matches prior semantics,
+        // including catch-up payouts when scheduled times are in the past). Since the not-due tail is
+        // already sorted ascending and the rescheduled times are also in ascending order
+        // (oldScheduled was ascending, and we add a constant), a 2-way merge into the OrderedDictionary
+        // preserves the global ascending invariant. The simplest correct approach: drop them all,
+        // pay each, then insert each rescheduled entry at the right position via Insert.
+        for (var i = 0; i < _duePayoutsScratch.Count; i++)
+            _scheduledPayouts.Remove(_duePayoutsScratch[i].Uid);
+
+        for (var i = 0; i < _duePayoutsScratch.Count; i++)
         {
-            _scheduledPayouts.Clear();
-            foreach (var entry in updated.Value.ToList().OrderBy(it => it.Value))
-            {
-                _scheduledPayouts.Add(entry.Key, entry.Value);
-            }
+            var (uid, oldScheduled) = _duePayoutsScratch[i];
+            var newScheduled = oldScheduled + PayoutDelay;
+
+            // Find insertion index in ascending order. Most rescheduled entries land at the end,
+            // so search from the back for amortized O(1).
+            var insertIdx = _scheduledPayouts.Count;
+            while (insertIdx > 0 && _scheduledPayouts.GetAt(insertIdx - 1).Value > newScheduled)
+                insertIdx--;
+            _scheduledPayouts.Insert(insertIdx, uid, newScheduled);
+
+            PayoutFor(uid, PayoutDelay);
         }
 
         base.Update(frameTime);

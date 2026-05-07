@@ -90,6 +90,9 @@ public sealed class GasPressureRegulatorSystem : SharedGasPressureRegulatorSyste
             return;
         }
 
+        var inletAir = inletPipeNode.Air;
+        var outletAir = outletPipeNode.Air;
+
         /*
         It's time for some math! :)
 
@@ -104,8 +107,8 @@ public sealed class GasPressureRegulatorSystem : SharedGasPressureRegulatorSyste
         Can be used to calculate the amount of gas we need to transfer.
         */
 
-        var p1 = inletPipeNode.Air.Pressure;
-        var p2 = outletPipeNode.Air.Pressure;
+        var p1 = inletAir.Pressure;
+        var p2 = outletAir.Pressure;
 
         if (p1 <= ent.Comp.Threshold || p2 >= p1)
         {
@@ -113,17 +116,17 @@ public sealed class GasPressureRegulatorSystem : SharedGasPressureRegulatorSyste
             return;
         }
 
-        var t1 = inletPipeNode.Air.Temperature;
+        var t1 = inletAir.Temperature;
 
         // First, calculate the amount of gas we need to transfer to bring us below the threshold.
         var deltaMolesToPressureThreshold =
-            AtmosphereSystem.MolesToPressureThreshold(inletPipeNode.Air, ent.Comp.Threshold);
+            AtmosphereSystem.MolesToPressureThreshold(inletAir, ent.Comp.Threshold);
 
         // Second, calculate the moles required to equalize the pressure.
         // We round here to avoid the valve staying enabled for 0.00001 pressure differences.
         var deltaMolesToEqualizePressure =
-            float.Round(_atmosphere.FractionToEqualizePressure(inletPipeNode.Air, outletPipeNode.Air) *
-                        inletPipeNode.Air.TotalMoles,
+            float.Round(_atmosphere.FractionToEqualizePressure(inletAir, outletAir) *
+                        inletAir.TotalMoles,
                 1,
                 MidpointRounding.ToPositiveInfinity);
 
@@ -140,8 +143,8 @@ public sealed class GasPressureRegulatorSystem : SharedGasPressureRegulatorSyste
             ent.Comp.MaxTransferRate * _atmosphere.PumpSpeedup() * args.dt);
 
         // We remove the gas from the inlet and merge it into the outlet.
-        var removed = inletPipeNode.Air.RemoveVolume(actualVolumeToTransfer);
-        _atmosphere.Merge(outletPipeNode.Air, removed);
+        var removed = inletAir.RemoveVolume(actualVolumeToTransfer);
+        _atmosphere.Merge(outletAir, removed);
 
         // Calculate the flow rate in L/s for the UI.
         var sentFlowRate = MathF.Round(actualVolumeToTransfer / args.dt, 1);

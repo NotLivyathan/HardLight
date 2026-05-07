@@ -686,8 +686,18 @@ namespace Content.Client.Lobby.UI
 
             var allSelectors = new Dictionary<ProtoId<TraitPrototype>, TraitPreferenceSelector>();
 
+            // HardLight: get login name once for login-restricted trait filtering (same pattern as company logins)
+            var localUsername = _playerManager.LocalPlayer?.Session?.Name;
+
             foreach (var trait in traits)
             {
+                // HardLight: hide login-restricted traits from players not in the list
+                if (trait.Logins.Count > 0 && (localUsername == null || !trait.Logins.Contains(localUsername)))
+                {
+                    Profile = Profile?.WithoutTraitPreference(trait.ID, _prototypeManager);
+                    continue;
+                }
+
                 // Begin DeltaV Additions - Species trait exclusion
                 if (Profile?.Species is { } selectedSpecies && trait.SpeciesBlacklist.Contains(selectedSpecies))
                 {
@@ -792,6 +802,24 @@ namespace Content.Client.Lobby.UI
                                 tooltipParts.Add($"You must not be: {string.Join(", ", names)}");
                         }
 
+                        foreach (var requirement in trait.Requirements)
+                        {
+                            if (requirement is TraitsRequirement traitsReq)
+                            {
+                                var names = new List<string>();
+                                foreach (var reqId in traitsReq.Traits)
+                                {
+                                    if (_prototypeManager.TryIndex(reqId, out var reqProto))
+                                        names.Add($"[color=#FFD700]{Loc.GetString(reqProto.Name)}[/color]");
+                                }
+                                if (names.Count > 0)
+                                {
+                                    var label = traitsReq.Inverted ? "Must not have" : "Requires one of";
+                                    tooltipParts.Add($"{label}: {string.Join(", ", names)}");
+                                }
+                            }
+                        }
+
                         if (tooltipParts.Count > 0)
                             selector.SetTooltip(string.Join("\n", tooltipParts));
                     }
@@ -838,11 +866,13 @@ namespace Content.Client.Lobby.UI
                         else
                         {
                             Profile = Profile?.WithoutTraitPreference(trait.ID, _prototypeManager);
+                            Profile = RemoveCascadedInvalidTraits(Profile);
+                            SetDirty();
+                            RefreshTraits();
+                            return;
                         }
 
                         SetDirty();
-
-                        UpdateTraitIncompatibilityVisibility(allSelectors);
 
                         // Instead of refreshing the entire UI, just update the point counter if needed
                         if (category is { MaxTraitPoints: >= 0 })
@@ -900,6 +930,9 @@ namespace Content.Client.Lobby.UI
                             // Update all trait colors based on the new point total
                             RefreshTraitColors(categoryButton, category, currentPoints);
                         }
+
+                        // Must run after RefreshTraitColors so requirement-based gray-out isn't overridden.
+                        UpdateTraitIncompatibilityVisibility(allSelectors);
                     };
                     selectors.Add(selector);
                 }
@@ -1008,14 +1041,17 @@ namespace Content.Client.Lobby.UI
         {
             var selected = Profile?.TraitPreferences ?? new HashSet<ProtoId<TraitPrototype>>();
             var currentSpecies = Profile?.Species;
+            IReadOnlyDictionary<string, TimeSpan> emptyPlayTimes = new Dictionary<string, TimeSpan>();
 
             foreach (var (traitId, selector) in allSelectors)
             {
                 var hide = false;
+                var unavailable = false;
 
                 if (selected.Contains(traitId))
                 {
                     selector.Visible = true;
+                    selector.SetUnavailable(false);
                     continue;
                 }
 
@@ -1029,9 +1065,14 @@ namespace Content.Client.Lobby.UI
                 {
                     ProtoId<SpeciesPrototype> speciesId = currentSpecies.Value;
                     if (thisProto.SpeciesBlacklist.Contains(speciesId))
-                    {
                         hide = true;
-                    }
+                }
+
+                // Whitelist check: uses the preview dummy entity which carries species components.
+                if (!hide && thisProto.Whitelist != null && _entManager.EntityExists(PreviewDummy))
+                {
+                    if (_whitelist.IsWhitelistFail(thisProto.Whitelist, PreviewDummy))
+                        hide = true;
                 }
 
                 if (!hide)
@@ -1049,8 +1090,103 @@ namespace Content.Client.Lobby.UI
                     }
                 }
 
+                // Requirements check: gray out traits whose prerequisites aren't yet selected.
+                if (!hide && thisProto.Requirements.Count > 0)
+                {
+                    foreach (var requirement in thisProto.Requirements)
+                    {
+                        if (!requirement.Check(_entManager, _prototypeManager, Profile, emptyPlayTimes, out _))
+                        {
+                            unavailable = true;
+                            break;
+                        }
+                    }
+                }
+
                 selector.Visible = !hide;
+                selector.SetUnavailable(unavailable);
             }
+        }
+
+        /// Removes any selected traits whose Requirements are no longer satisfied, then enforces per-category
+        /// point budgets by dropping the most expensive positive-cost trait until within limits.
+        private HumanoidCharacterProfile? RemoveCascadedInvalidTraits(HumanoidCharacterProfile? profile)
+        {
+            if (profile == null)
+                return null;
+
+            IReadOnlyDictionary<string, TimeSpan> emptyPlayTimes = new Dictionary<string, TimeSpan>();
+
+            // Repeat until stable: remove any selected trait whose requirements are now unmet.
+            bool anyRemoved;
+            do
+            {
+                anyRemoved = false;
+                foreach (var traitId in profile.TraitPreferences.ToList())
+                {
+                    if (!_prototypeManager.TryIndex<TraitPrototype>(traitId, out var traitProto))
+                        continue;
+
+                    var failed = false;
+                    foreach (var requirement in traitProto.Requirements)
+                    {
+                        if (!requirement.Check(_entManager, _prototypeManager, profile, emptyPlayTimes, out _))
+                        {
+                            failed = true;
+                            break;
+                        }
+                    }
+
+                    if (!failed)
+                        continue;
+
+                    profile = profile.WithoutTraitPreference(traitId, _prototypeManager);
+                    anyRemoved = true;
+                    break; // restart — TraitPreferences snapshot is stale
+                }
+            } while (anyRemoved);
+
+            // Safety: enforce per-category budget by removing the most expensive positive-cost trait.
+            var categorySpend = new Dictionary<ProtoId<TraitCategoryPrototype>, int>();
+            foreach (var traitId in profile.TraitPreferences)
+            {
+                if (!_prototypeManager.TryIndex<TraitPrototype>(traitId, out var p) || p.Category == null)
+                    continue;
+                var catId = p.Category.Value;
+                categorySpend.TryGetValue(catId, out var cur);
+                categorySpend[catId] = cur + p.Cost;
+            }
+
+            foreach (var (catId, spent) in categorySpend)
+            {
+                if (!_prototypeManager.TryIndex<TraitCategoryPrototype>(catId, out var categoryProto))
+                    continue;
+                if (categoryProto.MaxTraitPoints is not { } maxPoints || spent <= maxPoints)
+                    continue;
+
+                var remaining = spent;
+                while (remaining > maxPoints)
+                {
+                    TraitPrototype? mostExpensive = null;
+                    foreach (var traitId in profile.TraitPreferences)
+                    {
+                        if (!_prototypeManager.TryIndex<TraitPrototype>(traitId, out var p))
+                            continue;
+                        if (p.Category != catId || p.Cost <= 0)
+                            continue;
+                        if (mostExpensive == null || p.Cost > mostExpensive.Cost)
+                            mostExpensive = p;
+                    }
+
+                    if (mostExpensive == null)
+                        break;
+
+                    remaining -= mostExpensive.Cost;
+                    profile = profile.WithoutTraitPreference(mostExpensive.ID, _prototypeManager);
+                }
+            }
+
+            return profile;
         }
 
         /// <summary>

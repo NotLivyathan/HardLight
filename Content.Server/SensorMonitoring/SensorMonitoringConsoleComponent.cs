@@ -29,6 +29,8 @@ public sealed partial class SensorMonitoringConsoleComponent : Component
     // UI update tracking stuff.
     public HashSet<EntityUid> InitialUIStateSent = new();
     public TimeSpan LastUIUpdate;
+    public TimeSpan NextSensorUpdate;
+    public TimeSpan NextAtmosRequest;
     public ValueList<int> RemovedSensors;
 
     public sealed class SensorData

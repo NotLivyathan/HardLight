@@ -3,14 +3,14 @@
   parent: BaseBorgChassisNT
   components:
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: QuadborgSpriteOffset # HardLight
     defaultOffset: 0,0.2
     bigOffset: 0,0.3
     smallOffset: 0,0.1
     tinyOffset: 0,0.075
   - type: Inventory
-    speciesId: quadborg
+    speciesId: Borg
     templateId: borgquad # Hardlight: Changes Quadborgs over to use our armor slots
   - type: Fixtures # HardLight
     fixtures:
@@ -67,16 +67,19 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   # HardLight end
@@ -153,6 +156,7 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColSec
     - Security
     - Science
@@ -160,6 +164,7 @@
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColSec
     - Security
     - Science
@@ -167,6 +172,7 @@
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColSec
     - Security
     - Science
@@ -184,7 +190,7 @@
     hasMindState: quadspritel
     noMindState: quadspriter
   - type: AccessReader
-    access: [["Security"], ["Command"]]
+    access: [["Security"], ["Command"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Qborg
   - type: FlashImmunity
@@ -226,16 +232,19 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
     - Common
   # HardLight end
@@ -274,6 +283,172 @@
   # Note: No toggle added here; no provided SyndQuad ballz states.
 
 - type: entity
+  id: assaultQuad
+  parent: [SyndiQuad]
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: assaultquad
+      map: ["movement"]
+    - state: assaultquadr
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: assaultquadl
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: assaultquadr
+    noMindState: assaultquadl
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: assaultquad_moving
+    noMovementLayers:
+      movement:
+        state: assaultquad
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: assaultquad
+    name: cyborg
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: assaultquad
+    stateOn: assaultquadballz
+    movementStateOff: assaultquad_moving
+    movementStateOn: assaultquad_movingballz
+
+- type: entity
+  id: chewsborg
+  parent: [SyndiQuad]
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: chews
+      map: ["movement"]
+    - state: chewsr
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: chewsl
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: chewsr
+    noMindState: chews
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: chews_moving
+    noMovementLayers:
+      movement:
+        state: chews
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: chews
+    name: cyborg
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: chews
+    stateOn: chewsballz
+    movementStateOff: chews_moving
+    movementStateOn: chews_movingballz
+
+- type: entity
+  id: wolfborg
+  parent: [BorgChassisApex]
+  components:
+  - type: Sprite
+    sprite: _HL/Mobs/Player/borgs/quads.rsi
+    scale: 0.7, 0.7
+    layers:
+    - state: wolfdog
+      map: ["movement"]
+    - state: wolfdogr
+      map: ["enum.BorgVisualLayers.Light"]
+      shader: unshaded
+      visible: false
+    - state: wolfdogl
+      shader: unshaded
+      map: ["light"]
+      visible: false
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: wolfdogr
+    noMindState: wolfdogl
+  - type: SpriteMovement
+    movementLayers:
+      movement:
+        state: wolfdog_moving
+    noMovementLayers:
+      movement:
+        state: wolfdog
+  - type: BorgTransponder
+    sprite:
+      sprite: _HL/Mobs/Player/borgs/quads.rsi
+      state: wolfdog
+    name: cyborg
+  - type: SpriteStateToggle
+    spriteLayer: movement
+    stateOff: wolfdog
+    stateOn: wolfdogballz
+    movementStateOff: wolfdog_moving
+    movementStateOn: wolfdog_movingballz
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: BarestepHard
+  - type: Speech
+    speechSounds: Vulpkanin
+    speechVerb: Vulpkanin
+    allowedEmotes: [ 'Bark', 'Snarl', 'Whine', 'Pout', 'Howl', 'Growl', 'Yip', 'Awoo', 'Yap', 'Gekker', 'Purr' ]
+  - type: Vocal
+    sounds:
+      Male: MaleVulpkanin
+      Female: FemaleVulpkanin
+      Unsexed: MaleVulpkanin
+  - type: InteractionPopup
+    successChance: 0.5
+    interactSuccessString: petting-success-soft-floofy
+    interactFailureString: petting-failure-generic
+    interactSuccessSpawn: EffectHearts
+    interactSuccessSound:
+      path: /Audio/Floof/Voice/Vulpkanin/yap.ogg
+
+- type: entity
   id: BorgChassisQuadCC
   parent: BorgChassisQuad
   components:
@@ -297,6 +472,7 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColCom
     - Command
     - ColSec
@@ -310,6 +486,7 @@
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColCom
     - Command
     - ColSec
@@ -323,6 +500,7 @@
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - ColCom
     - Command
     - ColSec
@@ -401,18 +579,21 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Supply
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Supply
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Supply
     - Common
@@ -429,7 +610,7 @@
     hasMindState: quadspritesalvl
     noMindState: quadspritesalvr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Corporate
   - type: SpriteStateToggle
@@ -470,18 +651,21 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Service
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Service
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Service
     - Common
@@ -499,9 +683,12 @@
     hasMindState: quadspriteservl
     noMindState: quadspriteservr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: StationEfficiency
+  - type: FabricateActions # HardLight
+    actions:
+    - ActionFabricatePaper
   - type: SpriteStateToggle
     spriteLayer: movement
     stateOff: quadspriteserv
@@ -540,18 +727,21 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Engineering
     - Science
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Engineering
     - Science
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Engineering
     - Science
     - Common
@@ -568,7 +758,7 @@
     hasMindState: engieborgl
     noMindState: engieborgr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: StationEfficiency
   - type: ShowHealthBars
@@ -614,18 +804,21 @@
     preserveExistingChannels: true
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Medical
     - Science
     - Common
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Medical
     - Science
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Medical
     - Science
     - Common
@@ -644,7 +837,7 @@
     hasMindState: quadspritemedl
     noMindState: quadspritemedr
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: SiliconLawProvider
     laws: Medical
   - type: SolutionScanner

@@ -160,12 +160,20 @@ public sealed partial class CargoSystem
             !IsBountyComplete(container.Owner, bountyPrototype))
             return;
 
-        database.CheckedBounties.Add(component.Id);
         args.Handled = true;
 
         component.Calculating = true;
-        args.Price = bountyPrototype.Reward - _pricing.GetPrice(container.Owner);
-        component.Calculating = false;
+        try
+        {
+            if (args.AllowSideEffects)
+                database.CheckedBounties.Add(component.Id);
+
+            args.Price = bountyPrototype.Reward - _pricing.GetPrice(container.Owner, allowSideEffects: args.AllowSideEffects);
+        }
+        finally
+        {
+            component.Calculating = false;
+        }
     }
 
     private void OnEntitySoldEvent(ref NFEntitySoldEvent entitySoldEvent)

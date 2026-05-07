@@ -15,3 +15,4 @@ gateway-docking-arm-spawned = Dock spawned successfully!
 gateway-docking-arm-no-space = No clear space available to spawn dock!
 gateway-docking-arm-max-limit = Maximum dock limit reached!
 gateway-docking-arm-unavailable = This gateway cannot spawn docks.
+gateway-docking-arm-cooldown = Dock loader is busy, try again in a moment.

@@ -503,79 +503,116 @@ namespace Content.Server.GameTicking
 
             RunLevel = GameRunLevel.PostRound;
 
-            // FTL all shuttles with ShuttleDeedComponent on any map to Colcomm docks
-            // --- Begin Corrected Colcomm logic ---
-            EntityUid? colcommGrid = null;
-            // Try to find Colcomm grid entity (not map entity!)
+            // HardLight start: Made edits to end-round FTL logic to better handle non-evac shuttles.
+            // FTL all non-evac shuttles to Colcomm without attempting docking.
+            // The emergency shuttle handles its own docked arrival separately.
+            EntityUid? colcommMap = null;
             var colcommQuery = AllEntityQuery<StationColcommComponent>();
             if (colcommQuery.MoveNext(out var colcommComp))
             {
-                colcommGrid = colcommComp.Entity;
+                // Prefer explicit map entity, but fall back to the Colcomm grid's map if needed.
+                if (colcommComp.MapEntity != null && !Deleted(colcommComp.MapEntity.Value))
+                    colcommMap = colcommComp.MapEntity.Value;
+                else if (colcommComp.Entity != null)
+                {
+                    var colcommXform = Transform(colcommComp.Entity.Value);
+                    if (colcommXform.MapUid != null)
+                        colcommMap = colcommXform.MapUid.Value;
+                }
             }
 
-            if (colcommGrid != null)
+            if (colcommMap != null)
             {
-                // Find all dock entities on the Colcomm grid
-                var dockQuery = EntityQueryEnumerator<DockingComponent, TransformComponent>();
-                var colcommDocks = new List<(EntityUid dockUid, TransformComponent xform)>();
-                while (dockQuery.MoveNext(out var dockUid, out var dock, out var dockXform))
+                const float colcommArrivalMinRadius = 220f;
+                const float colcommArrivalMinSpacing = 64f;
+                const float colcommArrivalSpacingBuffer = 24f;
+                var shuttlesToMove = new List<(EntityUid Uid, ShuttleComponent Shuttle, float Radius)>();
+
+                void QueueShuttle(EntityUid shuttleUid, ShuttleComponent shuttle, TransformComponent xform)
                 {
-                    if (dockXform.GridUid == colcommGrid)
-                        colcommDocks.Add((dockUid, dockXform));
+                    // Only evacuate shuttles that are currently on the round's station map.
+                    if (xform.MapID != DefaultMap)
+                        return;
+
+                    var shuttleRadius = 32f;
+                    if (TryComp<MapGridComponent>(shuttleUid, out var grid))
+                        shuttleRadius = MathF.Max(shuttleRadius, MathF.Max(grid.LocalAABB.Width, grid.LocalAABB.Height) * 0.5f);
+
+                    shuttlesToMove.Add((shuttleUid, shuttle, shuttleRadius));
                 }
 
-                int dockIndex = 0;
-
-                // FTL each ShuttleDeed shuttle to a dock (cycling if more shuttles than docks)
+                // Queue each ShuttleDeed shuttle for deterministic Colcomm placement.
                 var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, ShuttleDeedComponent, TransformComponent>();
-                while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var deed, out var xform))
+                while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out _, out var xform))
                 {
-                    if (colcommDocks.Count > 0)
-                    {
-                        var (dockUid, dockXform) = colcommDocks[dockIndex % colcommDocks.Count];
-                        dockIndex++;
-
-                        var dockGridUid = dockXform.GridUid!.Value;
-                        var dockPosition = dockXform.LocalPosition;
-                        var targetCoordinates = new EntityCoordinates(dockGridUid, dockPosition);
-                        var targetAngle = dockXform.LocalRotation;
-
-                        // HardLight: End-round cleanup should always evacuate owned/transit shuttles,
-                        // even if they are currently in FTL cooldown.
-                        if (HasComp<FTLComponent>(shuttleUid))
-                            RemComp<FTLComponent>(shuttleUid);
-
-                        _shuttleSystem.FTLToCoordinates(shuttleUid, shuttle, targetCoordinates, targetAngle);
-                    }
+                    QueueShuttle(shuttleUid, shuttle, xform);
                 }
 
-                // FTL each TransitShuttle (but not ShuttleDeed) to a dock (cycling if more shuttles than docks)
+                // Queue each TransitShuttle (but not ShuttleDeed) for deterministic Colcomm placement.
                 var transitShuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransitShuttleComponent, TransformComponent>();
-                while (transitShuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var transit, out var xform))
+                while (transitShuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out _, out var xform))
                 {
                     // Skip if it also has ShuttleDeedComponent (already handled above)
                     if (HasComp<ShuttleDeedComponent>(shuttleUid))
                         continue;
 
-                    if (colcommDocks.Count > 0)
-                    {
-                        var (dockUid, dockXform) = colcommDocks[dockIndex % colcommDocks.Count];
-                        dockIndex++;
+                    QueueShuttle(shuttleUid, shuttle, xform);
+                }
 
-                        var dockGridUid = dockXform.GridUid!.Value;
-                        var dockPosition = dockXform.LocalPosition;
-                        var targetCoordinates = new EntityCoordinates(dockGridUid, dockPosition);
-                        var targetAngle = dockXform.LocalRotation;
+                shuttlesToMove.Sort((a, b) => b.Radius.CompareTo(a.Radius));
+
+                var shuttleIndex = 0;
+                float previousRingRadius = 0f;
+                float previousRingMaxRadius = 0f;
+
+                while (shuttleIndex < shuttlesToMove.Count)
+                {
+                    // Each ring uses spacing from its largest shuttle, so a single giant ship
+                    // does not force all smaller ships into very distant rings.
+                    var ringMaxRadius = shuttlesToMove[shuttleIndex].Radius;
+                    var inRingSpacing = MathF.Max(colcommArrivalMinSpacing, (ringMaxRadius * 2f) + colcommArrivalSpacingBuffer);
+
+                    float ringRadius;
+                    if (previousRingRadius <= 0f)
+                        ringRadius = MathF.Max(colcommArrivalMinRadius, inRingSpacing);
+                    else
+                        ringRadius = previousRingRadius + previousRingMaxRadius + ringMaxRadius + colcommArrivalSpacingBuffer;
+
+                    int slotsInRing;
+                    if (inRingSpacing >= ringRadius * 2f)
+                    {
+                        slotsInRing = 1;
+                    }
+                    else
+                    {
+                        // Use chord distance so neighboring slots are at least inRingSpacing apart.
+                        slotsInRing = Math.Max(1,
+                            (int) MathF.Floor(MathF.PI / MathF.Asin(inRingSpacing / (2f * ringRadius))));
+                    }
+
+                    var shipsInRing = Math.Min(slotsInRing, shuttlesToMove.Count - shuttleIndex);
+                    var angleStep = 360f / shipsInRing;
+
+                    for (var slot = 0; slot < shipsInRing; slot++)
+                    {
+                        var (shuttleUid, shuttle, _) = shuttlesToMove[shuttleIndex + slot];
+                        var angle = Angle.FromDegrees(angleStep * slot);
+                        var targetCoordinates = new EntityCoordinates(colcommMap.Value, angle.ToWorldVec() * ringRadius);
 
                         // HardLight: End-round cleanup should always evacuate owned/transit shuttles,
                         // even if they are currently in FTL cooldown.
                         if (HasComp<FTLComponent>(shuttleUid))
                             RemComp<FTLComponent>(shuttleUid);
 
-                        _shuttleSystem.FTLToCoordinates(shuttleUid, shuttle, targetCoordinates, targetAngle);
+                        _shuttleSystem.FTLToCoordinates(shuttleUid, shuttle, targetCoordinates, angle);
                     }
+
+                    shuttleIndex += shipsInRing;
+                    previousRingRadius = ringRadius;
+                    previousRingMaxRadius = ringMaxRadius;
                 }
             }
+            // HardLight end
             // --- End Corrected Colcomm logic ---
 
             // Aggressively delete the default map after a 30 second delay

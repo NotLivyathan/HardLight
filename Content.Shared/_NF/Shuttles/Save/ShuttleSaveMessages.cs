@@ -19,13 +19,32 @@ namespace Content.Shared.Shuttles.Save
     [Serializable, NetSerializable]
     public sealed class SendShipSaveDataClientMessage : EntityEventArgs
     {
+        public Guid RequestId { get; }
         public string ShipName { get; }
         public string ShipData { get; }
 
-        public SendShipSaveDataClientMessage(string shipName, string shipData)
+        public SendShipSaveDataClientMessage(Guid requestId, string shipName, string shipData)
         {
+            RequestId = requestId;
             ShipName = shipName;
             ShipData = shipData;
+        }
+    }
+
+    [Serializable, NetSerializable]
+    public sealed class ShipSaveWriteResultMessage : EntityEventArgs
+    {
+        public Guid RequestId { get; }
+        public bool Success { get; }
+        public string? FilePath { get; }
+        public string? Error { get; }
+
+        public ShipSaveWriteResultMessage(Guid requestId, bool success, string? filePath = null, string? error = null)
+        {
+            RequestId = requestId;
+            Success = success;
+            FilePath = filePath;
+            Error = error;
         }
     }
 

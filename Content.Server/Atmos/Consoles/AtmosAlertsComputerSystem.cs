@@ -254,8 +254,7 @@ public sealed class AtmosAlertsComputerSystem : SharedAtmosAlertsComputerSystem
         if (!HasComp<MapGridComponent>(gridUid))
             return;
 
-        // The grid must have a NavMapComponent to visualize the map in the UI
-        EnsureComp<NavMapComponent>(gridUid);
+        // NavMapComponent is now ensured at console init / parent-change instead of every tick.
 
         // Gathering remaining data to be send to the client
         var focusAlarmData = GetFocusAlarmData(uid, GetEntity(component.FocusDevice), gridUid);
@@ -455,6 +454,12 @@ public sealed class AtmosAlertsComputerSystem : SharedAtmosAlertsComputerSystem
             return;
 
         var grid = xform.GridUid.Value;
+
+        // Ensure the grid carries a NavMapComponent here so the per-tick UpdateUIState path doesn't
+        // have to call EnsureComp every second per console.
+        if (HasComp<MapGridComponent>(grid))
+            EnsureComp<NavMapComponent>(grid);
+
         component.AtmosDevices = GetAllAtmosDeviceNavMapData(grid);
 
         Dirty(uid, component);

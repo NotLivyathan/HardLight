@@ -29,6 +29,7 @@ public abstract partial class SharedItemRecallSystem : EntitySystem
         SubscribeLocalEvent<ItemRecallComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<ItemRecallComponent, OnItemRecallActionEvent>(OnItemRecallActionUse);
 
+        SubscribeLocalEvent<RecallMarkerComponent, ComponentStartup>(OnRecallMarkerStartup);
         SubscribeLocalEvent<RecallMarkerComponent, ComponentShutdown>(OnRecallMarkerShutdown);
     }
 
@@ -90,6 +91,14 @@ public abstract partial class SharedItemRecallSystem : EntitySystem
         _popups.PopupPredictedCoordinates(Loc.GetString("item-recall-item-disappear", ("item", ent)), Transform(ent).Coordinates, actionOwner.Value);
 
         _hands.TryForcePickupAnyHand(actionOwner.Value, ent);
+    }
+
+    private void OnRecallMarkerStartup(Entity<RecallMarkerComponent> ent, ref ComponentStartup args)
+    {
+        if (ent.Comp.MarkedByAction != null)
+            return;
+
+        RemCompDeferred<RecallMarkerComponent>(ent);
     }
 
     private void OnRecallMarkerShutdown(Entity<RecallMarkerComponent> ent, ref ComponentShutdown args)

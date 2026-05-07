@@ -624,15 +624,30 @@ public sealed class AirAlarmSystem : EntitySystem
     {
         percentage = 0f;
 
-        var data = alarm.SensorData.Values.SelectMany(v => v.Gases.Where(g => g.Key == gas));
+        // Single-pass replacement for the previous Select+SelectMany+Where+Count+Sum+Average chain
+        // which iterated alarm.SensorData.Values up to four times per gas per UI refresh
+        // (UpdateUI calls this for every gas; each pass also allocates LINQ enumerators).
+        var matchCount = 0;
+        var matchedSum = 0f;
+        var totalMolesSum = 0f;
 
-        if (data.Count() == 0)
+        foreach (var data in alarm.SensorData.Values)
+        {
+            totalMolesSum += data.TotalMoles;
+            if (!data.Gases.TryGetValue(gas, out var moles))
+                continue;
+
+            matchCount++;
+            matchedSum += moles;
+        }
+
+        if (matchCount == 0)
             return 0f;
 
-        var averageMol = data.Select(kvp => kvp.Value).Average();
-        percentage = data.Select(kvp => kvp.Value).Sum() / alarm.SensorData.Values.Select(v => v.TotalMoles).Sum();
+        if (totalMolesSum > 0f)
+            percentage = matchedSum / totalMolesSum;
 
-        return averageMol;
+        return matchedSum / matchCount;
     }
 
     public void UpdateUI(EntityUid uid, AirAlarmComponent? alarm = null, DeviceNetworkComponent? devNet = null, AtmosAlarmableComponent? alarmable = null)

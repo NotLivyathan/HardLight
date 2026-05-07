@@ -20,6 +20,9 @@ namespace Content.Server.SensorMonitoring;
 
 public sealed partial class SensorMonitoringConsoleSystem : EntitySystem
 {
+    private static readonly TimeSpan SensorUpdateInterval = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan AtmosRequestInterval = TimeSpan.FromMilliseconds(500);
+
     // TODO: THIS THING IS HEAVILY WIP AND NOT READY FOR GENERAL USE BY PLAYERS.
     // Some of the issues, off the top of my head:
     // Way too huge network load when opened
@@ -51,9 +54,17 @@ public sealed partial class SensorMonitoringConsoleSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        var now = _gameTiming.CurTime;
         var consoles = EntityQueryEnumerator<SensorMonitoringConsoleComponent>();
         while (consoles.MoveNext(out var entityUid, out var comp))
         {
+            if (!_userInterface.IsUiOpen(entityUid, SensorMonitoringConsoleUiKey.Key))
+                continue;
+
+            if (now < comp.NextSensorUpdate)
+                continue;
+
+            comp.NextSensorUpdate = now + SensorUpdateInterval;
             UpdateConsole(entityUid, comp);
         }
     }
@@ -268,6 +279,20 @@ public sealed partial class SensorMonitoringConsoleSystem : EntitySystem
         SensorMonitoringConsoleComponent comp,
         AtmosDeviceUpdateEvent args)
     {
+        if (!_userInterface.IsUiOpen(uid, SensorMonitoringConsoleUiKey.Key))
+            return;
+
+        var now = _gameTiming.CurTime;
+        if (now < comp.NextAtmosRequest)
+            return;
+
+        comp.NextAtmosRequest = now + AtmosRequestInterval;
+
+        RequestAtmosSensorData(uid, comp);
+    }
+
+    private void RequestAtmosSensorData(EntityUid uid, SensorMonitoringConsoleComponent comp)
+    {
         foreach (var (ent, data) in comp.Sensors)
         {
             // Send network requests for new data!
@@ -301,6 +326,11 @@ public sealed partial class SensorMonitoringConsoleSystem : EntitySystem
     }
 
     private void SensorUpdate(EntityUid uid, SensorMonitoringConsoleComponent comp)
+    {
+        RequestBatterySensorData(uid, comp);
+    }
+
+    private void RequestBatterySensorData(EntityUid uid, SensorMonitoringConsoleComponent comp)
     {
         foreach (var (ent, data) in comp.Sensors)
         {

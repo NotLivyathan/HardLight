@@ -6,6 +6,8 @@
   save: false
   abstract: true
   components:
+  - type: Body
+    prototype: Borg
   - type: Reactive
     groups:
       Acidic: [Touch]
@@ -35,6 +37,8 @@
     baseSprintSpeed : 4.5
   - type: Sprite
     sprite: Mobs/Silicon/Chassis/generic/default.rsi
+  - type: StatusIcon
+    bounds: -0.5,-0.5,0.5,0.5
   - type: RotationVisuals
     horizontalRotation: 90
   - type: MobState
@@ -101,7 +105,7 @@
   - type: LockingWhitelist
     blacklist:
       components:
-      - BorgChassis
+      # - BorgChassis Hardlight if quads can do it then so can we damn it.
       - RoboticsConsole
   - type: WiresPanel
   - type: ActivatableUIRequiresPanel
@@ -121,17 +125,20 @@
     examineWhileLocked: false
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   - type: IntrinsicRadioReceiver
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Science
     - Common
   # HardLight end
@@ -153,7 +160,6 @@
     slots:
       cell_slot:
         name: power-cell-slot-component-slot-name-default
-  - type: Body
   - type: StatusEffects
     allowed:
     - Stun
@@ -360,7 +366,7 @@
     tags:
     - Borg
   - type: AccessReader
-    access: [["Command"], ["Research"]]
+    access: [["Command"], ["Research"], ["Mercenary"]] # Hardlight allow freelancers to unlock borgs.
   - type: ShowJobIcons
   - type: InteractionPopup
     interactSuccessSound:
@@ -390,14 +396,17 @@
     examineWhileLocked: false
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
     - Syndicate
   # HardLight end
   - type: ShowSyndicateIcons
@@ -435,12 +444,15 @@
     examineWhileLocked: false
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
   - type: IntrinsicRadioTransmitter
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
   - type: ActiveRadio
     intrinsicChannels:
     - Binary
+    - Trinary # Hardlight
   # HardLight end
   - type: IonStormTarget
     chance: 1
@@ -455,7 +467,7 @@
   abstract: true
   components:
   - type: Body
-    prototype: Quadborg
+    prototype: Borg
   - type: Inventory
     templateId: borgquad #Hardlight - Changes Quadborgs over to use our armor slots
   - type: RandomMetadata
@@ -482,15 +494,18 @@
     intrinsicChannels:
     - Xenoborg
     - Binary
+    - Trinary # Hardlight
   - type: IntrinsicRadioTransmitter # can only use binary and xenoborg channel
     intrinsicChannels:
     - Xenoborg
     - Binary
+    - Trinary # Hardlight
   - type: ActiveRadio # but can hear the mothership channel
     intrinsicChannels:
     - Mothership
     - Xenoborg
     - Binary
+    - Trinary # Hardlight
   # HardLight end
   - type: BorgChassis
     maxModules: 10
@@ -579,3 +594,9 @@
   - type: Xenoborg
   - type: BypassLock
     bypassDelay: 15 # We don't want people to easily be able to remove xenoborg brains.
+  - type: Brainwasher
+    bypassMindshield: true
+    chardingDuration: 10
+    configureText: Configure Brainwashing Module
+    engageSound:
+      path: /Audio/Machines/warning_buzzer_xenoborg.ogg

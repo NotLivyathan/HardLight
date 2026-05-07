@@ -119,7 +119,7 @@ public sealed partial class CCVars
     ///     If roles should be restricted based on whether or not they are whitelisted.
     /// </summary>
     public static readonly CVarDef<bool>
-        GameRoleWhitelist = CVarDef.Create("game.role_whitelist", false, CVar.SERVER | CVar.REPLICATED);
+        GameRoleWhitelist = CVarDef.Create("game.role_whitelist", true, CVar.SERVER | CVar.REPLICATED);
 
     /// <summary>
     ///     Whether or not disconnecting inside of a cryopod should remove the character or just store them until they reconnect.
@@ -137,7 +137,7 @@ public sealed partial class CCVars
         CVarDef.Create("game.diagonalmovement", true, CVar.ARCHIVE);
 
     public static readonly CVarDef<int> SoftMaxPlayers =
-        CVarDef.Create("game.soft_max_players", 100, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("game.soft_max_players", 150, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /// <summary>
     ///     If a player gets denied connection to the server,

@@ -74,6 +74,9 @@
             <ItemList Name="SavedShipsList"
                       MinSize="0 100"
                       HorizontalExpand="True" />
+            <Button Name="ReloadShipsButton"
+                Text="Reload Saved Ships"
+                Margin="0 4 0 0" />
         </BoxContainer>
     </BoxContainer>
 </controls:FancyWindow>

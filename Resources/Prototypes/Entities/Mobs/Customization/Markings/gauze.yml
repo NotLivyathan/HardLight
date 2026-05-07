@@ -73,7 +73,7 @@
   id: GauzeShoulder
   bodyPart: Chest
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -87,7 +87,7 @@
   id: GauzeStomach
   bodyPart: Chest
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -101,7 +101,7 @@
   id: GauzeUpperArmRight
   bodyPart: RArm
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -115,7 +115,7 @@
   id: GauzeLowerArmRight
   bodyPart: RArm, RHand
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -129,7 +129,7 @@
   id: GauzeLeftArm
   bodyPart: LArm, LHand
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -157,7 +157,7 @@
   id: GauzeUpperLegLeft
   bodyPart: LLeg
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -171,7 +171,7 @@
   id: GauzeUpperLegRight
   bodyPart: RLeg
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -185,7 +185,7 @@
   id: GauzeLowerLegRight
   bodyPart: RFoot
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -199,7 +199,7 @@
   id: GauzeBoxerWrapRight
   bodyPart: RHand
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -213,7 +213,7 @@
   id: GauzeBoxerWrapLeft
   bodyPart: LHand
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Tajaran, Shadekin] # Delta V - Felinid, Oni, Vulpkanin, Rodentia
   coloring:
     default:
       type:
@@ -227,7 +227,7 @@
   id: GauzeHead
   bodyPart: Head
   markingCategory: Overlay
-  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune] # Frontier - added Goblin and afterwards
+  speciesRestriction: [Thaven, Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Shadekin] # Frontier - added Goblin and afterwards
   coloring:
     default:
       type:

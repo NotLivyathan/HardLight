@@ -62816,12 +62816,16 @@ entities:
       rot: 3.141592653589793 rad
       pos: 10.5,-12.5
       parent: 2
+- proto: CryogenicSleepUnitSpawner
+  entities:
   - uid: 9974
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 10.5,-11.5
       parent: 2
+- proto: CryogenicSleepUnitSpawnerLateJoin
+  entities:
   - uid: 9975
     components:
     - type: Transform

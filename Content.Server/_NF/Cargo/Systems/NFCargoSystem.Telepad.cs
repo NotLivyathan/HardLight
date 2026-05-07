@@ -13,6 +13,9 @@ namespace Content.Server._NF.Cargo.Systems;
 
 public sealed partial class NFCargoSystem
 {
+    // Reused per telepad to avoid allocating a List<NetEntity> + LINQ chain per fulfillment attempt.
+    private readonly List<NetEntity> _scratchTelepadConsoles = new();
+
     private void InitializeTelepad()
     {
         SubscribeLocalEvent<NFCargoTelepadComponent, ComponentInit>(OnInit);
@@ -66,7 +69,10 @@ public sealed partial class NFCargoSystem
             }
 
             // Frontier - This makes sure telepads spawn goods of linked computers only. //TODO: FIx This Again
-            List<NetEntity> consoleUidList = sinkComponent.LinkedSources.Select(item => EntityManager.GetNetEntity(item)).ToList();
+            var consoleUidList = _scratchTelepadConsoles;
+            consoleUidList.Clear();
+            foreach (var item in sinkComponent.LinkedSources)
+                consoleUidList.Add(EntityManager.GetNetEntity(item));
 
             var xform = Transform(uid);
             if (FulfillNextOrder(consoleUidList, orderDatabase, xform.Coordinates, comp.PrinterOutput))

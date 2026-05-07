@@ -1,7 +1,11 @@
+using Content.Server._Mono.Projectiles.TargetSeeking;
 using Content.Server.Physics.Controllers;
 using Content.Server.Shuttles.Components;
+using Content.Server.Shuttles.Systems;
 using Content.Shared._Mono;
 using Content.Shared._Mono.SpaceArtillery;
+using Content.Shared._NF.Shuttles.Events;
+using Content.Shared.Emp;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
@@ -18,6 +22,8 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     [Dependency] private readonly MoverController _mover = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly ShuttleSystem _shuttle = default!;
+    [Dependency] private readonly TargetSeekingSystem _seeking = default!;
 
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<PhysicsComponent> _physQuery;
@@ -60,6 +66,10 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             ent.Comp.Status = ShipSteeringStatus.InRange;
             return;
         }
+
+        if (HasComp<EmpDisabledComponent>(ent))
+            return;
+
         ent.Comp.Status = ShipSteeringStatus.Moving;
 
         var shipXform = Transform(shipUid.Value);
@@ -94,9 +104,18 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         if (ent.Comp.Status == ShipSteeringStatus.InRange)
             return;
 
+        // Compute effective max arrived speed, factoring in distance-based throttling and hard cap if enabled
+        var maxArrivedVel = ent.Comp.InRangeMaxSpeed ?? float.PositiveInfinity;
+        if (ent.Comp.DistanceSpeedCapEnabled.HasValue && ent.Comp.DistanceSpeedCapEnabled.Value > 0f)
+        {
+            maxArrivedVel = MathF.Min(maxArrivedVel, ComputeDistanceSpeedCap(distance, ent.Comp));
+        }
+        // Apply hard maximum speed cap
+        maxArrivedVel = MathF.Min(maxArrivedVel, ent.Comp.MaximumSpeed);
+
         var config = new SteeringConfig
         {
-            MaxArrivedVel = ent.Comp.InRangeMaxSpeed ?? float.PositiveInfinity,
+            MaxArrivedVel = maxArrivedVel,
             BrakeThreshold = ent.Comp.BrakeThreshold,
             TurnEaseIn = ent.Comp.TurnEaseIn,
 
@@ -107,6 +126,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             EvasionSectorDepth = ent.Comp.EvasionSectorDepth,
             MaxObstructorDistance = ent.Comp.MaxObstructorDistance,
             MinObstructorDistance = ent.Comp.MinObstructorDistance,
+            AnchorMaxVelocity = ent.Comp.AnchorMaxVelocity,
             EvasionBuffer = ent.Comp.EvasionBuffer,
             SearchBuffer = ent.Comp.GridSearchBuffer,
             ScanDistanceBuffer = ent.Comp.GridSearchDistanceBuffer,
@@ -115,7 +135,9 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             RotationCompensationGain = ent.Comp.RotationCompensationGain,
             TargetAngleOffset = Angle.FromDegrees(ent.Comp.TargetRotation),
             AngleOverride = ent.Comp.AlwaysFaceTarget ? toTargetVec.ToWorldAngle() : null,
-            AlwaysFaceTarget = ent.Comp.AlwaysFaceTarget
+            AlwaysFaceTarget = ent.Comp.AlwaysFaceTarget,
+            RotationTolerance = ent.Comp.RotationTolerance,
+            AvoidanceNoRotate = ent.Comp.AvoidanceNoRotate
         };
         var context = new SteeringContext
         {
@@ -173,7 +195,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
                     if (comp.AlwaysFaceTarget)
                     {
                         var wishRotateBy = ShortestAngleDistance(shipNorthAngle + new Angle(Math.PI) - targetAngleOffset, toTargetVec.ToWorldAngle());
-                        good = MathF.Abs((float)wishRotateBy.Theta) < comp.AlwaysFaceTargetOffset;
+                        good = MathF.Abs((float)wishRotateBy.Theta) < comp.RotationTolerance;
                     }
                     if (good)
                     {
@@ -210,24 +232,36 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     {
         // check our braking power
         var brakeCtx = GetBrakeContext(ctx, config.MaxArrivedVel);
+        var navVec = CalculateNavigationVector(ctx, brakeCtx);
 
         // check obstacle avoidance
         ScanForObstacles(ctx, config, brakeCtx);
-        var avoidanceVec = CalculateAvoidanceVector(ctx, config, brakeCtx);
+        var avoidanceRes = CalculateAvoidanceVector(ctx, config, brakeCtx, navVec);
+        var avoidanceVec = avoidanceRes.AvoidVec;
 
         // use avoidance vector if available or proceed with thrust as normal
-        var wishInputVec = avoidanceVec ?? CalculateNavigationVector(ctx, brakeCtx);
+        var wasNav = navVec;
+        var wishInputVec = avoidanceVec ?? navVec;
+
+        var rotWish = wishInputVec;
+        if (avoidanceVec != null && config.AvoidanceNoRotate)
+            rotWish = wasNav;
 
         // process angular input
         var rotControl = CalculateRotationControl(ctx, config, wishInputVec, ref rotationCompensation);
 
         // process brake input
-        var brakeInput = CalculateBrake(ctx, config, wishInputVec, rotControl, brakeCtx);
+        var brakeInput = CalculateBrake(ctx, config, wishInputVec, rotControl, brakeCtx, avoidanceRes.AllBad);
 
         // convert wish-input to ship context
         var strafeInput = (-ctx.ShipNorthAngle).RotateVec(wishInputVec);
         strafeInput = GetGoodThrustVector(strafeInput, ctx.Shuttle) * MathF.Min(1f, wishInputVec.Length());
-        // Log.Info($"input {strafeInput} norot {wishInputVec}");
+
+        // also set us to anchor dampening if we wish to brake
+        if (brakeInput == 1f && ctx.ShipBody.LinearVelocity.Length() >= config.AnchorMaxVelocity)
+            _shuttle.SetInertiaDampening(ctx.ShipUid, ctx.ShipBody, ctx.Shuttle, ctx.ShipXform, InertiaDampeningMode.Anchor);
+        else
+            _shuttle.SetInertiaDampening(ctx.ShipUid, ctx.ShipBody, ctx.Shuttle, ctx.ShipXform, InertiaDampeningMode.Off);
 
         return new ShuttleInput(strafeInput, rotControl.RotationInput, brakeInput);
     }
@@ -236,9 +270,8 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     {
         // check our brake thrust
         var brakeVec = GetGoodThrustVector((-ctx.ShipNorthAngle).RotateVec(-ctx.ShipBody.LinearVelocity), ctx.Shuttle);
-        var brakeThrust = _mover.GetDirectionThrust(brakeVec, ctx.Shuttle, ctx.ShipBody) * ShuttleComponent.BrakeCoefficient;
-        var brakeAccelVec = brakeThrust * ctx.ShipBody.InvMass;
-        var brakeAccel = brakeAccelVec.Length();
+        var brakeAccelVec = GetDirectionAccel(brakeVec, ctx.Shuttle, ctx.ShipBody);
+        var brakeAccel = brakeAccelVec.Length() * (ShuttleComponent.BrakeCoefficient + 1f); // + 1 since we can layer brake and normal thrust
 
         var linVelLenSq = ctx.ShipBody.LinearVelocity.LengthSquared();
 
@@ -312,24 +345,30 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
     }
 
-    private Vector2? CalculateAvoidanceVector(
+    private record struct AvoidanceResult(Vector2? AvoidVec, bool AllBad);
+
+    private AvoidanceResult CalculateAvoidanceVector(
         in SteeringContext ctx,
         in SteeringConfig config,
-        in BrakeContext brake)
+        in BrakeContext brake,
+        Vector2 navVec)
     {
         var shipPos = ctx.ShipPos.Position;
         var shipVel = ctx.ShipBody.LinearVelocity;
+        // we have to take radius so that if we rotate it doesn't clip us into the obstacle
         var shipRadius = ctx.ShipGrid.LocalAABB.Size.Length() / 2f + config.EvasionBuffer;
 
-        var targetVec = ctx.DestMapPos.Position - shipPos;
-        var normTarget = NormalizedOrZero(targetVec);
-        var wishDir = targetVec;
-        wishDir.Normalize();
+        var wishDir = NormalizedOrZero(navVec);
 
         // ignore collisions more than this far into the future
         // TODO: account for angular accel if we can't brake
         var simTime = brake.BrakeAccel == 0f ? 10f : 2f * ctx.ShipBody.LinearVelocity.Length() / brake.BrakeAccel;
         simTime += config.BaseEvasionTime;
+
+        var forwardAccelVec = GetDirectionAccel(new Vector2(0f, 1f), ctx.Shuttle, ctx.ShipBody);
+        forwardAccelVec = ctx.ShipNorthAngle.RotateVec(forwardAccelVec);
+        var forwardAccelDir = NormalizedOrZero(forwardAccelVec);
+        var forwardAccel = forwardAccelVec.Length();
 
         _sectors.Clear();
         for (var i = 0; i < config.EvasionSectorCount; i++)
@@ -338,23 +377,25 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             var dir = angle.ToVec();
 
             var rotated = (-ctx.ShipNorthAngle).RotateVec(dir);
-            var dirAccel = _mover.GetDirectionThrust(rotated, ctx.Shuttle, ctx.ShipBody).Length();
+            var dirAccelVec = ctx.ShipNorthAngle.RotateVec(GetDirectionAccel(rotated, ctx.Shuttle, ctx.ShipBody));
             // if it's zero use a very rough approximation using our forward thrust
-            if (dirAccel == 0f)
+            if (dirAccelVec.LengthSquared() == 0f)
             {
                 var upVec = new Vector2(0f, 1f);
                 var penalty = 0.5f * (Vector2.Dot(upVec, rotated) + 1f);
-                dirAccel = _mover.GetDirectionThrust(upVec, ctx.Shuttle, ctx.ShipBody).Length() * penalty;
+                dirAccelVec = forwardAccelDir * (forwardAccel * penalty);
             }
 
             for (var depth = 1; depth <= config.EvasionSectorDepth; depth++)
             {
                 if (i % depth == 0)
-                    _sectors.Add(new(dir, dirAccel / depth, 1f / depth));
+                    // ship accel does not preserve input direction, so record original input
+                    _sectors.Add(new(dir, dirAccelVec / depth, 1f / depth));
             }
         }
         // set scale to -1 to mark it as the wish-sector
-        _sectors.Add(new(wishDir, _mover.GetDirectionThrust((-ctx.ShipNorthAngle).RotateVec(wishDir), ctx.Shuttle, ctx.ShipBody).Length(), -1f));
+        var wishDirThrust = GetWorldDirectionAccel(wishDir, ctx.ShipNorthAngle, ctx.Shuttle, ctx.ShipBody);
+        _sectors.Add(new(wishDir, wishDirThrust, -1f));
 
         foreach (var obstacle in _avoidEnts)
         {
@@ -366,77 +407,79 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             var relVel = shipVel - obsVel;
             var toObsVec = obsPos - shipPos;
             var toObsDir = toObsVec.Normalized();
-            var obsDistance = MathF.Max(toObsVec.Length() - sumRadius, 1f);
-            // Log.Info($"DR {ToPrettyString(ctx.ShipUid)} Avoiding {ToPrettyString(obstacle.Ent)}: dp {toObsVec} dv {relVel} dist {obsDistance} sr {sumRadius}");
 
-            // get time-to-collide with the accel of each sector
-            //
-            // r = obsDistance
-            // d = sumRadius
-            // p = vt + at^2 / 2
-            // solve for: dot(p, toObsDir) = r
-            // condition for no hit: abs(dot(p, toObsVec.rotate(90))) > d
-            // p = (x, y)
-            // toObsDir = (u, v)
-            // ux + vy = r
-            // x = v_x*t + a_x * t^2 / 2
-            // y = v_y*t + a_y * t^2 / 2
-            // u(v_x*t + 0.5*a_x*t^2) + v(v_y*t + 0.5*a_y*t^2) = r
-            // t^2 * (0.5*(u*a_x + v*a_y)) + t * (u*v_x + v*v_y) - r = 0
-            // k = 0.5 * u*a_x + v*a_y = 0.5 * dot(toObsDir, a)
-            // l = u*v_x + v*v_y = dot(toObsDir, vel)
-            // m = -r
-            // t = (-l + sqrt(l^2 - 4km)) / (2k)
-            // if 4km > l^2, no hit
-            // if t<0, no hit
-            //
-            // https://www.desmos.com/calculator/foyraxlzs7 graphed version
+            // Distances to bounding planes
+            var obsDistanceFront = MathF.Max(toObsVec.Length() - sumRadius, 1f);
+            var obsDistanceCenter = toObsVec.Length();
+
             var l = Vector2.Dot(toObsDir, relVel);
             for (var i = 0; i < _sectors.Count; i++)
             {
                 var sector = _sectors[i];
 
-                var aDir = sector.Sector;
-                var accel = aDir * sector.Accel;
+                var accel = sector.Accel;
                 var k = 0.5f * Vector2.Dot(toObsDir, accel);
-                var m = -obsDistance;
-                var t = 4*k*m > l*l || k == 0f ? -1f : ((-l + MathF.Sqrt(l*l - 4*k*m)) * 0.5f / k);
-                if (t < 0f || t > simTime)
-                    continue;
-                t = MathF.Max(0f, t - ctx.FrameTime);
 
-                var endAt = relVel*t + 0.5f*accel*t*t;
-                var proj = MathF.Abs(Vector2.Dot(endAt, new Vector2(-toObsDir.Y, toObsDir.X)));
-                // Log.Info($"Avoid dir {aDir} time {t}, proj {proj} (k l m {k} {l} {m}) accel {accel}");
-                if (proj > sumRadius)
+                // 1. Solve crossing the Front Tangent Plane (Entering the obstacle bounds)
+                float t_f;
+                var desc_f = l * l + 4f * k * obsDistanceFront;
+                if (desc_f < 0f)
+                    t_f = l != 0f ? obsDistanceFront / l : -1f;
+                else
+                {
+                    t_f = desc_f < 0f || k == 0f ? -1f : ((-l + MathF.Sqrt(desc_f)) * 0.5f / k);
+                }
+
+                if (t_f < 0f || t_f > simTime)
                     continue;
+
+                // 2. Resolve longitudinal exit/stop trajectory
+                Vector2 p_end;
+                var desc_c = l * l + 4f * k * obsDistanceCenter;
+                if (desc_c < 0f)
+                {
+                    // The ship stops longitudinally inside the front half of the obstacle
+                    var t_stop = -l / (2f * k);
+                    p_end = relVel * t_stop + 0.5f * accel * t_stop * t_stop;
+                }
+                else
+                {
+                    var t_c = ((-l + MathF.Sqrt(desc_c)) * 0.5f / k);
+                    if (t_c < 0f) t_c = t_f; // Failsafe bounds
+                    p_end = relVel * t_c + 0.5f * accel * t_c * t_c;
+                }
+
+                // 3. Line-segment to Circle-Center intersection.
+                // Represents exact path traveled while navigating across the physical dimension of the obstacle.
+                var p_start = relVel * t_f + 0.5f * accel * t_f * t_f;
+                var seg = p_end - p_start;
+                var l2 = seg.LengthSquared();
+                var hits = false;
+
+                if (l2 == 0f)
+                {
+                    if ((p_start - toObsVec).LengthSquared() <= sumRadius * sumRadius)
+                        hits = true;
+                }
+                else
+                {
+                    // Find closest point on the segment to the obstacle's actual center point
+                    var t_seg = Math.Clamp(Vector2.Dot(toObsVec - p_start, seg) / l2, 0f, 1f);
+                    var proj = p_start + seg * t_seg;
+                    if ((proj - toObsVec).LengthSquared() <= sumRadius * sumRadius)
+                        hits = true;
+                }
+
+                if (!hits)
+                    continue;
+
+                var t = MathF.Max(0f, t_f - ctx.FrameTime);
 
                 var ctime = sector.ImpactTime;
                 if ((ctime == null || ctime > t) && (!sector.Priority || obstacle.IsGrid))
                 {
                     var priority = obstacle.IsGrid || sector.Priority;
-                    _sectors[i] = new(sector.Sector, sector.Accel, sector.Scale, t, priority);
-                }
-            }
-            // specialcase 0, 0 wishInput
-            var last = _sectors[_sectors.Count - 1];
-            if (last.Sector.LengthSquared() == 0f)
-            {
-                var t = obsDistance / Vector2.Dot(relVel, toObsDir);
-                if (t < 0f || t > simTime)
-                    continue;
-
-                var endAt = relVel*t;
-                var proj = MathF.Abs(Vector2.Dot(endAt, new Vector2(-toObsDir.Y, toObsDir.X)));
-                // Log.Info($"Avoid dir {last.Sector} time {t}, proj {proj}");
-                if (proj > sumRadius)
-                    continue;
-
-                var ctime = last.ImpactTime;
-                if ((ctime == null || ctime > t) && (!last.Priority || obstacle.IsGrid))
-                {
-                    var priority = obstacle.IsGrid || last.Priority;
-                    _sectors[_sectors.Count - 1] = new(last.Sector, last.Accel, last.Scale, t, priority);
+                    _sectors[i] = new(sector.Input, sector.Accel, sector.Scale, t, priority);
                 }
             }
         }
@@ -451,8 +494,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
             var sector = _sectors[i];
             if (sector.ImpactTime == null)
             {
-                var toWishSq = (wishDir - sector.Sector).LengthSquared();
-                // Log.Info($"NI dir [{i}] {sector.Sector}: sq: {toWishSq} vs {closestDistance}");
+                var toWishSq = (wishDir - NormalizedOrZero(sector.Accel) * sector.Scale).LengthSquared();
                 if (toWishSq < closestDistance)
                 {
                     // Log.Info($"B: NI");
@@ -477,9 +519,9 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         // Log.Info($"Chosen: [{chosenI}] {chosen.Sector}");
         // original wishDir is clear
         if (chosen.Scale == -1f)
-            return null;
+            return new(null, false);
 
-        return chosen.Sector * chosen.Scale;
+        return new(NormalizedOrZero(chosen.Input) * chosen.Scale, closestSector == null);
     }
 
     // navigation for if we aren't avoiding a collision
@@ -500,21 +542,19 @@ public sealed partial class ShipSteeringSystem : EntitySystem
 
         var linVelDir = NormalizedOrZero(relVel);
 
-        // mirror linVelDir in relation to toTargetDir
-        var adjustVec = -(linVelDir - toDestDir * Vector2.Dot(linVelDir, toDestDir));
-        var adjustDir = NormalizedOrZero(adjustVec);
-
-        var wishThrustDir = toDestDir + 2f * adjustVec;
-
-        var wishThrustVec = _mover.GetDirectionThrust((-ctx.ShipNorthAngle).RotateVec(wishThrustDir), ctx.Shuttle, ctx.ShipBody);
-        var adjustAccel = Vector2.Dot(adjustDir, wishThrustVec) * ctx.ShipBody.InvMass;
-
-        var maxAdjust = Vector2.Dot(-adjustDir, relVel);
-
-        adjustVec *= adjustAccel == 0f ? 0f : float.Clamp(maxAdjust / (adjustAccel * ctx.FrameTime), 0f, 1f);
+        var accelEstVec = GetWorldDirectionAccel(toDestVec, ctx.ShipNorthAngle, ctx.Shuttle, ctx.ShipBody);
+        var accelEst = accelEstVec.Length();
+        // fallback to forward accel
+        if (accelEst == 0f)
+        {
+            var forwardAccelVec = GetDirectionAccel(new Vector2(0f, 1f), ctx.Shuttle, ctx.ShipBody);
+            accelEst = forwardAccelVec.Length();
+        }
+        // takes target relative to us
+        var wishAngle = _seeking.CalculateAdvancedTracking(toDestVec, -relVel, accelEst);
 
         // do not yet process whether we can actually accelerate well in that direction
-        return toDestDir + 2f * adjustVec;
+        return wishAngle.ToWorldVec();
     }
 
     private readonly record struct RotationResult(float RotationInput, float WishAngleVel);
@@ -564,25 +604,39 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         in SteeringConfig config,
         Vector2 wishInputVec,
         RotationResult rot,
-        in BrakeContext brake)
+        in BrakeContext brake,
+        bool aggressive)
     {
-
         var brakeInput = 0f;
         var linVel = ctx.ShipBody.LinearVelocity;
         var angleVel = ctx.ShipBody.AngularVelocity;
 
-        // brake if we're:
-        //   moving opposite to desired direction
-        //   && not wanting to rotate much or want to brake our rotation as well
-        if (Vector2.Dot(NormalizedOrZero(wishInputVec), NormalizedOrZero(-linVel)) >= config.BrakeThreshold
-            && (MathF.Abs(rot.RotationInput) < 1f - config.BrakeThreshold
-                || rot.WishAngleVel * angleVel < 0
-                || MathF.Abs(rot.WishAngleVel) < MathF.Abs(angleVel)))
-        {
+        // brake if we're moving opposite to desired direction
+        var dotThreshold = aggressive ? 0f : config.BrakeThreshold;
+        if (Vector2.Dot(NormalizedOrZero(wishInputVec), NormalizedOrZero(-linVel)) > dotThreshold)
             brakeInput = 1f;
-        }
 
         return brakeInput;
+    }
+
+    /// <summary>
+    /// Computes a distance-based speed cap that throttles ship speed as distance to target increases.
+    /// At close range, full speed is permitted. As distance increases toward the far-distance threshold,
+    /// speed is linearly throttled down to the far-range maximum.
+    /// </summary>
+    private float ComputeDistanceSpeedCap(float distance, ShipSteererComponent comp)
+    {
+        // If within close distance, allow full speed
+        if (distance <= comp.SpeedCapCloseDistance)
+            return comp.SpeedCapCloseMaxSpeed;
+
+        // If beyond far distance, apply far-range speed cap
+        if (distance >= comp.SpeedCapFarDistance)
+            return comp.SpeedCapFarMaxSpeed;
+
+        // Linear interpolation between close and far ranges
+        var t = (distance - comp.SpeedCapCloseDistance) / (comp.SpeedCapFarDistance - comp.SpeedCapCloseDistance);
+        return MathHelper.Lerp(comp.SpeedCapCloseMaxSpeed, comp.SpeedCapFarMaxSpeed, t);
     }
 
     private void OnShuttleStartCollide(Entity<ShipSteererComponent> ent, ref PilotedShuttleRelayedEvent<StartCollideEvent> outerArgs)
@@ -606,6 +660,20 @@ public sealed partial class ShipSteeringSystem : EntitySystem
     public static Vector2 NormalizedOrZero(Vector2 vec)
     {
         return vec.LengthSquared() == 0 ? Vector2.Zero : vec.Normalized();
+    }
+
+    private Vector2 GetDirectionAccel(Vector2 localDir, ShuttleComponent shuttle, PhysicsComponent body)
+    {
+        return _mover.GetDirectionThrust(localDir, shuttle, body) * body.InvMass;
+    }
+
+    private Vector2 GetWorldDirectionAccel(Vector2 worldDir, Angle shipNorthAngle, ShuttleComponent shuttle, PhysicsComponent body)
+    {
+        if (worldDir.LengthSquared() == 0f)
+            return Vector2.Zero;
+
+        var localDir = (-shipNorthAngle).RotateVec(worldDir);
+        return shipNorthAngle.RotateVec(GetDirectionAccel(localDir, shuttle, body));
     }
 
     /// <summary>
@@ -695,6 +763,7 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         public bool AvoidProjectiles;
         public int EvasionSectorCount;
         public int EvasionSectorDepth;
+        public float AnchorMaxVelocity;
         public float BaseEvasionTime;
         public float MaxObstructorDistance;
         public float MinObstructorDistance;
@@ -708,11 +777,13 @@ public sealed partial class ShipSteeringSystem : EntitySystem
         public Angle TargetAngleOffset;
         public Angle? AngleOverride;
         public bool AlwaysFaceTarget;
+        public float RotationTolerance;
+        public bool AvoidanceNoRotate;
     }
 
     private readonly record struct BrakeContext(float BrakeAccel, float BrakePath, float LeftoverBrakePath);
 
     private readonly record struct ObstacleCandidate(Entity<TransformComponent, PhysicsComponent> Ent, Vector2 Pos, float Radius, bool IsGrid);
 
-    private record struct EvadeCandidate(Vector2 Sector, float Accel, float Scale, float? ImpactTime = null, bool Priority = false);
+    private record struct EvadeCandidate(Vector2 Input, Vector2 Accel, float Scale, float? ImpactTime = null, bool Priority = false);
 }

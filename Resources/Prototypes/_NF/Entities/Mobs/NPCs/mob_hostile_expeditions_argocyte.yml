@@ -99,11 +99,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      16: Dead
+      32: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      10: 0.7
-      13: 0.5
+      24: 0.7
+      28: 0.5
   - type: Fixtures
     fixtures:
       fix1:
@@ -123,6 +123,15 @@
   - type: MovementSpeedModifier
     baseSprintSpeed : 3
     baseWalkSpeed : 3
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 1
+    - id: MaterialArgocytePlateLight
+      amount: 1
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -143,11 +152,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      24: Dead
+      32: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      15: 0.7
-      20: 0.5
+      24: 0.7
+      28: 0.5
   - type: Fixtures
     fixtures:
       fix1:
@@ -167,6 +176,15 @@
   - type: MovementSpeedModifier
     baseSprintSpeed : 3.5
     baseWalkSpeed : 3.5
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 2
+    - id: MaterialArgocytePlateLight
+      amount: 2
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -187,11 +205,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      32: Dead
+      60: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      19: 0.7
-      26: 0.5
+      45: 0.7
+      51: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -200,6 +218,15 @@
   - type: MovementSpeedModifier
     baseSprintSpeed : 4
     baseWalkSpeed: 4
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 2
+    - id: MaterialArgocytePlateLight
+      amount: 3
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -220,11 +247,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      40: Dead
+      100: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      24: 0.7
-      32: 0.5
+      75: 0.7
+      85: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -233,6 +260,15 @@
   - type: MovementSpeedModifier
     baseSprintSpeed : 4.5
     baseWalkSpeed: 4.5
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 2
+    - id: MaterialArgocytePlateLight
+      amount: 4
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -253,11 +289,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      48: Dead
+      150: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      28: 0.7
-      38: 0.5
+      113: 0.7
+      128: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -272,6 +308,9 @@
       amount: 3
     - id: FoodMeatXeno
       amount: 5
+    - id: MaterialArgocytePlateLight
+      amount: 5
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -293,11 +332,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      120: Dead
+      500: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      72: 0.7
-      96: 0.5
+      375: 0.7
+      425: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -312,6 +351,8 @@
       amount: 1
     - id: FoodMeatXeno
       amount: 7
+    - id: MaterialArgocytePlateLight
+      amount: 15
 
 ## Guardian morphotype
 - type: entity
@@ -333,11 +374,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      28: Dead
+      35: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      17: 0.7
-      22: 0.5
+      26: 0.7
+      30: 0.5
   - type: Fixtures
     fixtures:
       fix1:
@@ -354,6 +395,15 @@
       types:
         Blunt: 3
         Structural: 20
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 1
+    - id: MaterialArgocytePlateHeavy
+      amount: 1
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -374,11 +424,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      64: Dead
+      100: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      38: 0.7
-      50: 0.5
+      75: 0.7
+      85: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -387,6 +437,15 @@
   - type: MovementSpeedModifier
     baseSprintSpeed : 3.5
     baseWalkSpeed : 3.5
+  - type: Butcherable
+    spawned:
+    - id: SpawnDungeonLootMaterialsBasicSingle
+      amount: 1
+    - id: FoodMeatXeno
+      amount: 2
+    - id: MaterialArgocytePlateHeavy
+      amount: 2
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -407,11 +466,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      80: Dead
+      100: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      48: 0.7
-      64: 0.5
+      75: 0.7
+      85: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -425,6 +484,9 @@
       amount: 3
     - id: FoodMeatXeno
       amount: 5
+    - id: MaterialArgocytePlateHeavy
+      amount: 3
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -445,11 +507,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      72: Dead
+      150: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      44: 0.7
-      58: 0.5
+      113: 0.7
+      128: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -461,6 +523,9 @@
       amount: 3
     - id: FoodMeatXeno
       amount: 5
+    - id: MaterialArgocytePlateHeavy
+      amount: 4
+      prob: 0.5
 
 - type: entity
   parent: BaseMobArgocyteExpeditions
@@ -481,11 +546,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      110: Dead
+      300: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      66: 0.7
-      90: 0.5
+      225: 0.7
+      255: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -497,6 +562,9 @@
       amount: 1
     - id: FoodMeatXeno
       amount: 7
+    - id: MaterialArgocytePlateHeavy
+      amount: 5
+      prob: 0.5
 
 - type: entity
   parent: [ BaseMobArgocyteExpeditions, NFMobBossRestrictions ]
@@ -518,11 +586,11 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      400: Dead
+      1000: Dead
   - type: SlowOnDamage
     speedModifierThresholds:
-      240: 0.7
-      320: 0.5
+      750: 0.7
+      850: 0.5
   - type: MeleeWeapon
     damage:
       types:
@@ -534,3 +602,5 @@
       amount: 1
     - id: FoodMeatXeno
       amount: 12
+    - id: MaterialArgocytePlateHeavy
+      amount: 20

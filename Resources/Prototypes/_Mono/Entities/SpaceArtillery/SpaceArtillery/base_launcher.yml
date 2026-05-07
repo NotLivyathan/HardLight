@@ -7,6 +7,9 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: CombatMode
+  - type: Speech
+    speechSounds: Borg
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: StructuralMetallic
@@ -14,13 +17,13 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 20000
+        damage: 4000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 10000
+        damage: 2000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -107,13 +110,13 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 20000
+        damage: 4000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 10000
+        damage: 2000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -203,13 +206,13 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 20000
+        damage: 4000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
     - trigger:
         !type:DamageTrigger
-        damage: 10000
+        damage: 2000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]

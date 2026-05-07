@@ -179,7 +179,7 @@ public sealed class AmeNodeGroup : BaseNodeGroup
         // Increasing core count without increasing fuel always leads to reduced power as well.
         // At 18+ cores and 2 inject, the power produced is less than 0, the Max ensures the AME can never produce "negative" power.
         // return MathF.Max(200000f * MathF.Log10(2 * fuel * MathF.Pow(cores, (float)-0.5)), 0); // Frontier: preferring old calculation for now
-        return 2000000f * fuel * fuel / cores;
+        return 45000f * fuel * fuel / cores; // Hardlight: 2000000f -> 90000f (8MW -> 180kW)
     }
 
     public int GetTotalStability()

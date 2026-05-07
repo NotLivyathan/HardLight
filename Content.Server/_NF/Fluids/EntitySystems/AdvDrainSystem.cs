@@ -33,9 +33,13 @@ public sealed class AdvDrainSystem : SharedDrainSystem
 
     private readonly HashSet<Entity<PuddleComponent>> _puddles = new();
 
+    // Cached on Initialize to avoid the per-tick GetEntityQuery dictionary lookup in Update.
+    private EntityQuery<SolutionContainerManagerComponent> _solutionManagerQuery;
+
     public override void Initialize()
     {
         base.Initialize();
+        _solutionManagerQuery = GetEntityQuery<SolutionContainerManagerComponent>();
         SubscribeLocalEvent<AdvDrainComponent, MapInitEvent>(OnDrainMapInit);
         SubscribeLocalEvent<AdvDrainComponent, GetVerbsEvent<Verb>>(AddEmptyVerb);
         SubscribeLocalEvent<AdvDrainComponent, ExaminedEvent>(OnExamined);
@@ -127,7 +131,7 @@ public sealed class AdvDrainSystem : SharedDrainSystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        var managerQuery = GetEntityQuery<SolutionContainerManagerComponent>();
+        var managerQuery = _solutionManagerQuery;
 
         var query = EntityQueryEnumerator<AdvDrainComponent>();
         while (query.MoveNext(out var uid, out var drain))

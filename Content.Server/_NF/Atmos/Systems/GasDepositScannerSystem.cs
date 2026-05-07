@@ -171,7 +171,7 @@ public sealed class GasDepositScannerSystem : EntitySystem
             return false;
 
         _userInterface.ServerSendUiMessage(uid, GasDepositScannerUiKey.Key,
-            new GasDepositScannerUserMessage(gasMixList.ToArray(),
+            new GasDepositScannerUserMessage(gasMixList,
                 GetNetEntity(component.Target) ?? NetEntity.Invalid));
         return true;
     }

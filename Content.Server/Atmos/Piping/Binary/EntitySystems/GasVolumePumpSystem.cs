@@ -48,8 +48,10 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
                 return;
             }
 
-            var inputStartingPressure = inlet.Air.Pressure;
-            var outputStartingPressure = outlet.Air.Pressure;
+            var inletAir = inlet.Air;
+            var outletAir = outlet.Air;
+            var inputStartingPressure = inletAir.Pressure;
+            var outputStartingPressure = outletAir.Pressure;
 
             var previouslyBlocked = pump.Blocked;
             pump.Blocked = false;
@@ -72,7 +74,7 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
                 return;
 
             // We multiply the transfer rate in L/s by the seconds passed since the last process to get the liters.
-            var removed = inlet.Air.RemoveVolume(pump.TransferRate * _atmosphereSystem.PumpSpeedup() * args.dt);
+            var removed = inletAir.RemoveVolume(pump.TransferRate * _atmosphereSystem.PumpSpeedup() * args.dt);
 
             // Some of the gas from the mixture leaks when overclocked.
             if (pump.Overclocked)
@@ -86,10 +88,11 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
                 }
             }
 
-            pump.LastMolesTransferred = removed.TotalMoles;
+            var transferredMoles = removed.TotalMoles;
+            pump.LastMolesTransferred = transferredMoles;
 
-            _atmosphereSystem.Merge(outlet.Air, removed);
-            _ambientSoundSystem.SetAmbience(uid, removed.TotalMoles > 0f);
+            _atmosphereSystem.Merge(outletAir, removed);
+            _ambientSoundSystem.SetAmbience(uid, transferredMoles > 0f);
         }
 
         private void OnVolumePumpLeaveAtmosphere(EntityUid uid, GasVolumePumpComponent pump, ref AtmosDeviceDisabledEvent args)

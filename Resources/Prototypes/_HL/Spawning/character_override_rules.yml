@@ -19,14 +19,14 @@
   - Livyathan
   entity: MobDragonLivyathan
   
-- type: spawnCharacterOverrideRule
-  id: Bananatalononspawn
-  match: RaAmpwave
-  checkProfileName: true
-  checkEntityName: true
-  logins:
-  - RaAmpwave
-  entity: BananaTalon
+# - type: spawnCharacterOverrideRule
+  # id: Bananatalononspawn
+  # match: RaAmpwave
+  # checkProfileName: true
+  # checkEntityName: true
+  # logins:
+  # - RaAmpwave
+  # entity: BananaTalon
   
 - type: spawnCharacterOverrideRule
   id: Featheredonspawn
@@ -101,6 +101,33 @@
   - potato3s
   entity: PlayerBorgQuadengiserv
   
+- type: spawnCharacterOverrideRule
+  id: assaultspawn
+  match: KillSwitch
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - KillSwitch
+  entity: PlayerBorgQuadkillswitch
+  
+- type: spawnCharacterOverrideRule
+  id: chewsspawn
+  match: Hammeredmantis
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Hammeredmantis
+  entity: PlayerBorgQuadchews
+  
+- type: spawnCharacterOverrideRule
+  id: wolfspawn
+  match: xiv3n
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - xiv3n
+  entity: PlayerBorgQuadxiv3n
+  
 ## Component example
 - type: spawnCharacterOverrideRule
   id: abyssbloodverzi
@@ -114,12 +141,54 @@
     flashDamage:
         types:
            Heat: 120
-  - type: Bloodstream
-    bloodReagent: AbyssalBlood
-    bloodMaxVolume: 650
-    bloodlossDamage:
-      types:
-        Bloodloss: 0.5
-    bloodlossHealDamage:
-      types:
-        Bloodloss: -1
+  - type: BloodSolutionModifier
+    solution:
+      reagents:
+      - ReagentId: AbyssalBlood
+        Quantity: 650
+
+- type: spawnCharacterOverrideRule
+  id: chocoblood
+  match: Coco 
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Slatebreaker 
+  components:
+  - type: Temperature
+    heatDamageThreshold: 300
+  - type: BloodSolutionModifier
+    solution:
+      reagents:
+      - ReagentId: HotCocoa
+        Quantity: 1250
+  - type: TemperatureSpeed
+    thresholds:
+      0: 0.9
+      -250: 0.8
+      -290: 0.7
+  - type: ThermalRegulator
+    metabolismHeat: 800
+    radiatedHeat: 100
+    implicitHeatRegulation: 500
+    sweatHeatRegulation: 2000
+    shiveringHeatRegulation: 2000
+    normalBodyTemperature: 293
+    thermalRegulationTemperatureThreshold: 2
+    
+- type: spawnCharacterOverrideRule
+  id: Phlogbloodphoenix
+  match: Kalista Phoenix
+  checkProfileName: true
+  checkEntityName: true
+  logins:
+  - Darkvulpine
+  components:
+  - type: ThermalVision
+  - type: BreathingImmunity
+  - type: PressureImmunity
+  - type: BloodSolutionModifier
+    solution:
+      reagents:
+      - ReagentId: Phlogiston
+        Quantity: 650

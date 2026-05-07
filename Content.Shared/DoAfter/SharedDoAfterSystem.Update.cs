@@ -1,3 +1,4 @@
+using Content.Shared._Starlight.NullSpace;
 using Content.Shared.Gravity;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -18,6 +19,14 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
 
     private DoAfter[] _doAfters = Array.Empty<DoAfter>();
 
+    // HardLight: snapshot buffer reused across ticks to avoid per-tick allocation when iterating
+    // active do-afters. We snapshot before iterating because per-uid Update can raise events that
+    // add or remove DoAfterComponent/ActiveDoAfterComponent on *other* entities (e.g. completing
+    // a doafter that ends another doafter via interaction), which invalidates the live
+    // EntityQueryEnumerator and throws "Collection was modified" from the outer MoveNext call,
+    // tearing down the entire DoAfter tick.
+    private readonly List<(EntityUid Uid, ActiveDoAfterComponent Active, DoAfterComponent Comp)> _updateSnapshot = new();
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -26,9 +35,20 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         var xformQuery = GetEntityQuery<TransformComponent>();
         var handsQuery = GetEntityQuery<HandsComponent>();
 
+        _updateSnapshot.Clear();
         var enumerator = EntityQueryEnumerator<ActiveDoAfterComponent, DoAfterComponent>();
         while (enumerator.MoveNext(out var uid, out var active, out var comp))
         {
+            _updateSnapshot.Add((uid, active, comp));
+        }
+
+        for (var snapIndex = 0; snapIndex < _updateSnapshot.Count; snapIndex++)
+        {
+            var (uid, active, comp) = _updateSnapshot[snapIndex];
+
+            // Skip entries whose components were removed by a previous iteration this tick.
+            if (active.Deleted || comp.Deleted)
+                continue;
 
             try
             {
@@ -231,16 +251,16 @@ public abstract partial class SharedDoAfterSystem : EntitySystem
         }
 
         // Whether the user and the target are too far apart.
-        if (args.Target != null)
+        var distanceTarget = args.NetDistanceTarget != null ? GetEntity(args.NetDistanceTarget) : args.Target; // Starlight-edit
+        if (distanceTarget != null) // Starlight-edit
         {
+            // Starlight - If user is in nullspace, Cancel DoAfter on target. (Unless user is in nullspace too.)
+            if (HasComp<NullSpaceComponent>(args.Target) && !HasComp<NullSpaceComponent>(args.User))
+                return true;
+
             if (args.DistanceThreshold != null)
             {
-                if (!_interaction.InRangeUnobstructed(args.User, args.Target.Value, args.DistanceThreshold.Value))
-                    return true;
-            }
-            else
-            {
-                if (!_interaction.InRangeUnobstructed(args.User, args.Target.Value))
+                if (!_interaction.InRangeAndAccessible(args.User, distanceTarget.Value, args.DistanceThreshold.Value)) // Starlight-edit
                     return true;
             }
         }

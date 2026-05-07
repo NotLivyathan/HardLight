@@ -50,7 +50,7 @@
   - Raccoon_Chan
   - DizzyEevee
   - Snakeman9
-  
+
 - type: company
   id: InterdynePharmaceuticals
   form: Protagonist
@@ -76,8 +76,37 @@
   name: Waffle Corp
   color: "#EADDCA" # brown
 
-
 # ====TSF / Protag. Companies====
+- type: company
+  id: Suburbia
+  form: Protagonist
+  name: Suburbia
+  color: "#FFEA00" 
+
+- type: company
+  id: SBS
+  form: Protagonist
+  name: Starbound Blue Shield Services
+  color: "#005DBF" # strong blue
+
+- type: company
+  id: HELGG
+  form: Protagonist
+  name: Holy Empire of the Lords Golden Grace
+  color: "#C4A23C" 
+
+- type: company
+  id: TBG
+  form: Protagonist
+  name: Teds Bar Guild
+  color: "#7F5539"
+
+- type: company
+  id: Arcadia
+  form: Protagonist
+  name: Arcadia
+  color: "#BF5454"
+
 - type: company
   id: DarkMatterEnterprises
   form: Protagonist
@@ -147,7 +176,7 @@
   form: Protagonist
   name: Dominos Robotics
   color: "#9900ff" # neon purple
-  
+
 - type: company
   id: TALON
   form: Protagonist
@@ -169,19 +198,19 @@
   form: Protagonist
   name: Church of the Shattered Stars
   color: "#8A0303" # crimson
-  
+
 - type: company
   id: MARR
   form: Protagonist
   name: Dusk Enclave
-  color: "#ff930a" # Orange
-  
+  color: "#00ff95" # Phosphorescent green
+
 - type: company
   id: GOLD
   form: Protagonist
   name: Golden Flotilla
   color: "#EDA500" # Gold
-  
+
 - type: company
   id: UNSA
   form: Protagonist
@@ -235,9 +264,8 @@
 - type: company
   id: SELF
   form: Antagonist
-  name: Sentient Engine Liberation Front
-  color: "#2e0f43" # very dark purple
-  disabled: true # locked for now, until we get admin approval
+  name: Silicon Engine Liberation Front
+  color: "#5a1d83" # Dark Violet
 
 - type: company
   id: ARC
@@ -252,3 +280,12 @@
   name: Gorlex Marauders
   color: "#880808" # blood red
   disabled: true # locked because literally nukies
+
+- type: company
+  id: AID
+  form: Protagonist
+  name: AEGIS Initiative Division
+  color: "#B8477C" # Berry Crush
+  logins:
+  - Dhizi
+  - OkSam

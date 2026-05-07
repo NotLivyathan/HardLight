@@ -1,4 +1,6 @@
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared._Mono.Shuttle.FTL;
+using Content.Shared.Power.EntitySystems;
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.UI.MapObjects;
@@ -15,6 +17,7 @@ public abstract partial class SharedShuttleSystem : EntitySystem
 {
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private readonly SharedPowerReceiverSystem _power = default!;
     [Dependency] protected readonly SharedMapSystem Maps = default!;
     [Dependency] protected readonly SharedTransformSystem XformSystem = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
@@ -34,6 +37,24 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         _gridQuery = GetEntityQuery<MapGridComponent>();
         _physicsQuery = GetEntityQuery<PhysicsComponent>();
         _xformQuery = GetEntityQuery<TransformComponent>();
+
+        SubscribeLocalEvent<FTLDestinationComponent, EntityTerminatingEvent>(OnDestinationTerminating);
+    }
+
+    private void OnDestinationTerminating(Entity<FTLDestinationComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (!TryGetNetEntity(ent.Owner, out var destination) || destination == null)
+            return;
+
+        var query = EntityQueryEnumerator<ShuttleDestinationCoordinatesComponent>();
+        while (query.MoveNext(out var uid, out var coordinates))
+        {
+            if (coordinates.Destination != destination)
+                continue;
+
+            coordinates.Destination = null;
+            Dirty(uid, coordinates);
+        }
     }
 
     /// <summary>
@@ -41,7 +62,7 @@ public abstract partial class SharedShuttleSystem : EntitySystem
     /// </summary>
     public bool CanFTLTo(EntityUid shuttleUid, MapId targetMap, EntityUid consoleUid)
     {
-        var mapUid = _mapManager.GetMapEntityId(targetMap);
+        var mapUid = Maps.GetMap(targetMap);
         var shuttleMap = _xformQuery.GetComponent(shuttleUid).MapID;
 
         if (shuttleMap == targetMap)
@@ -77,8 +98,14 @@ public abstract partial class SharedShuttleSystem : EntitySystem
 
                 var diskDestinationUid = GetEntity(diskCoords.Value);
 
-                if (diskDestinationUid == EntityUid.Invalid
-                    || !TryComp<FTLDestinationComponent>(diskDestinationUid, out var diskDestination)
+                if (diskDestinationUid == EntityUid.Invalid)
+                {
+                    diskCoordinates.Destination = null;
+                    Dirty(disk, diskCoordinates);
+                    return false;
+                }
+
+                if (!TryComp<FTLDestinationComponent>(diskDestinationUid, out var diskDestination)
                     || diskDestination != destination)
                 {
                     return false;
@@ -178,7 +205,46 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         return HasComp<MapComponent>(coordinates.EntityId);
     }
 
-    public float GetFTLRange(EntityUid shuttleUid) => FTLRange;
+    public float GetFTLRange(EntityUid shuttleUid)
+    {
+        var range = FTLRange;
+        var driveQuery = EntityQueryEnumerator<FTLDriveComponent, TransformComponent>();
+
+        while (driveQuery.MoveNext(out var uid, out var drive, out var xform))
+        {
+            if (xform.GridUid != shuttleUid || !_power.IsPowered(uid))
+                continue;
+
+            range = MathF.Max(range, drive.Range);
+        }
+
+        return range;
+    }
+
+    /// <summary>
+    /// Returns the speed factor to apply to all FTL timings (startup, travel, cooldown) for a shuttle.
+    /// The worst (highest) factor among powered drives wins, preventing stacking multiple drives.
+    /// Returns 1.0 when no drive sets a factor (no change to global defaults).
+    /// </summary>
+    public float GetFTLSpeedFactor(EntityUid shuttleUid)
+    {
+        float? result = null;
+        var driveQuery = EntityQueryEnumerator<FTLDriveComponent, TransformComponent>();
+
+        while (driveQuery.MoveNext(out var uid, out var drive, out var xform))
+        {
+            if (xform.GridUid != shuttleUid || !_power.IsPowered(uid))
+                continue;
+
+            if (drive.SpeedFactor <= 0f)
+                continue;
+
+            if (result == null || drive.SpeedFactor > result.Value)
+                result = drive.SpeedFactor;
+        }
+
+        return result ?? 1f;
+    }
 
     public float GetFTLBufferRange(EntityUid shuttleUid, MapGridComponent? grid = null)
     {
@@ -212,7 +278,7 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         var targetPosition = mapCoordinates.Position;
 
         // Check range even if it's cross-map.
-        if ((targetPosition - ourPos).Length() > FTLRange)
+        if ((targetPosition - ourPos).Length() > GetFTLRange(shuttleUid))
         {
             return false;
         }

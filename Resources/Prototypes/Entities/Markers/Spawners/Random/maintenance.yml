@@ -131,7 +131,7 @@
       - id: ClothingHeadHatOutlawHat
       - id: ClothingHeadHatUshanka
       - id: ClothingHeadHatBunny
-      - id: ClothingMaskNeckGaiter
+      - id: ClothingGaiterCharcoal # HL
       - id: ClothingNeckScarfStripedZebra
       - id: ClothingOuterGhostSheet
       - id: ClothingUniformJumpsuitAncient
@@ -284,6 +284,8 @@
       - id: ModularReceiver
       - id: WeaponFlareGun
       - id: BarberScissors
+      - id: PlushieMaints
+      - id: PlushieShadekin
       - !type:GroupSelector
         children:
         - id: DrinkSpaceGlue
@@ -304,6 +306,7 @@
       - id: PetCarrier
       - id: DrinkMopwataBottleRandom
       - id: SpectralLocator
+      - id: WehpetInstrument  # Omu - Weh-pet is a rare spawn
       - id: LidSalami
         weight: 0.05
 

@@ -515,6 +515,7 @@ entities:
     - type: GridPathfinding
     - type: BecomesStation
       id: Colcomm
+    - type: CleanupProtectedGrid
     - type: Gravity
       gravityShakeSound: !type:SoundPathSpecifier
         path: /Audio/Effects/alert.ogg

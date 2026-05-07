@@ -45,7 +45,8 @@ public sealed partial class HandheldLightComponent : Component
     [DataField("toggleOnInteract")]
     public bool ToggleOnInteract = true;
 
-    [DataField("toggleActionEntity")]
+    // HardLight: persist across save/load. See ToggleableClothingComponent.ActionEntity.
+    [DataField]
     public EntityUid? ToggleActionEntity;
 
     [DataField]

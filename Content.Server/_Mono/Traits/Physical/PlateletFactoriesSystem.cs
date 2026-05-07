@@ -16,6 +16,10 @@ public sealed class PlateletFactoriesSystem : EntitySystem
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
+    // Reused across Tick calls to avoid allocating a fresh DamageSpecifier per heal tick.
+    // DamageableSystem.TryChangeDamage copies the dict internally, so reusing this is safe.
+    private readonly DamageSpecifier _scratchHeal = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -58,7 +62,8 @@ public sealed class PlateletFactoriesSystem : EntitySystem
         if (TryComp<MobStateComponent>(uid, out var mobState) && _mobState.IsDead(uid, mobState))
             return;
 
-        var heal = new DamageSpecifier();
+        var heal = _scratchHeal;
+        heal.DamageDict.Clear();
 
         var amountPerTick = Math.Max(0f, comp.HealPerSecond) * Math.Max(0.1f, comp.IntervalSeconds);
         var multiplier = (TryComp<MobStateComponent>(uid, out var ms) && _mobState.IsCritical(uid, ms))
@@ -74,8 +79,7 @@ public sealed class PlateletFactoriesSystem : EntitySystem
             if (healAmt == FixedPoint2.Zero)
                 continue;
 
-            var existing = heal.DamageDict.GetValueOrDefault(type);
-            heal.DamageDict[type] = existing + healAmt;
+            heal.DamageDict[type] = healAmt;
         }
 
         if (heal.DamageDict.Count == 0)

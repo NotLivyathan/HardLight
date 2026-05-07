@@ -1,4 +1,6 @@
-﻿namespace Content.Server.Power.Generation.Teg;
+﻿using Content.Shared.Atmos;
+
+namespace Content.Server.Power.Generation.Teg;
 
 /// <summary>
 /// The centerpiece for the thermo-electric generator (TEG).
@@ -8,6 +10,9 @@
 [Access(typeof(TegSystem))]
 public sealed partial class TegGeneratorComponent : Component
 {
+    public readonly GasMixture TransferBufferA = new();
+    public readonly GasMixture TransferBufferB = new();
+
     /// <summary>
     /// When transferring energy from the hot to cold side,
     /// determines how much of that energy can be extracted as electricity.

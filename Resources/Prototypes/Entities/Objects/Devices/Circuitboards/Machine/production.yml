@@ -219,6 +219,7 @@
     prototype: Biogenerator
     requirements: # Frontier
       MatterBin: 2 # Frontier stackRequirements<requirements
+      Manipulator: 1 #Hardlight, allows for upgrading
     tagRequirements:
       GlassBeaker:
         amount: 1

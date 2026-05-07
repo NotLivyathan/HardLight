@@ -5,6 +5,7 @@ using Content.Server.Parallax;
 using Content.Shared.CCVar;
 using Content.Shared.Dataset;
 using Content.Shared.Gateway;
+using Content.Shared.Gateway.Components;
 using Content.Shared.Maps;
 using Content.Shared.Popups;
 using Content.Shared.Shuttles.Components;
@@ -35,6 +36,7 @@ public sealed class DockingArmGeneratorSystem : EntitySystem
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     // Optional name dataset - will fall back to default names if not found
     private const string DockingArmNames = "names_borer";
@@ -142,7 +144,23 @@ public sealed class DockingArmGeneratorSystem : EntitySystem
             return;
         }
 
-        // No cooldown check - allow spawning anytime
+        // Throttle spam-clicks on the "Spawn New Dock" button. Each attempt — even one that
+        // fails to find a clear spawn location — kicks off a grid load, so without a cooldown
+        // a player mashing the button can flood the server with TryLoadGrid calls and log spam.
+        if (TryComp(ent.Comp.Generator, out DockingArmGeneratorComponent? genComp))
+        {
+            var now = _timing.CurTime;
+            if (now < genComp.NextSpawnAttempt)
+            {
+                Log.Info($"Cancelling - spawn attempt cooldown active for {ToPrettyString(ent.Comp.Generator.Value)} ({(genComp.NextSpawnAttempt - now).TotalSeconds:0.0}s remaining)");
+                _popup.PopupEntity(Loc.GetString("gateway-docking-arm-cooldown"), ent.Owner);
+                args.Cancelled = true;
+                return;
+            }
+
+            genComp.NextSpawnAttempt = now + genComp.SpawnAttemptCooldown;
+        }
+
         Log.Info($"Allowing spawn - no cooldown restrictions");
     }
 

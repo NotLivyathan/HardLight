@@ -9,6 +9,7 @@ using Robust.Shared.Serialization.Markdown.Sequence;
 using System.Linq;
 using System.Text;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Numerics;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -18,6 +19,7 @@ using Robust.Shared.Maths;
 using System;
 using Content.Shared.Coordinates;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.FixedPoint;
 using Robust.Shared.Log;
 using Robust.Server.GameObjects;
 using Content.Server.Atmos.Components;
@@ -39,10 +41,12 @@ using Robust.Shared.Player;
 using Robust.Server.Player;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
+using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Paper;
 using Content.Shared.Stacks;
 using Robust.Shared.Serialization.Markdown;
 using Content.Shared.VendingMachines;
+using Content.Shared.Actions;
 using Robust.Shared.EntitySerialization.Systems; // Added for MapLoaderSystem
 using Robust.Shared.EntitySerialization;
 using Content.Shared.Access.Components; // AccessReaderComponent for access retention
@@ -61,7 +65,9 @@ namespace Content.Server.Shuttles.Save
         [Dependency] private readonly DecalSystem _decalSystem = default!;
         [Dependency] private readonly IConfigurationManager _configManager = default!;
         [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
+        [Dependency] private readonly MetaDataSystem _metaData = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
+        [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
         [Dependency] private readonly IGameTiming _gameManager = default!;
         [Dependency] private readonly MapLoaderSystem _mapLoader = default!; // For refactored serializer path
         [Dependency] private readonly IDependencyCollection _dependencyCollection = default!; // Use same dependency collection as MapLoaderSystem
@@ -258,6 +264,14 @@ namespace Content.Server.Shuttles.Save
         }
 
         private readonly List<ShipLoadJob> _shipLoadJobs = new();
+
+        private static readonly HashSet<string> ActionEntityComponentTypes = new(StringComparer.Ordinal)
+        {
+            nameof(InstantActionComponent),
+            nameof(EntityTargetActionComponent),
+            nameof(WorldTargetActionComponent),
+            nameof(EntityWorldTargetActionComponent),
+        };
 
         public ShipGridData SerializeShip(EntityUid gridId, NetUserId playerId, string shipName)
         {
@@ -528,6 +542,60 @@ namespace Content.Server.Shuttles.Save
                     {
                         gridData.Entities.Add(entityData);
                         serializedEntities.Add(childUid);
+                    }
+                }
+
+                // Second pass: unanchored loose items within bounds (plushies, pillows, buttons,
+                // bed sheets, etc.). Exclude mobs/players and items already in containers;
+                // SerializeContainedEntities will handle those.
+                var childEnumerator2 = gridTransform.ChildEnumerator;
+                while (childEnumerator2.MoveNext(out var childUid2))
+                {
+                    if (excludeEntities != null && excludeEntities.Contains(childUid2))
+                        continue;
+
+                    if (serializedEntities.Contains(childUid2))
+                        continue;
+
+                    if (!_entityManager.EntityExists(childUid2) || _entityManager.IsQueuedForDeletion(childUid2))
+                        continue;
+
+                    if (!_entityManager.TryGetComponent<TransformComponent>(childUid2, out var childTransform2))
+                        continue;
+
+                    // Only grab unanchored items; anchored ones already handled above
+                    if (childTransform2.Anchored)
+                        continue;
+
+                    if (!bounds.Contains(childTransform2.LocalPosition))
+                        continue;
+
+                    // Skip mobs and player-minded entities
+                    if (_entityManager.HasComponent<Content.Shared.Mobs.Components.MobStateComponent>(childUid2))
+                        continue;
+                    if (_entityManager.HasComponent<Content.Shared.Mind.Components.MindContainerComponent>(childUid2))
+                        continue;
+
+                    // Skip entities that are inside a container (SerializeContainedEntities covers them)
+                    var xform2 = _entityManager.GetComponent<TransformComponent>(childUid2);
+                    if (_containerSystem.IsEntityInContainer(childUid2))
+                        continue;
+
+                    var meta2 = _entityManager.GetComponentOrNull<MetaDataComponent>(childUid2);
+                    var proto2 = meta2?.EntityPrototype?.ID ?? string.Empty;
+                    if (string.IsNullOrEmpty(proto2))
+                        continue;
+
+                    if (excludeVending && _entityManager.HasComponent<VendingMachineComponent>(childUid2))
+                        continue;
+
+                    var entityData2 = SerializeEntity(childUid2, childTransform2, proto2, gridId);
+                    if (entityData2 != null)
+                    {
+                        gridData.Entities.Add(entityData2);
+                        serializedEntities.Add(childUid2);
+                        if (verbose)
+                            _sawmill.Debug($"Serialized unanchored room item {childUid2} ({proto2})");
                     }
                 }
 
@@ -1211,6 +1279,10 @@ namespace Content.Server.Shuttles.Save
                     {
                         if (string.IsNullOrEmpty(entity.Prototype))
                             continue;
+
+                        if (IsSerializedActionEntity(entity))
+                            continue;
+
                         job.NonContained.Enqueue(entity);
                     }
                     // If there was a decal job created above for this grid, merge into it instead
@@ -1243,6 +1315,9 @@ namespace Content.Server.Shuttles.Save
             foreach (var entity in primaryGridData.Entities)
             {
                 if (string.IsNullOrEmpty(entity.Prototype))
+                    continue;
+
+                if (IsSerializedActionEntity(entity))
                     continue;
 
                 if (entity.IsContained)
@@ -1393,10 +1468,19 @@ namespace Content.Server.Shuttles.Save
                     if (string.IsNullOrEmpty(entityData.Prototype))
                         continue;
 
+                    if (IsSerializedActionEntity(entityData))
+                        continue;
+
                     var coords = new EntityCoordinates(targetGrid, entityData.Position + offset);
                     var newEntity = SpawnEntityWithComponents(entityData, coords, clearDefaultsForContainers: false);
                     if (newEntity != null)
+                    {
                         entityIdMapping[entityData.EntityId] = newEntity.Value;
+                        // Room saves filter to Anchored-only entities, but the serialized
+                        // TransformComponent is intentionally skipped. Re-anchor here so
+                        // furniture/walls/etc. don't end up loose on the floor after load.
+                        TryReAnchorRoomEntity(newEntity.Value);
+                    }
                 }
 
                 return;
@@ -1410,6 +1494,9 @@ namespace Content.Server.Shuttles.Save
                 if (string.IsNullOrEmpty(entityData.Prototype))
                     continue;
 
+                if (IsSerializedActionEntity(entityData))
+                    continue;
+
                 if (entityData.IsContained)
                     contained.Add(entityData);
                 else
@@ -1421,7 +1508,12 @@ namespace Content.Server.Shuttles.Save
                 var coords = new EntityCoordinates(targetGrid, entityData.Position + offset);
                 var newEntity = SpawnEntityWithComponents(entityData, coords, clearDefaultsForContainers: true);
                 if (newEntity != null)
+                {
                     entityIdMapping[entityData.EntityId] = newEntity.Value;
+                    // Room saves filter to Anchored-only entities at the top level; re-anchor
+                    // since the serialized TransformComponent (and thus its Anchored flag) is skipped.
+                    TryReAnchorRoomEntity(newEntity.Value);
+                }
             }
 
             foreach (var entityData in contained)
@@ -1571,6 +1663,9 @@ namespace Content.Server.Shuttles.Save
                     continue;
                 }
 
+                if (IsSerializedActionEntity(entityData))
+                    continue;
+
                 try
                 {
                     var coordinates = new EntityCoordinates(newGridEntity, entityData.Position);
@@ -1653,7 +1748,7 @@ namespace Content.Server.Shuttles.Save
             {
                 if (!_entityManager.EntityExists(gridUid))
                 {
-                    _sawmill.Error($"Grid {gridUid} no longer exists for atmosphere application");
+                    _sawmill.Debug($"Skipping fixgridatmos for deleted grid {gridUid}");
                     return;
                 }
 
@@ -1710,7 +1805,28 @@ namespace Content.Server.Shuttles.Save
 
                     try
                     {
-                        var componentData = SerializeComponent(component);
+                        ComponentData? componentData;
+                        if (component is SolutionContainerManagerComponent solutionManager)
+                        {
+                            componentData = SerializeSolutionComponent(entityUid, solutionManager);
+                        }
+                        else if (component is SolutionComponent solutionComp
+                                 && !float.IsFinite(solutionComp.Solution.Temperature))
+                        {
+                            // Issue #1511: SolutionComponent child entities carry their Temperature directly,
+                            // and the Robust YAML serializer will write "temperature: NaNK" for NaN values.
+                            // The SolutionContainerManagerComponent path already guards against this, but the
+                            // SolutionComponent entity itself must be sanitized before the standard write path.
+                            _sawmill.Warning($"SolutionComponent on entity {entityUid} had non-finite temperature " +
+                                             $"{solutionComp.Solution.Temperature}; resetting to room temperature before serializing.");
+                            solutionComp.Solution.Temperature = Atmospherics.T20C;
+                            componentData = SerializeComponent(component);
+                        }
+                        else
+                        {
+                            componentData = SerializeComponent(component);
+                        }
+
                         if (componentData != null)
                             componentDataList.Add(componentData);
                     }
@@ -1742,21 +1858,9 @@ namespace Content.Server.Shuttles.Save
                     return null;
                 }
 
-                // Special handling for solution components to ensure chemical preservation
-                if (component is SolutionContainerManagerComponent solutionManager)
-                {
-                    return SerializeSolutionComponent(solutionManager);
-                }
-
-                // Skip paper components - causes loading lag
-                if (component is Content.Shared.Paper.PaperComponent)
-                {
-                    return null;
-                }
-
                 // Use RobustToolbox's serialization system to serialize the component
                 var node = _serializationManager.WriteValue(componentType, component, notNullableOverride: true);
-                var yamlData = _serializer.Serialize(node);
+                var yamlData = _serializer.Serialize(ScrubRuntimeActionReferences(node));
 
                 var componentData = new ComponentData
                 {
@@ -1838,20 +1942,87 @@ namespace Content.Server.Shuttles.Save
             return problematicTypes.Contains(typeName);
         }
 
-        private ComponentData? SerializeSolutionComponent(SolutionContainerManagerComponent solutionManager)
+        private static bool IsRuntimeActionReferenceKey(string key)
+        {
+            return key.EndsWith("ActionEntity", StringComparison.OrdinalIgnoreCase)
+                || key.EndsWith("ActionEntities", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static DataNode ScrubRuntimeActionReferences(DataNode node)
+        {
+            switch (node)
+            {
+                case MappingDataNode mapping:
+                    var cleanedMapping = new MappingDataNode(mapping.Count)
+                    {
+                        Tag = mapping.Tag,
+                        Start = mapping.Start,
+                        End = mapping.End,
+                    };
+
+                    foreach (var (key, value) in mapping)
+                    {
+                        if (IsRuntimeActionReferenceKey(key))
+                            continue;
+
+                        cleanedMapping.Add(key, ScrubRuntimeActionReferences(value));
+                    }
+
+                    return cleanedMapping;
+
+                case SequenceDataNode sequence:
+                    var cleanedSequence = new SequenceDataNode(sequence.Count)
+                    {
+                        Tag = sequence.Tag,
+                        Start = sequence.Start,
+                        End = sequence.End,
+                    };
+
+                    foreach (var child in sequence)
+                    {
+                        cleanedSequence.Add(ScrubRuntimeActionReferences(child));
+                    }
+
+                    return cleanedSequence;
+
+                default:
+                    return node.Copy();
+            }
+        }
+
+        private bool IsLiveActionEntity(EntityUid uid)
+        {
+            return _entityManager.GetComponents(uid).Any(component => component is BaseActionComponent);
+        }
+
+        private static bool IsSerializedActionEntity(EntityData entityData)
+        {
+            return entityData.Components.Any(component => ActionEntityComponentTypes.Contains(component.Type));
+        }
+
+        private ComponentData? SerializeSolutionComponent(EntityUid entityUid, SolutionContainerManagerComponent solutionManager)
         {
             try
             {
                 // Create a simplified representation of the solution data for better preservation
                 var solutionData = new Dictionary<string, object>();
 
-                foreach (var (solutionName, solution) in solutionManager.Solutions ?? new Dictionary<string, Solution>())
+                foreach (var (solutionName, solutionEntity) in _solutionContainerSystem.EnumerateSolutions((entityUid, solutionManager), includeSelf: false))
                 {
+                    if (solutionName == null)
+                        continue;
+
+                    var solution = solutionEntity.Comp.Solution;
+                    // Issue #1332: NaN/Infinity temperatures (from in-round bugs)
+                    // would otherwise be persisted into the ship save and spread on load.
+                    var safeTemperature = float.IsFinite(solution.Temperature)
+                        ? solution.Temperature
+                        : Atmospherics.T20C;
                     var solutionInfo = new Dictionary<string, object>
                     {
                         ["Volume"] = solution.Volume,
                         ["MaxVolume"] = solution.MaxVolume,
-                        ["Temperature"] = solution.Temperature,
+                        ["Temperature"] = safeTemperature,
                         ["Reagents"] = solution.Contents?.ToDictionary(
                             reagent => reagent.Reagent.Prototype,
                             reagent => (object)reagent.Quantity
@@ -2041,12 +2212,6 @@ namespace Content.Server.Shuttles.Save
                     return;
                 }
 
-                // Skip paper components - no longer preserved to reduce loading lag
-                if (componentData.Type == "PaperComponent")
-                {
-                    return;
-                }
-
                 if (string.IsNullOrEmpty(componentData.YamlData))
                     return;
 
@@ -2072,7 +2237,7 @@ namespace Content.Server.Shuttles.Save
                 }
 
                 // Deserialize the component data
-                var node = _deserializer.Deserialize<DataNode>(componentData.YamlData);
+                var node = ScrubRuntimeActionReferences(_deserializer.Deserialize<DataNode>(componentData.YamlData));
 
                 // Ensure the entity has this component
                 if (!_entityManager.HasComponent(entityUid, componentType))
@@ -2137,20 +2302,42 @@ namespace Content.Server.Shuttles.Save
 
                     try
                     {
-                        // Get or create the solution
-                        if (solutionManager.Solutions?.TryGetValue(solutionName, out var solution) != true || solution == null)
+                        var maxVolume = FixedPoint2.Zero;
+                        if (solutionInfo.TryGetValue("MaxVolume", out var maxVolObj)
+                            && TryConvertToDouble(maxVolObj, out var maxVolumeValue))
+                        {
+                            maxVolume = FixedPoint2.New(maxVolumeValue);
+                        }
+
+                        Entity<SolutionComponent>? solutionEntity = null;
+                        if (!_solutionContainerSystem.EnsureSolutionEntity((entityUid, solutionManager), solutionName, out _, out solutionEntity, maxVolume)
+                            || solutionEntity is not { } restoredSolutionEntity)
                         {
                             _sawmill.Warning($"Solution '{solutionName}' not found on entity {entityUid}");
                             continue;
                         }
 
+                        var solution = restoredSolutionEntity.Comp.Solution;
+
                         // Clear existing contents
                         solution.RemoveAllSolution();
 
-                        // Restore solution properties
-                        if (solutionInfo.TryGetValue("Temperature", out var tempObj) && tempObj is double temperature)
+                        if (maxVolume > FixedPoint2.Zero)
+                            solution.MaxVolume = maxVolume;
+
+                        // Restore solution properties.
+                        // Issue #1332: guard against NaN/Infinity sneaking in from
+                        // older ship saves and contaminating other containers.
+                        if (solutionInfo.TryGetValue("Temperature", out var tempObj)
+                            && TryConvertToDouble(tempObj, out var temperature))
                         {
-                            solution.Temperature = (float)temperature;
+                            var temperatureFloat = (float)temperature;
+                            if (!float.IsFinite(temperatureFloat))
+                            {
+                                _sawmill.Warning($"Solution '{solutionName}' on entity {entityUid} had non-finite temperature {temperatureFloat}; resetting to room temperature.");
+                                temperatureFloat = Atmospherics.T20C;
+                            }
+                            solution.Temperature = temperatureFloat;
                         }
 
                         // Restore reagents
@@ -2159,13 +2346,15 @@ namespace Content.Server.Shuttles.Save
                         {
                             foreach (var (reagentId, quantityObj) in reagents)
                             {
-                                if (quantityObj is double quantity && quantity > 0)
+                                if (TryConvertToDouble(quantityObj, out var quantity) && quantity > 0)
                                 {
                                     // Add the reagent back to the solution
                                     solution?.AddReagent(reagentId, (float)quantity);
                                 }
                             }
                         }
+
+                        _solutionContainerSystem.UpdateChemicals(restoredSolutionEntity, false);
 
                         restoredSolutions++;
                         var reagentCount = solutionInfo.ContainsKey("Reagents") &&
@@ -2187,6 +2376,40 @@ namespace Content.Server.Shuttles.Save
             catch (Exception ex)
             {
                 _sawmill.Error($"Failed to restore solution component on entity {entityUid}: {ex.Message}");
+            }
+        }
+
+        private static bool TryConvertToDouble(object? value, out double result)
+        {
+            switch (value)
+            {
+                case null:
+                    result = default;
+                    return false;
+                case double doubleValue:
+                    result = doubleValue;
+                    return true;
+                case float floatValue:
+                    result = floatValue;
+                    return true;
+                case int intValue:
+                    result = intValue;
+                    return true;
+                case long longValue:
+                    result = longValue;
+                    return true;
+                case decimal decimalValue:
+                    result = (double)decimalValue;
+                    return true;
+                case FixedPoint2 fixedPointValue:
+                    result = fixedPointValue.Double();
+                    return true;
+                case string stringValue when double.TryParse(stringValue, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed):
+                    result = parsed;
+                    return true;
+                default:
+                    result = default;
+                    return false;
             }
         }
 
@@ -2248,6 +2471,9 @@ namespace Content.Server.Shuttles.Save
                     return null;
                 }
 
+                if (IsLiveActionEntity(uid))
+                    return null;
+
                 // Get container relationship information
                 var (parentContainer, containerSlot) = GetContainerInfo(uid);
                 var isContained = parentContainer != null;
@@ -2260,6 +2486,15 @@ namespace Content.Server.Shuttles.Save
                 var position = transform.LocalPosition;
                 var rotation = transform.LocalRotation;
 
+                // Capture custom entity name if it differs from the prototype default
+                string? customName = null;
+                if (meta != null)
+                {
+                    var protoName = meta.EntityPrototype?.Name;
+                    if (!string.IsNullOrEmpty(meta.EntityName) && meta.EntityName != protoName)
+                        customName = meta.EntityName;
+                }
+
                 var entityData = new EntityData
                 {
                     EntityId = uid.ToString(),
@@ -2270,7 +2505,8 @@ namespace Content.Server.Shuttles.Save
                     ParentContainerEntity = parentContainer,
                     ContainerSlot = containerSlot,
                     IsContainer = isContainer,
-                    IsContained = isContained
+                    IsContained = isContained,
+                    EntityName = customName
                 };
 
                 return entityData;
@@ -2364,10 +2600,41 @@ namespace Content.Server.Shuttles.Save
             }
         }
 
+        /// <summary>
+        /// Re-anchors a freshly-spawned room/apartment entity. Room saves filter to
+        /// anchored-only entities and intentionally skip the TransformComponent during
+        /// serialization, which previously caused everything to load unanchored. This
+        /// call is silent on failure (some prototypes are not anchorable, e.g. NPCs
+        /// captured as anchored quirks). Should not be called for contained entities.
+        /// </summary>
+        private void TryReAnchorRoomEntity(EntityUid uid)
+        {
+            if (!_entityManager.EntityExists(uid))
+                return;
+            if (!_entityManager.TryGetComponent<TransformComponent>(uid, out var xform))
+                return;
+            if (xform.Anchored)
+                return;
+            if (xform.GridUid == null)
+                return;
+
+            try
+            {
+                _transform.AnchorEntity((uid, xform));
+            }
+            catch (Exception ex)
+            {
+                _sawmill.Debug($"Could not re-anchor room entity {uid}: {ex.Message}");
+            }
+        }
+
         private EntityUid? SpawnEntityWithComponents(EntityData entityData, EntityCoordinates coordinates, bool clearDefaultsForContainers = true)
         {
             try
             {
+                if (IsSerializedActionEntity(entityData))
+                    return null;
+
                 // Spawn the basic entity
                 var newEntity = _entityManager.SpawnEntity(entityData.Prototype, coordinates);
 
@@ -2389,10 +2656,18 @@ namespace Content.Server.Shuttles.Save
 
                     foreach (var container in containerManager.Containers.Values)
                     {
-                        if (accessReaderOnOwner != null && accessReaderOnOwner.ContainerAccessProvider == container.ID)
+                        var containerId = container.ID;
+
+                        if (accessReaderOnOwner != null && accessReaderOnOwner.ContainerAccessProvider == containerId)
+                            continue;
+                        // Preserve runtime-generated action containers; MapInit repopulates them for the spawned entity.
+                        if (containerId == ActionsContainerComponent.ContainerId)
+                            continue;
+                        // Preserve chemistry solution slots; restore logic repopulates the existing contained solution entities.
+                        if (containerId.StartsWith("solution@", StringComparison.Ordinal))
                             continue;
                         // Do not clear powered light bulb containers; ships would spawn dark.
-                        if (container.ID == Content.Server.Light.EntitySystems.PoweredLightSystem.LightBulbContainer)
+                        if (containerId == Content.Server.Light.EntitySystems.PoweredLightSystem.LightBulbContainer)
                             continue;
                         // Clear default spawned items - we'll restore saved contents later
                         var defaultItems = container.ContainedEntities.ToList();
@@ -2409,6 +2684,12 @@ namespace Content.Server.Shuttles.Save
                 if (entityData.Components.Any())
                 {
                     RestoreEntityComponents(newEntity, entityData.Components);
+                }
+
+                // Restore custom entity name
+                if (!string.IsNullOrEmpty(entityData.EntityName))
+                {
+                    _metaData.SetEntityName(newEntity, entityData.EntityName);
                 }
 
                 return newEntity;
@@ -2612,6 +2893,9 @@ namespace Content.Server.Shuttles.Save
                     _sawmill.Debug($"Skipping entity with empty prototype at {entityData.Position}");
                     continue;
                 }
+
+                if (IsSerializedActionEntity(entityData))
+                    continue;
 
                 try
                 {

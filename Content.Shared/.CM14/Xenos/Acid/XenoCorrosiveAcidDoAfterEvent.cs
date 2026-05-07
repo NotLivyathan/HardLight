@@ -11,15 +11,11 @@ public sealed partial class XenoCorrosiveAcidDoAfterEvent : DoAfterEvent
     public EntProtoId AcidId = "XenoAcid";
 
     [DataField]
-    public int PlasmaCost = 75;
-
-    [DataField]
     public TimeSpan Time = TimeSpan.FromSeconds(30);
 
     public XenoCorrosiveAcidDoAfterEvent(XenoCorrosiveAcidEvent ev)
     {
         AcidId = ev.AcidId;
-        PlasmaCost = ev.PlasmaCost;
         Time = ev.Time;
     }
 

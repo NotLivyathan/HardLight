@@ -114,7 +114,6 @@ public abstract partial class BaseActionComponent : Component
     /// This should almost always be non-null.
     /// </summary>
     [Access(typeof(ActionContainerSystem), typeof(SharedActionsSystem))]
-    [DataField]
     public EntityUid? Container;
 
     /// <summary>
@@ -136,7 +135,6 @@ public abstract partial class BaseActionComponent : Component
         set => EntIcon = value;
     }
 
-    [DataField]
     public EntityUid? EntIcon;
 
     /// <summary>
@@ -164,7 +162,7 @@ public abstract partial class BaseActionComponent : Component
     /// <summary>
     ///     What entity, if any, currently has this action in the actions component?
     /// </summary>
-    [DataField] public EntityUid? AttachedEntity;
+    public EntityUid? AttachedEntity;
 
     /// <summary>
     ///     If true, this will cause the the action event to always be raised directed at the action performer/user instead of the action's container/provider.

@@ -34,10 +34,7 @@ public sealed class StationRecordKeyStorageSystem : EntitySystem
     /// <param name="keyStorage"></param>
     public void AssignKey(EntityUid uid, StationRecordKey key, StationRecordKeyStorageComponent? keyStorage = null)
     {
-        if (!Resolve(uid, ref keyStorage))
-        {
-            return;
-        }
+        keyStorage ??= EnsureComp<StationRecordKeyStorageComponent>(uid);
 
         keyStorage.Key = key;
         Dirty(uid, keyStorage);

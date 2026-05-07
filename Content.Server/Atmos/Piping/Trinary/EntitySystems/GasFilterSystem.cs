@@ -93,6 +93,10 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
                 return;
             }
 
+            var inletAir = inletNode.Air;
+            var filterAir = filterNode.Air;
+            var outletAir = outletNode.Air;
+
             // We multiply the transfer rate in L/s by the seconds passed since the last process to get the liters.
             var transferVol = filter.TransferRate * _atmosphereSystem.PumpSpeedup() * args.dt;
 
@@ -102,7 +106,7 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
                 return;
             }
 
-            var removed = inletNode.Air.RemoveVolume(transferVol);
+            var removed = inletAir.RemoveVolume(transferVol);
 
             // Funky Station Start - Multigas Filter
             if (filter.FilterGases != null && filter.FilterGases.Count > 0)
@@ -121,13 +125,13 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
                     }
                 }
 
-                var target = filterNode.Air.Pressure < Atmospherics.MaxOutputPressure ? filterNode : inletNode;
-                _atmosphereSystem.Merge(target.Air, filteredOut);
+                var targetAir = filterAir.Pressure < Atmospherics.MaxOutputPressure ? filterAir : inletAir;
+                _atmosphereSystem.Merge(targetAir, filteredOut);
                 _ambientSoundSystem.SetAmbience(uid, hasFilteredMoles);
             }
             // Funky Station End - Multigas Filter
 
-            _atmosphereSystem.Merge(outletNode.Air, removed);
+            _atmosphereSystem.Merge(outletAir, removed);
         }
 
         private void OnFilterLeaveAtmosphere(EntityUid uid, GasFilterComponent filter, ref AtmosDeviceDisabledEvent args)

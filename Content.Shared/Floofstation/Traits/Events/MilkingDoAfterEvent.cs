@@ -7,3 +7,9 @@ namespace Content.Shared.FloofStation.Traits.Events;
 public sealed partial class MilkingDoAfterEvent : SimpleDoAfterEvent
 {
 }
+// Hardlight Start
+[Serializable, NetSerializable]
+public sealed partial class DrinkMilkDoAfterEvent : SimpleDoAfterEvent
+{
+}
+//Hardlight End

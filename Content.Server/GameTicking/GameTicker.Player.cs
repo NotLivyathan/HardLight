@@ -1,3 +1,6 @@
+using Content.Server._NF.Roles.Systems; // HardLight
+using Content.Shared._NF.CCVar; // HardLight
+using Content.Shared._NF.Roles.Components; // HardLight
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
 using Content.Shared.GameTicking;
@@ -22,6 +25,10 @@ namespace Content.Server.GameTicking
         [Dependency] private readonly IPlayerManager _playerManager = default!;
 
         private readonly Dictionary<NetUserId, System.Threading.CancellationTokenSource> _pendingMindWipes = new();
+
+        // HardLight: Per-player timers that release a tracked job slot after a short grace window
+        // following disconnect, so the lobby does not advertise an occupied slot for the full mind-wipe delay.
+        private readonly Dictionary<NetUserId, System.Threading.CancellationTokenSource> _pendingJobSlotReleases = new();
 
         private static readonly TimeSpan MindWipeDelay = TimeSpan.FromMinutes(30);
 
@@ -49,6 +56,7 @@ namespace Content.Server.GameTicking
                 case SessionStatus.Connected:
                 {
                     CancelPendingMindWipe(session.UserId);
+                    CancelPendingJobSlotRelease(session.UserId); // HardLight
 
                     AddPlayerToDb(args.Session.UserId.UserId);
 
@@ -92,6 +100,7 @@ namespace Content.Server.GameTicking
                 case SessionStatus.InGame:
                 {
                     CancelPendingMindWipe(session.UserId);
+                    CancelPendingJobSlotRelease(session.UserId); // HardLight
 
                     _userDb.ClientConnected(session);
 
@@ -141,6 +150,11 @@ namespace Content.Server.GameTicking
 
                     if (mindId != null)
                         ScheduleMindWipe(session.UserId, mindId.Value);
+
+                    // HardLight: Schedule a short-window release of the player's tracked job slot so the
+                    // lobby does not show it occupied for the full 30-minute mind-wipe delay.
+                    if (mind?.CurrentEntity is { } body)
+                        ScheduleJobSlotRelease(session.UserId, body);
 
                     _userDb.ClientDisconnected(session);
                     break;
@@ -227,6 +241,59 @@ namespace Content.Server.GameTicking
                 _pendingMindWipes.Remove(userId);
             }
         }
+
+        // HardLight begin: short-window job slot release on disconnect.
+        private void ScheduleJobSlotRelease(NetUserId userId, EntityUid body)
+        {
+            CancelPendingJobSlotRelease(userId);
+
+            var delaySeconds = _cfg.GetCVar(NFCCVars.JobSlotReleaseDelay);
+            if (delaySeconds <= 0f)
+                return;
+
+            // No need to schedule if the body has no tracked job, or it's already inactive.
+            if (!EntityManager.TryGetComponent<JobTrackingComponent>(body, out var jobTracking) || !jobTracking.Active)
+                return;
+
+            var cts = new System.Threading.CancellationTokenSource();
+            _pendingJobSlotReleases[userId] = cts;
+
+            global::Robust.Shared.Timing.Timer.Spawn(TimeSpan.FromSeconds(delaySeconds), () =>
+            {
+                if (cts.IsCancellationRequested)
+                    return;
+
+                // Only release if the player is still disconnected.
+                if (_playerManager.TryGetSessionById(userId, out var session) &&
+                    session.State.Status != SessionStatus.Disconnected)
+                {
+                    CancelPendingJobSlotRelease(userId);
+                    return;
+                }
+
+                // Re-resolve the body and component in case the mind moved (cryo, gib, ghost) while disconnected;
+                // those paths already invoke OpenJob themselves, so this would be a no-op.
+                if (EntityManager.EntityExists(body)
+                    && EntityManager.TryGetComponent<JobTrackingComponent>(body, out var currentTracking)
+                    && currentTracking.Active)
+                {
+                    EntityManager.System<JobTrackingSystem>().OpenJob((body, currentTracking), userId);
+                }
+
+                CancelPendingJobSlotRelease(userId);
+            }, cts.Token);
+        }
+
+        private void CancelPendingJobSlotRelease(NetUserId userId)
+        {
+            if (_pendingJobSlotReleases.TryGetValue(userId, out var cts))
+            {
+                cts.Cancel();
+                cts.Dispose();
+                _pendingJobSlotReleases.Remove(userId);
+            }
+        }
+        // HardLight end
 
         public HumanoidCharacterProfile GetPlayerProfile(ICommonSession p)
         {

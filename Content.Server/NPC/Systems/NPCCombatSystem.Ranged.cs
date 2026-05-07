@@ -132,6 +132,13 @@ public sealed partial class NPCCombatSystem
             }
             // End Frontier
 
+            // Frontier -- Ranged NPC miss chance
+            if (_random.Prob(comp.MissChance))
+            {
+                targetPos = targetPos + _random.NextVector2(1.0f, 2.0f);
+            }
+            // End Frontier
+
             // We'll work out the projected spot of the target and shoot there instead of where they are.
             var distance = (targetPos - worldPos).Length();
             var oldInLos = comp.TargetInLOS;

@@ -374,6 +374,8 @@
   - Hemophilia
   - UnnaturalRegen
   - NaturalRegen
+  - ShadekinRegeneration
+  - ExtremeShadekinRegeneration
   speciesBlacklist:
   - IPC
   - Avali

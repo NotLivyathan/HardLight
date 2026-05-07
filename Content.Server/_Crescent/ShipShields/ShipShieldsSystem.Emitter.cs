@@ -9,17 +9,21 @@ using Robust.Shared.Audio.Systems;
 using Content.Shared.Examine;
 using Content.Server.Explosion.Components;
 using Content.Shared.Explosion.Components;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Maths;
 
 namespace Content.Server._Crescent.ShipShields;
+
 public partial class ShipShieldsSystem
 {
     private const float MAX_EMP_DAMAGE = 10000f;
     [Dependency] private readonly TriggerSystem _trigger = default!;
-    [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     public void InitializeEmitters()
     {
         SubscribeLocalEvent<ShipShieldEmitterComponent, ShieldDeflectedEvent>(OnShieldDeflected);
+        SubscribeLocalEvent<ShipShieldEmitterComponent, ShieldHitscanDeflectedEvent>(OnShieldHitscanDeflected); // Mono - hitscan interception
         SubscribeLocalEvent<ShipShieldEmitterComponent, ExaminedEvent>(OnExamined);
         SubscribeLocalEvent<ShipShieldEmitterComponent, ComponentRemove>(OnRemoved);
         SubscribeLocalEvent<ShipShieldEmitterComponent, MapInitEvent>(OnEmitterMapInit);
@@ -27,15 +31,22 @@ public partial class ShipShieldsSystem
 
     private void OnEmitterMapInit(EntityUid uid, ShipShieldEmitterComponent component, MapInitEvent args)
     {
-        // Clean up any stale shield references from save/load
-        // The Update loop will recreate shields as needed
+        // Clean up any stale shield references and orphaned runtime shields from save/load.
+        // This guarantees a fresh spawn on the next update tick even if old shield entities
+        // were serialized in bad transform state (e.g. legacy world-origin placement).
+        var parent = Transform(uid).GridUid;
+        if (parent is null)
+            RemoveEmitterShield(uid, component);
+        else
+            RemoveEmitterShield(uid, component, parent.Value);
+
         component.Shield = null;
         component.Shielded = null;
         component.Recharging = false;
     }
 
 
-    private void OnRemoved(Entity<ShipShieldEmitterComponent> owner,ref ComponentRemove remove)
+    private void OnRemoved(Entity<ShipShieldEmitterComponent> owner, ref ComponentRemove remove)
     {
         var parent = Transform(owner.Owner).GridUid;
         if (parent is null)
@@ -55,22 +66,23 @@ public partial class ShipShieldsSystem
             _trigger.Trigger(args.Deflected);
         }
 
-        if (TryComp<ExplosiveComponent>(args.Deflected, out var exp))
+        if (TryComp<ExplosiveComponent>(args.Deflected, out var exp) && _prototypeManager.TryIndex(exp.ExplosionType, out var type))
         {
-            component.Damage += exp.TotalIntensity;
+            component.Damage += exp.TotalIntensity * (float)type.DamagePerIntensity.GetTotal();
         }
 
-        if (TryComp<ProjectileComponent>(args.Deflected, out var proj))
-        {
-            component.Damage += (float) proj.Damage.GetTotal();
-            proj.ProjectileSpent = true;
-        }
-        else if (TryComp<PhysicsComponent>(args.Deflected, out var phys))
-        {
-            component.Damage += phys.FixturesMass;
-        }
+        component.Damage += (float)args.Projectile.Damage.GetTotal();
+        args.Projectile.ProjectileSpent = true;
 
         QueueDel(args.Deflected);
+    }
+
+    /// <summary>
+    /// Handles shield emitter taking damage from an intercepted ship-weapon hitscan beam.
+    /// </summary>
+    private void OnShieldHitscanDeflected(EntityUid uid, ShipShieldEmitterComponent component, ref ShieldHitscanDeflectedEvent args)
+    {
+        component.Damage += args.Damage;
     }
 
     private void OnExamined(EntityUid uid, ShipShieldEmitterComponent component, ExaminedEvent args)
@@ -78,17 +90,40 @@ public partial class ShipShieldsSystem
         if (!args.IsInDetailsRange)
             return;
 
-        if (component.Damage == 0f)
-        {
-            args.PushMarkup(Loc.GetString("shield-emitter-examine-undamaged"));
-            return;
-        }
+        args.PushMarkup(Loc.GetString("shield-emitter-examine", ("basedraw", component.BaseDraw), ("additional", CalculateLoadDamage(component))));
+    }
 
-        var additionalLoad = (float) Math.Clamp(Math.Pow(component.Damage, component.DamageExp), 0f, component.MaxDraw);
-        var ratio = additionalLoad / component.BaseDraw;
-        ratio = (float) Math.Ceiling(ratio * 100);
+    private static float CalculateLoadDamage(ShipShieldEmitterComponent emitter)
+    {
+        return (float)Math.Clamp(Math.Pow(emitter.Damage, emitter.DamageExp) * emitter.PowerModifier, 0f, emitter.MaxDraw);
+    }
 
-        args.PushMarkup(Loc.GetString("shield-emitter-examine-damaged", ("percent", ratio)));
+    private static float CalculateNormalLoad(ShipShieldEmitterComponent emitter)
+    {
+        return emitter.BaseDraw + CalculateLoadDamage(emitter);
+    }
+
+    private static float CalculateRechargeLoad(ShipShieldEmitterComponent emitter)
+    {
+        return emitter.BaseDraw + emitter.MaxDraw;
+    }
+
+    private static float CalculateRequestedLoad(ShipShieldEmitterComponent emitter)
+    {
+        return emitter.Recharging ? CalculateRechargeLoad(emitter) : CalculateNormalLoad(emitter);
+    }
+
+    private static float CalculateRechargeMultiplier(ShipShieldEmitterComponent emitter, ApcPowerReceiverComponent receiver)
+    {
+        if (!emitter.Recharging)
+            return 1f;
+
+        var rechargeLoad = CalculateRechargeLoad(emitter);
+        if (rechargeLoad <= 0f)
+            return emitter.UnpoweredBonus;
+
+        var suppliedFraction = Math.Clamp(receiver.PowerReceived / rechargeLoad, 0f, 1f);
+        return MathHelper.Lerp(1f, emitter.UnpoweredBonus, suppliedFraction);
     }
 
     private void AdjustEmitterLoad(EntityUid uid, ShipShieldEmitterComponent? emitter = null, ApcPowerReceiverComponent? receiver = null)
@@ -96,9 +131,6 @@ public partial class ShipShieldsSystem
         if (!Resolve(uid, ref emitter, ref receiver))
             return;
 
-        /// Raise damage to the power of the growth exponent
-        var additionalLoad = (float) Math.Clamp(Math.Pow(emitter.Damage, emitter.DamageExp), 0f, emitter.MaxDraw);
-
-        receiver.Load = emitter.BaseDraw + additionalLoad;
+        receiver.Load = CalculateRequestedLoad(emitter);
     }
 }

@@ -44,7 +44,7 @@
       - id: ClothingUniformJumpsuitTacticool
       - id: ClothingOuterCoatJensen
       - id: ClothingHandsGlovesCombat
-      - id: ClothingMaskNeckGaiter
+      - id: ClothingGaiterCharcoal # HL
       - id: SyndieHandyFlag
 
 - type: entity

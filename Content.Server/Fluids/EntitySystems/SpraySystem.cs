@@ -143,7 +143,12 @@ public sealed class SpraySystem : EntitySystem
             // Spawn the vapor cloud onto the grid/map the user is present on. Offset the start position based on how far the target destination is.
             var vaporPos = userMapPos.Offset(distance < 1 ? quarter : threeQuarters);
             var vapor = Spawn(entity.Comp.SprayedPrototype, vaporPos);
-            var vaporXform = xformQuery.GetComponent(vapor);
+            if (!TryComp<TransformComponent>(vapor, out var vaporXform)
+                || !TryComp<VaporComponent>(vapor, out var vaporComponent))
+            {
+                QueueDel(vapor);
+                continue;
+            }
 
             _transform.SetWorldRotation(vaporXform, rotation);
 
@@ -154,7 +159,6 @@ public sealed class SpraySystem : EntitySystem
             }
 
             // Add the solution to the vapor and actually send the thing
-            var vaporComponent = Comp<VaporComponent>(vapor);
             var ent = (vapor, vaporComponent);
             _vapor.TryAddSolution(ent, newSolution);
 

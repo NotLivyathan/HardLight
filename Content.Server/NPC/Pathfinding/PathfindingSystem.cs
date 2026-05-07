@@ -57,6 +57,7 @@ namespace Content.Server.NPC.Pathfinding
 
         [ViewVariables]
         private readonly List<PathRequest> _pathRequests = new(PathTickLimit);
+        private readonly List<(PathRequest Request, PathResult Result)> _completedRequests = new(PathTickLimit);
 
         private static readonly TimeSpan PathTime = TimeSpan.FromMilliseconds(3);
 
@@ -75,6 +76,11 @@ namespace Content.Server.NPC.Pathfinding
         private EntityQuery<FixturesComponent> _fixturesQuery;
         private EntityQuery<MapGridComponent> _gridQuery;
         private EntityQuery<TransformComponent> _xformQuery;
+
+        // Cached so the per-tick Update doesn't allocate a fresh ParallelOptions.
+        // MaxDegreeOfParallelism is refreshed from _parallel each tick in case the
+        // CVar changed at runtime (cheap field read).
+        private readonly ParallelOptions _parallelOptions = new();
 
         public override void Initialize()
         {
@@ -104,83 +110,123 @@ namespace Content.Server.NPC.Pathfinding
         public override void Update(float frameTime)
         {
             base.Update(frameTime);
-            var options = new ParallelOptions()
-            {
-                MaxDegreeOfParallelism = _parallel.ParallelProcessCount,
-            };
+            _parallelOptions.MaxDegreeOfParallelism = _parallel.ParallelProcessCount;
+            var options = _parallelOptions;
 
             UpdateGrid(options);
             _stopwatch.Restart();
-            var amount = Math.Min(PathTickLimit, _pathRequests.Count);
-            var results = ArrayPool<PathResult>.Shared.Rent(amount);
+            _completedRequests.Clear();
 
-
-            Parallel.For(0, amount, options, i =>
+            lock (_pathRequests)
             {
-                // If we're over the limit (either time-sliced or hard cap).
-                if (_stopwatch.Elapsed >= PathTime)
-                {
-                    results[i] = PathResult.Continuing;
-                    return;
-                }
+                RemoveCancelledRequests();
 
-                var request = _pathRequests[i];
+                var amount = Math.Min(PathTickLimit, _pathRequests.Count);
 
-                try
+                if (amount > 0)
                 {
-                    switch (request)
+                    var results = ArrayPool<PathResult>.Shared.Rent(amount);
+
+                    try
                     {
-                        case AStarPathRequest astar:
-                            results[i] = UpdateAStarPath(astar);
-                            break;
-                        case BFSPathRequest bfs:
-                            results[i] = UpdateBFSPath(_random, bfs);
-                            break;
-                        default:
-                            throw new NotImplementedException();
+                        Parallel.For(0, amount, options, i =>
+                        {
+                            // If we're over the limit (either time-sliced or hard cap).
+                            if (_stopwatch.Elapsed >= PathTime)
+                            {
+                                results[i] = PathResult.Continuing;
+                                return;
+                            }
+
+                            var request = _pathRequests[i];
+
+                            try
+                            {
+                                switch (request)
+                                {
+                                    case AStarPathRequest astar:
+                                        results[i] = UpdateAStarPath(astar);
+                                        break;
+                                    case BFSPathRequest bfs:
+                                        results[i] = UpdateBFSPath(_random, bfs);
+                                        break;
+                                    default:
+                                        throw new NotImplementedException();
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                results[i] = PathResult.NoPath;
+                                throw;
+                            }
+                        });
+
+                        var offset = 0;
+
+                        // then, single-threaded cleanup.
+                        for (var i = 0; i < amount; i++)
+                        {
+                            var resultIndex = i + offset;
+                            var path = _pathRequests[resultIndex];
+                            var result = results[i];
+
+                            if (path.Task.Exception != null)
+                            {
+                                throw path.Task.Exception;
+                            }
+
+                            if (path.CancelToken.IsCancellationRequested)
+                            {
+                                result = PathResult.NoPath;
+                            }
+
+                            switch (result)
+                            {
+                                case PathResult.Continuing:
+                                    break;
+                                case PathResult.PartialPath:
+                                case PathResult.Path:
+                                case PathResult.NoPath:
+                                    // Don't use RemoveSwap because we still want to try and process them in order.
+                                    _pathRequests.RemoveAt(resultIndex);
+                                    offset--;
+                                    _completedRequests.Add((path, result));
+                                    break;
+                                default:
+                                    throw new NotImplementedException();
+                            }
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    results[i] = PathResult.NoPath;
-                    throw;
-                }
-            });
-
-            var offset = 0;
-
-            // then, single-threaded cleanup.
-            for (var i = 0; i < amount; i++)
-            {
-                var resultIndex = i + offset;
-                var path = _pathRequests[resultIndex];
-                var result = results[i];
-
-                if (path.Task.Exception != null)
-                {
-                    throw path.Task.Exception;
-                }
-
-                switch (result)
-                {
-                    case PathResult.Continuing:
-                        break;
-                    case PathResult.PartialPath:
-                    case PathResult.Path:
-                    case PathResult.NoPath:
-                        SendDebug(path);
-                        // Don't use RemoveSwap because we still want to try and process them in order.
-                        _pathRequests.RemoveAt(resultIndex);
-                        offset--;
-                        path.Tcs.SetResult(result);
-                        SendRoute(path);
-                        break;
-                    default:
-                        throw new NotImplementedException();
+                    finally
+                    {
+                        ArrayPool<PathResult>.Shared.Return(results);
+                    }
                 }
             }
 
-            ArrayPool<PathResult>.Shared.Return(results);
+            foreach (var (path, result) in _completedRequests)
+            {
+                SendDebug(path);
+                path.Tcs.TrySetResult(result);
+                SendRoute(path);
+            }
+        }
+
+        private void RemoveCancelledRequests()
+        {
+            // No point keeping canceled requests around just to burn the next tick's budget.
+            for (var i = _pathRequests.Count - 1; i >= 0; i--)
+            {
+                var request = _pathRequests[i];
+
+                if (!request.CancelToken.IsCancellationRequested)
+                {
+                    continue;
+                }
+
+                _pathRequests.RemoveAt(i);
+                _completedRequests.Add((request, PathResult.NoPath));
+            }
         }
 
         /// <summary>
@@ -357,7 +403,7 @@ namespace Content.Server.NPC.Pathfinding
             PathFlags flags = PathFlags.None)
         {
             var request = GetRequest(entity, start, end, range, cancelToken, flags);
-            return await GetPath(request, true);
+            return await GetPath(request);
         }
 
         /// <summary>
@@ -475,20 +521,17 @@ namespace Content.Server.NPC.Pathfinding
             return flags;
         }
 
-        private async Task<PathResultEvent> GetPath(
-            PathRequest request, bool safe = false)
+        private async Task<PathResultEvent> GetPath(PathRequest request)
         {
             // We could maybe try an initial quick run to avoid forcing time-slicing over ticks.
             // For now it seems okay and it shouldn't block on 1 NPC anyway.
 
-            if (safe)
+            if (request.CancelToken.IsCancellationRequested)
             {
-                lock (_pathRequests)
-                {
-                    _pathRequests.Add(request);
-                }
+                return new PathResultEvent(PathResult.NoPath, new List<PathPoly>());
             }
-            else
+
+            lock (_pathRequests)
             {
                 _pathRequests.Add(request);
             }

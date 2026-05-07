@@ -31,7 +31,6 @@ public sealed partial class VehicleHornComponent : Component
     /// <summary>
     /// The action for the horn (if any)
     /// </summary>
-    [DataField]
     [ViewVariables(VVAccess.ReadWrite)]
     public EntityUid? ActionEntity;
 }

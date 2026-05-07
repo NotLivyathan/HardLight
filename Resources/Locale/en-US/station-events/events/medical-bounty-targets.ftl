@@ -1,0 +1,1 @@
+station-event-medical-bounty-targets-start-announcement= Attention. We have detected a distress signal from a nearby shuttle and are preparing extraction of shuttle personnel. Stationside medical personnel is advised to prepare for triage at the medical rescue beacon.

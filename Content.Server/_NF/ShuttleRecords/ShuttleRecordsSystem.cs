@@ -59,6 +59,55 @@ public sealed partial class ShuttleRecordsSystem : SharedShuttleRecordsSystem
     }
 
     /**
+     * Removes a record for the given grid NetEntity, if one exists.
+     * <param name="uid">NetEntity of the shuttle grid whose record should be removed.</param>
+     * <returns>True if a record was removed.</returns>
+     */
+    public bool TryRemoveRecord(NetEntity uid)
+    {
+        if (!TryGetShuttleRecordsDataComponent(out var component))
+            return false;
+
+        if (!component.ShuttleRecords.Remove(uid))
+            return false;
+
+        RefreshStateForAll();
+        return true;
+    }
+
+    /**
+     * Drops every record whose grid no longer resolves on the server.
+     * Intended to clean up records carried forward by round persistence whose
+     * underlying grid was destroyed or never restored.
+     * <returns>The number of records pruned.</returns>
+     */
+    public int PruneOrphanedRecords()
+    {
+        if (!TryGetShuttleRecordsDataComponent(out var component))
+            return 0;
+
+        var toRemove = new List<NetEntity>();
+        foreach (var (netUid, _) in component.ShuttleRecords)
+        {
+            if (!_entityManager.TryGetEntity(netUid, out var ent)
+                || !_entityManager.EntityExists(ent.Value)
+                || Terminating(ent.Value))
+            {
+                toRemove.Add(netUid);
+            }
+        }
+
+        if (toRemove.Count == 0)
+            return 0;
+
+        foreach (var netUid in toRemove)
+            component.ShuttleRecords.Remove(netUid);
+
+        RefreshStateForAll();
+        return toRemove.Count;
+    }
+
+    /**
      * Edits an existing record if one exists for the given entity
      * <param name="record">The record to add.</param>
      */

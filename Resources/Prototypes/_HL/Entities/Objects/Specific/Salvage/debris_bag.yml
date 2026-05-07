@@ -1,0 +1,82 @@
+- type: entity
+  parent: ConstructionBag
+  id: DebrisBag
+  name: debris bag
+  description: A robust bag for carrying refuse and recyclable materials. Magnetises nearby trash when attached to a belt.
+  components:
+  - type: Storage
+    quickInsert: true
+    areaInsert: true
+    whitelist:
+      tags:
+      - Recyclable
+      - Trash
+    grid:
+    - 0,0,19,9
+    maxItemSize: Huge
+  - type: Sprite
+    sprite: _HL/Objects/Specific/Salvage/debris_bag.rsi
+    layers:
+    - state: icon
+  - type: Item
+    size: Small
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Clothing
+    sprite: _HL/Objects/Specific/Salvage/debris_bag.rsi
+    quickEquip: false
+    slots:
+    - belt
+    clothingVisuals:
+      belt:
+      - state: equipped-BELT
+
+- type: entity
+  parent: DebrisBag
+  id: DebrisBagOfHolding
+  name: debris bag of holding
+  description: A bag of holding for salvage specialists that can carry large amounts of trash and recyclables. Magnetises nearby trash when attached to a belt.
+  components:
+  - type: MagnetPickup
+    range: 2
+  - type: Sprite
+    sprite: _HL/Objects/Specific/Salvage/debris_bag.rsi
+    layers:
+    - state: icon
+    - state: icon-bluespace-overlay
+    - state: icon-bluespace-overlay-unshaded
+      shader: unshaded
+    - state: icon-on-bluespace
+      visible: false
+      map: [ "enum.ToggleVisuals.Layer" ]
+  - type: Item
+    size: Small
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      - state: inhand-left-bluespace-overlay
+      - state: inhand-left-bluespace-overlay-unshaded
+        shader: unshaded
+      right:
+      - state: inhand-right
+      - state: inhand-right-bluespace-overlay
+      - state: inhand-right-bluespace-overlay-unshaded
+        shader: unshaded
+  - type: Clothing
+    sprite: _NF/Objects/Specific/Engineering/construction_bag.rsi
+    quickEquip: false
+    slots:
+    - belt
+    clothingVisuals:
+      belt:
+      - state: equipped-BELT
+      - state: equipped-BELT-bluespace-overlay
+      - state: equipped-BELT-bluespace-overlay-unshaded
+        shader: unshaded
+  - type: Storage
+    grid:
+    - 0,0,25,20
+    maxItemSize: Huge

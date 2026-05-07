@@ -20,7 +20,7 @@ public sealed partial class SubdermalImplantComponent : Component
     [DataField("implantAction")]
     public EntProtoId? ImplantAction;
 
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public EntityUid? Action;
 
     /// <summary>

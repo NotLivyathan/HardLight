@@ -9,6 +9,7 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Client.Shuttles.UI;
 
@@ -16,6 +17,7 @@ namespace Content.Client.Shuttles.UI;
 public sealed partial class NavScreen : BoxContainer
 {
     [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private readonly IGameTiming _gameTiming = default!; // HL
     private SharedTransformSystem _xformSystem;
 
     private EntityUid? _consoleEntity; // Entity of controlling console
@@ -23,6 +25,7 @@ public sealed partial class NavScreen : BoxContainer
 
     public event Action? ActivateExpeditionDisk;
     public event Action? EndExpedition;
+    public event Action? ActivateWEP; // HL
 
     public NavScreen()
     {
@@ -41,6 +44,7 @@ public sealed partial class NavScreen : BoxContainer
 
         ExpeditionDiskActivate.OnPressed += _ => ActivateExpeditionDisk?.Invoke();
         ExpeditionEnd.OnPressed += _ => EndExpedition?.Invoke();
+        WEPButton.OnPressed += _ => ActivateWEP?.Invoke(); // HL
 
         NfInitialize(); // Frontier Initialization for the NavScreen
     }
@@ -116,12 +120,37 @@ public sealed partial class NavScreen : BoxContainer
         args.Button.Pressed = NavRadar.ShowDocks;
     }
 
-    public void UpdateState(NavInterfaceState scc, ExpeditionDiskInterfaceState expeditionDiskState)
+    public void UpdateState(NavInterfaceState scc, ExpeditionDiskInterfaceState expeditionDiskState,
+        bool wepActive = false, TimeSpan wepCooldownExpiry = default) // HL
     {
         NavRadar.UpdateState(scc);
         UpdateExpeditionDisk(expeditionDiskState);
+        UpdateWEPButton(wepActive, wepCooldownExpiry); // HL
         NfUpdateState(); // Frontier Update State
     }
+
+    // HL
+    private void UpdateWEPButton(bool wepActive, TimeSpan wepCooldownExpiry)
+    {
+        var now = _gameTiming.CurTime;
+
+        if (wepActive)
+        {
+            WEPButton.Disabled = true;
+            WEPButton.Text = Loc.GetString("shuttle-console-wep-active");
+        }
+        else if (wepCooldownExpiry > now)
+        {
+            WEPButton.Disabled = true;
+            WEPButton.Text = Loc.GetString("shuttle-console-wep-cooldown");
+        }
+        else
+        {
+            WEPButton.Disabled = false;
+            WEPButton.Text = Loc.GetString("shuttle-console-wep-activate");
+        }
+    }
+    // End HL
 
     private void UpdateExpeditionDisk(ExpeditionDiskInterfaceState state)
     {

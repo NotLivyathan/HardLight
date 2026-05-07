@@ -126,45 +126,55 @@ namespace Content.Client.Lobby
             Preferences = message.Preferences;
             Settings = message.Settings;
 
-            // Check if any character profiles have invalid companies and fix them
-            if (Preferences != null)
+            // HardLight: Check if any character profiles have invalid companies and fix them.
+            // Wrapped in try/catch so a prototype lookup failure can NEVER prevent
+            // OnServerDataLoaded from firing -- otherwise the character editor stays
+            // empty until the client is restarted (see character setup loading race).
+            try
             {
-                var protoManager = IoCManager.Resolve<IPrototypeManager>();
-                var needsUpdate = false;
-                var characters = new Dictionary<int, ICharacterProfile>();
-
-                foreach (var (slot, profile) in Preferences.Characters)
+                if (Preferences != null)
                 {
-                    var updatedProfile = profile;
+                    var protoManager = IoCManager.Resolve<IPrototypeManager>();
+                    var needsUpdate = false;
+                    var characters = new Dictionary<int, ICharacterProfile>();
 
-                    if (profile is HumanoidCharacterProfile humanoidProfile &&
-                        !string.IsNullOrEmpty(humanoidProfile.Company) &&
-                        humanoidProfile.Company != "None" &&
-                        !protoManager.HasIndex<CompanyPrototype>(humanoidProfile.Company))
+                    foreach (var (slot, profile) in Preferences.Characters)
                     {
-                        updatedProfile = humanoidProfile.WithCompany("None");
-                        needsUpdate = true;
-                    }
+                        var updatedProfile = profile;
 
-                    characters[slot] = updatedProfile;
-                }
-
-                if (needsUpdate)
-                {
-                    Preferences = new PlayerPreferences(characters, Preferences.SelectedCharacterIndex, Preferences.AdminOOCColor);
-
-                    // Update the selected character on the server if needed
-                    var selectedIndex = Preferences.SelectedCharacterIndex;
-                    if (characters.TryGetValue(selectedIndex, out var selectedProfile))
-                    {
-                        var msg = new MsgUpdateCharacter
+                        if (profile is HumanoidCharacterProfile humanoidProfile &&
+                            !string.IsNullOrEmpty(humanoidProfile.Company) &&
+                            humanoidProfile.Company != "None" &&
+                            !protoManager.HasIndex<CompanyPrototype>(humanoidProfile.Company))
                         {
-                            Profile = selectedProfile,
-                            Slot = selectedIndex
-                        };
-                        _netManager.ClientSendMessage(msg);
+                            updatedProfile = humanoidProfile.WithCompany("None");
+                            needsUpdate = true;
+                        }
+
+                        characters[slot] = updatedProfile;
+                    }
+
+                    if (needsUpdate)
+                    {
+                        Preferences = new PlayerPreferences(characters, Preferences.SelectedCharacterIndex, Preferences.AdminOOCColor);
+
+                        // Update the selected character on the server if needed
+                        var selectedIndex = Preferences.SelectedCharacterIndex;
+                        if (characters.TryGetValue(selectedIndex, out var selectedProfile))
+                        {
+                            var msg = new MsgUpdateCharacter
+                            {
+                                Profile = selectedProfile,
+                                Slot = selectedIndex
+                            };
+                            _netManager.ClientSendMessage(msg);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.GetSawmill("preferences").Error($"Error validating character companies on preferences load: {e}");
             }
 
             OnServerDataLoaded?.Invoke();

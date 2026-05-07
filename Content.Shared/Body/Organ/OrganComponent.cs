@@ -20,7 +20,6 @@ public sealed partial class OrganComponent : Component, ISurgeryToolComponent //
     ///     Shitmed Change:Relevant body this organ originally belonged to.
     ///     FOR WHATEVER FUCKING REASON AUTONETWORKING THIS CRASHES GIBTEST AAAAAAAAAAAAAAA
     /// </summary>
-    [DataField]
     public EntityUid? OriginalBody;
 
     // Shitmed Change Start

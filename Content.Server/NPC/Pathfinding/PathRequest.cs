@@ -13,6 +13,7 @@ namespace Content.Server.NPC.Pathfinding;
 public abstract class PathRequest
 {
     public EntityCoordinates Start;
+    public readonly CancellationToken CancelToken;
 
     public Task<PathResult> Task => Tcs.Task;
     public readonly TaskCompletionSource<PathResult> Tcs;
@@ -44,7 +45,8 @@ public abstract class PathRequest
         Flags = flags;
         CollisionLayer = layer;
         CollisionMask = mask;
-        Tcs = new TaskCompletionSource<PathResult>(cancelToken);
+        CancelToken = cancelToken;
+        Tcs = new TaskCompletionSource<PathResult>();
     }
 }
 

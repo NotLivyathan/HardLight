@@ -1,25 +1,24 @@
-using Robust.Shared.Map;
-using Robust.Shared.Physics.Systems;
-using System.Numerics;
 using Content.Server._Mono.FireControl;
+using Content.Shared._Mono.Radar;
+using Content.Shared.Weapons.Hitscan.Components;
+using Content.Shared.Weapons.Ranged.Events;
+using Robust.Server.GameObjects;
+using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using Content.Shared.Weapons.Ranged;
+using System.Numerics;
 
 namespace Content.Server._Mono.Radar;
 
 /// <summary>
-/// System that handles radar visualization for hitscan projectiles
+/// Tracks transient hitscan radar signatures and shares them with clients.
 /// </summary>
 public sealed partial class HitscanRadarSystem : EntitySystem
 {
-    [Dependency] private readonly IMapManager _mapManager = default!;
-    [Dependency] private readonly RadarBlipSystem _radarBlipSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    // Dictionary to track entities that should be deleted after a specific time
-    private readonly Dictionary<EntityUid, TimeSpan> _pendingDeletions = new();
+    private readonly Dictionary<HitscanNetData, TimeSpan> _activeHitscans = new();
 
     /// <summary>
     /// Event raised before firing the effects for a hitscan projectile.
@@ -31,15 +30,17 @@ public sealed partial class HitscanRadarSystem : EntitySystem
         public Angle Angle { get; }
         public HitscanPrototype Hitscan { get; }
         public EntityUid? HitEntity { get; }
+        public EntityUid? Gun { get; }
         public EntityUid? Shooter { get; }
 
-        public HitscanFireEffectEvent(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? shooter = null)
+        public HitscanFireEffectEvent(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? gun = null, EntityUid? shooter = null)
         {
             FromCoordinates = fromCoordinates;
             Distance = distance;
             Angle = angle;
             Hitscan = hitscan;
             HitEntity = hitEntity;
+            Gun = gun;
             Shooter = shooter;
         }
     }
@@ -48,77 +49,89 @@ public sealed partial class HitscanRadarSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<HitscanFireEffectEvent>(OnHitscanEffect);
-        SubscribeLocalEvent<HitscanRadarComponent, ComponentShutdown>(OnHitscanRadarShutdown);
+        SubscribeLocalEvent<HitscanRadarSignatureComponent, HitscanRaycastFiredEvent>(OnSignatureHitscanFired);
     }
 
     private void OnHitscanEffect(HitscanFireEffectEvent ev)
     {
-        if (ev.Shooter == null)
+        if (ev.Gun == null || !HasComp<FireControllableComponent>(ev.Gun.Value))
             return;
 
-        // Only create hitscan radar blips for entities with FireControllable component
-        if (!HasComp<FireControllableComponent>(ev.Shooter.Value))
-            return;
-
-        // Create a new entity for the hitscan radar visualization
-        // Use the shooter's position to spawn the entity
-        var shooterCoords = new EntityCoordinates(ev.Shooter.Value, Vector2.Zero);
-        var uid = Spawn(null, shooterCoords);
-
-        // Add the hitscan radar component
-        var hitscanRadar = EnsureComp<HitscanRadarComponent>(uid);
-
-        // Determine start position using proper coordinate transformation
         var startPos = _transform.ToMapCoordinates(ev.FromCoordinates).Position;
-
-        // Compute end position in map space (world coordinates)
         var dir = ev.Angle.ToVec().Normalized();
         var endPos = startPos + dir * ev.Distance;
 
-        // Set the origin grid if available
-        hitscanRadar.OriginGrid = Transform(ev.Shooter.Value).GridUid;
+        // HardLight: defaults sized so player ship lasers (which lack a
+        // HitscanRadar/Signature config block) actually render on the
+        // gunnery console radar instead of being a 1-pixel magenta line
+        // visible for a single client poll. Cyan + 2px + 1.0s matches the
+        // visibility of kinetic projectile RadarBlips.
+        var color = Color.Cyan;
+        var thickness = 2.0f;
+        var lifeTime = 1.0f;
 
-        // Set the start and end coordinates
-        hitscanRadar.StartPosition = startPos;
-        hitscanRadar.EndPosition = endPos;
+        if (TryComp<HitscanRadarComponent>(ev.Gun.Value, out var shooterHitscanRadar))
+        {
+            color = shooterHitscanRadar.RadarColor;
+            thickness = shooterHitscanRadar.LineThickness;
+            lifeTime = shooterHitscanRadar.LifeTime;
+        }
+        else if (TryComp<HitscanRadarSignatureComponent>(ev.Gun.Value, out var signature))
+        {
+            color = signature.RadarColor ?? Color.Red;
+            thickness = 2f;
+            lifeTime = signature.LifeTime > 0f ? signature.LifeTime : 0.5f;
+        }
 
-        // Inherit component settings from the shooter entity
-        InheritShooterSettings(ev.Shooter.Value, hitscanRadar, ev.Hitscan);
+        if (!TryCreateHitscanData(startPos, endPos, Transform(ev.Gun.Value).GridUid, thickness, color, out var hitscan))
+            return;
 
-        // Schedule entity for deletion after its lifetime expires
-        var deleteTime = _timing.CurTime + TimeSpan.FromSeconds(hitscanRadar.LifeTime);
-        _pendingDeletions[uid] = deleteTime;
+        QueueHitscan(hitscan, TimeSpan.FromSeconds(lifeTime));
     }
 
-    /// <summary>
-    /// Inherits radar settings from the shooter entity if available
-    /// </summary>
-    private void InheritShooterSettings(EntityUid shooter, HitscanRadarComponent hitscanRadar, HitscanPrototype hitscan)
+    private void OnSignatureHitscanFired(EntityUid uid, HitscanRadarSignatureComponent component, ref HitscanRaycastFiredEvent args)
     {
-        // Try to inherit from shooter's existing HitscanRadarComponent if present
-        if (TryComp<HitscanRadarComponent>(shooter, out var shooterHitscanRadar))
-        {
-            hitscanRadar.RadarColor = shooterHitscanRadar.RadarColor;
-            hitscanRadar.LineThickness = shooterHitscanRadar.LineThickness;
-            hitscanRadar.Enabled = shooterHitscanRadar.Enabled;
-            hitscanRadar.LifeTime = shooterHitscanRadar.LifeTime;
-        }
-    }
+        if (args.Canceled || args.Gun == null)
+            return;
 
-    private void OnHitscanRadarShutdown(Entity<HitscanRadarComponent> ent, ref ComponentShutdown args)
-    {
-        // Only delete the entity if it's a temporary hitscan trail entity (tracked in _pendingDeletions)
-        // Don't delete legitimate entities that have the component added manually
-        if (_pendingDeletions.ContainsKey(ent))
+        if (HasComp<FireControllableComponent>(args.Gun.Value))
+            return;
+
+        if (!TryComp<TransformComponent>(args.Gun.Value, out var gunXform) || !gunXform.MapUid.HasValue)
+            return;
+
+        var startPos = _transform.GetMapCoordinates(args.Gun.Value).Position;
+
+        Vector2 endPos;
+        if (args.HitEntity != null)
         {
-            // This is a temporary hitscan trail entity, safe to delete
-            QueueDel(ent);
-            _pendingDeletions.Remove(ent);
+            endPos = _transform.GetMapCoordinates(args.HitEntity.Value).Position;
         }
-        // For legitimate entities, just remove from pending deletions if present (shouldn't be there anyway)
         else
         {
-            _pendingDeletions.Remove(ent);
+            var worldRot = _transform.GetWorldRotation(args.Gun.Value);
+            var direction = worldRot.ToWorldVec();
+            const float maxLength = 45f;
+            endPos = startPos + direction * maxLength;
+        }
+
+        var color = component.RadarColor ?? Color.Red;
+        var lifeTime = component.LifeTime > 0f ? component.LifeTime : 0.5f;
+
+        if (!TryCreateHitscanData(startPos, endPos, gunXform.GridUid, 2f, color, out var hitscan))
+            return;
+
+        QueueHitscan(hitscan, TimeSpan.FromSeconds(lifeTime));
+    }
+
+    public void CopyVisibleHitscans(List<Vector2> sourcePositions, float radarRange, List<HitscanNetData> destination)
+    {
+        var radarRangeSq = radarRange * radarRange;
+
+        foreach (var hitscan in _activeHitscans.Keys)
+        {
+            if (IsHitscanVisible(hitscan, sourcePositions, radarRangeSq))
+                destination.Add(hitscan);
         }
     }
 
@@ -126,26 +139,93 @@ public sealed partial class HitscanRadarSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        // Handle pending deletions
-        if (_pendingDeletions.Count > 0)
+        if (_activeHitscans.Count == 0)
+            return;
+
+        var currentTime = _timing.CurTime;
+        List<HitscanNetData>? expiredHitscans = null;
+
+        foreach (var (hitscan, deleteTime) in _activeHitscans)
         {
-            var currentTime = _timing.CurTime;
-            var toRemove = new List<EntityUid>();
+            if (currentTime < deleteTime)
+                continue;
 
-            foreach (var (entity, deleteTime) in _pendingDeletions)
-            {
-                if (currentTime >= deleteTime)
-                {
-                    if (!Deleted(entity))
-                        QueueDel(entity);
-                    toRemove.Add(entity);
-                }
-            }
-
-            foreach (var entity in toRemove)
-            {
-                _pendingDeletions.Remove(entity);
-            }
+            expiredHitscans ??= new List<HitscanNetData>();
+            expiredHitscans.Add(hitscan);
         }
+
+        if (expiredHitscans == null)
+            return;
+
+        foreach (var hitscan in expiredHitscans)
+        {
+            _activeHitscans.Remove(hitscan);
+        }
+    }
+
+    private void QueueHitscan(HitscanNetData hitscan, TimeSpan lifeTime)
+    {
+        _activeHitscans[hitscan] = _timing.CurTime + lifeTime;
+    }
+
+    private bool IsHitscanVisible(HitscanNetData hitscan, List<Vector2> sourcePositions, float radarRangeSq)
+    {
+        if (hitscan.Grid == null)
+        {
+            return IsSegmentNearAnySource(hitscan.Start, hitscan.End, sourcePositions, radarRangeSq);
+        }
+
+        if (!TryGetEntity(hitscan.Grid, out var gridEntity))
+            return false;
+
+        var worldPos = _transform.GetWorldPosition(gridEntity.Value);
+        var gridRot = _transform.GetWorldRotation(gridEntity.Value);
+        var worldStart = worldPos + gridRot.RotateVec(hitscan.Start);
+        var worldEnd = worldPos + gridRot.RotateVec(hitscan.End);
+
+        return IsSegmentNearAnySource(worldStart, worldEnd, sourcePositions, radarRangeSq);
+    }
+
+    // Mono: check the full line segment, not just endpoints, so crossing beams stay visible.
+    private static bool IsSegmentNearAnySource(Vector2 start, Vector2 end, List<Vector2> sourcePositions, float radarRangeSq)
+    {
+        foreach (var sourcePosition in sourcePositions)
+        {
+            if (DistanceSquaredToSegment(sourcePosition, start, end) <= radarRangeSq)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static float DistanceSquaredToSegment(Vector2 point, Vector2 start, Vector2 end)
+    {
+        var segment = end - start;
+        var lengthSquared = segment.LengthSquared();
+
+        if (lengthSquared <= float.Epsilon)
+            return Vector2.DistanceSquared(point, start);
+
+        var t = Vector2.Dot(point - start, segment) / lengthSquared;
+        t = Math.Clamp(t, 0f, 1f);
+        var closestPoint = start + segment * t;
+        return Vector2.DistanceSquared(point, closestPoint);
+    }
+
+    private bool TryCreateHitscanData(Vector2 startPos, Vector2 endPos, EntityUid? originGrid, float thickness, Color color, out HitscanNetData hitscan)
+    {
+        if (originGrid != null && originGrid.Value.IsValid())
+        {
+            var gridMatrix = _transform.GetWorldMatrix(originGrid.Value);
+            Matrix3x2.Invert(gridMatrix, out var invGridMatrix);
+
+            var localStart = Vector2.Transform(startPos, invGridMatrix);
+            var localEnd = Vector2.Transform(endPos, invGridMatrix);
+            hitscan = new HitscanNetData(GetNetEntity(originGrid.Value), localStart, localEnd, thickness, color);
+            return true;
+        }
+
+        hitscan = new HitscanNetData(null, startPos, endPos, thickness, color);
+        return true;
     }
 }

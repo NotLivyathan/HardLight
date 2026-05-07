@@ -1,0 +1,6 @@
+- type: ghostRole
+  id: BabyDinosaur
+  name: ghost-role-information-baby-dino-name
+  description: ghost-role-information-baby-dino-description
+  rules: ghost-role-information-baby-dino-rules
+  entityPrototype: DinosaurEggSentient 

@@ -69,7 +69,7 @@ public sealed class PullingSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     // Goobstation start
     [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly StaminaSystem _stamina = default!;
+    [Dependency] private readonly SharedStaminaSystem _stamina = default!; // HardLight: StaminSystem<SharedStaminaSystem
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly INetManager _netManager = default!;
@@ -394,15 +394,20 @@ public sealed class PullingSystem : EntitySystem
         if (!ent.Comp.BeingPulled)
             return;
 
+        // Hardlight - Only attempt escape on actual directional movement, so grabs don't break when 'walking' by default using the shift key, which conflits with other actions.
+        if (!args.HasDirectionalMovement)
+            return;
+
         var entity = args.Entity;
 
-        if (ent.Comp.GrabStage == GrabStage.Soft)
-            TryStopPull(ent, ent, ent);
+        if (ent.Comp.GrabStage != GrabStage.No)
+            TryStopPull(ent, ent, user: ent);
 
         if (!_blocker.CanMove(entity))
             return;
 
-        TryStopPull(ent, ent, user: ent);
+        if (ent.Comp.GrabStage == GrabStage.No)
+            TryStopPull(ent, ent, user: ent);
     }
     // Goobstation
 

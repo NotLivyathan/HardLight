@@ -19,3 +19,54 @@
       sprite: _Starlight/Clothing/Neck/Cloaks/shuba.rsi
     - type: Clothing
       sprite: _Starlight/Clothing/Neck/Cloaks/shuba.rsi
+
+- type: entity
+  parent: [ ClothingNeckBase ]
+  id: ClothingNeckCloakBsoElite
+  name: elite blueshield cloak
+  description: An elite Blueshield Officer's cloak crafted from the latest composite glowing fabric. No true BSO is afraid of shining in the dark!
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Neck/Cloaks/bso_elite.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+  - type: PointLight
+    radius: 2
+    energy: 4
+    color: "#84BEF4"
+  - type: StaticPrice
+    price: 2000
+
+- type: entity
+  parent: [ ClothingNeckBase ]
+  id: ClothingNeckCloakBsoCape
+  name: blueshield formal cloak
+  description: An incredibly large coat, owned only by the most experienced Blueshield Officers. It's said the sleeves have never been worn.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Neck/Cloaks/bso_formal.rsi
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+  - type: Clothing
+    slots:
+      - neck
+
+- type: entity
+  parent: [ ClothingNeckBase ]
+  id: ClothingNeckCloakBsoPoncho
+  name: blueshield poncho
+  description: This type of poncho was the signature garment of a legendary BSO with no name, or so it is said.
+  components:
+  - type: Sprite
+    sprite: _Starlight/Clothing/Neck/Cloaks/bso_poncho
+  - type: Tag
+    tags:
+      - ClothMade
+      - WhitelistChameleon
+  - type: Clothing
+    slots:
+      - neck

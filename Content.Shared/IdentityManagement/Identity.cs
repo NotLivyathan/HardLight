@@ -55,13 +55,19 @@ public static class Identity
     /// </param>
     public static EntityUid Entity(EntityUid uid, IEntityManager ent, EntityUid? viewer = null)
     {
+        if (!uid.IsValid() || !ent.TryGetComponent(uid, out MetaDataComponent? meta))
+            return uid;
+
+        if (meta.EntityLifeStage <= EntityLifeStage.Initializing)
+            return uid;
+
         if (!ent.TryGetComponent<IdentityComponent>(uid, out var identity))
             return uid;
 
         if (viewer != null && CanSeeThroughIdentity(uid, viewer.Value, ent))
             return uid;
 
-        return identity.IdentityEntitySlot.ContainedEntity ?? uid;
+        return identity.IdentityEntitySlot?.ContainedEntity ?? uid;
     }
 
     public static bool CanSeeThroughIdentity(EntityUid uid, EntityUid viewer, IEntityManager ent)

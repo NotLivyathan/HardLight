@@ -160,3 +160,16 @@
   parent: [ClothingHeadsetCommon, ClothingHeadsetAltColCom]
   id: ClothingHeadsetAltColComCommon
 #  categories: [ HideSpawnMenu ]
+
+# HL/Coyote start
+- type: entity
+  parent: ClothingHeadsetAlt
+  id: ClothingHeadsetAltArcadiaAlt # alt alt...
+  name: alternative arcadia over-ear headset
+  description: A dashing and attractive headset, now in an alternative style.
+  components:
+  - type: Sprite
+    sprite: _NF/Clothing/Ears/Headsets/arcadia.rsi
+  - type: Clothing
+    sprite: _NF/Clothing/Ears/Headsets/arcadia.rsi
+# HL/Coyote end

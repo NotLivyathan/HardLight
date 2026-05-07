@@ -7,7 +7,7 @@ namespace Content.Shared.Movement.Components;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class JetpackComponent : Component
 {
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public EntityUid? JetpackUser;
 
     [ViewVariables(VVAccess.ReadWrite), DataField("moleUsage")]
@@ -15,7 +15,7 @@ public sealed partial class JetpackComponent : Component
 
     [DataField] public EntProtoId ToggleAction = "ActionToggleJetpack";
 
-    [DataField] public EntityUid? ToggleActionEntity;
+    public EntityUid? ToggleActionEntity;
 
     [ViewVariables(VVAccess.ReadWrite), DataField("acceleration")]
     public float Acceleration = 1f;

@@ -1,0 +1,21 @@
+- type: entity
+  parent: ClothingWalletLeatherBlack
+  id: ClothingWalletLeatherBlackMagnet
+  name: magnetic bluespace wallet
+  description: A leather wallet modified with a small magnetizer to attract nearby small metallic items. Enhanced with bluespace for extra storage.
+  components:
+  - type: MagnetPickup
+    magnetEnabled: false
+    magnetCanBeEnabled: true
+  - type: Storage
+    grid:
+    - 0,0,4,2
+    maxItemSize: Small
+    whitelist:
+      components:
+      - Cash
+      - Paper
+      - NFCoin
+      - NFShipyardVoucher
+      - Card # single cards
+      - NFEmagPass

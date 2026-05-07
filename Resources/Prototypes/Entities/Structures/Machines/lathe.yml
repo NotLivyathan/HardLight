@@ -423,6 +423,7 @@
     #- VisionGoggles
     # WD EDIT END
     - ShuttleWeaponMaterials # HL
+    - HLBags # HL: HardLight bag recipes
   - type: EmagLatheRecipes
     emagDynamicPacks:
     - AdvancedAmmoRecipePack
@@ -1105,6 +1106,7 @@
     - NFFloorsMiscStatic # Frontier
     - NFFloorTiles # Frontier
     - NFFloorTilesCarpet # Frontier
+    - FloorTilesStaticSL
     dynamicPacks: # Frontier
     - FauxTiles # Frontier
   - type: EmagLatheRecipes # Frontier

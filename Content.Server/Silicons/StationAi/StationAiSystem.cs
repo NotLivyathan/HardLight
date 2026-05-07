@@ -361,7 +361,7 @@ public sealed class StationAiSystem : SharedStationAiSystem
             if (range < 0 || range > ev.VoiceRange)
                 continue;
 
-            ev.Recipients.TryAdd(actor.PlayerSession, new ICChatRecipientData(range, false));
+            ev.Recipients.TryAdd(actor.PlayerSession, new ICChatRecipientData(range, ObserverType.NoObserver));
         }
     }
 

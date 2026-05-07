@@ -13,6 +13,7 @@ public sealed class ArtifactMusicTriggerSystem : EntitySystem
     [Dependency] private readonly ArtifactSystem _artifact = default!;
 
     private readonly List<Entity<ArtifactMusicTriggerComponent, TransformComponent>> _artifacts = new();
+    private readonly HashSet<EntityUid> _toActivate = new();
 
     public override void Update(float frameTime)
     {
@@ -25,10 +26,10 @@ public sealed class ArtifactMusicTriggerSystem : EntitySystem
             _artifacts.Add((uid, trigger, xform));
         }
 
-        if (!_artifacts.Any())
+        if (_artifacts.Count == 0)
             return;
 
-        List<EntityUid> toActivate = new();
+        _toActivate.Clear();
         var query = EntityQueryEnumerator<ActiveInstrumentComponent, TransformComponent>();
 
         //assume that there's more instruments than artifacts
@@ -36,17 +37,23 @@ public sealed class ArtifactMusicTriggerSystem : EntitySystem
         {
             foreach (var (uid, trigger, xform) in _artifacts)
             {
+                // Already queued from a different instrument this tick; skip the distance check.
+                // Multiple instruments near the same artifact would otherwise call
+                // TryActivateArtifact repeatedly, which the cooldown ignores anyway.
+                if (_toActivate.Contains(uid))
+                    continue;
+
                 if (!instXform.Coordinates.TryDistance(EntityManager, xform.Coordinates, out var distance))
                     continue;
 
                 if (distance > trigger.Range)
                     continue;
 
-                toActivate.Add(uid);
+                _toActivate.Add(uid);
             }
         }
 
-        foreach (var a in toActivate)
+        foreach (var a in _toActivate)
         {
             _artifact.TryActivateArtifact(a);
         }

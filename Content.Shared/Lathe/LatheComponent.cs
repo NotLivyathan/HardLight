@@ -3,7 +3,9 @@ using Content.Shared.Lathe.Prototypes;
 using Content.Shared.Research.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
+using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared.Lathe
 {
@@ -147,16 +149,28 @@ namespace Content.Shared.Lathe
     }
 
     // Frontier: batch lathe recipes
-    [Serializable]
+    [DataDefinition, Serializable, NetSerializable]
     public sealed partial class LatheRecipeBatch : EntityEventArgs
     {
-        public LatheRecipePrototype Recipe;
+        [DataField("recipe")]
+        public ProtoId<LatheRecipePrototype> RecipeId;
+
+        [DataField]
         public int ItemsPrinted;
+
+        [DataField]
         public int ItemsRequested;
+
+        public LatheRecipePrototype Recipe => IoCManager.Resolve<IPrototypeManager>().Index(RecipeId);
+
+        public LatheRecipeBatch()
+        {
+            RecipeId = default!;
+        }
 
         public LatheRecipeBatch(LatheRecipePrototype recipe, int itemsPrinted, int itemsRequested)
         {
-            Recipe = recipe;
+            RecipeId = recipe.ID;
             ItemsPrinted = itemsPrinted;
             ItemsRequested = itemsRequested;
         }

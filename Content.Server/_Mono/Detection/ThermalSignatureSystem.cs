@@ -13,6 +13,7 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Systems;
 using Robust.Shared.Map.Components;
 using System;
+using System.Collections.Generic;
 
 namespace Content.Server._Mono.Detection;
 
@@ -28,6 +29,14 @@ public sealed class ThermalSignatureSystem : EntitySystem
     private EntityQuery<MapGridComponent> _gridQuery;
     private EntityQuery<ThermalSignatureComponent> _sigQuery;
     private EntityQuery<GunComponent> _gunQuery;
+    private readonly Dictionary<EntityUid, float> _gridHeatAccumulator = new();
+    private readonly HashSet<EntityUid> _dirtyGrids = new();
+    // Last value we actually networked per grid. Used to skip Dirty() when the
+    // per-tick change is below an audible threshold for radar UI, since the
+    // half-second cadence × dozens of grids was generating large amounts of
+    // network churn from negligible heat-decay deltas.
+    private readonly Dictionary<EntityUid, float> _lastDirtiedHeat = new();
+    private const float DirtyHeatEpsilon = 0.5f;
 
     public override void Initialize()
     {
@@ -93,16 +102,20 @@ public sealed class ThermalSignatureSystem : EntitySystem
         _updateAccumulator -= _updateInterval;
 
         var interval = (float)_updateInterval.TotalSeconds;
+        _gridHeatAccumulator.Clear();
+        _dirtyGrids.Clear();
 
-        var gridQuery = EntityQueryEnumerator<MapGridComponent>();
-        while (gridQuery.MoveNext(out var uid, out _))
+        var gridQuery = EntityQueryEnumerator<MapGridComponent, ThermalSignatureComponent>();
+        while (gridQuery.MoveNext(out var uid, out _, out var sigComp))
         {
-            var sigComp = EnsureComp<ThermalSignatureComponent>(uid);
+            if (sigComp.TotalHeat != 0f)
+                _dirtyGrids.Add(uid);
+
             sigComp.TotalHeat = 0f;
         }
 
-        var query = EntityQueryEnumerator<ThermalSignatureComponent>();
-        while (query.MoveNext(out var uid, out var sigComp))
+        var query = EntityQueryEnumerator<ThermalSignatureComponent, TransformComponent>();
+        while (query.MoveNext(out var uid, out var sigComp, out var xform))
         {
             var ev = new GetThermalSignatureEvent(interval);
             RaiseLocalEvent(uid, ref ev);
@@ -110,21 +123,61 @@ public sealed class ThermalSignatureSystem : EntitySystem
             sigComp.StoredHeat *= MathF.Pow(sigComp.HeatDissipation, interval);
             if (_gridQuery.HasComp(uid))
             {
-                sigComp.TotalHeat += sigComp.StoredHeat;
+                if (sigComp.StoredHeat == 0f)
+                    continue;
+
+                if (_gridHeatAccumulator.TryGetValue(uid, out var accumulatedGridHeat))
+                    _gridHeatAccumulator[uid] = accumulatedGridHeat + sigComp.StoredHeat;
+                else
+                    _gridHeatAccumulator[uid] = sigComp.StoredHeat;
+
+                continue;
             }
+
+            sigComp.TotalHeat = sigComp.StoredHeat;
+
+            if (sigComp.StoredHeat == 0f || xform.GridUid == null || !_gridQuery.TryComp(xform.GridUid.Value, out _))
+                continue;
+
+            var gridUid = xform.GridUid.Value;
+
+            if (_gridHeatAccumulator.TryGetValue(gridUid, out var accumulated))
+                _gridHeatAccumulator[gridUid] = accumulated + sigComp.StoredHeat;
             else
-            {
-                var xform = Transform(uid);
-                sigComp.TotalHeat = sigComp.StoredHeat;
-                if (xform.GridUid != null && _sigQuery.TryComp(xform.GridUid, out var gridSig))
-                    gridSig.TotalHeat += sigComp.StoredHeat;
-            }
+                _gridHeatAccumulator[gridUid] = sigComp.StoredHeat;
         }
 
-        var gridQuery2 = EntityQueryEnumerator<MapGridComponent, ThermalSignatureComponent>();
-        while (gridQuery2.MoveNext(out var uid, out _, out var sigComp))
+        foreach (var (gridUid, totalHeat) in _gridHeatAccumulator)
         {
-            Dirty(uid, sigComp); // sync to client
+            if (!_gridQuery.TryComp(gridUid, out _))
+                continue;
+
+            var sigComp = EnsureComp<ThermalSignatureComponent>(gridUid);
+            sigComp.TotalHeat += totalHeat;
+            _dirtyGrids.Add(gridUid);
+        }
+
+        foreach (var gridUid in _dirtyGrids)
+        {
+            if (!_sigQuery.TryComp(gridUid, out var sigComp))
+            {
+                _lastDirtiedHeat.Remove(gridUid);
+                continue;
+            }
+
+            var current = sigComp.TotalHeat;
+            var last = _lastDirtiedHeat.TryGetValue(gridUid, out var prev) ? prev : 0f;
+
+            // Always Dirty when crossing the zero boundary so clients reliably get the on/off
+            // transition; otherwise only Dirty when the change is meaningful for the UI.
+            if (MathF.Abs(current - last) < DirtyHeatEpsilon
+                && (current == 0f) == (last == 0f))
+            {
+                continue;
+            }
+
+            _lastDirtiedHeat[gridUid] = current;
+            Dirty(gridUid, sigComp); // sync to client
         }
     }
 }

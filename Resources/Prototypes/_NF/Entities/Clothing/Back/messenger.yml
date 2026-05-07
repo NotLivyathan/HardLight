@@ -89,7 +89,7 @@
 - type: entity
   parent: ClothingBackpackMessengerContractor
   id: ClothingBackpackMessengerSr
-  name: station representative's messenger bag
+  name: harbor master's messenger bag # HardLight: station representative<harbor master; migrate to _HL in the future
   description: An exclusive messenger bag for Nanotrasen officers.
   components:
   - type: Sprite
@@ -630,7 +630,7 @@
   parent: ClothingBackpackHolding
   id: ClothingBackpackMessengerHolding
   name: messenger bag of holding
-  description: A messenger bag that opens into a localized pocket of bluespace.
+  description: A messenger bag that opens into a localized pocket of bluespace. It is unwieldy due to condensed gravitational emissions.
   components:
   - type: Sprite
     sprite: _NF/Clothing/Back/Messenger/holding.rsi
@@ -639,6 +639,9 @@
     - state: icon
     - state: icon-unlit
       shader: unshaded
+  - type: ClothingSpeedModifier
+    sprintModifier: 0.75 # movespeed nerf in exchange for massive storage
+  - type: HeldSpeedModifier
   - type: Clothing
     sprite: _NF/Clothing/Back/Messenger/holding.rsi
     clothingVisuals:
@@ -656,6 +659,19 @@
       - state: inhand-right
       - state: inhand-right-unlit
         shader: unshaded
+  - type: ChameleonClothing
+    slot: [back]
+    default: ClothingBackpackMessengerHolding
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: Tag
+    tags:
+    - ScurretWearable
+    - WhitelistChameleon
 
 ## Antagonists / Contraband
 - type: entity

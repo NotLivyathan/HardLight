@@ -169,6 +169,7 @@
       - JanicartFlatpack
       - BluespaceBucket
       - BluespaceBarrel
+      - ClothingWalletLeatherBlackMagnet
       # - FireExtinguisherBluespace # DeltaV
 
 - type: latheRecipePack

@@ -13,7 +13,8 @@ public sealed class ArtifactMagnetTriggerSystem : EntitySystem
 {
     [Dependency] private readonly ArtifactSystem _artifact = default!;
 
-    private readonly List<EntityUid> _toActivate = new();
+    private readonly List<Entity<ArtifactMagnetTriggerComponent, TransformComponent>> _artifacts = new();
+    private readonly HashSet<EntityUid> _toActivate = new();
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -25,7 +26,17 @@ public sealed class ArtifactMagnetTriggerSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        if (!EntityQuery<ArtifactMagnetTriggerComponent>().Any())
+        // Single pass to build the artifact list. Replaces the previous EntityQuery<>().Any()
+        // precheck which iterated all magnet artifacts and was followed by another full
+        // re-enumeration inside every active-magboot iteration.
+        _artifacts.Clear();
+        var artifactQuery = EntityQueryEnumerator<ArtifactMagnetTriggerComponent, TransformComponent>();
+        while (artifactQuery.MoveNext(out var uid, out var trigger, out var xform))
+        {
+            _artifacts.Add((uid, trigger, xform));
+        }
+
+        if (_artifacts.Count == 0)
             return;
 
         _toActivate.Clear();
@@ -37,9 +48,12 @@ public sealed class ArtifactMagnetTriggerSystem : EntitySystem
             if (!toggle.Activated)
                 continue;
 
-            var artiQuery = EntityQueryEnumerator<ArtifactMagnetTriggerComponent, TransformComponent>();
-            while (artiQuery.MoveNext(out var artifactUid, out var trigger, out var xform))
+            foreach (var (artifactUid, trigger, xform) in _artifacts)
             {
+                // Already queued from a different magboot this tick; skip the distance check.
+                if (_toActivate.Contains(artifactUid))
+                    continue;
+
                 if (!magXform.Coordinates.TryDistance(EntityManager, xform.Coordinates, out var distance))
                     continue;
 
@@ -58,6 +72,8 @@ public sealed class ArtifactMagnetTriggerSystem : EntitySystem
 
     private void OnMagnetActivated(ref SalvageMagnetActivatedEvent ev)
     {
+        _toActivate.Clear();
+
         var magXform = Transform(ev.Magnet);
 
         var query = EntityQueryEnumerator<ArtifactMagnetTriggerComponent, TransformComponent>();
@@ -74,7 +90,7 @@ public sealed class ArtifactMagnetTriggerSystem : EntitySystem
 
         foreach (var a in _toActivate)
         {
-            _artifact.TryActivateArtifact(a);
+            _artifact.TryActivateArtifact(a, logMissing: false);
         }
     }
 }

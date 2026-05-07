@@ -32,13 +32,10 @@
   - type: Xeno
     actionIds:
     - ActionXenoRest
-    - ActionXenoPlantWeeds
     - ActionXenoAcid
     - ActionXenoRegurgitate
     - ActionXenoChooseStructure
     - ActionXenoSecreteStructure
-    maxPlasma: 300 # TODO CM14
-    plasmaRegen: 12
     restHealing:
       types:
         Blunt: -0.5

@@ -19,6 +19,9 @@ public sealed partial class ExpeditionDiskComponent : Component
     [DataField("missionType")]
     public SalvageMissionType MissionType = SalvageMissionType.Destruction;
 
+    [DataField("enemy")]
+    public string Enemy = string.Empty;
+
     [ViewVariables(VVAccess.ReadWrite), DataField("cooldownEnd", customTypeSerializer: typeof(TimeOffsetSerializer))]
     [AutoPausedField]
     public TimeSpan CooldownEnd = TimeSpan.Zero;

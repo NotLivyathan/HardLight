@@ -1,16 +1,29 @@
 - type: trait
   id: Synthetic
-  name: trait-synth-name
-  description: trait-synth-desc
+  name: trait-synthetic-name
+  description: trait-synthetic-desc
   category: Physical
-  cost: 0 # Hardlight: Why did this cost 4?
+  cost: 0 # HardLight: 4<0; Why did this cost 4?
   speciesBlacklist: # HardLight
   - IPC
   - Synth
-  # Begin DeltaV Additions - blacklist IPCs
   blacklist:
     components:
       - BorgChassis
-  # End DeltaV Additions - blacklist IPCs
   components:
-    - type: Synth
+    - type: Synthetic
+    # Hardlight start: Gives Trinary
+    - type: IntrinsicRadioReceiver
+    - type: IntrinsicRadioTransmitter
+      intrinsicChannels:
+      - Trinary
+    - type: ActiveRadio
+      intrinsicChannels:
+      - Trinary
+    - type: EncryptionKeyHolder
+      keySlots: 1
+      examineWhileLocked: false
+      preserveExistingChannels: true
+      intrinsicChannels:
+      - Trinary
+    # Hardlight end

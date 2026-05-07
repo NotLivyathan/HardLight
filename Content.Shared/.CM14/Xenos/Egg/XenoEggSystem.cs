@@ -5,7 +5,6 @@ using Content.Shared.CM14.Xenos.Construction;
 //using Content.Shared._RMC14.Xenonids.Construction.Tunnel;
 //using Content.Shared.CM14.Xenos.Hive;
 //using Content.Shared.CM14.Xenos.Parasite;
-//using Content.Shared.CM14.Xenos.Plasma;
 //using Content.Shared.CM14.Xenos.Weeds;
 using Content.Shared.Actions;
 using Content.Shared.Buckle.Components;
@@ -55,7 +54,6 @@ public sealed class XenoEggSystem : EntitySystem
     [Dependency] private readonly SharedMapSystem _map = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly INetManager _net = default!;
-    //[Dependency] private readonly XenoPlasmaSystem _plasma = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly EntityManager _entities = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -142,21 +140,19 @@ public sealed class XenoEggSystem : EntitySystem
             return;
 
         var hasOvipositor = HasComp<XenoAttachedOvipositorComponent>(xeno);
-        if (!hasOvipositor &&
-            !_plasma.HasPlasmaPopup(xeno.Owner, args.AttachPlasmaCost))
+        if (!hasOvipositor)
         {
             return;
         }
 
         args.Handled = true;
 
-        var ev = new XenoGrowOvipositorDoAfterEvent { PlasmaCost = args.AttachPlasmaCost };
+        var ev = new XenoGrowOvipositorDoAfterEvent();
         var delay = args.AttachDoAfter;
         var popup = new LocId("cm-xeno-ovipositor-attach");
         var popupType = PopupType.Medium;
         if (hasOvipositor)
         {
-            ev.PlasmaCost = FixedPoint2.Zero;
             delay = args.DetachDoAfter;
             popup = "cm-xeno-ovipositor-detach";
             popupType = PopupType.MediumCaution;
@@ -174,9 +170,7 @@ public sealed class XenoEggSystem : EntitySystem
 
     private void OnXenoGrowOvipositorDoAfter(Entity<XenoComponent> xeno, ref XenoGrowOvipositorDoAfterEvent args)
     {
-        if (args.Cancelled ||
-            args.Handled ||
-            !_plasma.TryRemovePlasmaPopup(xeno.Owner, args.PlasmaCost))
+        if (args.Cancelled || args.Handled)
         {
             return;
         }
@@ -283,9 +277,6 @@ public sealed class XenoEggSystem : EntitySystem
         var coordinates = GetCoordinates(args.Coordinates);
         if (!CanPlaceEggPopup(args.User, egg, coordinates, false))
             return;
-
-        //if (!_plasma.TryRemovePlasmaPopup(args.User, 30))
-        //    return;
 
         // Hand code is god-awful and its reach distance is inconsistent with args.CanReach
         // so we need to set the position ourselves.

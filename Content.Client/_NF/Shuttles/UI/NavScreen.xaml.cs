@@ -50,12 +50,16 @@ namespace Content.Client.Shuttles.UI
         {
             if (NavRadar.DampeningMode == InertiaDampeningMode.Station)
             {
-                DampenerModeButtons.Visible = false;
+                DampenerOff.Visible = false;
+                DampenerOn.Visible = false;
+                AnchorOn.Visible = false;
                 ServiceFlagsBox.Visible = false;
             }
             else
             {
-                DampenerModeButtons.Visible = true;
+                DampenerOff.Visible = true;
+                DampenerOn.Visible = true;
+                AnchorOn.Visible = true;
                 ServiceFlagsBox.Visible = true;
                 DampenerOff.Pressed = NavRadar.DampeningMode == InertiaDampeningMode.Off;
                 DampenerOn.Pressed = NavRadar.DampeningMode == InertiaDampeningMode.Dampen;

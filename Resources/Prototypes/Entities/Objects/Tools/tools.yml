@@ -457,6 +457,33 @@
     - PlatingNW
     - PlatingSE
     - PlatingSW
+    - PlatingHalfV
+    - PlatingHalfH
+    - PlatingWedgeN
+    - PlatingWedgeE
+    - PlatingWedgeS
+    - PlatingWedgeW
+    - PlatingHalfTiltNESLower
+    - PlatingHalfTiltSEWLower
+    - PlatingHalfTiltSWNLower
+    - PlatingHalfTiltNWELower
+    - PlatingHalfTiltNESUpper
+    - PlatingHalfTiltSEWUpper
+    - PlatingHalfTiltSWNUpper
+    - PlatingHalfTiltNWEUpper
+    - PlatingHalfTiltNEWLower
+    - PlatingHalfTiltSENLower
+    - PlatingHalfTiltSWELower
+    - PlatingHalfTiltNWSLower
+    - PlatingHalfTiltNEWUpper
+    - PlatingHalfTiltSENUpper
+    - PlatingHalfTiltSWEUpper
+    - PlatingHalfTiltNWSUpper
+    - WindowDirectionalShuttle
+    - WindowShuttle
+    - WallShuttleDiagonal
+    - WallReinforcedDiagonal
+    - WallSolidDiagonal
   - type: LimitedCharges
     maxCharges: 30
   - type: Sprite

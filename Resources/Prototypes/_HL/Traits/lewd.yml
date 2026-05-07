@@ -54,3 +54,14 @@
       eggSlowThreshold: 10
       eggSlowMult: 0.5
       eggLayDelay: 5
+
+- type: trait
+  id: Brainwasher
+  name: hl-trait-Brainwasher-name
+  description: hl-trait-Brainwasher-desc
+  category: Physical
+  cost: 1
+  components:
+    - type: Brainwasher
+      chardingDuration: 10
+      configureText: Configure Brainwashing Compulsions

@@ -80,6 +80,8 @@
       collection: FelionoidGrowls
     Trill:
       collection: FelionoidTrills
+    Wurble:
+      collection: ResomiWurble
     Scree:
       collection: ResomiScrees
     Call:
@@ -266,5 +268,4 @@
       # Use miscellaneous low hiss set for xeno hissing
       path: /Audio/Voice/Misc/lowHiss1.ogg
     Scream:
-      # Stand-in scream; adjust later if dedicated xeno scream assets are added
-      collection: MaleScreams
+      collection: XenoRoars

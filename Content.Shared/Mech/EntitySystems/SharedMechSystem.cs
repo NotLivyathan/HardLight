@@ -408,7 +408,12 @@ public abstract class SharedMechSystem : EntitySystem
     /// <param name="toInsert"></param>
     /// <param name="component"></param>
     /// <returns>Whether or not the entity was inserted</returns>
-    public bool TryInsert(EntityUid uid, EntityUid? toInsert, MechComponent? component = null)
+    public bool TryInsert(EntityUid uid,
+        EntityUid? toInsert,
+        MechComponent? component = null,
+        EntityUid? whitelistUser = null,
+        bool bypassMovementCheck = false,
+        bool bypassPilotWhitelist = false)
     {
         if (!Resolve(uid, ref component))
             return false;
@@ -416,7 +421,14 @@ public abstract class SharedMechSystem : EntitySystem
         if (toInsert == null || component.PilotSlot.ContainedEntity == toInsert)
             return false;
 
-        if (!CanInsert(uid, toInsert.Value, component))
+        var whitelistTarget = whitelistUser ?? toInsert.Value;
+        if (!bypassPilotWhitelist && _whitelistSystem.IsWhitelistFail(component.PilotWhitelist, whitelistTarget))
+            return false;
+
+        if (!IsEmpty(component))
+            return false;
+
+        if (!bypassMovementCheck && !_actionBlocker.CanMove(toInsert.Value))
             return false;
 
         SetupUser(uid, toInsert.Value);

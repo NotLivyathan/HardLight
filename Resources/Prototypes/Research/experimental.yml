@@ -56,6 +56,7 @@
   cost: 5000
   recipeUnlocks:
   - TechDiskComputerCircuitboard
+  - DocumentCaseShortMagnet
 
 - type: technology
   id: MagnetsTech

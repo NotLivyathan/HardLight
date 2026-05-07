@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Content.Shared.Actions;
-using Content.Shared.Popups;
 using Content.Shared.Access.Components;
 using Content.Shared.CM14.Xenos.Evolution;
 using Content.Shared.CM14.Xenos.Construction;
@@ -18,7 +17,6 @@ public sealed class XenoSystem : EntitySystem
 {
     [Dependency] private readonly SharedActionsSystem _action = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly INetManager _net = default!;
@@ -30,7 +28,6 @@ public sealed class XenoSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<XenoComponent, MapInitEvent>(OnXenoMapInit);
-        SubscribeLocalEvent<XenoComponent, EntityUnpausedEvent>(OnXenoUnpaused);
         SubscribeLocalEvent<XenoComponent, XenoOpenEvolutionsEvent>(OnXenoEvolve);
         SubscribeLocalEvent<XenoComponent, EvolveBuiMessage>(OnXenoEvolveBui);
         SubscribeLocalEvent<XenoComponent, GetAccessTagsEvent>(OnXenoGetAdditionalAccess);
@@ -51,26 +48,9 @@ public sealed class XenoSystem : EntitySystem
                 }
             }
 
-            // Ensure key actions are properly configured server-side.
-            // - Plant Weeds: always has an event instance and is raised on user.
+            // Ensure key resin construction actions are properly configured server-side.
             // - Choose Structure: ensure it's raised on user so the shared handler gets the event.
             // - Secrete Structure: ensure it is a world target action raised on user as well.
-            if (ent.Comp.Actions.TryGetValue("ActionXenoPlantWeeds", out var weedsAction))
-            {
-                if (!ent.Comp.AllowPlantWeeds)
-                {
-                    _action.SetEnabled(weedsAction, false);
-                }
-                else if (TryComp<InstantActionComponent>(weedsAction, out var instant))
-                {
-                    instant.Event ??= new XenoPlantWeedsEvent();
-                    instant.RaiseOnUser = true;
-                    instant.RaiseOnAction = false;
-                    Dirty(weedsAction, instant);
-                    _action.SetEnabled(weedsAction, true);
-                }
-            }
-
             if (ent.Comp.Actions.TryGetValue("ActionXenoChooseStructure", out var chooseAction))
             {
                 if (TryComp<InstantActionComponent>(chooseAction, out var instant))
@@ -167,10 +147,6 @@ public sealed class XenoSystem : EntitySystem
         }
     }
 
-    private void OnXenoUnpaused(Entity<XenoComponent> ent, ref EntityUnpausedEvent args)
-    {
-        ent.Comp.NextPlasmaRegenTime += args.PausedTime;
-    }
     private void OnXenoGetAdditionalAccess(Entity<XenoComponent> ent, ref GetAccessTagsEvent args)
     {
         args.Tags.UnionWith(ent.Comp.AccessLevels);
@@ -207,12 +183,6 @@ public sealed class XenoSystem : EntitySystem
                 // Log.Info($"[Xeno] Queued scheduled auto-evolution for {ToPrettyString(uid)}"); // verbose queue log disabled
             }
 
-            if (time >= xeno.NextPlasmaRegenTime)
-            {
-                xeno.Plasma += xeno.PlasmaRegen;
-                xeno.NextPlasmaRegenTime = time + xeno.PlasmaRegenCooldown;
-                Dirty(uid, xeno);
-            }
         }
 
         // Fire evolution events after enumeration.
@@ -220,48 +190,6 @@ public sealed class XenoSystem : EntitySystem
         {
             var ev = new XenoOpenEvolutionsEvent();
             RaiseLocalEvent(uid, ev);
-        }
-    }
-
-    public bool HasPlasma(Entity<XenoComponent> xeno, int plasma)
-    {
-        return xeno.Comp.Plasma >= plasma;
-    }
-
-    public bool TryRemovePlasmaPopup(Entity<XenoComponent> xeno, int plasma)
-    {
-        if (!HasPlasma(xeno, plasma))
-        {
-            _popup.PopupClient(Loc.GetString("cm-xeno-not-enough-plasma"), xeno, xeno);
-            return false;
-        }
-
-        RemovePlasma(xeno, plasma);
-        return true;
-    }
-
-    public void RemovePlasma(Entity<XenoComponent> xeno, int plasma)
-    {
-        xeno.Comp.Plasma = Math.Max(xeno.Comp.Plasma - plasma, 0);
-        Dirty(xeno);
-        if (xeno.Comp.EvolvesTo.Count == 0)
-            return;
-
-        // Ensure evolve action exists and set cooldown if needed (but avoid overriding specialized component cooldowns)
-        if (xeno.Comp.EvolvesTo.Count > 0)
-        {
-            EntityUid? evolveAction = null;
-            if (xeno.Comp.Actions.TryGetValue("ActionXenoEvolve60", out var evo60))
-                evolveAction = evo60;
-            else if (xeno.Comp.Actions.TryGetValue(xeno.Comp.EvolveActionId, out var evo))
-                evolveAction = evo;
-            else
-                _action.AddAction(xeno, ref evolveAction, xeno.Comp.EvolveActionId);
-
-            xeno.Comp.EvolveAction = evolveAction;
-
-            if (evolveAction != null && !HasComp<CM14.Xenos.Evolution.XenoEvolveActionComponent>(evolveAction.Value))
-                _action.SetCooldown(evolveAction, _timing.CurTime, _timing.CurTime + xeno.Comp.EvolveIn);
         }
     }
 

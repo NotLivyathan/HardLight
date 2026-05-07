@@ -585,13 +585,18 @@ public partial class SharedBodySystem
     public (EntityUid Entity, BodyPartComponent BodyPart)? GetRootPartOrNull(EntityUid bodyId, BodyComponent? body = null)
     {
         if (!Resolve(bodyId, ref body)
+            || body.RootContainer == default
             || body.RootContainer.ContainedEntity is null)
         {
             return null;
         }
 
-        return (body.RootContainer.ContainedEntity.Value,
-            Comp<BodyPartComponent>(body.RootContainer.ContainedEntity.Value));
+        var rootEntity = body.RootContainer.ContainedEntity.Value;
+
+        if (!TryComp(rootEntity, out BodyPartComponent? rootPart))
+            return null;
+
+        return (rootEntity, rootPart);
     }
 
     /// <summary>
@@ -904,11 +909,10 @@ public partial class SharedBodySystem
         BodyComponent? body = null,
         BodyPartComponent? part = null)
     {
-        return Resolve(bodyId, ref body, logMissing: false)
-            && body.RootContainer.ContainedEntity is not null
+        var root = GetRootPartOrNull(bodyId, body);
+        return root != null
             && Resolve(partId, ref part, logMissing: false)
-            && TryComp(body.RootContainer.ContainedEntity, out BodyPartComponent? rootPart)
-            && PartHasChild(body.RootContainer.ContainedEntity.Value, partId, rootPart, part);
+            && PartHasChild(root.Value.Entity, partId, root.Value.BodyPart, part);
     }
 
     public IEnumerable<(EntityUid Id, BodyPartComponent Component)> GetBodyChildrenOfType(

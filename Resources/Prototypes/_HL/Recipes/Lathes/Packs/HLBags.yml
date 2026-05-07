@@ -1,0 +1,7 @@
+- type: latheRecipePack
+  id: HLBags
+  recipes:
+    - DebrisBag
+    - DebrisBagOfHolding
+    - ClothingWalletLeatherBlackMagnet
+    - DocumentCaseShortMagnet

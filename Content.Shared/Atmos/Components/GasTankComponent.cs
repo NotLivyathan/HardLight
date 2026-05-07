@@ -96,7 +96,7 @@ public sealed partial class GasTankComponent : Component, IGasMixtureHolder
     [DataField]
     public EntProtoId ToggleAction = "ActionToggleInternals";
 
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public EntityUid? ToggleActionEntity;
 
     /// <summary>

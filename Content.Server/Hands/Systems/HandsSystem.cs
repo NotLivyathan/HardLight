@@ -44,7 +44,7 @@ namespace Content.Server.Hands.Systems
         {
             base.Initialize();
 
-            SubscribeLocalEvent<HandsComponent, DisarmedEvent>(OnDisarmed, before: new[] { typeof(StunSystem) });
+            SubscribeLocalEvent<HandsComponent, DisarmedEvent>(OnDisarmed, before: new[] { typeof(SharedStaminaSystem) });
 
             SubscribeLocalEvent<HandsComponent, PullStartedMessage>(HandlePullStarted);
             SubscribeLocalEvent<HandsComponent, PullStoppedMessage>(HandlePullStopped);
@@ -228,6 +228,9 @@ namespace Content.Server.Hands.Systems
                 !TryComp(player, out HandsComponent? hands) ||
                 hands.ActiveHandEntity is not { } throwEnt ||
                 !_actionBlockerSystem.CanThrow(player, throwEnt))
+                return false;
+
+            if (!coordinates.IsValid(EntityManager))
                 return false;
 
            // Goobstation start: Added throwing for grabbed mobs, mnoved direction.

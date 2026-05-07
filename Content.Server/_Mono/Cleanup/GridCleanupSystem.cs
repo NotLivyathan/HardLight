@@ -52,19 +52,27 @@ public sealed class GridCleanupSystem : BaseCleanupSystem<MapGridComponent>
 
         var parent = xform.ParentUid;
 
+        // Cheap immunity short-circuits FIRST so we never EnsureComp / appraise / lookup APCs
+        // for entities that can't possibly be cleaned up (planet maps, child grids, immune marks).
+        // Previously EnsureComp<GridCleanupGridComponent> ran unconditionally, polluting every
+        // map and planet grid with a cleanup state component on every cleanup pass.
+        if (HasComp<MapComponent>(uid) // if we're a planetmap ignore
+            || HasComp<MapGridComponent>(parent) // do not delete anything on planetmaps either
+            || _immuneQuery.HasComp(uid))
+        {
+            return false;
+        }
+
         var state = EnsureComp<GridCleanupGridComponent>(uid);
 
         var tiles = body.FixturesMass / ShuttleSystem.TileMassMultiplier;
         var scale = MathF.Min(tiles / _aggressiveTiles, 1f);
         var hasVisibleIff = TryComp<IFFComponent>(uid, out var iffComp) && (iffComp.Flags & IFFFlags.HideLabel) == 0;
 
-        if (HasComp<MapComponent>(uid) // if we're a planetmap ignore
-            || HasComp<MapGridComponent>(parent) // do not delete anything on planetmaps either
-            || _immuneQuery.HasComp(uid)
-            || !state.IgnoreIFF && hasVisibleIff // delete only if IFF off
+        if (!state.IgnoreIFF && hasVisibleIff // delete only if IFF off
             || _cleanup.HasNearbyPlayers(xform.Coordinates, state.DistanceOverride ?? _maxDistance * scale * scale) // square it
             || !state.IgnorePowered && HasPoweredAPC((uid, xform)) // don't delete if it has powered APCs
-            || !state.IgnorePrice && _pricing.AppraiseGrid(uid) > _maxValue) // expensive to run, put last
+            || !state.IgnorePrice && _pricing.AppraiseGridExceeds(uid, _maxValue)) // expensive to run, put last
         {
             state.CleanupAccumulator = TimeSpan.FromSeconds(0);
             return false;

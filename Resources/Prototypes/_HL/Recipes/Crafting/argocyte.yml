@@ -1,0 +1,107 @@
+- type: construction
+  id: ArgoArmorHard
+  graph: ArgoArmorHardGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-armor-heavy
+  objectType: Item
+ 
+- type: construction
+  id: ArgoArmorLight
+  graph: ArgoArmorLightGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-armor-light
+  objectType: Item
+ 
+- type: construction
+  id: ArgoGauntletsHard
+  graph: ArgoGauntletsHeavyGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-gauntlets-heavy
+  objectType: Item
+  
+- type: construction
+  id: ArgoGauntletsLight
+  graph: ArgoGauntletsLightGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-gauntlets-light
+  objectType: Item
+ 
+- type: construction
+  id: ArgoHelmetHard
+  graph: ArgoHelmetHeavyGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-helmet-heavy
+  objectType: Item
+  
+- type: construction
+  id: ArgoHelmetLight
+  graph: ArgoHelmetLightGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-helmet-light
+  objectType: Item
+ 
+- type: construction
+  id: ArgoShieldHard
+  graph: ArgoShieldHeavyGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-weapons
+  description: item-argocyte-shield-heavy
+  objectType: Item
+  
+- type: construction
+  id: ArgoShieldLight
+  graph: ArgoShieldLightGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-weapons
+  description: item-argocyte-shield-light
+  objectType: Item
+ 
+- type: construction
+  id: ArgoBootsHard
+  graph: ArgoBootsHeavyGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-boots-heavy
+  objectType: Item
+  
+- type: construction
+  id: ArgoBootsLight
+  graph: ArgoBootsLightGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-clothing
+  description: item-argocyte-boots-light
+  objectType: Item
+ 
+- type: construction
+  id: ArgoTwinsword
+  graph: ArgoTwinswordGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-weapons
+  description: item-argocyte-twinsword
+  objectType: Item
+  
+- type: construction
+  id: ArgoHammer
+  graph: ArgoHammerGraph
+  startNode: start
+  targetNode: finish
+  category: construction-category-weapons
+  description: item-argocyte-hammer
+  objectType: Item

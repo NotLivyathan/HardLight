@@ -96,24 +96,27 @@ namespace Content.Client.Shuttles.Save
                 using var writer = _resourceManager.UserData.OpenWriteText(new(fileName));
                 writer.Write(message.ShipData);
                 Logger.Info($"Saved ship {message.ShipName} to user data: {fileName}");
+
+                // Cache the data and update available ships list only after the file exists on disk.
+                CachedShipData[fileName] = message.ShipData;
+                if (!AvailableShips.Contains(fileName))
+                {
+                    AvailableShips.Add(fileName);
+                }
+
+                // Mark index update as needed but don't update immediately
+                _indexUpdateNeeded = true;
+
+                // Trigger UI update
+                ShipsUpdated?.Invoke();
+
+                RaiseNetworkEvent(new ShipSaveWriteResultMessage(message.RequestId, true, fileName));
             }
             catch (Exception ex)
             {
                 Logger.Error($"Failed to save ship {message.ShipName}: {ex.Message}");
+                RaiseNetworkEvent(new ShipSaveWriteResultMessage(message.RequestId, false, error: ex.Message));
             }
-
-            // Cache the data and update available ships list
-            CachedShipData[fileName] = message.ShipData;
-            if (!AvailableShips.Contains(fileName))
-            {
-                AvailableShips.Add(fileName);
-            }
-
-            // Mark index update as needed but don't update immediately
-            _indexUpdateNeeded = true;
-
-            // Trigger UI update
-            ShipsUpdated?.Invoke();
         }
 
         private void HandleAvailableShipsMessage(SendAvailableShipsMessage message)
@@ -389,6 +392,14 @@ namespace Content.Client.Shuttles.Save
             {
                 UpdateShipIndex();
             }
+        }
+
+        public void ReloadSavedShips()
+        {
+            AvailableShips.Clear();
+            CachedShipData.Clear();
+            ShipMetadataCache.Clear();
+            LoadExistingShips();
         }
 
         public List<string> GetSavedShipFiles()

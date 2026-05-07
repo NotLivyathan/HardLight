@@ -250,7 +250,7 @@ public sealed class ObjectivesSystem : SharedObjectivesSystem
     /// </summary>
     private bool IsInCustody(EntityUid mindId, MindComponent? mind = null)
     {
-        if (!Resolve(mindId, ref mind))
+        if (mind == null && !TryComp(mindId, out mind))
             return false;
 
         // Ghosting will not save you
@@ -262,7 +262,8 @@ public sealed class ObjectivesSystem : SharedObjectivesSystem
                    && _emergencyShuttle.IsTargetEscaping(originalEntity.Value);
         }
 
-        return originalEntityInCustody || (TryComp<CuffableComponent>(mind.OwnedEntity, out var cuffed) && cuffed.CuffedHandCount > 0
+         return originalEntityInCustody || (mind.OwnedEntity != null
+             && TryComp<CuffableComponent>(mind.OwnedEntity, out var cuffed) && cuffed.CuffedHandCount > 0
                && _emergencyShuttle.IsTargetEscaping(mind.OwnedEntity.Value));
     }
 

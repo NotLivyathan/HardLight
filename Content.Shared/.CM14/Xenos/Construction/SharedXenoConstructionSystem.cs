@@ -38,24 +38,12 @@ public abstract class SharedXenoConstructionSystem : EntitySystem
 
         Log.Info($"[XenoWeeds] ({(_net.IsServer ? "server" : "client")}) SharedXenoConstructionSystem.Initialize()");
         _weedsQuery = GetEntityQuery<XenoWeedsComponent>();
-        SubscribeLocalEvent<XenoComponent, XenoPlantWeedsEvent>(OnXenoPlantWeeds);
         // Choose structure UI open/selection (shared side wiring)
         SubscribeLocalEvent<XenoComponent, XenoChooseStructureActionEvent>(OnXenoChooseStructureAction);
     SubscribeLocalEvent<XenoComponent, XenoChooseStructureBuiMessage>(OnXenoChooseStructureBui);
         // Secrete/build resin structure
         SubscribeLocalEvent<XenoComponent, XenoSecreteStructureEvent>(OnXenoSecreteStructureAction);
         SubscribeLocalEvent<XenoComponent, XenoSecreteStructureDoAfterEvent>(OnXenoSecreteStructureDoAfter);
-    }
-
-    private void OnXenoPlantWeeds(Entity<XenoComponent> ent, ref XenoPlantWeedsEvent args)
-    {
-        var coordinates = _transform.GetMoverCoordinates(ent).SnapToGrid(EntityManager, _map);
-        Log.Info("[XenoWeeds] (" + (_net.IsServer ? "server" : "client") + ") Plant attempt by " + ToPrettyString(ent) + " at " + coordinates);
-
-        // Do not spawn on the client. Server handler will perform authoritative spawn and set Handled.
-        // On server, let the server-specific system handle it to avoid double-processing.
-        if (_net.IsServer)
-            return;
     }
 
     protected virtual void OnXenoChooseStructureAction(Entity<XenoComponent> xeno, ref XenoChooseStructureActionEvent args)

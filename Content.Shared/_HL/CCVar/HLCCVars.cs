@@ -79,13 +79,13 @@ public sealed class HLCCVars
 
     // Ship load performance controls
     public static readonly CVarDef<bool> ShipLoadAsync =
-        CVarDef.Create("hardlight.shipload.async", false, CVar.SERVERONLY, desc: "Load ships asynchronously over multiple ticks.");
+        CVarDef.Create("hardlight.shipload.async", true, CVar.SERVERONLY, desc: "Load ships asynchronously over multiple ticks.");
 
     public static readonly CVarDef<int> ShipLoadBatchNonContained =
-        CVarDef.Create("hardlight.shipload.batch_noncontained", 64, CVar.SERVERONLY, desc: "Max non-contained entities to spawn per tick during ship load.");
+        CVarDef.Create("hardlight.shipload.batch_noncontained", 128, CVar.SERVERONLY, desc: "Max non-contained entities to spawn per tick during ship load.");
 
     public static readonly CVarDef<int> ShipLoadBatchContained =
-        CVarDef.Create("hardlight.shipload.batch_contained", 96, CVar.SERVERONLY, desc: "Max contained entities to spawn/insert per tick during ship load.");
+        CVarDef.Create("hardlight.shipload.batch_contained", 128, CVar.SERVERONLY, desc: "Max contained entities to spawn/insert per tick during ship load.");
 
     public static readonly CVarDef<int> ShipLoadTimeBudgetMs =
         CVarDef.Create("hardlight.shipload.time_budget_ms", 8, CVar.SERVERONLY, desc: "Soft time budget per tick for ship load processing (ms).");
@@ -95,6 +95,48 @@ public sealed class HLCCVars
 
     public static readonly CVarDef<bool> ShipLoadLogProgress =
         CVarDef.Create("hardlight.shipload.log_progress", false, CVar.SERVERONLY, desc: "Log ship load progress each tick.");
+
+    // Shipyard purchase docking-search caps. The full N×M dock-pair search becomes pathological
+    // on large stations + large ships (140 × 40 = 5,600 candidate pairs, each running CanDock,
+    // FindGridsIntersecting, and an inner aggregation sweep). On purchase we only need *a* valid
+    // dock — not the global optimum — so we sample a spatially-spread, priority-aware subset of
+    // docks from each side. If the capped search returns nothing, the call site falls back to the
+    // full uncapped search so a purchase can never fail solely due to the optimization.
+    public static readonly CVarDef<bool> ShipyardPurchaseDockCapEnabled =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_enabled", true, CVar.SERVERONLY,
+            desc: "If true, shipyard purchase docking only considers a capped, spatially spread subset of docks per side. Falls back to full search on miss.");
+
+    public static readonly CVarDef<int> ShipyardPurchaseDockCapShuttle =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_shuttle", 8, CVar.SERVERONLY,
+            desc: "Max shuttle-side docks considered during shipyard purchase docking. <= 0 disables the cap on this side.");
+
+    public static readonly CVarDef<int> ShipyardPurchaseDockCapGrid =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_grid", 12, CVar.SERVERONLY,
+            desc: "Max station-side docks considered during shipyard purchase docking. <= 0 disables the cap on this side.");
+
+    /// <summary>
+    /// HardLight: number of UseDelay component resets to process per tick during the post-load
+    /// sanitize phase of a freshly loaded ship. Set to 0 to disable spreading and do all resets
+    /// synchronously (original behavior).
+    /// </summary>
+    public static readonly CVarDef<int> ShipLoadDeferredUseDelayBudget =
+        CVarDef.Create("hardlight.shipload.deferred_usedelay_budget", 32, CVar.SERVERONLY,
+            desc: "Per-tick budget for deferred UseDelay resets after ship load. 0 disables deferral (sync reset).");
+
+    // Radar blip system performance controls.
+    // Mono RadarBlipSystem.OnBlipsRequested can dominate server tick under combat / multi-console
+    // load: each request runs EntityLookupSystem.GetEntitiesInRange (B2 broadphase + grid intersect)
+    // around every radar source. The previous hardcoded 75ms cache TTL meant repeated requests from
+    // the same console (or different consoles on the same map within range) re-ran the heavy gather
+    // path roughly 13×/sec. These CVars expose both the per-user request floor and the per-console
+    // cache TTL so server operators can trade radar refresh smoothness for tick budget headroom.
+    public static readonly CVarDef<int> RadarMinRequestMs =
+        CVarDef.Create("hardlight.radar.min_request_ms", 500, CVar.SERVERONLY,
+            desc: "Minimum milliseconds between RadarBlipSystem requests accepted from the same player. Higher = less server work per radar console at the cost of update smoothness.");
+
+    public static readonly CVarDef<int> RadarReportCacheTtlMs =
+        CVarDef.Create("hardlight.radar.cache_ttl_ms", 400, CVar.SERVERONLY,
+            desc: "Milliseconds a per-console assembled blip report is reused before re-running the entity lookup. Bounded by hardlight.radar.min_request_ms in practice; raise to amortize lookups across multiple viewers, lower for tighter freshness.");
 
     /// <summary>
     ///     Goobstation: Whether or not to allow mech weaponry to be used out of mechs.

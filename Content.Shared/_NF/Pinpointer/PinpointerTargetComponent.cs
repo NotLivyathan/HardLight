@@ -12,6 +12,5 @@ public sealed partial class PinpointerTargetComponent : Component
     /// The list of entities that's currently tracking this object.
     /// State should only be reliable serverside.
     /// </summary>
-    [DataField]
     public List<EntityUid> Entities = new();
 }

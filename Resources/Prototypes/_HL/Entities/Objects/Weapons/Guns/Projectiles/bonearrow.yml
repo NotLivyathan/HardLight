@@ -1,0 +1,38 @@
+- type: entity
+  parent: BaseArrow
+  id: ArrowBone
+  name: bone arrow
+  description: Sharpened piece of bone, hollow on the inside - allowing it to store a bit of liquid.
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Projectiles/arrows.rsi
+    layers:
+    - state: tail
+      color: "#932719"
+    - state: rod
+      color: "#C3B777"
+    - state: tip
+      color: "#E8D99C"
+    - state: solution1
+      map: ["enum.SolutionContainerLayers.Fill"]
+      visible: false
+  - type: Projectile
+    damage:
+      types:
+        Piercing: 35
+  - type: Construction
+    graph: BoneArrow
+    node: BoneArrow
+  - type: SolutionContainerManager
+    solutions:
+      injector:
+        maxVol: 4
+  - type: RefillableSolution
+    solution: injector
+  - type: InjectableSolution
+    solution: injector
+  - type: SolutionInjectOnEmbed
+    transferAmount: 4
+    solution: injector
+  - type: SolutionTransfer
+    maxTransferAmount: 4

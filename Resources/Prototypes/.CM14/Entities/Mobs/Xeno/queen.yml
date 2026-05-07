@@ -21,13 +21,10 @@
     actionIds:
     - ActionXenoRest
     - ActionXenoLayEgg
-    - ActionXenoPlantWeeds
     - ActionXenoAcid
     - ActionXenoRegurgitate
     - ActionXenoChooseStructure
     - ActionXenoSecreteStructure
-    maxPlasma: 500 # TODO CM14
-    plasmaRegen: 25
     restHealing:
       types:
         Blunt: -0.8

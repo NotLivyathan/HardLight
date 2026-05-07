@@ -29,6 +29,7 @@ public sealed partial class NanoChatUiFragment : BoxContainer
 
     private readonly NewChatPopup _newChatPopup;
     private readonly EditChatPopup _editChatPopup;
+    private readonly NanoChatLookupView _lookupPopup;
     private readonly CreateGroupChatPopup _createGroupChatPopup; // Funky Station - Create Group Chat Popup
     private readonly InviteToGroupPopup _inviteToGroupPopup; // Funky Station - Group Chat Invite Popup
     private readonly GroupMembersPopup _groupMembersPopup; // Funky Station - Group Chat Members Popup
@@ -52,6 +53,7 @@ public sealed partial class NanoChatUiFragment : BoxContainer
 
         _newChatPopup = new();
         _editChatPopup = new();
+        _lookupPopup = new();
         _createGroupChatPopup = new(); // Funky Station - Create Group Chat Popup
         _inviteToGroupPopup = new(); // Funky Station - Group Chat Invite Popup
         _groupMembersPopup = new(); // Funky Station - Group Chat Members Popup
@@ -178,14 +180,17 @@ public sealed partial class NanoChatUiFragment : BoxContainer
             }
         };
 
-        LookupButton.OnPressed += _ => ToggleView();
-        LookupView.OnStartChat += contact =>
+        LookupButton.OnPressed += _ =>
+        {
+            _lookupPopup.OpenCentered();
+        };
+        _lookupPopup.OnStartChat += contact =>
         {
             if (OnMessageSent is { } handler)
             {
                 handler(NanoChatUiMessageType.NewChat, contact.Number, contact.Name, contact.JobTitle);
                 SelectChat(contact.Number);
-                ToggleView();
+                _lookupPopup.Close();
             }
         };
         ListNumberButton.OnPressed += _ =>
@@ -221,13 +226,6 @@ public sealed partial class NanoChatUiFragment : BoxContainer
         MessageInput.GrabKeyboardFocus();
     }
     // Funky Station End - Emoji Picker
-
-    private void ToggleView()
-    {
-        ChatView.Visible = !ChatView.Visible;
-        LookupView.Visible = !ChatView.Visible;
-        LookupButton.Pressed = LookupView.Visible;
-    }
 
     public enum CycleDirection : byte
     {
@@ -616,7 +614,7 @@ public sealed partial class NanoChatUiFragment : BoxContainer
         UpdateMessages(state.Messages);
         UpdateCurrentChat();
         UpdateMuteChatButton();
-        LookupView.UpdateContactList(state);
+        _lookupPopup.UpdateContactList(state);
 
         // Funky Station - Refresh any open popups
         RefreshOpenPopups();

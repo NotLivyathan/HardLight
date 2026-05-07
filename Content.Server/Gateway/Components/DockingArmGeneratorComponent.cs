@@ -30,6 +30,21 @@ public sealed partial class DockingArmGeneratorComponent : Component
     public TimeSpan UnlockCooldown = TimeSpan.FromMinutes(30);
 
     /// <summary>
+    /// Earliest time a new spawn attempt may be made through this generator.
+    /// Used to throttle UI spam-clicking the "Spawn New Dock" button.
+    /// </summary>
+    [DataField(customTypeSerializer: typeof(TimeOffsetSerializer))]
+    [AutoPausedField]
+    public TimeSpan NextSpawnAttempt;
+
+    /// <summary>
+    /// Minimum time between consecutive spawn attempts (regardless of success).
+    /// Prevents log spam and runaway grid loads from rapid clicks.
+    /// </summary>
+    [DataField]
+    public TimeSpan SpawnAttemptCooldown = TimeSpan.FromSeconds(3);
+
+    /// <summary>
     /// Maps we've generated.
     /// </summary>
     [DataField]

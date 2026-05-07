@@ -3,7 +3,7 @@
   parent: [BaseItem, BaseC2ContrabandUnredeemable]
   id: OmniHand
   suffix: Unremoveable
-  description: Advanced engineering cybernetic, useful for many construction tasks. Has a manipulator to use your hand normally when tools are not active.
+  description: Advanced engineering cybernetic, useful for many construction tasks. Has a manipulator to use your hand normally when tools are not active. Warning! Programmed to be unable to pry powered doors!
   components: 
   - type: Unremoveable  
   - type: Sprite
@@ -56,6 +56,8 @@
             - state: inhand-left
             right:
             - state: inhand-right
+        - type: Prying
+          speedModifier: 1.5
         - type: Tool
           qualities:
             - Prying

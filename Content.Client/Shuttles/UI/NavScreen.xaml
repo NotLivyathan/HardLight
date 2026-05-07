@@ -80,50 +80,68 @@
                          Text="{controls:Loc 'shuttle-console-expedition-end'}"
                          TextAlign="Center"
                          Disabled="True"/>
-                    <controls:Button Name="IFFToggle"
-                            Text="{controls:Loc 'shuttle-console-iff-toggle'}"
-                            TextAlign="Center"
-                            ToggleMode="True"/>
-                    <!-- Frontier: hide player shuttles -->
-                    <controls:Button Name="IFFShuttleToggle"
-                             Text="{controls:Loc 'shuttle-console-iffshuttles-toggle'}"
-                             TextAlign="Center"
-                             ToggleMode="True"/>
-                    <!-- End Frontier: hide player shuttles -->
-                    <controls:Button Name="DockToggle"
-                            Text="{controls:Loc 'shuttle-console-dock-toggle'}"
-                            TextAlign="Center"
-                            ToggleMode="True"/>
-                    <!-- Frontier - Inertia dampener controls-->
-                    <controls:BoxContainer Name="DampenerModeButtons"
-                                  Orientation="Horizontal"
-                                  HorizontalAlignment="Stretch"
-                                  HorizontalExpand="True"
-                                  Align="Center"
-                                  Margin="0 0 0 3">
+                    <!-- HL - WEP / IFF / Dampener 3x3 grid -->
+                    <controls:GridContainer Columns="3"
+                                           HorizontalAlignment="Stretch"
+                                           HorizontalExpand="True"
+                                           Margin="0 0 0 0">
+                        <!-- Row 1: _ _ WEP -->
+                        <controls:Control HorizontalExpand="True"/>
+                        <controls:Control HorizontalExpand="True"/>
+                        <controls:Button Name="WEPButton"
+                                Text="{controls:Loc 'shuttle-console-wep-activate'}"
+                                TextAlign="Center"
+                                HorizontalExpand="True"
+                                ToolTip="{controls:Loc 'shuttle-console-wep-tooltip'}"
+                                Margin="0"/>
+                        <!-- Row 2: Show IFF | Shuttles | Docks -->
+                        <controls:Button Name="IFFToggle"
+                                Text="{controls:Loc 'shuttle-console-iff-toggle'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenRight"
+                                Margin="0"/>
+                        <!-- Frontier: hide player shuttles -->
+                        <controls:Button Name="IFFShuttleToggle"
+                                Text="{controls:Loc 'shuttle-console-iffshuttles-toggle'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenBoth"
+                                Margin="0"/>
+                        <!-- End Frontier: hide player shuttles -->
+                        <controls:Button Name="DockToggle"
+                                Text="{controls:Loc 'shuttle-console-dock-toggle'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenLeft"
+                                Margin="0"/>
+                        <!-- Row 3: Cruise | Drive | Park -->
                         <controls:Button Name="DampenerOff"
-                                         Text="{controls:Loc 'shuttle-console-inertia-dampener-off'}"
-                                         TextAlign="Center"
-                                         ToggleMode="True"
-                                         MinWidth="85"
-                                         StyleClasses="OpenRight"
-                                         Margin="0"/>
+                                Text="{controls:Loc 'shuttle-console-inertia-dampener-off'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenRight"
+                                Margin="0"/>
                         <controls:Button Name="DampenerOn"
-                                         Text="{controls:Loc 'shuttle-console-inertia-dampener-dampen'}"
-                                         TextAlign="Center"
-                                         ToggleMode="True"
-                                         MinWidth="85"
-                                         StyleClasses="OpenBoth"
-                                         Margin="0"/>
+                                Text="{controls:Loc 'shuttle-console-inertia-dampener-dampen'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenBoth"
+                                Margin="0"/>
                         <controls:Button Name="AnchorOn"
-                                         Text="{controls:Loc 'shuttle-console-inertia-dampener-anchor'}"
-                                         TextAlign="Center"
-                                         ToggleMode="True"
-                                         MinWidth="85"
-                                         StyleClasses="OpenLeft"
-                                         Margin="0"/>
-                    </controls:BoxContainer>
-                    <!-- End Frontier - Inertia dampener controls-->
+                                Text="{controls:Loc 'shuttle-console-inertia-dampener-anchor'}"
+                                TextAlign="Center"
+                                ToggleMode="True"
+                                HorizontalExpand="True"
+                                StyleClasses="OpenLeft"
+                                Margin="0"/>
+                    </controls:GridContainer>
+                    <!-- End HL - WEP / IFF / Dampener 3x3 grid -->
                     <!-- Frontier - IFF search -->
                     <controls:BoxContainer Orientation="Vertical" HorizontalExpand="True" Name="IffSearchBox">
                         <controls:Label Text="{controls:Loc 'shuttle-console-iff-search'}"/>
@@ -137,8 +155,8 @@
                         <controls:SliderIntInput Name="MaximumIFFDistanceValue"
                                                  Access="Public"
                                                  MinValue="0"
-                                                 MaxValue="3000"
-                                                 Value="3000"
+                                                 MaxValue="7500"
+                                                 Value="7500"
                                                  HorizontalExpand="True"/>
                     </controls:BoxContainer>
                     <!-- End Frontier - Maximum IFF Distance -->

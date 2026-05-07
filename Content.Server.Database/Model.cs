@@ -4,9 +4,12 @@ using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 using Content.Shared.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +19,18 @@ namespace Content.Server.Database
     {
         protected ServerDbContext(DbContextOptions options) : base(options)
         {
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            SanitizeTrackedValues();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            SanitizeTrackedValues();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
         public DbSet<Preference> Preference { get; set; } = null!;
@@ -330,6 +345,102 @@ namespace Content.Server.Database
                 .HasDefaultValue(HwidType.Legacy);
 
             ModelBan.OnModelCreating(modelBuilder);
+        }
+
+        private void SanitizeTrackedValues()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State is not (EntityState.Added or EntityState.Modified))
+                    continue;
+
+                foreach (var property in entry.Properties)
+                {
+                    if (property.CurrentValue is string value)
+                    {
+                        var sanitized = SanitizeString(value);
+
+                        if (!ReferenceEquals(sanitized, value))
+                            property.CurrentValue = sanitized;
+
+                        continue;
+                    }
+
+                    if (property.CurrentValue is not JsonDocument document)
+                        continue;
+
+                    var sanitizedDocument = SanitizeJsonDocument(document);
+
+                    if (ReferenceEquals(sanitizedDocument, document))
+                        continue;
+
+                    property.CurrentValue = sanitizedDocument;
+                    document.Dispose();
+                }
+            }
+        }
+
+        private static string SanitizeString(string value)
+        {
+            return value.IndexOf('\0') == -1 ? value : value.Replace("\0", string.Empty);
+        }
+
+        private static JsonDocument SanitizeJsonDocument(JsonDocument document)
+        {
+            using var stream = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(stream))
+            {
+                var changed = WriteSanitizedJsonElement(document.RootElement, writer);
+                writer.Flush();
+
+                if (!changed)
+                    return document;
+            }
+
+            stream.Position = 0;
+            return JsonDocument.Parse(stream);
+        }
+
+        private static bool WriteSanitizedJsonElement(JsonElement element, Utf8JsonWriter writer)
+        {
+            var changed = false;
+
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    writer.WriteStartObject();
+                    foreach (var property in element.EnumerateObject())
+                    {
+                        writer.WritePropertyName(property.Name);
+                        changed |= WriteSanitizedJsonElement(property.Value, writer);
+                    }
+
+                    writer.WriteEndObject();
+                    break;
+
+                case JsonValueKind.Array:
+                    writer.WriteStartArray();
+                    foreach (var item in element.EnumerateArray())
+                    {
+                        changed |= WriteSanitizedJsonElement(item, writer);
+                    }
+
+                    writer.WriteEndArray();
+                    break;
+
+                case JsonValueKind.String:
+                    var original = element.GetString() ?? string.Empty;
+                    var sanitized = SanitizeString(original);
+                    changed = !ReferenceEquals(sanitized, original);
+                    writer.WriteStringValue(sanitized);
+                    break;
+
+                default:
+                    element.WriteTo(writer);
+                    break;
+            }
+
+            return changed;
         }
 
         public virtual IQueryable<AdminLog> SearchLogs(IQueryable<AdminLog> query, string searchText)

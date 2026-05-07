@@ -1,0 +1,11 @@
+- type: construction
+  id: BeamPrism
+  graph: BeamPrism
+  startNode: start
+  targetNode: BeamPrism
+  category: construction-category-machines
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+  conditions:
+    - !type:TileNotBlocked

@@ -78,6 +78,7 @@ using Content.Shared.Interaction; // Frontier
 using Content.Shared.Examine; // Frontier
 using Content.Shared.Hands.Components;
 using Content.Shared.Power;
+using Content.Shared._Starlight.NullSpace;
 
 namespace Content.Server.Weapons.Ranged.Systems;
 
@@ -87,7 +88,7 @@ public sealed partial class GunSystem : SharedGunSystem
     [Dependency] private readonly DamageExamineSystem _damageExamine = default!;
     [Dependency] private readonly PricingSystem _pricing = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
-    [Dependency] private readonly StaminaSystem _stamina = default!;
+    [Dependency] private readonly SharedStaminaSystem _stamina = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedMapSystem _map = default!;
 
@@ -153,6 +154,15 @@ public sealed partial class GunSystem : SharedGunSystem
         mapDirection = toMap - fromMap.Position;
         mapAngle = mapDirection.ToAngle(); // HardLight
         var gunVelocity = Physics.GetMapLinearVelocity(fromEnt);
+
+        // GetMapLinearVelocity walks fromEnt's parent chain, but in ship-mounted gun paths
+        // (FireControl, SpaceArtillery) fromCoordinates can already be map-parented or race
+        // with reparenting, causing the walk to return Vector2.Zero. This makes shells appear
+        // to spawn from the ship's centre and lose forward range when the ship is moving.
+        // Override with the firing grid's authoritative LinearVelocity when we know it.
+        // No effect on off-grid handheld guns (gridUid is EntityUid.Invalid).
+        if (gridUid != EntityUid.Invalid && TryComp<PhysicsComponent>(gridUid, out var gridPhysics))
+            gunVelocity = gridPhysics.LinearVelocity;
 
         // I must be high because this was getting tripped even when true.
         // DebugTools.Assert(direction != Vector2.Zero);
@@ -224,8 +234,17 @@ public sealed partial class GunSystem : SharedGunSystem
 
                     if (hitscan.Reflective != ReflectType.None)
                     {
-                        for (var reflectAttempt = 0; reflectAttempt < 3; reflectAttempt++)
+                        var reflectAttempts = 0;
+                        var allowUnlimitedBounces = false;
+
+                        while (true)
                         {
+                            if (reflectAttempts >= 20)
+                                break;
+
+                            if (reflectAttempts >= 3 && !allowUnlimitedBounces)
+                                break;
+
                             var ray = new CollisionRay(from.Position, dir, hitscan.CollisionMask);
                             var rayCastResults =
                                 Physics.IntersectRay(from.MapId, ray, hitscan.MaxLength, lastUser, false).ToList();
@@ -240,6 +259,9 @@ public sealed partial class GunSystem : SharedGunSystem
                                 // Checks if the laser should pass over unless targeted by its user
                                 foreach (var collide in rayCastResults)
                                 {
+                                    if (hitscan.Reflective != ReflectType.Energy && HasComp<NullSpaceComponent>(collide.HitEntity))
+                                        continue;
+
                                     if (collide.HitEntity != gun.Target &&
                                         CompOrNull<RequireProjectileTargetComponent>(collide.HitEntity)?.Active == true)
                                     {
@@ -252,20 +274,24 @@ public sealed partial class GunSystem : SharedGunSystem
                             }
 
                             var hit = result.HitEntity;
-                            lastHit = hit;
 
-                            FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user);
+                                FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user, gunUid);
 
                             var ev = new HitScanReflectAttemptEvent(user, gunUid, hitscan.Reflective, dir, false);
                             RaiseLocalEvent(hit, ref ev);
 
                             if (!ev.Reflected)
+                            {
+                                lastHit = hit;
                                 break;
+                            }
 
+                            allowUnlimitedBounces = TryComp<BeamPrismComponent>(hit, out _);
                             fromEffect = Transform(hit).Coordinates;
                             from = TransformSystem.ToMapCoordinates(fromEffect);
                             dir = ev.Direction;
                             lastUser = hit;
+                            reflectAttempts++;
                         }
                     }
 
@@ -309,7 +335,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     }
                     else
                     {
-                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan, null, user);
+                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan, null, user, gunUid);
                     }
 
                     // Notify listeners about hitscan raycast result (e.g., to spawn effects/entities on hit)
@@ -472,12 +498,12 @@ public sealed partial class GunSystem : SharedGunSystem
     // TODO: Pseudo RNG so the client can predict these.
     #region Hitscan effects
 
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? user = null)
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? user = null, EntityUid? gunUid = null)
     {
         // Raise custom event for radar tracking
-        // Use the actual user as shooter instead of trying to derive from coordinates
+        // Keep both the firing gun and the user so radar logic can key off the weapon entity.
         var shooter = user ?? GetShooterFromCoordinates(fromCoordinates);
-        var radarEv = new _Mono.Radar.HitscanRadarSystem.HitscanFireEffectEvent(fromCoordinates, distance, angle, hitscan, hitEntity, shooter);
+        var radarEv = new _Mono.Radar.HitscanRadarSystem.HitscanFireEffectEvent(fromCoordinates, distance, angle, hitscan, hitEntity, gunUid, shooter);
         RaiseLocalEvent(radarEv);
 
         // Lord

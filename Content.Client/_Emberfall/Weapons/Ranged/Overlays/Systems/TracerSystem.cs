@@ -28,7 +28,7 @@ public sealed class TracerSystem : EntitySystem
     private void OnTracerStart(Entity<TracerComponent> ent, ref ComponentStartup args)
     {
         var xform = Transform(ent);
-        var pos = _transform.GetWorldPosition(xform);
+        var pos = xform.Coordinates.Position; // HardLight: _transform.GetWorldPosition(xform)<xform.Coordinates.Position
 
         ent.Comp.Data = new TracerData(
             new List<Vector2> { pos },
@@ -51,7 +51,7 @@ public sealed class TracerSystem : EntitySystem
                 continue;
             }
 
-            var currentPos = _transform.GetWorldPosition(xform);
+            var currentPos = xform.Coordinates.Position; // HardLight: _transform.GetWorldPosition(xform)<xform.Coordinates.Position
             tracer.Data.PositionHistory.Add(currentPos);
 
             while (tracer.Data.PositionHistory.Count > 2 &&
@@ -86,11 +86,26 @@ public sealed class TracerSystem : EntitySystem
             if (positions.Count < 2)
                 continue;
 
+            // HardLight start: Account for parent entity movement/rotation to keep tracer trajectory consistent when attached to moving grids.
+            // This is done by treating the first position as a local offset and applying the parent's transform to it.
+            var parentPos = Vector2.Zero;
+            var parentRot = Angle.Zero;
+
+            if (xform.ParentUid != EntityUid.Invalid)
+            {
+                var parent = Transform(xform.ParentUid);
+                parentPos = _transform.GetWorldPosition(parent);
+                parentRot = _transform.GetWorldRotation(parent);
+            }
+            // HardLight end
+
             handle.SetTransform(Matrix3x2.Identity);
 
             for (var i = 1; i < positions.Count; i++)
             {
-                handle.DrawLine(positions[i - 1], positions[i], tracer.Color);
+                var start = parentPos + parentRot.RotateVec(positions[i - 1]); // HardLight
+                var end = parentPos + parentRot.RotateVec(positions[i]); // HardLight
+                handle.DrawLine(start, end, tracer.Color); // HardLight
             }
         }
     }

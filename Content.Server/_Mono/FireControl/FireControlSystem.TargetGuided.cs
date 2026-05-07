@@ -22,6 +22,10 @@ public sealed partial class FireControlSystem
     /// </summary>
     private readonly Dictionary<EntityUid, EntityCoordinates> _consoleMousePositions = new();
 
+    // Scratch buffers reused per Update tick to avoid per-tick allocations.
+    private readonly HashSet<EntityUid> _scratchActiveConsoles = new();
+    private readonly List<EntityUid> _scratchConsolesToRemove = new();
+
     /// <summary>
     /// Registers handlers for events related to target guided projectiles.
     /// </summary>
@@ -113,8 +117,15 @@ public sealed partial class FireControlSystem
     {
         base.Update(frameTime);
 
-        // Update target positions for active missiles based on the current cursor position
-        foreach (var missileUid in _activeMissiles.ToArray())
+        CleanupVisualizationEntities();
+
+        if (_activeMissiles.Count == 0 && _consoleMousePositions.Count == 0)
+            return;
+
+        // Update target positions for active missiles based on the current cursor position.
+        // Iterate the HashSet directly; SetTargetPosition does not mutate _activeMissiles
+        // (shutdown removal happens via the ComponentShutdown handler), so this is safe.
+        foreach (var missileUid in _activeMissiles)
         {
             if (!TryComp<TargetGuidedComponent>(missileUid, out var guidedComp) ||
                 !guidedComp.ControllingConsole.HasValue)
@@ -138,24 +149,29 @@ public sealed partial class FireControlSystem
     /// </summary>
     private void CleanupConsolePositions()
     {
-        // Get all consoles that are actually controlling missiles
-        var activeConsoles = new HashSet<EntityUid>();
+        if (_consoleMousePositions.Count == 0)
+            return;
+
+        // Collect consoles that are actually controlling missiles into a reused scratch set.
+        _scratchActiveConsoles.Clear();
         foreach (var missileUid in _activeMissiles)
         {
             if (TryComp<TargetGuidedComponent>(missileUid, out var guidedComp) &&
                 guidedComp.ControllingConsole.HasValue)
             {
-                activeConsoles.Add(guidedComp.ControllingConsole.Value);
+                _scratchActiveConsoles.Add(guidedComp.ControllingConsole.Value);
             }
         }
 
-        // Remove positions for consoles without any missiles
-        foreach (var consoleUid in _consoleMousePositions.Keys.ToList())
+        // Find consoles to remove without allocating a Keys.ToList() each tick.
+        _scratchConsolesToRemove.Clear();
+        foreach (var consoleUid in _consoleMousePositions.Keys)
         {
-            if (!activeConsoles.Contains(consoleUid) || !EntityManager.EntityExists(consoleUid))
-            {
-                _consoleMousePositions.Remove(consoleUid);
-            }
+            if (!_scratchActiveConsoles.Contains(consoleUid) || !EntityManager.EntityExists(consoleUid))
+                _scratchConsolesToRemove.Add(consoleUid);
         }
+
+        for (var i = 0; i < _scratchConsolesToRemove.Count; i++)
+            _consoleMousePositions.Remove(_scratchConsolesToRemove[i]);
     }
 }

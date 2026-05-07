@@ -1,0 +1,9 @@
+- type: latheRecipe
+  id: SheetPlastitanium1
+  result: SheetPlastitanium1
+  completetime: 0.06
+  applyMaterialDiscount: false
+  materials:
+    Diamond: 50
+    Bananium: 100
+    Plasteel: 200

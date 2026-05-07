@@ -20,6 +20,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
     public event Action<ButtonEventArgs>? OnSellShip;
     public event Action<ButtonEventArgs>? OnSaveShip;
     public event Action<ButtonEventArgs>? OnOrderApproved;
+    public event Action<ButtonEventArgs>? OnReloadShips;
     private readonly List<VesselSize> _categoryStrings = new();
     private readonly List<VesselClass> _classStrings = new();
     private readonly List<VesselEngine> _engineStrings = new();
@@ -43,6 +44,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         Engines.OnItemSelected += OnEngineItemSelected;
         SellShipButton.OnPressed += (args) => { OnSellShip?.Invoke(args); };
     SaveShipButton.OnPressed += (args) => { OnSaveShip?.Invoke(args); };
+    ReloadShipsButton.OnPressed += (args) => { OnReloadShips?.Invoke(args); };
     }
 
 

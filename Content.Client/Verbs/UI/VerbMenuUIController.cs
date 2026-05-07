@@ -5,6 +5,9 @@ using Content.Client.ContextMenu.UI;
 using Content.Client.Gameplay;
 using Content.Client.Mapping;
 using Content.Shared.Input;
+using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Silicons.StationAi;
+using Content.Shared.Turrets;
 using Content.Shared.Verbs;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
@@ -75,6 +78,13 @@ namespace Content.Client.Verbs.UI
             Close();
         }
 
+        private bool CanOpenVerbMenuInCombat(EntityUid user)
+        {
+            return EntityManager.HasComponent<StationAiTurretComponent>(user)
+                   || EntityManager.HasComponent<BorgBrainComponent>(user)
+                   || EntityManager.HasComponent<StationAiHeldComponent>(user);
+        }
+
         /// <summary>
         ///     Open a verb menu and fill it with verbs applicable to the given target entity.
         /// </summary>
@@ -103,7 +113,7 @@ namespace Content.Client.Verbs.UI
             if (_playerManager.LocalEntity is not {Valid: true} user)
                 return;
 
-            if (!force && _combatMode.IsInCombatMode(user))
+            if (!force && _combatMode.IsInCombatMode(user) && !CanOpenVerbMenuInCombat(user))
                 return;
 
             Close();

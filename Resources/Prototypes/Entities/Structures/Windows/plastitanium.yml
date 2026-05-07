@@ -32,10 +32,7 @@
     interactSuccessSound:
       path: /Audio/Effects/glass_knock.ogg
   - type: Appearance
-  # - type: StaticPrice # Frontier
-  #   price: 100 # Frontier
   - type: BlockWeather
-    # Mono
   - type: ShipRepairable
     repairTime: 20
     repairCost: 50
@@ -65,7 +62,6 @@
         - FullTileMask
         layer:
         - GlassLayer
-      # Mono
   - type: ShipRepairable
     repairTime: 20
     repairCost: 50
@@ -75,12 +71,10 @@
   name: plastitanium window
   parent: PlastitaniumWindowSquareBase
   suffix: indestructible
-  # Frontier: colored indestructible windows
   description: Skub knows this window is too hard to destroy.
   components:
   - type: Sprite
     color: "#cdf3cd"
-  # End Frontier
 
 - type: entity
   id: PlastitaniumWindow
@@ -91,7 +85,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 6000 # vanilla (1000) / CombatOverhaul (6000)
+        damage: 6000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -124,12 +118,11 @@
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: RGlass
-  - type: StaticPrice # Frontier
-    price: 100 # Frontier
-  - type: Construction # Frontier - Harder to break into
-    graph: Plastitanium # Frontier - Harder to break into
-    node: plastitaniumWindow # Frontier - Harder to break into
-      # Mono
+  - type: StaticPrice
+    price: 100
+  - type: Construction
+    graph: Plastitanium
+    node: plastitaniumWindow
   - type: ShipRepairable
     repairTime: 20
     repairCost: 50
@@ -175,7 +168,6 @@
     airBlockedDirection:
     - South
     - East
- # Mono
   - type: ShipRepairable
     repairTime: 20
     repairCost: 50
@@ -185,12 +177,10 @@
   name: plastitanium window
   parent: PlastitaniumWindowDiagonalBase
   suffix: diagonal, indestructible
-  # Frontier: colored indestructible windows
   description: Skub knows this window is too hard to destroy.
   components:
   - type: Sprite
     color: "#cdf3cd"
-  # End Frontier
 
 - type: entity
   id: PlastitaniumWindowDiagonal
@@ -202,7 +192,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 6000 # vanilla (1000) / CombatOverhaul (6000)
+        damage: 6000
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
@@ -235,7 +225,9 @@
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: RGlass
-    # Mono
+  - type: Construction
+    graph: Plastitanium
+    node: plastitaniumWindowDiagonal
   - type: ShipRepairable
     repairTime: 20
     repairCost: 50

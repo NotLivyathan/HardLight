@@ -83,6 +83,9 @@ namespace Content.Server.EUI
             eui.Shutdown();
             _playerData[eui.Player].OpenUIs.Remove(eui.Id);
 
+            if (eui.Player.Status is SessionStatus.Disconnected or SessionStatus.Zombie)
+                return;
+
             var msg = new MsgEuiCtl();
             msg.Id = eui.Id;
             msg.Type = MsgEuiCtl.CtlType.Close;

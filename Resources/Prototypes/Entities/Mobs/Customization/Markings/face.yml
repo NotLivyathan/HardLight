@@ -326,7 +326,7 @@
   id: FaceNosetape
   bodyPart: Head
   markingCategory: Head
-  speciesRestriction: [Dwarf, Human, SlimePerson, Felinid, Tajaran, Oni, Harpy, Arachne]
+  speciesRestriction: [Dwarf, Human, SlimePerson, Felinid, Tajaran, Oni, Harpy, Arachne, Shadekin]
   coloring:
     default:
       type:
@@ -355,7 +355,7 @@
   id: FaceNosestripe
   bodyPart: Head
   markingCategory: Head
-  speciesRestriction: [Dwarf, Human, SlimePerson, Felinid, Tajaran, Oni, Harpy, Arachne]
+  speciesRestriction: [Dwarf, Human, SlimePerson, Felinid, Tajaran, Oni, Harpy, Arachne, Shadekin]
   coloring:
     default:
       type:

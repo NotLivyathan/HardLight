@@ -1,3 +1,27 @@
+# NullSpace
+
+- type: listing
+  id: UplinkNullSpaceTeleporter
+  name: uplink-nullspace-teleporter-name
+  description: uplink-nullspace-teleporter-desc
+  productEntity: ClothingNullSpaceTeleporter
+  icon: { sprite: /Textures/_Starlight/Clothing/Back/nullspaceteleporter.rsi, state: icon }
+  cost:
+    Telecrystal: 20
+  categories:
+  - UplinkWearables
+
+- type: listing
+  id: UplinkNullSpaceGoggles
+  name: uplink-nullspace-goggles-name
+  description: uplink-nullspace-goggles-desc
+  productEntity: ClothingEyesGlassesNullSpace
+  icon: { sprite: /Textures/_Starlight/Clothing/Eyes/Glasses/nullspacegoogles.rsi, state: icon }
+  cost:
+    Telecrystal: 5
+  categories:
+  - UplinkWearables
+
 # Cybernetics
 
 - type: listing

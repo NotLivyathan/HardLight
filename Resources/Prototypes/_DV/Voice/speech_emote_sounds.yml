@@ -318,6 +318,8 @@
       path: /Audio/Animals/fox_squeak.ogg #HL
     Yip: #HL
       path: /Audio/_Starlight/Effects/yip.ogg #HL
+    Pout: #HL
+      collection: Whine #HL
 
 
 
@@ -378,4 +380,6 @@
       path: /Audio/Animals/fox_squeak.ogg #HL
     Yip: #HL
       path: /Audio/_Starlight/Effects/yip.ogg #HL
+    Pout: #HL
+      collection: Whine #HL
 

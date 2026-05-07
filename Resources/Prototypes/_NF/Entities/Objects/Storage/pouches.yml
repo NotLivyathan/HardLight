@@ -7,6 +7,9 @@
   suffix: Empty
   abstract: true
   components:
+  - type: Tag # Hardlight: Pouch tag; TODO pouch belt
+    tags:
+    - Pouch
   - type: Sprite
     sprite: _NF/Objects/Storage/Pouches/pouch.rsi
   - type: Item
@@ -20,7 +23,7 @@
   - type: Storage
     maxItemSize: Small
     grid:
-    - 0,0,2,1
+    - 0,0,3,1 # Hardlight: 2x3 -> 4x2
     blacklist:
       components: [ Storage ] # No bagception
   - type: StaticPrice
@@ -181,7 +184,7 @@
 - type: entity
   id: NFPouchSr
   parent: NFPouchUtility
-  name: station representative's pouch
+  name: harbor master's pouch # HardLight: station representative<harbor master; migrate to _HL in the future
   components:
   - type: Sprite
     layers:
@@ -291,7 +294,22 @@
   id: NFPouchEngineering
   parent: NFPouchUtility
   name: engineer's pouch
+  description: Specially designed to fit tools easily. # Hardlight: Specific description
   components:
+  - type: Storage # Hardlight start: 2x6 but only fits tools
+    maxItemSize: Normal
+    grid:
+    - 0,0,5,1
+    whitelist:
+      components:
+        - Tool
+        - GasAnalyzer
+        - SprayPainter
+        - Flashlight
+        - TrayScanner
+        - HolosignProjector
+      tags:
+        - CableCoil # Hardlight end
   - type: Sprite
     layers:
     - state: base
@@ -466,7 +484,18 @@
   id: NFPouchFirstAid
   parent: NFPouchBase
   name: first aid pouch
+  description: Contains several subcompartments for a first responder's topicals. # Hardlight: Specific description
   components:
+  - type: Storage # Hardlight: 4x3 (1/4th medical bag), only fits topicals
+    maxItemSize: Small
+    grid:
+    - 0,0,3,2
+    whitelist:
+      tags:
+        - Ointment
+        - Brutepack
+        - Bloodpack
+        - Gauze # Hardlight end
   - type: Sprite
     layers:
     - state: base
@@ -623,7 +652,22 @@
   id: NFPouchJanitor
   parent: NFPouchUtility
   name: janitor's pouch
+  description: Somehow bigger on the inside. Stores soap, buckets, and other janitorial tools. # Hardlight: Specific description
   components:
+  - type: Storage # Hardlight start: 4x4, holds janitor stuff.
+    maxItemSize: Normal
+    grid:
+    - 0,0,3,3
+    whitelist:
+      components:
+        - LightReplacer
+        - Bucket
+      tags:
+        - Mop # rags
+        - WetFloorSign
+        - Plunger
+        - Soap
+        - Spray # Hardlight end
   - type: Sprite
     layers:
     - state: base
@@ -673,7 +717,18 @@
   id: NFPouchHydroponics
   parent: NFPouchUtility
   name: botanist's pouch
+  description: Made of all-natural materials for holding your seeds. # Hardlight: Specific description
   components:
+  - type: Storage # Hardlight: 4x4, fits seeds and bottles/vials
+    maxItemSize: Tiny
+    grid:
+    - 0,0,3,3
+    whitelist:
+      tags: # intended for robust, dieth, etc
+        - CentrifugeCompatible
+        - Bottle
+      components:
+        - Seed
   - type: Sprite
     layers:
     - state: base
@@ -986,7 +1041,115 @@
   id: NFPouchPrivateSecurity
   parent: NFPouchUtility
   name: private security pouch
+  description: Holds your magazines securely. # Hardlight: Specific description
   components:
+  - type: Storage # Hardlight: 6x4, but only holds magazines.
+    maxItemSize: Small
+    grid:
+    - 0,0,5,3
+    whitelist:
+      tags: # `cat */tags.yml | grep "id: .*Magazine" | sed 's/.*id:/-/'` my beloved
+        - Magazine9x19mmSpecial
+        - Magazine762x39mmSubsonic
+        - Magazine127x99mm
+        - HLMagazineCaselessRifle
+        - HLMagazineCaselessRifleShort
+        - HLMagazinePistolCaselessRifle
+        - NFMagazineRifle20
+        - MagazinePistolSubMachineGun
+        - NFMagazinePistol45
+        - NFMagazineSubMachineGunTopMountedPistol35
+        - NFMagazineSubMachineGunPistol45
+        - NFMagazinePistol35
+        - NFMagazineHighCapacityPistol35
+        - NFMagazineSubMachineGunPistol35
+        - NFMagazineClipRifle20
+        - NFMagazineRifle30
+        - NFMagazineLowCapacityRifle30
+        - NFMagazineDrumRifle20
+        - NFMagazineSubMachineGunnTopMountedPistol35
+        - MagazineShotgun
+        - NFMagazineBoxRifle30
+        - MagazineMagnum
+        - MagazineMagnumSubMachineGun
+        - MagazineGrenade
+        - MagazinePistolSubMachineGunTopMounted
+        - MagazinePistol
+        - MagazinePistolHighCapacity
+        - MagazinePistolSubMachineGunn
+        - MagazineLightRifleBox
+        - MagazineLightRifle
+        - MagazineLightRiflePan
+        - MagazineCaselessRifle
+        - MagazinePistolCaselessRifle
+        - MagazineRifle
+        - MagazineNovaliteC1
+        - NFMagazineRi20
+        - NFMagazineBoRifle30
+        - NFMagazineCrifle20
+        - NFMagazineDrRifle20
+        - NFMagazinePi35
+        - NFMagazineHiCaPistol35
+        - NFMagazineSuMaGunPistol35
+        - MagazineAMR
+        - MagazineRailgunTag
+        - Magazine75Bolt
+        - MagazineRiotGun
+        - MagazineEsar550Tag
+        - ForgedRifleMagazine
+        - Magazine762x51mmFMJ
+        - Magazine762x51mmLowCapacityFMJ
+        - Magazine762x51mmBox
+        - Magazine762x54mmRFMJ
+        - Magazine762x54mmRBox
+        - Magazine556x45mmFMJ
+        - Magazine556x45mmBox
+        - Magazine762x39mmFMJ
+        - Magazine762x39mmLowCapacityFMJ
+        - Magazine762x39mmBox
+        - Magazine46x30mmPistolFMJ
+        - Magazine46x30mmPistolHighCapacityFMJ
+        - Magazine46x30mmSubMachineGunFMJ
+        - Magazine46x30mmSubMachineGunTopMountedFMJ
+        - Magazine46x30mmFMJBox
+        - Magazine45_ACPPistolFMJ
+        - Magazine45_ACPPistolHighCapacityFMJ
+        - Magazine45_ACPSubMachineGunFMJ
+        - Magazine45_ACPSubMachineGunTopMountedFMJ
+        - Magazine45_ACPFMJBox
+        - Magazine45_magnumPistolFMJ
+        - Magazine9x19mm
+        - Magazine9x19mmImprovised
+        - Magazine9x19mmSMGImprovised
+        - Magazine9x19mmPistolFMJ
+        - Magazine9x19mmPistolHighCapacityFMJ
+        - Magazine9x19mmSubMachineGunFMJ
+        - Magazine9x19mmSubMachineGunTopMountedFMJ
+        - Magazine9x19mmFMJBox
+        - Magazine57x28mmPistolFMJ
+        - Magazine57x28mmPistolHighCapacityFMJ
+        - Magazine57x28mmSubMachineGunFMJ
+        - Magazine57x28mmSubMachineGunTopMountedFMJ
+        - Magazine57x28mmFMJBox
+        - MagazineDP29
+        - Magazine8x65mmSKR
+        - MagazineBox8x65mmSKR
+        - Magazine12_gaugeBuckshot
+        - MagazineDMR
+        - MagazineAsmgt
+        - MagazineBattery
+        - MagazinePistolDP
+        - MagazineRifleM52
+        - MagazineSMGPPSH
+        - MagazineSMGUzi
+        - MagazineCalico
+        - Magazine635x40mmCaseless
+        - Magazine762x39mmPan
+        - Magazine635x40mmCaselessPistol
+        - Magazine12_gaugeBuckshot
+        - Magazine45_magnumSubMachineGunFMJ
+        - Magazine8x65mmSKR # mono
+        - Magazine40mm
   - type: Sprite
     layers:
     - state: base

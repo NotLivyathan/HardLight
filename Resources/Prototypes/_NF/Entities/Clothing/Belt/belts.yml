@@ -5,9 +5,9 @@
   description: A webbing created by Arcadia Industries. Seems very capable of fitting many items.
   components:
   - type: Sprite
-    sprite: _NF/Clothing/Belt/arcadia.rsi
+    sprite: _NF/Clothing/Belt/arcadia_webbing.rsi # HL/Coyote: New sprite.
   - type: Clothing
-    sprite: _NF/Clothing/Belt/arcadia.rsi
+    sprite: _NF/Clothing/Belt/arcadia_webbing.rsi # HL/Coyote: New sprite.
 
 - type: entity
   parent: NFClothingBeltStorageBase
@@ -102,3 +102,14 @@
     sprite: _NF/Clothing/Belt/martial_black.rsi
   - type: Clothing
     sprite: _NF/Clothing/Belt/martial_black.rsi
+
+- type: entity # HL/Coyote: Arcadia belt
+  id: ClothingBeltArcadiaActual # this is because webbings is belts
+  name: arcadia belt
+  parent: NFClothingBeltStorageBase
+  description: A belt created by Arcadia Industries. Seems very capable of fitting many items.
+  components:
+  - type: Sprite
+    sprite: _NF/Clothing/Belt/arcadia_belt.rsi
+  - type: Clothing
+    sprite: _NF/Clothing/Belt/arcadia_belt.rsi

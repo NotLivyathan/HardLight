@@ -53,6 +53,7 @@ flavor-base-terrible = terrible
 flavor-base-mindful = mindful
 flavor-base-chewy = chewy
 flavor-base-trashy = trashy
+flavor-base-motivating = motivating
 
 # Complex flavors. Put a flavor here when you want something that's more
 # specific.
@@ -333,6 +334,7 @@ flavor-complex-vodka-martini = like a spy movie from Russia
 flavor-complex-vodka-tonic = refreshingly bitter
 flavor-complex-coconut-rum = like nutty fermented sugar
 flavor-complex-bacchus-blessing = like a wall of bricks
+flavor-complex-nebula-dream = like you're a rock star
 
 ### This is exactly what pilk tastes like. I'm not even joking. I might've been a little drunk though
 flavor-complex-pilk = like sweet milk

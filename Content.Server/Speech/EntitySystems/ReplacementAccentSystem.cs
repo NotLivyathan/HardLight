@@ -18,9 +18,23 @@ namespace Content.Server.Speech.EntitySystems
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly ILocalizationManager _loc = default!;
 
+        // Cache compiled word-boundary regexes keyed by the resolved replacement word.
+        // Building a new Regex per word per spoken message was a major hotspot in chat-heavy rounds.
+        private readonly Dictionary<string, Regex> _wordRegexCache = new();
+
         public override void Initialize()
         {
             SubscribeLocalEvent<ReplacementAccentComponent, AccentGetEvent>(OnAccent);
+        }
+
+        private Regex GetWordRegex(string word)
+        {
+            if (_wordRegexCache.TryGetValue(word, out var regex))
+                return regex;
+
+            regex = new Regex($@"(?<!\w){word}(?!\w)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            _wordRegexCache[word] = regex;
+            return regex;
         }
 
         private void OnAccent(EntityUid uid, ReplacementAccentComponent component, AccentGetEvent args)
@@ -60,13 +74,14 @@ namespace Content.Server.Speech.EntitySystems
             {
                 var f = _loc.GetString(first);
                 var r = _loc.GetString(replace);
+                var regex = GetWordRegex(f);
                 // this is kind of slow but its not that bad
                 // essentially: go over all matches, try to match capitalization where possible, then replace
                 // rather than using regex.replace
-                for (int i = Regex.Count(maskMessage, $@"(?<!\w){f}(?!\w)", RegexOptions.IgnoreCase); i > 0; i--)
+                for (int i = regex.Count(maskMessage); i > 0; i--)
                 {
                     // fetch the match again as the character indices may have changed
-                    Match match = Regex.Match(maskMessage, $@"(?<!\w){f}(?!\w)", RegexOptions.IgnoreCase);
+                    Match match = regex.Match(maskMessage);
                     var replacement = r;
 
                     // Intelligently replace capitalization

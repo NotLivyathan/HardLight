@@ -5,7 +5,7 @@
   id: HarpyWingDefaultHuescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -22,7 +22,7 @@
   id: HarpyWingDefaultWhitescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -39,7 +39,7 @@
   id: HarpyWingClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -56,7 +56,7 @@
   id: HarpyWingFoldedHuescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -73,7 +73,7 @@
   id: HarpyWingFoldedWhitescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -90,7 +90,7 @@
   id: HarpyWingFoldedWhitescale2
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -107,7 +107,7 @@
   id: HarpyWingOwlHuescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -124,7 +124,7 @@
   id: HarpyWingOwlWhitescale
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   coloring:
     default:
       type:
@@ -258,7 +258,7 @@
   id: HarpyWing2ToneClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: harpy_2tone_1
@@ -269,7 +269,7 @@
   id: HarpyWing3ToneClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: harpy_3tone_1
@@ -282,7 +282,7 @@
   id: HarpyWingSpeckledClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: harpy_speckled_1
@@ -293,7 +293,7 @@
   id: HarpyWingUndertoneClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: harpy_undertone_1
@@ -304,7 +304,7 @@
   id: HarpyWingTipsClassic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: harpy_wingtip_1
@@ -315,7 +315,7 @@
   id: HarpyWingBat
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: bat_wings_tone_1
@@ -326,7 +326,7 @@
   id: HarpyWingBionic
   bodyPart: RArmExtension # Frontier: RArm<RArmExtension
   markingCategory: Arms
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _EE/Mobs/Customization/Harpy/harpy_wings.rsi
       state: bionic_wings_tone_1

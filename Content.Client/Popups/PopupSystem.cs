@@ -33,11 +33,14 @@ namespace Content.Client.Popups
         [Dependency] private readonly ExamineSystemShared _examine = default!;
         [Dependency] private readonly SharedTransformSystem _transform = default!;
 
-        public IReadOnlyCollection<WorldPopupLabel> WorldLabels => _aliveWorldLabels.Values;
-        public IReadOnlyCollection<CursorPopupLabel> CursorLabels => _aliveCursorLabels.Values;
+        public IReadOnlyList<WorldPopupLabel> WorldLabels => _orderedWorldLabels; // HardLight: IReadOnlyCollection<IReadOnlyList; _aliveWorldLabels.Values<_orderedWorldLabels
+        public IReadOnlyList<CursorPopupLabel> CursorLabels => _orderedCursorLabels; // HardLight: IReadOnlyCollection<IReadOnlyList; _aliveCursorLabels.Values<_orderedWorldLabels
 
         private readonly Dictionary<WorldPopupData, WorldPopupLabel> _aliveWorldLabels = new();
         private readonly Dictionary<CursorPopupData, CursorPopupLabel> _aliveCursorLabels = new();
+        private readonly List<WorldPopupLabel> _orderedWorldLabels = new(); // HardLight
+        private readonly List<CursorPopupLabel> _orderedCursorLabels = new(); // HardLight
+        private ulong _nextPopupSequence; // HardLight: Incrementing sequence to maintain order of popups for stacking.
 
         public const float MinimumPopupLifetime = 0.7f;
         public const float MaximumPopupLifetime = 5f;
@@ -49,7 +52,8 @@ namespace Content.Client.Popups
             { PopupType.Medium, "12" },
             { PopupType.MediumCaution, "12" },
             { PopupType.Large, "15" },
-            { PopupType.LargeCaution, "15" }
+            { PopupType.LargeCaution, "15" },
+            { PopupType.Cryptic, "15" }
         };
 
         private bool _shouldLogInChat;
@@ -111,7 +115,8 @@ namespace Content.Client.Popups
             // WD EDIT START
             if (_shouldLogInChat &&
                 _playerManager.LocalEntity != null &&
-                _examine.InRangeUnOccluded(_playerManager.LocalEntity.Value, coordinates, 10))
+                _examine.InRangeUnOccluded(_playerManager.LocalEntity.Value, coordinates, 10) &&
+                type != PopupType.Cryptic)
             {
                 var fontsize = FontSizeDict.GetValueOrDefault(type, "10");
                 var fontcolor = type is PopupType.LargeCaution or PopupType.MediumCaution or PopupType.SmallCaution
@@ -135,9 +140,11 @@ namespace Content.Client.Popups
             {
                 Text = message,
                 Type = type,
+                Sequence = ++_nextPopupSequence, // HardLight: Assign sequence for stacking order.
             };
 
             _aliveWorldLabels.Add(popupData, label);
+            _orderedWorldLabels.Add(label); // HardLight
         }
 
         #region Abstract Method Implementations
@@ -183,9 +190,11 @@ namespace Content.Client.Popups
             {
                 Text = message,
                 Type = type,
+                Sequence = ++_nextPopupSequence, // HardLight: Assign sequence for stacking order.
             };
 
             _aliveCursorLabels.Add(popupData, label);
+            _orderedCursorLabels.Add(label); // HardLight
         }
 
         public override void PopupCursor(string? message, PopupType type = PopupType.Small)
@@ -326,6 +335,13 @@ namespace Content.Client.Popups
 
         public static float GetPopupLifetime(PopupLabel label)
         {
+            if (label.Type == PopupType.Cryptic)
+            {
+                const float charsPerSecond = 5f;
+                var timeToDisplay = label.Text.Length / charsPerSecond;
+                return Math.Max(timeToDisplay + 4f, MinimumPopupLifetime);
+            }
+
             return Math.Clamp(PopupLifetimePerCharacter * label.Text.Length,
                 MinimumPopupLifetime,
                 MaximumPopupLifetime);
@@ -349,6 +365,9 @@ namespace Content.Client.Popups
                 }
                 foreach (var data in aliveWorldToRemove)
                 {
+                    if (_aliveWorldLabels.TryGetValue(data, out var label)) // HardLight
+                        _orderedWorldLabels.Remove(label);
+
                     _aliveWorldLabels.Remove(data);
                 }
             }
@@ -366,6 +385,9 @@ namespace Content.Client.Popups
                 }
                 foreach (var data in aliveCursorToRemove)
                 {
+                    if (_aliveCursorLabels.TryGetValue(data, out var label)) // HardLight
+                        _orderedCursorLabels.Remove(label);
+
                     _aliveCursorLabels.Remove(data);
                 }
             }
@@ -377,6 +399,7 @@ namespace Content.Client.Popups
             public string Text { get; set; } = string.Empty;
             public float TotalTime { get; set; }
             public int Repeats = 1;
+            public ulong Sequence { get; set; } // HardLight: Added sequence for stacking order.
         }
 
         public sealed class WorldPopupLabel(EntityCoordinates coordinates) : PopupLabel

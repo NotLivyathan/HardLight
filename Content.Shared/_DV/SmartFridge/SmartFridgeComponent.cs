@@ -27,8 +27,10 @@ public sealed partial class SmartFridgeComponent : Component
     [DataField, AutoNetworkedField]
     public HashSet<SmartFridgeEntry> Entries = new();
 
+    // Map from entry name to the contained net-entities. Using string keys avoids
+    // complex-key YAML serialization issues when saving grids/ships.
     [DataField, AutoNetworkedField]
-    public Dictionary<SmartFridgeEntry, HashSet<NetEntity>> ContainedEntries = new();
+    public Dictionary<string, HashSet<NetEntity>> ContainedEntries = new();
 
     [DataField]
     public TimeSpan EjectCooldown = TimeSpan.FromSeconds(1.2);
@@ -58,7 +60,7 @@ public sealed partial class SmartFridgeComponent : Component
     [DataField]
     public SoundSpecifier SoundDeny = new SoundPathSpecifier("/Audio/Machines/custom_deny.ogg");
 
-    // Frontier: 
+    // Frontier:
     /// <summary>
     /// The maximum number of entities that can be stored in the fridge
     /// </summary>

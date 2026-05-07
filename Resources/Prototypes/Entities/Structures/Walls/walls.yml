@@ -139,7 +139,7 @@
   - type: ShipRepairable
     repairTime: 2
     repairCost: 3
-# end mono   
+# end mono
   - type: RadiationBlocker
     resistance: 2
   - type: BlockWeather
@@ -213,7 +213,7 @@
     fx: EffectRCDDeconstruct8 # Frontier
   - type: StaticPrice # Frontier 75
     price: 75 # Frontier 75
-  # mono. HL - Brass is more expensive than steel for similar health stats, so same repair time but +1 cost. 
+  # mono. HL - Brass is more expensive than steel for similar health stats, so same repair time but +1 cost.
   - type: ShipRepairable
     repairTime: 2
     repairCost: 4
@@ -602,6 +602,9 @@
   - type: Tag
     tags:
     - Wall
+  - type: Construction
+    graph: Girder
+    node: plastitaniumWall
   - type: Destructible
     thresholds:
     - trigger:
@@ -706,7 +709,7 @@
     repairTime: 5
     repairCost: 6
 
-  
+
 - type: entity
   parent: WallDiagonal
   id: WallPlastitaniumDiagonal
@@ -728,6 +731,9 @@
   - type: Icon
     sprite: Structures/Walls/plastitanium_diagonal.rsi
     state: state0
+  - type: Construction
+    graph: Girder
+    node: plastitaniumWallDiagonal
   - type: Destructible
     thresholds:
     - trigger:
@@ -1188,7 +1194,7 @@
     cost: 6 #Frontier
     delay: 8 #Frontier
     fx: EffectRCDDeconstruct8 #Frontier
-  # Mono. 
+  # Mono.
   - type: ShipRepairable
     repairTime: 5
     repairCost: 6
@@ -1514,7 +1520,7 @@
     cost: 6 #Frontier
     delay: 8 #Frontier
     fx: EffectRCDDeconstruct8 #Frontier
-  # Mono. HL - Uranium walls are strong and have rad resistence, so slower and more expensive 
+  # Mono. HL - Uranium walls are strong and have rad resistence, so slower and more expensive
   - type: ShipRepairable
     repairTime: 6
     repairCost: 10

@@ -5,6 +5,7 @@ using Content.Shared.Examine;
 using Content.Shared.Rejuvenate;
 using Content.Shared.Timing;
 using JetBrains.Annotations;
+using Robust.Shared.Collections;
 using Robust.Shared.Utility;
 using Robust.Shared.Timing;
 
@@ -14,6 +15,12 @@ namespace Content.Server.Power.EntitySystems
     public sealed class BatterySystem : EntitySystem
     {
         [Dependency] private readonly IGameTiming _timing = default!;
+
+        // Reused to avoid a fresh ValueList backing array per tick / per net sync.
+        // Two separate fields so PostSync and Update cannot stomp on each other if any
+        // ChargeChangedEvent subscriber were ever to re-raise either event.
+        private readonly List<(EntityUid Uid, float Charge)> _scratchPostSyncUpdates = new();
+        private readonly List<(EntityUid Uid, float Charge)> _scratchAutoRechargeUpdates = new();
 
         public override void Initialize()
         {
@@ -78,15 +85,28 @@ namespace Content.Server.Power.EntitySystems
         {
             // Ignoring entity pausing. If the entity was paused, neither component's data should have been changed.
             var enumerator = AllEntityQuery<PowerNetworkBatteryComponent, BatteryComponent>();
+            var updates = _scratchPostSyncUpdates;
+            updates.Clear();
+
             while (enumerator.MoveNext(out var uid, out var netBat, out var bat))
             {
-                SetCharge(uid, netBat.NetworkBattery.CurrentStorage, bat);
+                updates.Add((uid, netBat.NetworkBattery.CurrentStorage));
             }
+
+            foreach (var update in updates)
+            {
+                SetCharge(update.Uid, update.Charge);
+            }
+
+            updates.Clear();
         }
 
         public override void Update(float frameTime)
         {
             var query = EntityQueryEnumerator<BatterySelfRechargerComponent, BatteryComponent>();
+            var updates = _scratchAutoRechargeUpdates;
+            updates.Clear();
+
             while (query.MoveNext(out var uid, out var comp, out var batt))
             {
 
@@ -99,8 +119,15 @@ namespace Content.Server.Power.EntitySystems
                         continue;
                 }
 
-                SetCharge(uid, batt.CurrentCharge + comp.AutoRechargeRate * frameTime, batt);
+                updates.Add((uid, batt.CurrentCharge + comp.AutoRechargeRate * frameTime));
             }
+
+            foreach (var update in updates)
+            {
+                SetCharge(update.Uid, update.Charge);
+            }
+
+            updates.Clear();
         }
 
         /// <summary>

@@ -60,31 +60,14 @@ namespace Content.Server.Shuttles.Save
 
             var shipyardGridSaveSystem = _entitySystemManager.GetEntitySystem<Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem>();
             Logger.Info($"Player {playerSession.Name} is saving deed-referenced ship {shipName} (grid {gridToSave})");
-            var success = shipyardGridSaveSystem.TrySaveGridAsShip(gridToSave, shipName, playerSession.UserId.ToString(), playerSession);
-            if (success)
+            var result = shipyardGridSaveSystem.TrySaveGridAsTrackedShip(gridToSave, deedUid, shipName, playerSession);
+            if (result == Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem.TrackedShipSaveResult.Queued)
             {
-                Logger.Info($"Successfully saved ship {shipName}");
-                // Mirror ShipyardGridSaveSystem deed/grid cleanup to avoid stale ownership
-                if (_entityManager.TryGetComponent<ShuttleDeedComponent>(deedUid, out var deedComp))
-                {
-                    _entityManager.RemoveComponent<ShuttleDeedComponent>(deedUid);
-                }
-
-                // Remove any other deeds that referenced this shuttle
-                var toRemove = new List<EntityUid>();
-                var query = _entityManager.EntityQueryEnumerator<ShuttleDeedComponent>();
-                while (query.MoveNext(out var ent, out var deedRef))
-                {
-                    if (deedRef.ShuttleUid != null && _entityManager.TryGetEntity(deedRef.ShuttleUid.Value, out var entUid) && entUid == gridToSave)
-                        toRemove.Add(ent);
-                }
-                foreach (var uidToClear in toRemove)
-                {
-                    _entityManager.RemoveComponent<ShuttleDeedComponent>(uidToClear);
-                }
-
-                // Delete the live grid after save to reset ownership chain
-                _entityManager.QueueDeleteEntity(gridToSave);
+                Logger.Info($"Queued tracked ship save for {shipName}");
+            }
+            else if (result == Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem.TrackedShipSaveResult.AlreadyInProgress)
+            {
+                Logger.Info($"Skipped duplicate tracked ship save request for {shipName}");
             }
             else
             {
@@ -119,13 +102,15 @@ namespace Content.Server.Shuttles.Save
 
             Logger.Info($"Player {playerSession.Name} is saving ship {shipName} via ShipyardGridSaveSystem");
 
-            // Save the ship using the working grid-based system (synchronously on main thread)
-            var success2 = shipyardGridSaveSystem.TrySaveGridAsShip(shuttleUid.Value, shipName, playerSession.UserId.ToString(), playerSession);
-            if (success2)
+            // Save the ship using the tracked grid-based system so cleanup only happens after the client writes the file.
+            var result = shipyardGridSaveSystem.TrySaveGridAsTrackedShip(shuttleUid.Value, deedUid, shipName, playerSession);
+            if (result == Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem.TrackedShipSaveResult.Queued)
             {
-                // Clean up the deed after successful save
-                _entityManager.RemoveComponent<ShuttleDeedComponent>(deedUid);
-                Logger.Info($"Successfully saved and removed ship {shipName}");
+                Logger.Info($"Queued tracked ship save for {shipName}");
+            }
+            else if (result == Content.Server._NF.Shipyard.Systems.ShipyardGridSaveSystem.TrackedShipSaveResult.AlreadyInProgress)
+            {
+                Logger.Info($"Skipped duplicate tracked ship save request for {shipName}");
             }
             else
             {

@@ -22,19 +22,27 @@ public sealed partial class ShipShieldEmitterComponent : Component
     public float DamageExp = 1.1f;
 
     /// <summary>
+    /// Modifies the total power consumed after damage exponentials are applied.
+    /// </summary>
+    [DataField]
+    public float PowerModifier = 0.5f;
+
+    /// <summary>
     /// Rate at which the emitter heals/reduces its damage per second when powered.
     /// </summary>
     [DataField]
     public float HealPerSecond = 250f;
 
     /// <summary>
-    /// Multiplier applied to healing rate when the emitter is in recharge mode.
+    /// Maximum multiplier applied to healing rate when the emitter is in recharge mode.
+    /// Actual recharge speed scales up toward this multiplier based on how much
+    /// of the emitter's recharge draw the ship can supply.
     /// </summary>
     [DataField]
     public float UnpoweredBonus = 6f;
 
     /// <summary>
-    /// Maximum power consumption limit for the emitter in watts.
+    /// Maximum power consumption limit for additional emitter load in watts.
     /// </summary>
     [DataField]
     public float MaxDraw = 150000f;

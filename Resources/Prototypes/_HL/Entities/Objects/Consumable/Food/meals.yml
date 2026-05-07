@@ -144,3 +144,78 @@
     - type: Sprite
       layers:
       - state: meatbrick
+    
+- type: entity
+  name: meat on a bone
+  parent: FoodMeatRawBase
+  id: FoodMeatOnBone
+  description: A huge chunk of raw meat on a bone.
+  components:
+  - type: Food
+    trash: 
+    - MaterialBones1
+  - type: Sprite
+    sprite: _HL/Objects/Consumable/Food/meatonbone.rsi
+    state: raw
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 27
+        - ReagentId: Fat
+          Quantity: 27
+  - type: SliceableFood
+    count: 3
+    slice: FoodMeat
+  - type: InternalTemperature
+    conductivity: 0.43
+  - type: Construction
+    graph: MeatOnBone
+    node: start
+    defaultTarget: meat on bone
+  - type: Tag
+    tags:
+    - Meat
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Blunt: 10
+    
+- type: entity
+  name: cooked meat on a bone
+  parent: FoodMeatBase
+  id: FoodMeatOnBoneCooked
+  description: A cooked chunk of meat. Smells primal.
+  components:
+  - type: Tag
+    tags:
+    - Cooked
+    - Meat
+  - type: Sprite
+    sprite: _HL/Objects/Consumable/Food/meatonbone.rsi
+    state: cooked
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 30
+        - ReagentId: Protein
+          Quantity: 15
+  - type: SliceableFood
+    count: 3
+    slice: FoodMeatCooked
+  - type: Food
+    trash: 
+    - MaterialBones1
+  - type: Construction
+    graph: MeatOnBone
+    node: meat on bone
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Blunt: 10
+        Heat: 3

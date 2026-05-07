@@ -38,6 +38,14 @@
         enum.WiresVisualLayers.MaintenancePanel:
           True: { visible: false }
           False: { visible: true }
+      # Starlight start
+      enum.EdgeConnectionVisuals.ConnectionMask:
+        computerLayerBody:
+          None: { state: computer, sprite: Structures/Machines/computers.rsi }
+          West: { state: computer_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East: { state: computer_l, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East, West: { state: computer_l_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+      # Starlight end
   - type: AtmosAlertsComputer
   - type: ActivatableUI
     singleUser: true
@@ -134,7 +142,7 @@
           type: WiresBoundUserInterface
   - type: RadarConsole
   - type: WorldLoader
-    radius: 384 # Mono
+    radius: 64 # Mono
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -172,6 +180,11 @@
   - type: ShipRepairable
     repairTime: 10
     repairCost: 30
+  - type: RadarBlip
+    visibleFromOtherGrids: true
+    radarColor: "#03f8fc"
+    scale: 1.5
+    shape: diamond
 
 - type: entity
   parent: [BaseComputerShuttle, BaseShuttleIntercom] # Frontier - BaseShuttleIntercom
@@ -236,7 +249,7 @@
       - Syndicate
   - type: RadarConsole
   - type: WorldLoader
-    radius: 1536
+    radius: 64
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -521,6 +534,16 @@
       state: med_key
     - map: [ "enum.WiresVisualLayers.MaintenancePanel" ]
       state: generic_panel_open
+  # Starlight start
+  - type: GenericVisualizer
+    visuals:
+      enum.EdgeConnectionVisuals.ConnectionMask:
+        computerLayerBody:
+          None: { state: computer, sprite: Structures/Machines/computers.rsi }
+          West: { state: computer_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East: { state: computer_l, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East, West: { state: computer_l_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+  # Starlight end
   - type: PointLight
     radius: 1.5
     energy: 1.6
@@ -1311,7 +1334,7 @@
   #   guides: # Frontier
   #   - CargoBounties # Frontier
   #   - Cargo # Frontier
-  
+
 - type: entity
   parent: BaseComputerAiAccess
   id: ComputerFundingAllocation
@@ -1435,6 +1458,14 @@
           enum.WiresVisualLayers.MaintenancePanel:
             True: { visible: false }
             False: { visible: true }
+        # Starlight start
+        enum.EdgeConnectionVisuals.ConnectionMask:
+          computerLayerBody:
+            None: { state: computer, sprite: Structures/Machines/computers.rsi }
+            West: { state: computer_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+            East: { state: computer_l, sprite: _Starlight/Structures/Machines/computers.rsi }
+            East, West: { state: computer_l_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+        # Starlight end
     - type: SalvageExpeditionConsole
     - type: ActivatableUI
       key: enum.SalvageConsoleUiKey.Expedition
@@ -1857,6 +1888,14 @@
         enum.WiresVisualLayers.MaintenancePanel:
           True: { visible: false }
           False: { visible: true }
+      # Starlight start
+      enum.EdgeConnectionVisuals.ConnectionMask:
+        computerLayerBody:
+          None: { state: computer, sprite: Structures/Machines/computers.rsi }
+          West: { state: computer_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East: { state: computer_l, sprite: _Starlight/Structures/Machines/computers.rsi }
+          East, West: { state: computer_l_r, sprite: _Starlight/Structures/Machines/computers.rsi }
+      # Starlight end
   - type: ApcPowerReceiver
     powerLoad: 1000
   - type: Computer

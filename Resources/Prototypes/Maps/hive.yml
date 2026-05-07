@@ -3,7 +3,7 @@
   mapName: 'The Hive'
   mapPath: /Maps/hive.yml # Floofstation
   minPlayers: 0
-  #maxPlayers: 80 Temporary maybe
+  #maxPlayers: 200 Temporary maybe
   stations:
     TheHive:
       stationProto: StandardNanotrasenStation
@@ -91,3 +91,5 @@
             Lawyer: [ 2, 2 ] #FloofStation
             # MISSING JOB PROTOTYPE
             #Prosecutor: [ 1, 1 ] #FloofStation
+            # Anomaly (1)
+            Anomaly: [ 5, 5 ]

@@ -13,8 +13,10 @@
       sprite: Structures/Piping/Atmospherics/gascanisterport.rsi
       layers:
         - state: gasCanisterPort
-          map: [ "enum.SubfloorLayers.FirstLayer" ]
+          map: [ "enum.SubfloorLayers.FirstLayer", "enum.PipeVisualLayers.Pipe" ]
     - type: Appearance
+    - type: AtmosPipeLayers
+      spriteLayersRsiPaths: {}
     - type: GasPort
     - type: Construction
       graph: GasUnary

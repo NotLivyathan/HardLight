@@ -83,6 +83,11 @@ public sealed class SiliconChargeSystem : EntitySystem
                 || !siliconComp.BatteryPowered)
                 continue;
 
+            // Ghosted/playerless silicon bodies should not keep processing charge loss.
+            if (TryComp<MindContainerComponent>(silicon, out var mindContComp)
+                && !mindContComp.HasMind)
+                continue;
+
             // Check if the Silicon is an NPC, and if so, follow the delay as specified in the CVAR.
             if (siliconComp.EntityType.Equals(SiliconType.Npc))
             {
@@ -104,11 +109,6 @@ public sealed class SiliconChargeSystem : EntitySystem
                 }
                 continue;
             }
-
-            // If the silicon ghosted or is SSD while still being powered, skip it.
-            if (TryComp<MindContainerComponent>(silicon, out var mindContComp)
-                && !mindContComp.HasMind)
-                continue;
 
             var drainRate = siliconComp.DrainPerSecond;
 

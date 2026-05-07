@@ -69,6 +69,12 @@ public sealed class ServerCleanupSystem : EntitySystem
     /// </summary>
     private readonly Dictionary<Guid, TimeSpan> _disconnectedPlayers = new();
 
+    /// <summary>
+    /// Reused per cleanup pass to avoid walking _playerManager.Sessions inside the per-entity loop
+    /// in CleanupFloatingEntities. Cleared and refilled at the start of each pass that needs it.
+    /// </summary>
+    private readonly HashSet<Guid> _connectedUsersScratch = new();
+
     public override void Initialize()
     {
         base.Initialize();
@@ -167,10 +173,6 @@ public sealed class ServerCleanupSystem : EntitySystem
             cleanedUp++;
         }
 
-        var staleEntries = _disconnectedPlayers.Keys
-            .Where(userId => !connectedUsers.Contains(userId))
-            .ToList();
-
         if (cleanedUp > 0)
         {
             _sawmill.Info($"Ghost player cleanup: sent {cleanedUp} disconnected player(s) back to lobby.");
@@ -187,7 +189,20 @@ public sealed class ServerCleanupSystem : EntitySystem
     private void CleanupFloatingEntities()
     {
         var deleted = 0;
-        var playerPositions = new List<(MapId Map, Vector2 Pos)>();
+
+        // Cache the set of connected users once for this cleanup pass so HasActivePlayerMind
+        // doesn't have to re-scan _playerManager.Sessions for every candidate entity.
+        _connectedUsersScratch.Clear();
+        foreach (var session in _playerManager.Sessions)
+        {
+            if (session.Status == SessionStatus.InGame || session.Status == SessionStatus.Connected)
+                _connectedUsersScratch.Add(session.UserId);
+        }
+
+        // Bucket player positions by (map, cellX, cellY) where cell size == FloatingEntitySafeRadius.
+        // Then a candidate entity only needs to check players in its own cell + 8 neighbours,
+        // turning the previous O(entities * players) scan into ~O(entities) at high CCU.
+        var playerBuckets = new Dictionary<(MapId Map, int X, int Y), List<Vector2>>();
         var playerQuery = EntityQueryEnumerator<ActorComponent, TransformComponent>();
         while (playerQuery.MoveNext(out _, out _, out var playerXform))
         {
@@ -195,10 +210,21 @@ public sealed class ServerCleanupSystem : EntitySystem
             if (playerXform.MapID == MapId.Nullspace)
                 continue;
 
-            playerPositions.Add((playerXform.MapID, _transformSystem.GetWorldPosition(playerXform)));
+            var pos = _transformSystem.GetWorldPosition(playerXform);
+            var key = (playerXform.MapID,
+                       (int)MathF.Floor(pos.X / FloatingEntitySafeRadius),
+                       (int)MathF.Floor(pos.Y / FloatingEntitySafeRadius));
+            if (!playerBuckets.TryGetValue(key, out var list))
+            {
+                list = new List<Vector2>();
+                playerBuckets[key] = list;
+            }
+            list.Add(pos);
         }
+
         var query = EntityQueryEnumerator<PhysicsComponent, TransformComponent>();
         var entitiesToDelete = new List<EntityUid>();
+        var safeRadiusSq = FloatingEntitySafeRadius * FloatingEntitySafeRadius;
 
         while (query.MoveNext(out var uid, out _, out var xform))
         {
@@ -228,18 +254,25 @@ public sealed class ServerCleanupSystem : EntitySystem
 			
             var entityPos = _transformSystem.GetWorldPosition(xform);
             var entityMap = xform.MapID;
+            var cx = (int)MathF.Floor(entityPos.X / FloatingEntitySafeRadius);
+            var cy = (int)MathF.Floor(entityPos.Y / FloatingEntitySafeRadius);
             var nearPlayer = false;
 
-            foreach (var (playerMap, playerPos) in playerPositions)
+            for (var dx = -1; dx <= 1 && !nearPlayer; dx++)
             {
-                if (playerMap != entityMap)
-                    continue;
-
-                var distance = Vector2.Distance(entityPos, playerPos);
-                if (distance <= FloatingEntitySafeRadius)
+                for (var dy = -1; dy <= 1 && !nearPlayer; dy++)
                 {
-                    nearPlayer = true;
-                    break;
+                    if (!playerBuckets.TryGetValue((entityMap, cx + dx, cy + dy), out var bucket))
+                        continue;
+
+                    foreach (var playerPos in bucket)
+                    {
+                        if (Vector2.DistanceSquared(entityPos, playerPos) <= safeRadiusSq)
+                        {
+                            nearPlayer = true;
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -292,6 +325,8 @@ public sealed class ServerCleanupSystem : EntitySystem
     /// <summary>
     /// Checks whether an entity has a mind with an actively-connected player session.
     /// Returns false if the entity has no mind, the mind has no UserId, or the user is disconnected.
+    /// Uses the per-pass <see cref="_connectedUsersScratch"/> cache when populated to avoid an
+    /// inner Sessions scan per candidate.
     /// </summary>
     private bool HasActivePlayerMind(EntityUid uid)
     {
@@ -300,6 +335,9 @@ public sealed class ServerCleanupSystem : EntitySystem
 
         if (mind.UserId == null)
             return false;
+
+        if (_connectedUsersScratch.Count > 0)
+            return _connectedUsersScratch.Contains(mind.UserId.Value);
 
         foreach (var session in _playerManager.Sessions)
         {

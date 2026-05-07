@@ -11,6 +11,54 @@
       "name": "quadsprite",
       "directions": 4
     },
+	{
+      "name": "assaultquad",
+      "directions": 4
+    },
+	{
+      "name": "assaultquadballz",
+      "directions": 4
+    },
+	{
+      "name": "assaultquadr",
+      "directions": 4
+    },
+	{
+      "name": "assaultquadl",
+      "directions": 4
+    },
+	{
+      "name": "chews",
+      "directions": 4
+    },
+	{
+      "name": "chewsballz",
+      "directions": 4
+    },
+	{
+      "name": "chewsl",
+      "directions": 4
+    },
+	{
+      "name": "chewsr",
+      "directions": 4
+    },
+	{
+      "name": "wolfdog",
+      "directions": 4
+    },
+	{
+      "name": "wolfdogballz",
+      "directions": 4
+    },
+	{
+      "name": "wolfdogr",
+      "directions": 4
+    },
+	{
+      "name": "wolfdogl",
+      "directions": 4
+    },
     {
       "name": "quadspritel",
       "directions": 4
@@ -69,6 +117,186 @@
     },
 	{
       "name": "quadspritemoss_moving",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "wolfdog_moving",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "wolfdog_movingballz",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "chews_moving",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "chews_movingballz",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "assaultquad_moving",
+      "directions": 4,
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+	{
+      "name": "assaultquad_movingballz",
       "directions": 4,
       "delays": [
         [

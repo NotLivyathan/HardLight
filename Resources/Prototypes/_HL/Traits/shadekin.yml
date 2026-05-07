@@ -1,0 +1,118 @@
+# Available to all species except Shadekin (who have the mechanic natively).
+- type: trait
+  id: MildLightSensitivity
+  name: hl-trait-mild-light-sensitivity-name
+  description: hl-trait-mild-light-sensitivity-desc
+  category: Physical
+  cost: -1
+  speciesBlacklist:
+  - Shadekin
+  mutuallyExclusiveTraits:
+  - LightSensitivity
+  - ExtremeLightSensitivity
+  components:
+  - type: LightSensitivity
+    burnThreshold: 4
+    slowdownThreshold: 3
+    speedMultiplier: 0.9
+
+- type: trait
+  id: LightSensitivity
+  name: hl-trait-light-sensitivity-name
+  description: hl-trait-light-sensitivity-desc
+  category: Physical
+  cost: -2
+  mutuallyExclusiveTraits:
+  - MildLightSensitivity
+  - ExtremeLightSensitivity
+  components:
+  - type: LightSensitivity
+    burnThreshold: 3
+    slowdownThreshold: 2
+    speedMultiplier: 0.8
+
+- type: trait
+  id: ExtremeLightSensitivity
+  name: hl-trait-extreme-light-sensitivity-name
+  description: hl-trait-extreme-light-sensitivity-desc
+  category: Physical
+  cost: -5
+  mutuallyExclusiveTraits:
+  - MildLightSensitivity
+  - LightSensitivity
+  components:
+  - type: LightSensitivity
+    burnThreshold: 2
+    slowdownThreshold: 2
+    speedMultiplier: 0.7
+
+
+# Shadekin-exclusive regen traits to replace platelets
+# replaceComponents: true overrides the base ShadekinRegenerationComponent on BaseMobShadekin.
+
+- type: trait
+  id: ShadekinRegeneration
+  name: hl-trait-shadekin-regeneration-name
+  description: hl-trait-shadekin-regeneration-desc
+  category: Physical
+  cost: 5
+  replaceComponents: true
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - ExtremeShadekinRegeneration
+  - PlateletFactories
+  requirements:
+  - !type:TraitsRequirement
+    traits:
+    - LightSensitivity
+    - ExtremeLightSensitivity
+  components:
+  - type: ShadekinRegeneration
+    healPerSecond: 0.08
+    intervalSeconds: 1
+    critMultiplier: 0.5
+    healTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+    - Asphyxiation
+
+- type: trait
+  id: ExtremeShadekinRegeneration
+  name: hl-trait-extreme-shadekin-regeneration-name
+  description: hl-trait-extreme-shadekin-regeneration-desc
+  category: Physical
+  cost: 10
+  replaceComponents: true
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - ShadekinRegeneration
+  - PlateletFactories
+  - LightSensitivity
+  requirements:
+  - !type:TraitsRequirement
+    traits:
+    - ExtremeLightSensitivity
+  components:
+  - type: ShadekinRegeneration
+    healPerSecond: 0.24
+    intervalSeconds: 1
+    critMultiplier: 0.5
+    healTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+    - Caustic
+    - Poison
+    - Radiation
+    - Asphyxiation

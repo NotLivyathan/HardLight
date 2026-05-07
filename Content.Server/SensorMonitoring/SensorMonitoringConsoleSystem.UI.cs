@@ -12,6 +12,7 @@ public sealed partial class SensorMonitoringConsoleSystem
     {
         Subs.BuiEvents<SensorMonitoringConsoleComponent>(SensorMonitoringConsoleUiKey.Key, subs =>
         {
+            subs.Event<BoundUIOpenedEvent>(ConsoleUIOpened);
             subs.Event<BoundUIClosedEvent>(ConsoleUIClosed);
         });
     }
@@ -120,6 +121,22 @@ public sealed partial class SensorMonitoringConsoleSystem
                 Sensors = sensors.ToArray(),
             };
         }
+    }
+
+    private void ConsoleUIOpened(
+        EntityUid uid,
+        SensorMonitoringConsoleComponent component,
+        BoundUIOpenedEvent args)
+    {
+        if (!args.UiKey.Equals(SensorMonitoringConsoleUiKey.Key))
+            return;
+
+        component.NextSensorUpdate = TimeSpan.Zero;
+        component.NextAtmosRequest = TimeSpan.Zero;
+
+        RequestBatterySensorData(uid, component);
+        RequestAtmosSensorData(uid, component);
+        UpdateConsoleUI(uid, component);
     }
 
     private static void ConsoleUIClosed(

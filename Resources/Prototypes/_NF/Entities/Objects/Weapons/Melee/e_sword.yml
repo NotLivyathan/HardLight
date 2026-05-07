@@ -67,6 +67,9 @@
   - type: Tag
     tags:
     - Pickaxe
+  - type: Contraband
+    turnInValues:
+      FrontierUplinkCoin: 0
   - type: StaticPrice
     price: 200
   - type: MiningGatheringSoft

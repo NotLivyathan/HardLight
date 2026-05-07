@@ -1,11 +1,13 @@
 using System.Linq;
 using Content.Server.Actions;
+using Content.Server._HL.Body.Systems;
 using Content.Server.Body.Systems;
 using Content.Server.Chat;
 using Content.Server.Chat.Systems;
 using Content.Server.Emoting.Systems;
 using Content.Server.Speech.EntitySystems;
 using Content.Server.Roles;
+using Content.Shared._HL.Body.Components;
 using Content.Shared.Anomaly.Components;
 using Content.Shared.Armor;
 using Content.Shared.Bed.Sleep;
@@ -297,6 +299,7 @@ namespace Content.Server.Zombies
                 appcomp.EyeColor = zombiecomp.BeforeZombifiedEyeColor;
             }
             _humanoidAppearance.SetSkinColor(target, zombiecomp.BeforeZombifiedSkinColor, false);
+            RemComp<BloodSolutionModifierComponent>(target);
             _bloodstream.ChangeBloodReagent(target, zombiecomp.BeforeZombifiedBloodReagent);
 
             return true;

@@ -25,7 +25,6 @@ public sealed partial class StethoscopeComponent : Component
     [DataField]
     public EntProtoId Action = "ActionStethoscope";
 
-    [DataField]
     public EntityUid? ActionEntity;
 }
 

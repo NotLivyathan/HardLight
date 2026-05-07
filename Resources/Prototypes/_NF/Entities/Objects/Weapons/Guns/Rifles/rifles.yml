@@ -221,6 +221,7 @@
   parent: [ BaseWeaponRifle, BaseGunMelee, BaseC1Contraband ]
   description: "Originally designed by SESWC, this old surplus rifle looks like it's seen a few wars. Uses low capacity 10 rounder 762x54mmR magazines. Equipped with bayonet."  #Hardlight
   components:
+  - type: Sharp #It literally has a blade
   - type: Sprite
     sprite: _NF/Objects/Weapons/Guns/Rifles/svs42.rsi
     layers:

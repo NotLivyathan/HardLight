@@ -170,7 +170,7 @@ public sealed class LinkedLifecycleGridSystem : EntitySystem
     /// </summary>
     private void HandlePulledEntity(Entity<PullerComponent?> entity, ref List<ReparentTarget> listToReparent, HashSet<EntityUid> queuedEntities)
     {
-        if (!Resolve(entity, ref entity.Comp))
+        if (!Resolve(entity, ref entity.Comp, false))
             return;
 
         if (entity.Comp.Pulling is not EntityUid pulled)

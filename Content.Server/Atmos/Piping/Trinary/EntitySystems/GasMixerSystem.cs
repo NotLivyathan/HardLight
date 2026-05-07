@@ -64,36 +64,41 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
                 return;
             }
 
-            var outputStartingPressure = outlet.Air.Pressure;
+            var inletOneAir = inletOne.Air;
+            var inletTwoAir = inletTwo.Air;
+            var outletAir = outlet.Air;
+            var inletOneTemperature = inletOneAir.Temperature;
+            var inletTwoTemperature = inletTwoAir.Temperature;
+            var outputStartingPressure = outletAir.Pressure;
 
             if (outputStartingPressure >= mixer.TargetPressure)
                 return; // Target reached, no need to mix.
 
             var generalTransfer = (mixer.TargetPressure - outputStartingPressure) * outlet.Air.Volume / Atmospherics.R;
 
-            var transferMolesOne = inletOne.Air.Temperature > 0 ? mixer.InletOneConcentration * generalTransfer / inletOne.Air.Temperature : 0f;
-            var transferMolesTwo = inletTwo.Air.Temperature > 0 ? mixer.InletTwoConcentration * generalTransfer / inletTwo.Air.Temperature : 0f;
+            var transferMolesOne = inletOneTemperature > 0 ? mixer.InletOneConcentration * generalTransfer / inletOneTemperature : 0f;
+            var transferMolesTwo = inletTwoTemperature > 0 ? mixer.InletTwoConcentration * generalTransfer / inletTwoTemperature : 0f;
 
             if (mixer.InletTwoConcentration <= 0f)
             {
-                if (inletOne.Air.Temperature <= 0f)
+                if (inletOneTemperature <= 0f)
                     return;
 
-                transferMolesOne = MathF.Min(transferMolesOne, inletOne.Air.TotalMoles);
+                transferMolesOne = MathF.Min(transferMolesOne, inletOneAir.TotalMoles);
                 transferMolesTwo = 0f;
             }
 
             else if (mixer.InletOneConcentration <= 0)
             {
-                if (inletTwo.Air.Temperature <= 0f)
+                if (inletTwoTemperature <= 0f)
                     return;
 
                 transferMolesOne = 0f;
-                transferMolesTwo = MathF.Min(transferMolesTwo, inletTwo.Air.TotalMoles);
+                transferMolesTwo = MathF.Min(transferMolesTwo, inletTwoAir.TotalMoles);
             }
             else
             {
-                if (inletOne.Air.Temperature <= 0f || inletTwo.Air.Temperature <= 0f)
+                if (inletOneTemperature <= 0f || inletTwoTemperature <= 0f)
                     return;
 
                 if (transferMolesOne <= 0 || transferMolesTwo <= 0)
@@ -102,9 +107,11 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
                     return;
                 }
 
-                if (inletOne.Air.TotalMoles < transferMolesOne || inletTwo.Air.TotalMoles < transferMolesTwo)
+                var inletOneTotalMoles = inletOneAir.TotalMoles;
+                var inletTwoTotalMoles = inletTwoAir.TotalMoles;
+                if (inletOneTotalMoles < transferMolesOne || inletTwoTotalMoles < transferMolesTwo)
                 {
-                    var ratio = MathF.Min(inletOne.Air.TotalMoles / transferMolesOne, inletTwo.Air.TotalMoles / transferMolesTwo);
+                    var ratio = MathF.Min(inletOneTotalMoles / transferMolesOne, inletTwoTotalMoles / transferMolesTwo);
                     transferMolesOne *= ratio;
                     transferMolesTwo *= ratio;
                 }
@@ -116,15 +123,15 @@ namespace Content.Server.Atmos.Piping.Trinary.EntitySystems
             if (transferMolesOne > 0f)
             {
                 transferred = true;
-                var removed = inletOne.Air.Remove(transferMolesOne);
-                _atmosphereSystem.Merge(outlet.Air, removed);
+                var removed = inletOneAir.Remove(transferMolesOne);
+                _atmosphereSystem.Merge(outletAir, removed);
             }
 
             if (transferMolesTwo > 0f)
             {
                 transferred = true;
-                var removed = inletTwo.Air.Remove(transferMolesTwo);
-                _atmosphereSystem.Merge(outlet.Air, removed);
+                var removed = inletTwoAir.Remove(transferMolesTwo);
+                _atmosphereSystem.Merge(outletAir, removed);
             }
 
             if (transferred)

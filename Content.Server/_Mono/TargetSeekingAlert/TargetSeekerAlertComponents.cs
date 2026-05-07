@@ -68,7 +68,7 @@ public sealed partial class TargetSeekerAlertGridComponent : Component
     /// </summary>
     // what is meant by 'using' instead of 'with': an entity can have the comp, but not actually be doing anything with it (e.g. depowered). But that may not be implemented right now so this is just future-proofed.
     // this isn't a hashset because we can actually guarantee uniqueness via logic here
-    [DataField, ViewVariables(VVAccess.ReadOnly)]
+    [ViewVariables(VVAccess.ReadOnly)]
     public List<EntityUid> Alerters = new();
 
     /// <summary>

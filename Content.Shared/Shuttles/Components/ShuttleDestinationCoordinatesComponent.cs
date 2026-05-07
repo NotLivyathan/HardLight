@@ -11,6 +11,6 @@ public sealed partial class ShuttleDestinationCoordinatesComponent : Component
     /// <summary>
     /// Uid for entity containing the FTLDestination component
     /// </summary>
-    [ViewVariables(VVAccess.ReadWrite), DataField, AutoNetworkedField]
+    [ViewVariables(VVAccess.ReadWrite), AutoNetworkedField]
     public NetEntity? Destination;
 }

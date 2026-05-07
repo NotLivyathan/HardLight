@@ -7,10 +7,12 @@ using Robust.Shared.CPUJob.JobQueues;
 using Robust.Shared.CPUJob.JobQueues.Queues;
 using Content.Server.NPC.HTN.PrimitiveTasks;
 using Content.Server.NPC.Systems;
+using Content.Shared.CCVar;
 using Content.Shared.Administration;
 using Content.Shared.Mobs;
 using Content.Shared.NPC;
 using JetBrains.Annotations;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Map; // Mono
@@ -19,21 +21,35 @@ using Content.Server.Worldgen; // Frontier
 using Content.Server.Worldgen.Components; // Frontier
 using Content.Server.Worldgen.Systems; // Frontier
 using Robust.Server.GameObjects; // Frontier
+using Robust.Shared;
 
 namespace Content.Server.NPC.HTN;
 
 public sealed class HTNSystem : EntitySystem
 {
     [Dependency] private readonly IAdminManager _admin = default!;
+    [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly NPCSystem _npc = default!;
     [Dependency] private readonly NPCUtilitySystem _utility = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
     // Frontier
     [Dependency] private readonly WorldControllerSystem _world = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     private EntityQuery<WorldControllerComponent> _mapQuery;
     private EntityQuery<LoadedChunkComponent> _loadedQuery;
+    private EntityQuery<ActorComponent> _actorQuery;
     // Frontier
+
+    private float _netMaxUpdateRange;
+    private float _netMaxUpdateRangeSquared;
+
+    // HardLight perf: per-tick cache of actor world positions, populated at the start of
+    // UpdateNPC and consumed by HasPlayerInRange. Replaces the previous per-NPC
+    // EntityLookupSystem.GetEntitiesInRange<ActorComponent>() spatial query which scaled
+    // O(NPCs * lookup_cost) per tick. With this cache the per-NPC check is O(actors_on_map),
+    // and actors << NPCs in late-round expedition/debris-heavy scenarios.
+    private readonly Dictionary<MapId, List<Vector2>> _actorPositionsByMap = new();
 
     private readonly JobQueue _planQueue = new(0.004);
 
@@ -45,6 +61,12 @@ public sealed class HTNSystem : EntitySystem
         base.Initialize();
         _mapQuery = GetEntityQuery<WorldControllerComponent>(); // Frontier
         _loadedQuery = GetEntityQuery<LoadedChunkComponent>(); // Frontier
+        _actorQuery = GetEntityQuery<ActorComponent>();
+        _cfg.OnValueChanged(CVars.NetMaxUpdateRange, value =>
+        {
+            _netMaxUpdateRange = value;
+            _netMaxUpdateRangeSquared = value * value;
+        }, true);
         SubscribeLocalEvent<HTNComponent, MobStateChangedEvent>(_npc.OnMobStateChange);
         SubscribeLocalEvent<HTNComponent, MapInitEvent>(_npc.OnNPCMapInit);
         SubscribeLocalEvent<HTNComponent, PlayerAttachedEvent>(_npc.OnPlayerNPCAttach);
@@ -192,6 +214,11 @@ public sealed class HTNSystem : EntitySystem
     public void UpdateNPC(ref int count, int maxUpdates, float frameTime)
     {
         _planQueue.Process();
+
+        // HardLight perf: refresh actor-position cache once per tick. HasPlayerInRange below
+        // reads from this map instead of issuing a per-NPC broadphase lookup.
+        RefreshActorPositionCache();
+
         var query = EntityQueryEnumerator<ActiveNPCComponent, HTNComponent>();
 
         // Move ahead "count" entries in the query.
@@ -319,9 +346,71 @@ public sealed class HTNSystem : EntitySystem
         if (!_mapQuery.TryGetComponent(transform.MapUid, out var worldComponent))
             return true;
 
+        if (!HasPlayerInRange(entity))
+            return false;
+
         var chunk = _world.GetOrCreateChunk(WorldGen.WorldToChunkCoords(_transform.GetWorldPosition(transform)).Floored(), transform.MapUid.Value, worldComponent);
 
-        return _loadedQuery.TryGetComponent(chunk, out var loaded) && loaded.Loaders is not null;
+        if (!_loadedQuery.TryGetComponent(chunk, out var loaded) || loaded.Loaders is null)
+            return false;
+
+        foreach (var loader in loaded.Loaders)
+        {
+            if (_actorQuery.HasComponent(loader))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool HasPlayerInRange(EntityUid uid)
+    {
+        var xform = Transform(uid);
+        if (xform.MapID == MapId.Nullspace)
+            return false;
+
+        if (!_actorPositionsByMap.TryGetValue(xform.MapID, out var positions) || positions.Count == 0)
+            return false;
+
+        var npcPos = _transform.GetWorldPosition(xform);
+        var rangeSq = _netMaxUpdateRangeSquared;
+
+        // Linear scan; expected O(actors_on_map) which is in the low tens even on populated rounds,
+        // far cheaper than an EntityLookup AABB query per NPC per tick.
+        for (var i = 0; i < positions.Count; i++)
+        {
+            if ((positions[i] - npcPos).LengthSquared() <= rangeSq)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// HardLight perf: snapshot every attached actor's world position grouped by map.
+    /// Called once per <see cref="UpdateNPC"/>; lists are reused tick-to-tick to avoid
+    /// per-tick allocation.
+    /// </summary>
+    private void RefreshActorPositionCache()
+    {
+        foreach (var list in _actorPositionsByMap.Values)
+            list.Clear();
+
+        var actorQuery = EntityQueryEnumerator<ActorComponent, TransformComponent>();
+        while (actorQuery.MoveNext(out _, out var xform))
+        {
+            var mapId = xform.MapID;
+            if (mapId == MapId.Nullspace)
+                continue;
+
+            if (!_actorPositionsByMap.TryGetValue(mapId, out var list))
+            {
+                list = new List<Vector2>(8);
+                _actorPositionsByMap[mapId] = list;
+            }
+
+            list.Add(_transform.GetWorldPosition(xform));
+        }
     }
 
     private void AppendDebugText(HTNTask task, StringBuilder text, List<int> planBtr, List<int> btr, ref int level)

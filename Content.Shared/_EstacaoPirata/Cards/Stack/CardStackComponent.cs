@@ -35,7 +35,7 @@ public sealed partial class CardStackComponent : Component
     /// <summary>
     /// The list EntityUIds of Cards
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public List<EntityUid> Cards = [];
 }
 

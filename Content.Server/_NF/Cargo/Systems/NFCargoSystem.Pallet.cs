@@ -7,6 +7,7 @@ using Content.Shared.Cargo.Events;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs;
 using Robust.Shared.Audio;
+using Robust.Shared.Log;
 using Robust.Shared.Map;
 using System.Numerics;
 
@@ -137,7 +138,9 @@ public sealed partial class NFCargoSystem
     {
         GetPalletGoods(consoleUid, gridUid, out var toSell, out amount, out noMultiplierAmount);
 
-        Log.Debug($"Cargo sold {toSell.Count} entities for {amount} (plus {noMultiplierAmount} without mods)");
+        // Avoid the interpolated string allocation when Debug logging isn't enabled.
+        if (Log.IsLogLevelEnabled(LogLevel.Debug))
+            Log.Debug($"Cargo sold {toSell.Count} entities for {amount} (plus {noMultiplierAmount} without mods)");
 
         if (toSell.Count == 0)
             return false;

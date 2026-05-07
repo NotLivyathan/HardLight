@@ -66,7 +66,8 @@ public abstract class BaseCleanupSystem<TComp> : EntitySystem
 
         if (_delCount != 0)
         {
-            Log.Info($"Deleted {_delCount} entities");
+            if (_doLog)
+                Log.Info($"Deleted {_delCount} entities");
             _delCount = 0;
         }
 

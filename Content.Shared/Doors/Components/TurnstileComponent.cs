@@ -30,7 +30,6 @@ public sealed partial class TurnstileComponent : Component
     /// <summary>
     /// Maintained hashset of entities currently passing through the turnstile.
     /// </summary>
-    [DataField, AutoNetworkedField]
     public HashSet<EntityUid> CollideExceptions = new();
 
     /// <summary>

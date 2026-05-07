@@ -230,7 +230,7 @@
   id: RodentiaCheeksFluff
   markingCategory: HeadSide
   bodyPart: HeadSide
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _DV/Mobs/Customization/Rodentia/cheek_markings.rsi
       state: fluff
@@ -239,7 +239,7 @@
   id: RodentiaCheeksFluffCounter
   markingCategory: HeadSide
   bodyPart: HeadSide
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _DV/Mobs/Customization/Rodentia/cheek_markings.rsi
       state: fluff
@@ -250,7 +250,7 @@
   id: RodentiaCheeksFluffAlt
   markingCategory: HeadSide
   bodyPart: HeadSide
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _DV/Mobs/Customization/Rodentia/cheek_markings.rsi
       state: fluff_alt
@@ -259,7 +259,7 @@
   id: RodentiaCheeksFluffAltCounter
   markingCategory: HeadSide
   bodyPart: HeadSide
-  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid]
+  speciesRestriction: [Skrell, Thaven,Dwarf, Diona, Human, SlimePerson, Felinid, Oni, Harpy, Reptilian, Vulpkanin, Rodentia, Goblin, Sheleg, IPC, Feroxi, Moth, Arachnid, Kitsune, Chitinid, Shadekin]
   sprites:
     - sprite: _DV/Mobs/Customization/Rodentia/cheek_markings.rsi
       state: fluff_alt

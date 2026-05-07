@@ -28,7 +28,7 @@ public sealed partial class BorgSwitchableTypeComponent : Component
     /// <summary>
     /// Action entity used by players to select their type.
     /// </summary>
-    [DataField, AutoNetworkedField]
+    [AutoNetworkedField]
     public EntityUid? SelectTypeAction;
 
     /// <summary>

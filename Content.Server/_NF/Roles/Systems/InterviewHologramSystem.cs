@@ -5,6 +5,7 @@ using Content.Server.GameTicking;
 using Content.Server.PDA.Ringer;
 using Content.Server.Preferences.Managers;
 using Content.Server.Station.Systems;
+using Content.Server._HL.ColComm; // HardLight
 using Content.Shared._NF.Roles.Components;
 using Content.Shared._NF.Roles.Events;
 using Content.Shared.Chat;
@@ -20,6 +21,8 @@ using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Verbs;
 using Robust.Server.Player;
+using Robust.Shared.Enums;
+using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -41,9 +44,11 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
     [Dependency] private SharedHumanoidAppearanceSystem _humanoid = default!;
     [Dependency] private SharedMindSystem _mind = default!;
     [Dependency] private SharedRoleSystem _roles = default!;
+    [Dependency] private JobTrackingSystem _jobTracking = default!;
     [Dependency] private StationJobsSystem _stationJobs = default!;
     [Dependency] private StationSpawningSystem _stationSpawning = default!;
     [Dependency] private StationSystem _station = default!;
+    [Dependency] private ColcommJobSystem _colcommJobs = default!; // HardLight
 
     public override void Initialize()
     {
@@ -116,7 +121,8 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
         if (TryComp<JobTrackingComponent>(ent, out var jobTracking))
         {
             if (jobTracking.Job != null)
-                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job, 1);
+                CleanupInterviewTracking((ent, jobTracking), ev.Mind.Comp.UserId, reopenSlot: true);
+
             RemComp<JobTrackingComponent>(ent);
         }
 
@@ -139,7 +145,7 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
             ApplyAppearanceForSession(ent, session);
         }
 
-        // Notify all relevant captains if they have their PDA that someone is applying for a job. 
+        // Notify all relevant captains if they have their PDA that someone is applying for a job.
         if (!ent.Comp.NotificationsSent)
         {
             string jobTitle;
@@ -154,16 +160,14 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
                 ("header", Loc.GetString("interview-notification-pda-header")),
                 ("message", message));
 
-            // Find all people that might receive this message.
-            var mindQuery = EntityQueryEnumerator<MindComponent>();
-            while (mindQuery.MoveNext(out _, out var mindComp))
+            // Only active player sessions can receive PDA notifications.
+            foreach (var playerSession in _player.Sessions)
             {
-                if (mindComp.CurrentEntity == null
-                    || mindComp.UserId == null
-                    || !_player.TryGetSessionById(mindComp.UserId, out var mindSession)
-                    || !_inventory.TryGetSlotEntity(mindComp.CurrentEntity.Value, "id", out var slotItem)
+                if (playerSession.Status is SessionStatus.Disconnected or SessionStatus.Zombie
+                    || playerSession.AttachedEntity is not { Valid: true } currentEntity
+                    || !_inventory.TryGetSlotEntity(currentEntity, "id", out var slotItem)
                     || !HasComp<PdaComponent>(slotItem)
-                    || !IsCaptain(mindComp.CurrentEntity.Value, ent))
+                    || !IsCaptain(currentEntity, ent))
                 {
                     continue;
                 }
@@ -176,7 +180,7 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
                     wrappedMessage,
                     EntityUid.Invalid,
                     false,
-                    mindSession.Channel);
+                    playerSession.Channel);
             }
 
             ent.Comp.NotificationsSent = true;
@@ -225,6 +229,19 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
             entity: null,
             session: session
             );
+
+        _jobTracking.EnsureTrackedJob(newEntity, ent.Comp.Job, ent.Comp.Station);
+
+        var stationJob = _stationJobs.GetStationTrackingJobId(ent.Comp.Station, ent.Comp.Job);
+        if (!_stationJobs.IsPlayerJobTracked(ent.Comp.Station, session.UserId, stationJob))
+            _stationJobs.TryTrackPlayerJob(ent.Comp.Station, session.UserId, stationJob);
+
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm))
+        {
+            var colcommJob = _stationJobs.GetColcommJobId(ent.Comp.Job);
+            if (!_colcommJobs.IsPlayerJobTracked(colcomm, session.UserId, colcommJob))
+                _colcommJobs.TryTrackPlayerJob(colcomm, session.UserId, colcommJob);
+        }
 
         _mind.TransferTo(mindUid, newEntity);
         _chat.DispatchServerMessage(session, Loc.GetString("interview-hologram-message-accepted"), suppressLog: true);
@@ -311,7 +328,10 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
         if (TryComp<JobTrackingComponent>(ent, out var jobTracking))
         {
             if (jobTracking.Job != null && reopenSlot)
-                _stationJobs.TryAdjustJobSlot(jobTracking.SpawnStation, jobTracking.Job, 1);
+                CleanupInterviewTracking((ent, jobTracking), GetTrackedUserId(ent), reopenSlot: true);
+            else if (jobTracking.Job != null)
+                CleanupInterviewTracking((ent, jobTracking), GetTrackedUserId(ent), reopenSlot: false);
+
             RemComp<JobTrackingComponent>(ent);
         }
 
@@ -325,5 +345,39 @@ public sealed class InterviewHologramSystem : SharedInterviewHologramSystem
         }
 
         QueueDel(ent);
+    }
+
+    private NetUserId? GetTrackedUserId(EntityUid uid)
+    {
+        if (_player.TryGetSessionByEntity(uid, out var session))
+            return session.UserId;
+
+        if (_mind.TryGetMind(uid, out _, out var mindComp))
+            return mindComp.UserId;
+
+        return null;
+    }
+
+    private void CleanupInterviewTracking(Entity<JobTrackingComponent> jobTracking, NetUserId? userId, bool reopenSlot)
+    {
+        if (jobTracking.Comp.Job is not { } job)
+            return;
+
+        if (reopenSlot)
+        {
+            _jobTracking.OpenJob(jobTracking, userId);
+            return;
+        }
+
+        if (userId == null)
+            return;
+
+        var stationJob = _stationJobs.GetStationTrackingJobId(jobTracking.Comp.SpawnStation, job);
+        var colcommJob = _stationJobs.GetColcommJobId(job);
+
+        _stationJobs.TryUntrackPlayerJob(jobTracking.Comp.SpawnStation, userId.Value, stationJob);
+
+        if (_colcommJobs.TryGetColcommRegistry(out var registry))
+            _colcommJobs.TryUntrackPlayerJob(registry, userId.Value, colcommJob);
     }
 }

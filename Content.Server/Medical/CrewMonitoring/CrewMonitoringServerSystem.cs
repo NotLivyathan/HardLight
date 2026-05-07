@@ -80,11 +80,24 @@ public sealed class CrewMonitoringServerSystem : EntitySystem
         if (!Resolve(uid, ref component))
             return;
 
+        List<string>? staleAddresses = null;
+
         foreach (var (address, sensor) in component.SensorStatus)
         {
-            var dif = _gameTiming.CurTime - sensor.Timestamp;
-            if (dif.Seconds > component.SensorTimeout)
-                component.SensorStatus.Remove(address);
+            var elapsed = _gameTiming.CurTime - sensor.Timestamp;
+            if (elapsed.TotalSeconds <= component.SensorTimeout)
+                continue;
+
+            staleAddresses ??= new List<string>();
+            staleAddresses.Add(address);
+        }
+
+        if (staleAddresses == null)
+            return;
+
+        foreach (var address in staleAddresses)
+        {
+            component.SensorStatus.Remove(address);
         }
     }
 

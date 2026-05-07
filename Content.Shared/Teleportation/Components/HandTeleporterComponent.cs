@@ -14,10 +14,10 @@ namespace Content.Shared.Teleportation.Components;
 [RegisterComponent, NetworkedComponent]
 public sealed partial class HandTeleporterComponent : Component
 {
-    [ViewVariables, DataField("firstPortal")]
+    [ViewVariables]
     public EntityUid? FirstPortal = null;
 
-    [ViewVariables, DataField("secondPortal")]
+    [ViewVariables]
     public EntityUid? SecondPortal = null;
 
     /// <summary>

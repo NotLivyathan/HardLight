@@ -52,7 +52,7 @@ public sealed partial class CCVars : CVars
     #region Surgery
 
     public static readonly CVarDef<bool> CanOperateOnSelf =
-        CVarDef.Create("surgery.can_operate_on_self", true, CVar.SERVERONLY);
+        CVarDef.Create("surgery.can_operate_on_self", false, CVar.SERVERONLY);
 
     public static readonly CVarDef<bool> CrawlUnderTables =
         CVarDef.Create("rest.crawlundertables", true, CVar.SERVER | CVar.ARCHIVE);
@@ -254,6 +254,18 @@ public sealed partial class CCVars : CVars
         CVarDef.Create("hud.offer_mode_indicators_point_show", true, CVar.ARCHIVE | CVar.CLIENTONLY);
 
     #endregion
+
+    /// <summary>
+    /// HardLight: Whether or not to render extended structure smoothing.
+    /// </summary>
+    public static readonly CVarDef<bool> ShowStructureSmoothing =
+        CVarDef.Create("display.show_structure_smoothing", true, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+    /// <summary>
+    /// HardLight: Whether to show custom borg subtype sprites, or render all borgs with their base chassis sprites.
+    /// </summary>
+    public static readonly CVarDef<bool> ShowCyborgSubtypeSprites =
+        CVarDef.Create("display.show_cyborg_subtypes", true, CVar.ARCHIVE | CVar.CLIENTONLY);
 
 }
 #endregion

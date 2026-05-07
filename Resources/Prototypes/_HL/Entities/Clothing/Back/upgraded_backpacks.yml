@@ -19,7 +19,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 0.9
-    
+
 - type: entity
   id: ClothingBackpackExplorer
   name: explorer pack
@@ -39,7 +39,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 0.85
-    
+
 - type: entity
   id: ClothingRucksack
   name: rucksack
@@ -58,3 +58,47 @@
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 0.85
+
+- type: entity
+  id: ClothingBackpackTacticalHolding
+  name: tactical pack of holding
+  parent: [ NFClothingBackpack, RecyclableItemClothDurable ]
+  description: An extra large tactical pack for all your extra tacticool needs. It is unwieldy due to condensed gravitational emissions.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/Back/tacticalpack.rsi
+  - type: ExplosionResistance
+    damageCoefficient: 0.2
+  - type: Storage
+    maxItemSize: Huge
+    grid:
+    - 0,0,1,1
+    - 3,0,5,1
+    - 7,0,12,1
+    - 14,0,16,1
+    - 18,0,19,1
+    - 0,3,1,6
+    - 3,3,6,6
+    - 8,3,11,6
+    - 13,3,16,6
+    - 18,3,19,6
+    - 0,8,1,9
+    - 3,8,5,9
+    - 7,8,12,9
+    - 14,8,16,9
+    - 18,8,19,9
+    - 0,11,3,15
+    - 5,11,14,15
+    - 16,11,19,15
+  - type: ChameleonClothing
+    slot: [back]
+    default: ClothingBackpackTacticalHolding
+  - type: ClothingSpeedModifier
+    sprintModifier: 0.75 # movespeed nerf in exchange for massive storage
+  - type: HeldSpeedModifier
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface

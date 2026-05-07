@@ -6,7 +6,11 @@ using Content.Shared.Popups;
 using Content.Shared.Whitelist;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
+using Robust.Shared.GameObjects;
+using Robust.Shared.Map.Events;
 using Robust.Shared.Timing;
+using Content.Shared.Atmos.Rotting;
+using System.Linq;
 
 namespace Content.Shared._DV.SmartFridge;
 
@@ -26,6 +30,9 @@ public sealed class SmartFridgeSystem : EntitySystem
 
         SubscribeLocalEvent<SmartFridgeComponent, InteractUsingEvent>(OnInteractUsing);
         SubscribeLocalEvent<SmartFridgeComponent, EntRemovedFromContainerMessage>(OnItemRemoved);
+        SubscribeLocalEvent<SmartFridgeComponent, ComponentStartup>(OnComponentStartup);
+        SubscribeLocalEvent<BeforeSerializationEvent>(OnBeforeSave);
+        SubscribeLocalEvent<SmartFridgeComponent, MapInitEvent>(OnMapInit);
 
         Subs.BuiEvents<SmartFridgeComponent>(SmartFridgeUiKey.Key,
             sub =>
@@ -33,6 +40,71 @@ public sealed class SmartFridgeSystem : EntitySystem
                 sub.Event<SmartFridgeDispenseItemMessage>(OnDispenseItem);
                 sub.Event<SmartFridgeRemoveEntryMessage>(OnRemoveEntry);
             });
+    }
+
+    private void OnMapInit(Entity<SmartFridgeComponent> ent, ref MapInitEvent args)
+    {
+        // Ensure this fridge prevents rot for contained items.
+        EnsureComp<AntiRottingContainerComponent>(ent.Owner);
+
+        if (!_container.TryGetContainer(ent, ent.Comp.Container, out var container))
+            return;
+
+        // Rebuild entries from actual container contents to avoid stale/invalid NetEntity references
+        ent.Comp.Entries.Clear();
+        ent.Comp.ContainedEntries.Clear();
+
+        foreach (var item in container.ContainedEntities.ToArray())
+        {
+            var name = Identity.Name(item, EntityManager);
+            var entry = new SmartFridgeEntry(name);
+            ent.Comp.Entries.Add(entry);
+
+            if (!ent.Comp.ContainedEntries.TryGetValue(name, out var set))
+            {
+                set = new HashSet<NetEntity>();
+                ent.Comp.ContainedEntries[name] = set;
+            }
+
+            set.Add(GetNetEntity(item));
+        }
+
+        Dirty(ent, ent.Comp);
+    }
+
+    private void OnComponentStartup(Entity<SmartFridgeComponent> ent, ref ComponentStartup args)
+    {
+        EnsureComp<AntiRottingContainerComponent>(ent.Owner);
+    }
+
+    private void OnBeforeSave(BeforeSerializationEvent ev)
+    {
+        foreach (var uid in ev.Entities)
+        {
+            if (!TryComp<SmartFridgeComponent>(uid, out var comp))
+                continue;
+
+            var removed = new List<SmartFridgeEntry>();
+
+            foreach (var entry in comp.Entries)
+            {
+                if (!comp.ContainedEntries.TryGetValue(entry.Name, out var set) || set.Count == 0)
+                {
+                    removed.Add(entry);
+                }
+            }
+
+            if (removed.Count == 0)
+                continue;
+
+            foreach (var entry in removed)
+            {
+                comp.Entries.Remove(entry);
+                comp.ContainedEntries.Remove(entry.Name);
+            }
+
+            Dirty(uid, comp);
+        }
     }
 
     public override void Update(float frameTime)
@@ -76,12 +148,18 @@ public sealed class SmartFridgeSystem : EntitySystem
             return false;
 
         _container.Insert(item, container);
-        var key = new SmartFridgeEntry(Identity.Name(item, EntityManager));
+        var name = Identity.Name(item, EntityManager);
+        var key = new SmartFridgeEntry(name);
 
         ent.Comp.Entries.Add(key);
 
-        ent.Comp.ContainedEntries.TryAdd(key, []);
-        ent.Comp.ContainedEntries[key].Add(GetNetEntity(item));
+        if (!ent.Comp.ContainedEntries.TryGetValue(name, out var set))
+        {
+            set = new HashSet<NetEntity>();
+            ent.Comp.ContainedEntries[name] = set;
+        }
+
+        set.Add(GetNetEntity(item));
 
         Dirty(ent, ent.Comp);
         return true;
@@ -121,9 +199,9 @@ public sealed class SmartFridgeSystem : EntitySystem
 
     private void OnItemRemoved(Entity<SmartFridgeComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        var key = new SmartFridgeEntry(Identity.Name(args.Entity, EntityManager));
+        var name = Identity.Name(args.Entity, EntityManager);
 
-        if (ent.Comp.ContainedEntries.TryGetValue(key, out var contained))
+        if (ent.Comp.ContainedEntries.TryGetValue(name, out var contained))
         {
             contained.Remove(GetNetEntity(args.Entity));
         }
@@ -146,7 +224,7 @@ public sealed class SmartFridgeSystem : EntitySystem
         if (!_timing.IsFirstTimePredicted || ent.Comp.Ejecting || !Allowed(ent, args.Actor))
             return;
 
-        if (!ent.Comp.ContainedEntries.TryGetValue(args.Entry, out var contained))
+        if (!ent.Comp.ContainedEntries.TryGetValue(args.Entry.Name, out var contained))
         {
             _audio.PlayPredicted(ent.Comp.SoundDeny, ent, args.Actor);
             _popup.PopupPredicted(Loc.GetString("smart-fridge-component-try-eject-unknown-entry"), ent, args.Actor);
@@ -174,7 +252,7 @@ public sealed class SmartFridgeSystem : EntitySystem
         if (!_timing.IsFirstTimePredicted || !Allowed(ent, args.Actor))
             return;
 
-        if (ent.Comp.ContainedEntries.TryGetValue(args.Entry, out var contained)
+        if (ent.Comp.ContainedEntries.TryGetValue(args.Entry.Name, out var contained)
             && contained.Count > 0
             || !ent.Comp.Entries.Contains(args.Entry))
             return;

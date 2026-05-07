@@ -93,8 +93,11 @@ public sealed class SuitSensorSystem : EntitySystem
                 continue;
             */
 
-            // TODO: This would cause imprecision at different tick rates.
-            sensor.NextUpdate = curTime + sensor.UpdateRate;
+            // Preserve each sensor's staggered phase instead of snapping every due sensor
+            // back onto the same tick after a bursty update.
+            sensor.NextUpdate += sensor.UpdateRate;
+            if (sensor.NextUpdate <= curTime)
+                sensor.NextUpdate = curTime + sensor.UpdateRate;
 
             // get sensor status
             var status = GetSensorState(uid, sensor);
@@ -188,6 +191,9 @@ public sealed class SuitSensorSystem : EntitySystem
             };
             component.Mode = _random.Pick(modesDist);
         }
+
+        if (component.UpdateRate > TimeSpan.Zero)
+            component.NextUpdate = _gameTiming.CurTime + TimeSpan.FromSeconds(_random.NextFloat((float) component.UpdateRate.TotalSeconds));
     }
 
     private void OnEquipped(EntityUid uid, SuitSensorComponent component, ref ClothingGotEquippedEvent args)

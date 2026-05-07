@@ -26,16 +26,19 @@ public sealed class ParrotSpeechSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        var curTime = _timing.CurTime;
         var query = EntityQueryEnumerator<ParrotSpeechComponent>();
         while (query.MoveNext(out var uid, out var component))
         {
+            // Cheapest checks first: the timing gate filters out the vast majority of parrots
+            // every tick, before we touch component data or do a TryComp.
+            if (curTime < component.NextUtterance)
+                continue;
             if (component.LearnedPhrases.Count == 0)
                 // This parrot has not learned any phrases, so can't say anything interesting.
                 continue;
             if (TryComp<MindContainerComponent>(uid, out var mind) && mind.HasMind)
                 // Pause parrot speech when someone is controlling the parrot.
-                continue;
-            if (_timing.CurTime < component.NextUtterance)
                 continue;
 
             if (component.NextUtterance != null)

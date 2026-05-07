@@ -1,4 +1,6 @@
 using Content.Server._Mono.FireControl;
+using Content.Server.Emp;
+using Content.Shared.Emp;
 using Content.Shared.Weapons.Hitscan.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Systems;
@@ -6,6 +8,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Random;
 using Robust.Shared.Spawners;
 using System.Numerics;
 
@@ -16,18 +19,31 @@ public sealed partial class ShipTargetingSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly FireControlSystem _cannon = default!;
     [Dependency] private readonly SharedGunSystem _gun = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     private EntityQuery<GunComponent> _gunQuery;
     private EntityQuery<PhysicsComponent> _physQuery;
 
+    // Reused per-tick to avoid allocating a HashSet for every ShipTargeting entity each weapon-check.
+    private readonly HashSet<Entity<FireControllableComponent>> _scratchCannons = new();
+
     public override void Initialize()
     {
         base.Initialize();
 
+        SubscribeLocalEvent<ShipEmpDisableGunsComponent, EmpPulseEvent>(OnEmpPulse);
+
         _gunQuery = GetEntityQuery<GunComponent>();
         _physQuery = GetEntityQuery<PhysicsComponent>();
+    }
+
+    private void OnEmpPulse(Entity<ShipEmpDisableGunsComponent> ent, ref EmpPulseEvent args)
+    {
+        args.Affected = true;
+        args.Disabled = true;
+        args = args with { Duration = args.Duration * ent.Comp.DurationMultiplier };
     }
 
     // have to use this because RT's is broken and unusable for navigation
@@ -69,6 +85,9 @@ public sealed partial class ShipTargetingSystem : EntitySystem
             if (mapTarget.MapId != shipPos.MapId)
                 continue;
 
+            if (HasComp<EmpDisabledComponent>(uid))
+                continue;
+
             var linVel = shipBody.LinearVelocity;
             var targetVel = targetGrid == null ? Vector2.Zero : _physics.GetMapLinearVelocity(targetGrid.Value);
             var leadBy = 1f - MathF.Pow(1f - comp.LeadingAccuracy, frameTime);
@@ -78,23 +97,27 @@ public sealed partial class ShipTargetingSystem : EntitySystem
             if (comp.WeaponCheckAccum < 0f)
             {
                 comp.Cannons.Clear();
-                var cannons = new HashSet<Entity<FireControllableComponent>>();
-                _lookup.GetLocalEntitiesIntersecting(shipUid.Value, shipGrid.LocalAABB, cannons);
-                foreach (var cannon in cannons)
+                _scratchCannons.Clear();
+                _lookup.GetLocalEntitiesIntersecting(shipUid.Value, shipGrid.LocalAABB, _scratchCannons);
+                foreach (var cannon in _scratchCannons)
                 {
                     comp.Cannons.Add(cannon);
                 }
                 comp.WeaponCheckAccum += comp.WeaponCheckSpacing;
             }
 
-            FireWeapons(shipUid.Value, comp.Cannons, mapTarget, linVel, comp.CurrentLeadingVelocity);
+            var allowHitscanFire = ShouldFireHitscan(comp, frameTime);
+            FireWeapons(shipUid.Value, comp.Cannons, mapTarget, linVel, comp.CurrentLeadingVelocity, allowHitscanFire);
         }
     }
 
-    private void FireWeapons(EntityUid shipUid, List<EntityUid> cannons, MapCoordinates destMapPos, Vector2 ourVel, Vector2 otherVel)
+    private void FireWeapons(EntityUid shipUid, List<EntityUid> cannons, MapCoordinates destMapPos, Vector2 ourVel, Vector2 otherVel, bool allowHitscanFire)
     {
         var shipXform = Transform(shipUid);
         if (!_physQuery.TryComp(shipUid, out var shipBody))
+            return;
+
+        if (HasComp<EmpDisabledComponent>(shipUid))
             return;
 
         if (!_cannon.CanFireWeapons(shipUid))
@@ -123,6 +146,9 @@ public sealed partial class ShipTargetingSystem : EntitySystem
                 {
                     // check if too far
                     if (raycast.MaxDistance < gunToDestVec.Length())
+                        continue;
+
+                    if (!allowHitscanFire)
                         continue;
                 }
                 else
@@ -161,6 +187,38 @@ public sealed partial class ShipTargetingSystem : EntitySystem
 
             _cannon.AttemptFire(uid, uid, _transform.ToCoordinates(targetMapPos), noServer: true);
         }
+    }
+
+    private bool ShouldFireHitscan(ShipTargetingComponent comp, float frameTime)
+    {
+        if (!comp.HitscanBurstEnabled)
+            return true;
+
+        if (comp.HitscanReaimTimeRemaining > 0f)
+        {
+            comp.HitscanReaimTimeRemaining -= frameTime;
+            if (comp.HitscanReaimTimeRemaining > 0f)
+                return false;
+
+            comp.HitscanBurstTimeRemaining = NextRandomInRange(comp.HitscanBurstMinDuration, comp.HitscanBurstMaxDuration);
+        }
+
+        if (comp.HitscanBurstTimeRemaining <= 0f)
+            comp.HitscanBurstTimeRemaining = NextRandomInRange(comp.HitscanBurstMinDuration, comp.HitscanBurstMaxDuration);
+
+        comp.HitscanBurstTimeRemaining -= frameTime;
+        if (comp.HitscanBurstTimeRemaining > 0f)
+            return true;
+
+        comp.HitscanReaimTimeRemaining = NextRandomInRange(comp.HitscanReaimMinDelay, comp.HitscanReaimMaxDelay);
+        return false;
+    }
+
+    private float NextRandomInRange(float min, float max)
+    {
+        var low = MathF.Min(min, max);
+        var high = MathF.Max(min, max);
+        return _random.NextFloat(low, high);
     }
 
     public Vector2 NormalizedOrZero(Vector2 vec)

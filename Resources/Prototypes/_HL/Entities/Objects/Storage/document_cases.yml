@@ -1,0 +1,16 @@
+- type: entity
+  parent: WeaponCaseShortDocuments
+  id: DocumentCaseShortMagnet
+  name: magnetic disk case
+  description: A reinforced document case fitted with a small magnetizer to keep research disks secure. Nobody is quite sure how it magnetizes disks without damaging the data, but it seems to work.
+  components:
+  - type: MagnetPickup
+    range: 2
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,7,3
+    whitelist:
+      components:
+      - ResearchDisk
+      - TechnologyDisk

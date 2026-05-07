@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server.Access.Systems;
 using Content.Server.Administration.Logs;
 using Content.Server.CriminalRecords.Systems;
@@ -48,15 +49,26 @@ public sealed class IdentitySystem : SharedIdentitySystem
     {
         base.Update(frameTime);
 
-        foreach (var ent in _queuedIdentityUpdates)
-        {
-            if (!TryComp<IdentityComponent>(ent, out var identity))
-                continue;
+        if (_queuedIdentityUpdates.Count == 0)
+            return;
 
-            UpdateIdentityInfo(ent, identity);
-        }
-
+        var queuedUpdates = _queuedIdentityUpdates.ToArray();
         _queuedIdentityUpdates.Clear();
+
+        foreach (var ent in queuedUpdates)
+        {
+            try
+            {
+                if (!TryComp<IdentityComponent>(ent, out var identity))
+                    continue;
+
+                UpdateIdentityInfo(ent, identity);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to update identity info for {ToPrettyString(ent)}: {ex}");
+            }
+        }
     }
 
     // This is where the magic happens
@@ -96,6 +108,13 @@ public sealed class IdentitySystem : SharedIdentitySystem
     {
         if (identity.IdentityEntitySlot.ContainedEntity is not { } ident)
             return;
+
+        if (TerminatingOrDeleted(uid)
+            || TerminatingOrDeleted(ident)
+            || !TryComp<MetaDataComponent>(ident, out _))
+        {
+            return;
+        }
 
         var representation = GetIdentityRepresentation(uid);
         var name = GetIdentityName(uid, representation);

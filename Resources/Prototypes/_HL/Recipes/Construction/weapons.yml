@@ -1,0 +1,71 @@
+- type: construction
+  id: BoneArrow
+  graph: BoneArrow
+  startNode: start
+  targetNode: BoneArrow
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneBow
+  graph: BoneBow
+  startNode: start
+  targetNode: BoneBow
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneKnife
+  graph: BoneKnife
+  startNode: start
+  targetNode: BoneKnife
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneHatchet
+  graph: BoneHatchet
+  startNode: start
+  targetNode: BoneHatchet
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneHalberd
+  graph: BoneHalberd
+  startNode: start
+  targetNode: BoneHalberd
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneKnifeFang
+  graph: BoneKnifeFang
+  startNode: start
+  targetNode: BoneKnifeFang
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneClub
+  graph: BoneClub
+  startNode: start
+  targetNode: BoneClub
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneDart
+  graph: BoneDart
+  startNode: start
+  targetNode: BoneDart
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneSkewer
+  graph: BoneSkewer
+  startNode: start
+  targetNode: BoneSkewer
+  category: construction-category-weapons
+  objectType: Item

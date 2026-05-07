@@ -24,6 +24,7 @@ namespace Content.Client.Shuttles.Systems
             shuttle.AddFunction(ContentKeyFunctions.ShuttleRotateLeft);
             shuttle.AddFunction(ContentKeyFunctions.ShuttleRotateRight);
             shuttle.AddFunction(ContentKeyFunctions.ShuttleBrake);
+            shuttle.AddFunction(ContentKeyFunctions.ShuttleWEP); // HL
         }
 
         public override void Shutdown()

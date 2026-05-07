@@ -19,6 +19,12 @@ github     = "https://github.com/fenndragon/HardLight"
 [net]
 max_connections = 1024
 tickrate = 30
+# Cheaper PVS compression (zlib level 1 vs default 3): trades a small bandwidth
+# bump for noticeably less server CPU per tick. Net win on the perf-bound side.
+pvs_compress_level = 1
+# Lower force-ack threshold (default 60): server force-acks lagging clients sooner,
+# preventing one stuck/slow client from holding up PVS state for everyone.
+force_ack_threshold = 30
 
 [vote]
 restart_required_ratio = 0.85

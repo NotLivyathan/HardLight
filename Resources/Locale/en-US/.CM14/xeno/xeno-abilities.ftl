@@ -1,5 +1,4 @@
 ﻿# Plasma
-cm-xeno-not-enough-plasma = You don't have enough plasma!
 
 # Costruction
 cm-xeno-choose-resin-structure = Choose Resin Structure

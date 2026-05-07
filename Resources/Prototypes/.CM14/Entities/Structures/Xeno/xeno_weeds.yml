@@ -155,6 +155,16 @@
     overrides:
     - weed_dir0
     - weed_dir15
+  - type: Damageable
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 10
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
   - type: RandomSprite
     available:
     - 0:

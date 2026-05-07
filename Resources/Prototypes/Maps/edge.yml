@@ -3,7 +3,7 @@
   mapName: 'Edge'
   mapPath: /Maps/edge.yml # Floofstation
   minPlayers: 0
-  maxPlayers: 80
+  maxPlayers: 200
   stations:
     Edge:
       stationProto: StandardNanotrasenStation
@@ -91,3 +91,5 @@
             #Contractor: [ -1, -1 ]
             #Pilot: [ 5, 5 ]
             Mercenary: [ 0, 40 ]
+            # Anomaly (1)
+            Anomaly: [ 5, 5 ]

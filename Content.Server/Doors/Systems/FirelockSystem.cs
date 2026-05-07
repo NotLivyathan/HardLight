@@ -128,10 +128,12 @@ namespace Content.Server.Doors.Systems
                 return (false, false);
             }
 
-            if (!HasComp<GridAtmosphereComponent>(xform.ParentUid))
+            if (!HasComp<GridAtmosphereComponent>(xform.ParentUid)
+                || xform.MapUid == null
+                || !HasComp<MapAtmosphereComponent>(xform.MapUid.Value)
+                || !TryComp<MapGridComponent>(xform.ParentUid, out var grid))
                 return (false, false);
 
-            var grid = Comp<MapGridComponent>(xform.ParentUid);
             var pos = _mapping.CoordinatesToTile(xform.ParentUid, grid, xform.Coordinates);
             var minPressure = float.MaxValue;
             var maxPressure = float.MinValue;

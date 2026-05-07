@@ -82,13 +82,13 @@
     powerLoad: 60000
   - type: Appearance
   - type: ShipShieldEmitter
-    damageLimit: 65000
-    damageOverloadTimePunishment: 40
-    healPerSecond: 1750 # Base is 250
-    damageExp: 1.15 # Base is 1.1
+    damageLimit: 108000 # Mono: was 60000, scaled with Sentinel rebalance
+    damageOverloadTimePunishment: 8 # Mono: brief lockout before recharge
+    healPerSecond: 1700 # Mono: ~16s full recharge
+    damageExp: 1.05 # Base is 1.1
     baseDraw: 40000 # Base is 50000
     maxDraw: 100000 # Base is 150000
-    unpoweredBonus: 7 # Base is 6
+    unpoweredBonus: 4 # Base is 6
     shieldColor: "#FF3333"
     powerUpSound: !type:SoundPathSpecifier
         path: "/Audio/Effects/teleport_arrival.ogg"
@@ -117,13 +117,14 @@
   suffix: POI ONLY
   components:
   - type: ShipShieldEmitter
-    healPerSecond: 10000
-    damageExp: 0.5
+    damageLimit: 450000 # Mono: was 250000, scaled with Sentinel rebalance
+    healPerSecond: 5400 # Mono: ~12s full recharge
+    damageExp: 1
     baseDraw: 80000
     maxDraw: 150000
-    unpoweredBonus: 8
-    damageLimit: 150000
-    damageOverloadTimePunishment: 30
+    unpoweredBonus: 7
+    powerModifier: 0.25
+    damageOverloadTimePunishment: 7 # Mono: brief lockout before recharge
     shieldColor: "#FF9933"
   - type: Sprite
     sprite: _Mono/Structures/ShuttleComponents/fobshield.rsi
@@ -195,13 +196,13 @@
   suffix: TSF CAPITAL ONLY
   components:
   - type: ShipShieldEmitter
-    healPerSecond: 12000
-    damageExp: 0.5
+    damageLimit: 215000 # Mono: was 120000, scaled with Sentinel rebalance
+    healPerSecond: 3600 # Mono: ~10s full recharge
+    damageExp: 1
     baseDraw: 60000
     maxDraw: 100000
-    unpoweredBonus: 8
-    damageLimit: 85000
-    damageOverloadTimePunishment: 35
+    unpoweredBonus: 6
+    damageOverloadTimePunishment: 6 # Mono: brief lockout before recharge
     shieldColor: "#FF0A70"
   - type: Sprite
     sprite: _Mono/Structures/ShuttleComponents/fobshield.rsi
@@ -263,12 +264,22 @@
   name: MS-500 "Titan" Shield Generator
   suffix: ADS ONLY
   components:
-  - type: ContainerContainer #HL start
-    containers:
-      machine_board: !type:Container
-      machine_parts: !type:Container
-  - type: Machine
-    board: HeavyShieldBoard #HL end
+  - type: ShipShieldEmitter
+    damageLimit: 215000 # Mono: was 120000, scaled with Sentinel rebalance
+    healPerSecond: 3600 # Mono: ~10s full recharge
+    damageExp: 1.05 # Base is 1.1
+    baseDraw: 40000 # Base is 50000
+    maxDraw: 100000 # Base is 150000
+    unpoweredBonus: 6 # Base is 6
+    damageOverloadTimePunishment: 6 # Mono: brief lockout before recharge
+    shieldColor: "#FF3333"
+  - type: ShipRepairable
+    repairTime: 30
+    repairCost: 300
+  - type: ShipRepairableRestrict
+    toolWhitelist:
+      tags:
+      - ADSRepairTool
 
 # Medium-End
 - type: entity
@@ -278,13 +289,13 @@
   suffix: ADS ONLY, SCI VOUCHER SHIPS ONLY
   components:
   - type: ShipShieldEmitter
-    healPerSecond: 1000 # Base is 250
-    damageExp: 1.15 # Base is 1.1
+    damageLimit: 168000 # Mono: was 95000, scaled with Sentinel rebalance
+    healPerSecond: 2400 # Mono: ~14s full recharge
+    damageExp: 1.05 # Base is 1.1
     baseDraw: 30000 # Base is 50000
     maxDraw: 75000 # Base is 150000
-    unpoweredBonus: 4 # Base is 6
-    damageLimit: 40000
-    damageOverloadTimePunishment: 100
+    unpoweredBonus: 5 # Mono: was 4
+    damageOverloadTimePunishment: 7 # Mono: brief lockout before recharge
     shieldColor: "#9933FF"
   - type: Sprite
     sprite: _Mono/Structures/ShuttleComponents/shield.rsi
@@ -362,13 +373,13 @@
   name: MS-100 "Sentinel" Shield Generator
   components:
   - type: ShipShieldEmitter
-    healPerSecond: 300 # Mono
-    damageExp: 1.2 # Mono
+    damageLimit: 120000 # Mono: tuned so lbyte (2k DPS) takes ~60s to break
+    healPerSecond: 1333 # Mono: ~18s full recharge
+    damageExp: 1.05 # Mono
     baseDraw: 20000
     maxDraw: 60000
-    unpoweredBonus: 3 # Mono
-    damageLimit: 20000 # Mono
-    damageOverloadTimePunishment: 80
+    unpoweredBonus: 5 # Mono
+    damageOverloadTimePunishment: 9 # Mono: brief lockout before recharge
     shieldColor: "#3399FF"
   - type: Sprite
     sprite: _Mono/Structures/ShuttleComponents/shield.rsi

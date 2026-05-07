@@ -17,6 +17,10 @@ public sealed class NPCRetaliationSystem : EntitySystem
     [Dependency] private readonly NpcFactionSystem _npcFaction = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
+    // Reusable scratch buffer for expired-attack-memory cleanup.
+    // Avoids allocating a fresh ValueList per NPC per tick.
+    private readonly List<EntityUid> _expiredScratch = new();
+
     /// <inheritdoc />
     public override void Initialize()
     {
@@ -61,18 +65,32 @@ public sealed class NPCRetaliationSystem : EntitySystem
     {
         base.Update(frameTime);
 
+        var curTime = _timing.CurTime;
         var query = EntityQueryEnumerator<NPCRetaliationComponent, FactionExceptionComponent>();
         while (query.MoveNext(out var uid, out var retaliationComponent, out var factionException))
         {
-            // TODO: can probably reuse this allocation and clear it
-            foreach (var entity in new ValueList<EntityUid>(retaliationComponent.AttackMemories.Keys))
-            {
-                if (!TerminatingOrDeleted(entity) && _timing.CurTime < retaliationComponent.AttackMemories[entity])
-                    continue;
+            var memories = retaliationComponent.AttackMemories;
+            if (memories.Count == 0)
+                continue;
 
+            // Collect expired (or terminated) entries into the reusable scratch list, then prune.
+            // Iterating the dictionary directly while mutating is unsafe, so a one-off snapshot is
+            // required — but we reuse the same list across all NPCs and ticks.
+            _expiredScratch.Clear();
+            foreach (var (entity, expiry) in memories)
+            {
+                if (TerminatingOrDeleted(entity) || curTime >= expiry)
+                    _expiredScratch.Add(entity);
+            }
+
+            for (var i = 0; i < _expiredScratch.Count; i++)
+            {
+                var entity = _expiredScratch[i];
                 _npcFaction.DeAggroEntity((uid, factionException), entity);
-                // TODO: should probably remove the AttackMemory, thats the whole point of the ValueList right??
+                memories.Remove(entity);
             }
         }
+
+        _expiredScratch.Clear();
     }
 }

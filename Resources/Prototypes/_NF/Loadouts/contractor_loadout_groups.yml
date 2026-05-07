@@ -627,8 +627,8 @@
   loadouts:
   - ContractorClothingShoesChameleonCiv
   - ContractorClothingShoesColorBlack
-  - ContractorClothingShoesClothwrap
-  - ContractorClothingShoesClothwrapTransparent # HL - Add invisible shoes to generic loadouts
+  - ContractorClothingClothWrap
+  - ContractorClothingClothWrapTransparent # HL - Add invisible shoes to generic loadouts
   - ContractorClothingShoesTourist
   - ContractorClothingShoesBootsSalvage
   - ContractorClothingShoesChef
@@ -1188,6 +1188,9 @@
   loadouts:
   - ContractorClothingWalletLeatherBrown
   - ContractorClothingWalletLeatherBlack
+  - ContractorClothingWalletLeatherRed
+  - ContractorClothingWalletLeatherBlue
+  - ContractorClothingWalletLeatherGreen
   fallbacks:
   - ContractorClothingWalletLeatherBrown
 

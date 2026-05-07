@@ -52,10 +52,10 @@ public sealed class PsiWatchCartridgeSystem : EntitySystem
         if (_station.GetOwningStation(loader) is { } station)
             ent.Comp.Station = station;
 
-        if (!TryComp<StationRecordsComponent>(ent.Comp.Station, out var records))
+        if (!_records.TryGetAuthoritativeRecords(out var authorityStation, out var records)) // HardLight: TryComp<StationRecordsComponent>(ent.Comp.Station<_records.TryGetAuthoritativeRecords(out var authorityStation
             return;
 
-        station = ent.Comp.Station.Value;
+        station = authorityStation; // HardLight: ent.Comp.Station.Value<authorityStation
 
         var entries = new List<PsiWatchEntry>();
         foreach (var (id, criminal) in _records.GetRecordsOfType<PsionicsRecord>(station, records))

@@ -1,5 +1,8 @@
-﻿using Content.Server.Actions;
+﻿using System.Linq;
+using Content.Server.Actions;
 using Content.Server.Humanoid;
+using Content.Shared._CS.Humanoid;
+using Content.Shared._Shitmed.Humanoid.Events; // Hardlight
 using Content.Shared.Humanoid;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Mobs;
@@ -17,20 +20,43 @@ public sealed class WaggingSystem : EntitySystem
     [Dependency] private readonly ActionsSystem _actions = default!;
     [Dependency] private readonly HumanoidAppearanceSystem _humanoidAppearance = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly CoyoteMarkingSystem _coyoteMarking = default!; // Coyote, obviously
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<WaggingComponent, MapInitEvent>(OnWaggingMapInit);
+        SubscribeLocalEvent<WaggingComponent, ComponentInit>(OnWaggingMapInit); // Coyote: Move to Component Init
+        SubscribeLocalEvent<WaggingComponent, ProfileLoadFinishedEvent>(OnProfileLoadFinished); // Hardlight
         SubscribeLocalEvent<WaggingComponent, ComponentShutdown>(OnWaggingShutdown);
         SubscribeLocalEvent<WaggingComponent, ToggleActionEvent>(OnWaggingToggle);
         SubscribeLocalEvent<WaggingComponent, MobStateChangedEvent>(OnMobStateChanged);
     }
 
-    private void OnWaggingMapInit(EntityUid uid, WaggingComponent component, MapInitEvent args)
+    private void OnWaggingMapInit(EntityUid uid, WaggingComponent component, ComponentInit args) // Coyote: Move to Component Init
     {
-        _actions.AddAction(uid, ref component.ActionEntity, component.Action, uid);
+        // Hardlight start
+        EnsureWaggingAction(uid, component);
+    }
+
+    private void OnProfileLoadFinished(EntityUid uid, WaggingComponent component, ref ProfileLoadFinishedEvent args)
+    {
+        EnsureWaggingAction(uid, component);
+    }
+
+    private void EnsureWaggingAction(EntityUid uid, WaggingComponent component)
+    {
+        // Hardlight end
+        if (!TryComp<HumanoidAppearanceComponent>(uid, out var humanoid))
+            return;
+
+        if (!humanoid.MarkingSet.Markings.TryGetValue(MarkingCategories.Tail, out var markings))
+            return;
+
+        if (markings.Any(m => _coyoteMarking.TryGetWaggingId(m.MarkingId, out _)))
+        {
+            _actions.AddAction(uid, ref component.ActionEntity, component.Action, uid);
+        }
     }
 
     private void OnWaggingShutdown(EntityUid uid, WaggingComponent component, ComponentShutdown args)
@@ -64,38 +90,29 @@ public sealed class WaggingSystem : EntitySystem
             return false;
 
         wagging.Wagging = !wagging.Wagging;
-
-        for (var idx = 0; idx < markings.Count; idx++) // Animate all possible tails
+        for (var idx = 0; idx < markings.Count; idx++) // Coyote: Improved wagging system
         {
-            var currentMarkingId = markings[idx].MarkingId;
-            string newMarkingId;
-
+            string? target;
             if (wagging.Wagging)
             {
-                newMarkingId = $"{currentMarkingId}{wagging.Suffix}";
+                // Hardlight start
+                _coyoteMarking.TryGetWaggingId(markings[idx].MarkingId, out target);
             }
             else
             {
-                if (currentMarkingId.EndsWith(wagging.Suffix))
-                {
-                    newMarkingId = currentMarkingId[..^wagging.Suffix.Length];
-                }
-                else
-                {
-                    newMarkingId = currentMarkingId;
-                    Log.Warning($"Unable to revert wagging for {currentMarkingId}");
-                }
+                // Hardlight end
+                _coyoteMarking.TryGetStaticId(markings[idx].MarkingId, out target);
             }
 
-            if (!_prototype.HasIndex<MarkingPrototype>(newMarkingId))
+            if (target == null)
             {
-                Log.Warning($"{ToPrettyString(uid)} tried toggling wagging but {newMarkingId} marking doesn't exist");
-                continue;
+                Log.Error($"Unable to find corresponding wagging or static ID for {markings[idx].MarkingId}?");
             }
-
-            _humanoidAppearance.SetMarkingId(uid, MarkingCategories.Tail, idx, newMarkingId,
-                humanoid: humanoid);
-        }
+            else
+            {
+                _humanoidAppearance.SetMarkingId(uid, MarkingCategories.Tail, idx, target, humanoid: humanoid);
+            }
+        } // Coyote end
 
         return true;
     }

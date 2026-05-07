@@ -26,8 +26,13 @@ shuttle-console-exclusion = Exclusion area
 shuttle-console-strafing = Strafing mode
 shuttle-console-nav-settings = Settings
 shuttle-console-iff-toggle = Show IFF
-shuttle-console-dock-toggle = Show docks
-shuttle-console-iffshuttles-toggle = Show shuttles
+shuttle-console-dock-toggle = Docks
+shuttle-console-iffshuttles-toggle = Shuttles
+shuttle-console-maximum-speed = Max speed
+shuttle-console-wep-activate = WEP
+shuttle-console-wep-active = !!WEP!!
+shuttle-console-wep-cooldown = WEP
+shuttle-console-wep-tooltip = War Emergency Power (Z key), consumes a lot of power to recharge
 
 # MAP
 

@@ -35,8 +35,8 @@ public sealed partial class PlantMutateExudeGasses : EntityEffect
           Gas.Ammonia,
           Gas.Plasma,
           Gas.WaterVapor,
-          //Gas.Tritium,
-          //Gas.Frezon,
+          Gas.Tritium,
+          Gas.Frezon,
         };
         // End Frontier: List of gasses
 
@@ -50,6 +50,11 @@ public sealed partial class PlantMutateExudeGasses : EntityEffect
         if (gasses.ContainsKey(gas))
         {
             gasses[gas] += amount;
+            if ((gas==Gas.Tritium) || (gas==Gas.Frezon))
+            {
+                 if (gasses[gas]>MaxValue)
+                    {gasses[gas]=MaxValue;}
+            }
         }
         else
         {
@@ -90,8 +95,8 @@ public sealed partial class PlantMutateConsumeGasses : EntityEffect
           Gas.Ammonia,
           Gas.Plasma,
           Gas.WaterVapor,
-          //Gas.Tritium,
-          //Gas.Frezon,
+          Gas.Tritium,
+          Gas.Frezon,
         };
         // End Frontier: List of gasses
 
@@ -105,6 +110,11 @@ public sealed partial class PlantMutateConsumeGasses : EntityEffect
         if (gasses.ContainsKey(gas))
         {
             gasses[gas] += amount;
+            if ((gas==Gas.Tritium) || (gas==Gas.Frezon))
+            {
+                 if (gasses[gas]>MaxValue)
+                    {gasses[gas]=MaxValue;}
+            }
         }
         else
         {

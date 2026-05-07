@@ -14,6 +14,10 @@
     - WhitelistChameleon
     - HidesHair
     - HidesNose
+  - type: UserInterface # Hardlight start: Make it actually, y'know, work?
+    interfaces:
+      enum.VoiceMaskUIKey.Key:
+        type: VoiceMaskBoundUserInterface # Hardlight end
 
 - type: entity
   parent: ClothingMaskGasChrono

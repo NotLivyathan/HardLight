@@ -246,22 +246,67 @@ public sealed class PricingSystem : EntitySystem
     /// This fires off an event to calculate the price.
     /// Calculating the price of an entity that somehow contains itself will likely hang.
     /// </remarks>
-    public double GetPrice(EntityUid uid, bool includeContents = true, Func<EntityUid, bool>? predicate = null) // Frontier - Add optional predicate
+    public double GetPrice(
+        EntityUid uid,
+        bool includeContents = true,
+        Func<EntityUid, bool>? predicate = null,
+        bool allowSideEffects = true) // Frontier - Add optional predicate
     {
-        if (predicate is not null && !predicate(uid)) // Frontier
-            return 0.0;                               // Frontier
+        var price = 0.0;
+        AccumulatePrice(uid, ref price, includeContents, predicate, allowSideEffects);
+        return price;
+    }
 
-        var ev = new PriceCalculationEvent();
-        ev.Price = 0; // Structs doesnt initialize doubles when called by constructor.
+    /// <summary>
+    /// Checks whether a grid's appraisal exceeds a threshold while avoiding cleanup-time pricing side effects.
+    /// </summary>
+    public bool AppraiseGridExceeds(EntityUid grid, double maxPrice, Func<EntityUid, bool>? predicate = null)
+    {
+        if (maxPrice < 0)
+            return true;
+
+        var xform = Transform(grid);
+        var price = 0.0;
+        var enumerator = xform.ChildEnumerator;
+        while (enumerator.MoveNext(out var child))
+        {
+            if (predicate is not null && !predicate(child))
+                continue;
+
+            price += GetPrice(child, true, predicate, allowSideEffects: false);
+            if (price > maxPrice)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void AccumulatePrice(
+        EntityUid uid,
+        ref double price,
+        bool includeContents = true,
+        Func<EntityUid, bool>? predicate = null,
+        bool allowSideEffects = true)
+    {
+        if (predicate is not null && !predicate(uid))
+            return;
+
+        var ev = new PriceCalculationEvent
+        {
+            Price = 0, // Structs doesnt initialize doubles when called by constructor.
+            AllowSideEffects = allowSideEffects,
+        };
         RaiseLocalEvent(uid, ref ev);
 
-        if (ev.Handled)
-            return ev.Price;
+        price += ev.Price;
 
-        var price = ev.Price;
+        if (ev.Handled)
+            return;
+
         //TODO: Add an OpaqueToAppraisal component or similar for blocking the recursive descent into containers, or preventing material pricing.
         // DO NOT FORGET TO UPDATE ESTIMATED PRICING
         price += GetMaterialsPrice(uid);
+
         price += GetSolutionsPrice(uid);
 
         // Can't use static price with stackprice
@@ -269,22 +314,16 @@ public sealed class PricingSystem : EntitySystem
         price += GetStackPrice(uid);
 
         if (oldPrice.Equals(price))
-        {
             price += GetStaticPrice(uid);
-        }
 
         if (includeContents && TryComp<ContainerManagerComponent>(uid, out var containers))
         {
             foreach (var container in containers.Containers.Values)
             {
                 foreach (var ent in container.ContainedEntities)
-                {
-                    price += GetPrice(ent, includeContents, predicate); // Frontier - Add includeContents, predicate
-                }
+                    AccumulatePrice(ent, ref price, includeContents, predicate, allowSideEffects);
             }
         }
-
-        return price;
     }
 
     private double GetMaterialsPrice(EntityUid uid)
@@ -443,12 +482,13 @@ public sealed class PricingSystem : EntitySystem
         var enumerator = xform.ChildEnumerator;
         while (enumerator.MoveNext(out var child))
         {
-            if (predicate is null || predicate(child))
-            {
-                var subPrice = GetPrice(child, true, predicate); // Frontier: add true, predicate
-                price += subPrice;
-                afterPredicate?.Invoke(child, subPrice);
-            }
+            if (predicate is not null && !predicate(child))
+                continue;
+
+            var subPrice = 0.0;
+            AccumulatePrice(child, ref subPrice, true, predicate);
+            price += subPrice;
+            afterPredicate?.Invoke(child, subPrice);
         }
 
         return price;
@@ -465,6 +505,11 @@ public record struct PriceCalculationEvent()
     /// The total price of the entity.
     /// </summary>
     public double Price = 0;
+
+    /// <summary>
+    /// Whether price handlers are allowed to mutate state while calculating a price.
+    /// </summary>
+    public bool AllowSideEffects = true;
 
     /// <summary>
     /// Whether this event was already handled.

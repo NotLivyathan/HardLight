@@ -26,6 +26,7 @@
   components:
     - type: PermanentBlindness
       blindness: 4
+      glassesFixable: true # Starlight-edit
 
 - type: trait
   id: Narcolepsy

@@ -1,17 +1,21 @@
-using Robust.Shared.Serialization;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom;
+using Robust.Shared.Toolshed.TypeParsers;
 
 namespace Content.Server._Starlight.NullSpace;
 
 /// <summary>
-/// Component that causes a Bluespace pulse when the owner is triggered.
-/// Used with TriggerOnProximity to purge NullSpace entities and stun them.
+/// Trigger a NullSpaceShuntEvent on Trigger.
 /// </summary>
-[RegisterComponent]
+[RegisterComponent, AutoGenerateComponentPause]
 public sealed partial class BluespacePulseOnTriggerComponent : Component
 {
     [DataField]
     public float Radius = 10f;
 
     [DataField]
-    public float StunSeconds = 4f;
+    public EntProtoId? Dome;
+
+    [DataField]
+    public EntityUid? CurrentDome;
 }

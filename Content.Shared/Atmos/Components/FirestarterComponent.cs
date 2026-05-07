@@ -23,7 +23,7 @@ public sealed partial class FirestarterComponent : Component
     [DataField]
     public EntProtoId? FireStarterAction = "ActionFireStarter";
 
-    [DataField] public EntityUid? FireStarterActionEntity;
+    public EntityUid? FireStarterActionEntity;
 
 
     /// <summary>

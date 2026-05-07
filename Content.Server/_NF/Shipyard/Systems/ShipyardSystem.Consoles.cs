@@ -321,15 +321,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         EnsureComp<LinkedLifecycleGridParentComponent>(shuttleUid);
 
         var sellValue = 0;
-        if (!voucherUsed)
-        {
-            // Get the price of the ship
-            if (TryComp<ShuttleDeedComponent>(targetId, out var deed) && deed.ShuttleUid != null && TryGetEntity(deed.ShuttleUid.Value, out var deedShuttleEntity))
-                sellValue = (int)_pricing.AppraiseGrid(deedShuttleEntity.Value, LacksPreserveOnSaleComp);
-
-            // Adjust for taxes
-            sellValue = CalculateShipResaleValue((shipyardConsoleUid, component), sellValue);
-        }
+        if (TryComp<ShuttleDeedComponent>(targetId, out var deed))
+            sellValue = GetDisplayedSellValue(shipyardConsoleUid, component, deed);
 
         SendPurchaseMessage(shipyardConsoleUid, player, name, component.ShipyardChannel, secret: false);
         if (component.SecretShipyardChannel is { } secretChannel)
@@ -442,12 +435,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             balance = bankAcc.Balance;
 
         var fullName = GetFullName(deed);
-        var sellValue = 0;
-        if (deed.ShuttleUid != null && TryGetEntity(deed.ShuttleUid.Value, out var appraisalShuttle))
-        {
-            sellValue = (int)_pricing.AppraiseGrid(appraisalShuttle.Value, LacksPreserveOnSaleComp);
-            sellValue = CalculateShipResaleValue((uid, component), sellValue);
-        }
+        var sellValue = GetDisplayedSellValue(uid, component, deed);
 
         RefreshState(uid, balance, true, fullName, sellValue, targetId, (ShipyardConsoleUiKey)args.UiKey, false);
     }
@@ -536,7 +524,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
         catch (Exception ex)
         {
-            Logger.Error($"Error while attempting to load shuttle from file/temp: {ex}");
+            _sawmill.Error($"Error while attempting to load shuttle from file/temp: {ex}");
             loaded = false;
         }
 
@@ -556,8 +544,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
 
         // Calculate appraisal cost for the loaded ship (charge 10% of appraisal)
-        var fullAppraisal = _pricing.AppraiseGrid(shuttleUid, null);
-        var appraisalCost = (int) MathF.Round((float) fullAppraisal * 0.1f);
+        var fullAppraisal = AppraiseGridForShipyard(shuttleUid);
+        var appraisalCost = (int)MathF.Round((float)fullAppraisal * 0.1f);
 
         // Check if player has a bank account and session to charge them
         if (!_player.TryGetSessionByEntity(player, out var playerSession))
@@ -614,9 +602,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 ("ship", name), ("remaining", (cooldown - (now - lastCharge)).ToString("m\':\'ss"))));
         }
 
-        // Important: Treat loaded ships like independent shuttles, not part of the console's station.
-        // The purchase-from-file path temporarily adds the grid to the console's station for IFF/ownership.
-        // That causes station-wide events (alerts, etc.) to target the loaded ship. Remove that membership here.
+        // Loaded ships should stay independent instead of joining the station the console belongs to.
+        // They get added briefly for IFF and ownership setup, so clear that back out here.
         try
         {
             var consoleStation = _station.GetOwningStation(uid);
@@ -624,12 +611,12 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 && member.Station == consoleStation)
             {
                 _station.RemoveGridFromStation(consoleStation.Value, shuttleUid);
-                Logger.Info($"[ShipLoad(Console)] Removed station membership from loaded ship {ToPrettyString(shuttleUid)} (station {ToPrettyString(consoleStation.Value)})");
+                _sawmill.Info($"[ShipLoad(Console)] Removed station membership from loaded ship {ToPrettyString(shuttleUid)} (station {ToPrettyString(consoleStation.Value)})");
             }
         }
         catch (Exception rmEx)
         {
-            Logger.Warning($"[ShipLoad(Console)] Failed to remove station membership from {ToPrettyString(shuttleUid)}: {rmEx.Message}");
+            _sawmill.Warning($"[ShipLoad(Console)] Failed to remove station membership from {ToPrettyString(shuttleUid)}: {rmEx.Message}");
         }
         // For loaded ships, we don't spawn a new station via a GameMap prototype unless we can infer the vessel ID.
         EntityUid? shuttleStation = null;
@@ -760,11 +747,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             try
             {
                 RaiseNetworkEvent(new Content.Shared.Shuttles.Save.DeleteLocalShipFileMessage(args.SourceFilePath!), session);
-                Logger.Info($"Requested client to delete local ship file '{args.SourceFilePath}' after successful load");
+                _sawmill.Info($"Requested client to delete local ship file '{args.SourceFilePath}' after successful load");
             }
             catch (Exception ex)
             {
-                Logger.Warning($"Failed to request client-side deletion for '{args.SourceFilePath}': {ex}");
+                _sawmill.Warning($"Failed to request client-side deletion for '{args.SourceFilePath}': {ex}");
             }
         }
 
@@ -945,15 +932,19 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         var voucherUsed = HasComp<ShipyardVoucherComponent>(targetId);
 
-        int sellValue = 0;
-        if (deed?.ShuttleUid != null && TryGetEntity(deed.ShuttleUid.Value, out var appraisalShuttle))
-        {
-            sellValue = (int)_pricing.AppraiseGrid(appraisalShuttle.Value, LacksPreserveOnSaleComp);
-            sellValue = CalculateShipResaleValue((uid, component), sellValue);
-        }
+        var sellValue = deed != null ? GetDisplayedSellValue(uid, component, deed) : 0;
 
         var fullName = deed != null ? GetFullName(deed) : null;
         RefreshState(uid, bank.Balance, true, fullName, sellValue, targetId, (ShipyardConsoleUiKey)args.UiKey, voucherUsed);
+    }
+
+    private int GetDisplayedSellValue(EntityUid consoleUid, ShipyardConsoleComponent component, ShuttleDeedComponent deed)
+    {
+        if (deed.PurchasedWithVoucher || deed.ShuttleUid == null || !TryGetEntity(deed.ShuttleUid.Value, out var shuttleUid))
+            return 0;
+
+        var sellValue = (int)AppraiseGridForShipyardSale(shuttleUid.Value);
+        return CalculateShipResaleValue((consoleUid, component), sellValue);
     }
 
     private void ConsolePopup(EntityUid uid, string text)
@@ -1063,12 +1054,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
             var voucherUsed = HasComp<ShipyardVoucherComponent>(targetId);
 
-            int sellValue = 0;
-            if (deed?.ShuttleUid != null && TryGetEntity(deed.ShuttleUid.Value, out var loopAppraisalShuttle))
-            {
-                sellValue = (int)_pricing.AppraiseGrid(loopAppraisalShuttle.Value, LacksPreserveOnSaleComp);
-                sellValue = CalculateShipResaleValue((uid, component), sellValue);
-            }
+            var sellValue = deed != null ? GetDisplayedSellValue(uid, component, deed) : 0;
 
             var fullName = deed != null ? GetFullName(deed) : null;
             RefreshState(uid,

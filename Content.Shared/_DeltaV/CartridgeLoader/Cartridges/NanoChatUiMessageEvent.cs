@@ -216,6 +216,12 @@ public readonly struct NanoChatData(
 public readonly record struct NanoChatRecipientUpdatedEvent(EntityUid CardUid);
 
 /// <summary>
+///     Raised when a NanoChat card's number changes so server-side indexes can stay in sync.
+/// </summary>
+[ByRefEvent]
+public readonly record struct NanoChatNumberChangedEvent(EntityUid CardUid, uint? OldNumber, uint NewNumber);
+
+/// <summary>
 ///     Raised on the NanoChat card whenever it receives or tries sending a messsage
 /// </summary>
 [ByRefEvent]

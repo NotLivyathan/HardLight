@@ -24,9 +24,6 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
     // The minimum amount of time between handled blip requests.
     private static readonly TimeSpan MinRequestPeriod = TimeSpan.FromSeconds(1);
-    // Maximum distance for blips to be considered visible
-    private const float MaxBlipRenderDistance = 300f;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -79,7 +76,7 @@ public sealed partial class RadarBlipSystem : EntitySystem
         var radarPosition = _xform.GetWorldPosition(ent);
         var radarGrid = radarXform.GridUid;
         var radarMapId = radarXform.MapID;
-        var radarRange = MathF.Min(ent.Comp.MaxRange, MaxBlipRenderDistance);
+        var radarRange = ent.Comp.MaxRange;
 
         // Non-positive range, nothing to return.
         if (radarRange <= 0)

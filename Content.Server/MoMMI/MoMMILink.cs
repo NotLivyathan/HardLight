@@ -26,15 +26,27 @@ namespace Content.Server.MoMMI
             _statusHost.AddHandler(HandleChatPost);
         }
 
-        public async void SendOOCMessage(string sender, string message)
+        public void SendOOCMessage(string sender, string message)
         {
-            var sentMessage = new MoMMIMessageOOC
-            {
-                Sender = sender,
-                Contents = message
-            };
+            _ = SendOOCMessageAsync(sender, message);
+        }
 
-            await SendMessageInternal("ooc", sentMessage);
+        private async Task SendOOCMessageAsync(string sender, string message)
+        {
+            try
+            {
+                var sentMessage = new MoMMIMessageOOC
+                {
+                    Sender = sender,
+                    Contents = message
+                };
+
+                await SendMessageInternal("ooc", sentMessage);
+            }
+            catch (Exception e)
+            {
+                Logger.GetSawmill("mommi").Warning($"Failed to relay OOC to MoMMI: {e}");
+            }
         }
 
         private async Task SendMessageInternal(string type, object messageObject)

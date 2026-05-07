@@ -197,3 +197,62 @@
   canBuildInImpassable: false
   conditions:
     - !type:NoUnstackableInTile
+
+- type: construction
+  id: BoneMug
+  graph: BoneMug
+  startNode: start
+  targetNode: BoneMug
+  category: construction-category-weapons
+  objectType: Item
+  
+- type: construction
+  id: BoneD20
+  graph: BoneD20
+  startNode: start
+  targetNode: BoneD20
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneD12
+  graph: BoneD12
+  startNode: start
+  targetNode: BoneD12
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneD10
+  graph: BoneD10
+  startNode: start
+  targetNode: BoneD10
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneD8
+  graph: BoneD8
+  startNode: start
+  targetNode: BoneD8
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneD6
+  graph: BoneD6
+  startNode: start
+  targetNode: BoneD6
+  category: construction-category-weapons
+  objectType: Item
+ 
+- type: construction
+  id: BoneD4
+  graph: BoneD4
+  startNode: start
+  targetNode: BoneD4
+  category: construction-category-weapons
+  objectType: Item
+ 
+
+  
