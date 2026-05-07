@@ -81,6 +81,7 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
         SubscribeLocalEvent<SolutionComponent, ComponentStartup>(OnSolutionStartup);
         SubscribeLocalEvent<SolutionComponent, ComponentShutdown>(OnSolutionShutdown);
         SubscribeLocalEvent<SolutionContainerManagerComponent, ComponentInit>(OnContainerManagerInit);
+        SubscribeLocalEvent<SolutionContainerManagerComponent, ComponentStartup>(OnContainerManagerStartup); // HardLight
         SubscribeLocalEvent<ExaminableSolutionComponent, ExaminedEvent>(OnExamineSolution);
         SubscribeLocalEvent<ExaminableSolutionComponent, GetVerbsEvent<ExamineVerb>>(OnSolutionExaminableVerb);
         SubscribeLocalEvent<SolutionContainerManagerComponent, MapInitEvent>(OnMapInit);
@@ -993,6 +994,32 @@ public abstract partial class SharedSolutionContainerSystem : EntitySystem
     private void OnMapInit(Entity<SolutionContainerManagerComponent> entity, ref MapInitEvent args)
     {
         EnsureAllSolutions(entity);
+
+        RefreshContainerSolutionAppearance(entity); // HardLight
+    }
+
+    private void OnContainerManagerStartup(Entity<SolutionContainerManagerComponent> entity, ref ComponentStartup args) // HardLight
+    {
+        EnsureAllSolutions(entity);
+        RefreshContainerSolutionAppearance(entity);
+    }
+
+    // HardLight: Update appearance for all contained solutions on startup.
+    private void RefreshContainerSolutionAppearance(Entity<SolutionContainerManagerComponent> entity)
+    {
+        if (!TryComp<AppearanceComponent>(entity, out var appearance))
+            return;
+
+        foreach (var name in entity.Comp.Containers)
+        {
+            if (!TryGetSolution((entity.Owner, (SolutionContainerManagerComponent?) entity.Comp), name, out Entity<SolutionComponent>? soln))
+                continue;
+
+            if (!TryComp<ContainedSolutionComponent>(soln.Value, out var contained))
+                continue;
+
+            UpdateAppearance((entity.Owner, appearance), (soln.Value.Owner, soln.Value.Comp, contained));
+        }
     }
 
     private void OnContainerManagerShutdown(Entity<SolutionContainerManagerComponent> entity, ref ComponentShutdown args)
