@@ -138,6 +138,7 @@ public static class ShipSaveYamlSanitizer
         "PortalBlue",
         "PortalRed",
         "ReactorGasPipe",
+        "TurbineGasPipe",
         "ShipShield",
         // NullSpace items
         "ClothingEyesGlassesNullSpace",
