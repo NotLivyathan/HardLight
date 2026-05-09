@@ -3,6 +3,9 @@
   parent: BaseComputer
   abstract: true
   components:
+  - type: EdgeConnection # HardLight
+    connectionKey: atm_computers
+    allowedDirections: East, West
   - type: ActivatableUIRequiresPower
   - type: ActivatableUI
     singleUser: true

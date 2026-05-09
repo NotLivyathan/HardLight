@@ -44,14 +44,17 @@
     mode: SnapgridCenter
   components:
     - type: StationMap
+    - type: EdgeConnection # HardLight
+      connectionKey: wallmount_computers
+      allowedDirections: East, West
     - type: Transform
       anchored: true
     - type: Sprite
       sprite: Structures/Machines/station_map.rsi
       layers:
-      - map: ["computerLayerBody"]
+      - map: [ "computerLayerBody" ]
         state: station_map0
-      - map: ["computerLayerScreen"]
+      - map: [ "computerLayerScreen" ]
         state: unshaded
     # HardLight start
     - type: GenericVisualizer
