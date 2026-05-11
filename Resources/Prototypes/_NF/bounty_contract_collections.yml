@@ -4,11 +4,17 @@
   notificationType: Radio
   name: bounty-contract-collection-name-command
   writeAccess:
-  - HeadOfPersonnel
-  - HeadOfSecurity
+  - Command # HardLight
+  # HardLight start: Why were command bounties restricted to specific command members?
+  # - HeadOfPersonnel
+  # - HeadOfSecurity
+  # HardLight end
   deleteAccess:
-  - HeadOfPersonnel
-  - HeadOfSecurity
+  - Command # HardLight
+  # HardLight start: Why were command bounties restricted to specific command members?
+  # - HeadOfPersonnel
+  # - HeadOfSecurity
+  # HardLight end
   categories:
   - Criminal
   - Vacancy
