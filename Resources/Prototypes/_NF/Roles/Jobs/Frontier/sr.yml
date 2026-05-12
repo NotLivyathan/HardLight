@@ -74,6 +74,7 @@
   - External
   - Brig
   - Frontier
+  - StationTrafficController
   - Mercenary
   special:
   - !type:AddImplantSpecial
