@@ -1,2 +1,2 @@
-reagent-name-synthetic-blood = synthetic blood
-reagent-desc-synthetic-blood = Not quite coolant, not quite blue powerade.
+reagent-name-synth-blood = synth blood
+reagent-desc-synth-blood = Dark fullerene-rich blood used by Synths to move repair nanites through their bodies.

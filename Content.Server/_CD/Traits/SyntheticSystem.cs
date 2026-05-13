@@ -10,7 +10,7 @@ public sealed class SyntheticSystem : EntitySystem // HardLight: Synth<Synthetic
 {
     // Begin DeltaV - make strings static readonly
     private static readonly ProtoId<TypingIndicatorPrototype> RobotTypingIndicator = "robot";
-    private static readonly ProtoId<ReagentPrototype> SyntheticBloodReagent = "SyntheticBlood"; // HardLight: Synth<Synthetic
+    private static readonly ProtoId<ReagentPrototype> SyntheticBloodReagent = "SynthBlood";
     // End DeltaV
 
     [Dependency] private readonly BloodstreamSystem _bloodstream = default!;

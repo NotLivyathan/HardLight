@@ -28,6 +28,9 @@ namespace Content.Server.Body.Systems;
 
 public sealed class BloodstreamSystem : EntitySystem
 {
+    private const string SynthBloodReagent = "SynthBlood"; // HardLight
+    private const string NanitesReagent = "Nanites"; // HardLight
+    private const string InertNanitesReagent = "InertNanites"; // HardLight
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IRobustRandom _robustRandom = default!;
@@ -285,7 +288,7 @@ public sealed class BloodstreamSystem : EntitySystem
 
         // Fill blood solution with BLOOD
         // The DNA string might not be initialized yet, but the reagent data gets updated in the GenerateDnaEvent subscription
-        bloodSolution.AddReagent(new ReagentId(entity.Comp.BloodReagent, GetEntityBloodData(entity.Owner)), entity.Comp.BloodMaxVolume - bloodSolution.Volume);
+        bloodSolution.AddReagent(new ReagentId(entity.Comp.BloodReagent, GetEntityBloodData(entity.Owner, entity.Comp.BloodReagent)), entity.Comp.BloodMaxVolume - bloodSolution.Volume); // HardLight: Added entity.Comp.BloodReagent
     }
 
     private void OnDamageChanged(Entity<BloodstreamComponent> ent, ref DamageChangedEvent args)
@@ -450,7 +453,7 @@ public sealed class BloodstreamSystem : EntitySystem
         }
 
         if (amount >= 0)
-            return _solutionContainerSystem.TryAddReagent(component.BloodSolution.Value, component.BloodReagent, amount, null, GetEntityBloodData(uid));
+            return _solutionContainerSystem.TryAddReagent(component.BloodSolution.Value, component.BloodReagent, amount, null, GetEntityBloodData(uid, component.BloodReagent)); // HardLight: Added component.BloodReagent
 
         // Removal is more involved,
         // since we also wanna handle moving it to the temporary solution
@@ -565,7 +568,7 @@ public sealed class BloodstreamSystem : EntitySystem
         component.BloodReagent = reagent;
 
         if (currentVolume > 0)
-            _solutionContainerSystem.TryAddReagent(component.BloodSolution.Value, component.BloodReagent, currentVolume, null, GetEntityBloodData(uid));
+            _solutionContainerSystem.TryAddReagent(component.BloodSolution.Value, component.BloodReagent, currentVolume, null, GetEntityBloodData(uid, component.BloodReagent)); // HardLight: Added component.BloodReagent
     }
 
     private void OnDnaGenerated(Entity<BloodstreamComponent> entity, ref GenerateDnaEvent args)
@@ -576,7 +579,7 @@ public sealed class BloodstreamSystem : EntitySystem
             {
                 List<ReagentData> reagentData = reagent.Reagent.EnsureReagentData();
                 reagentData.RemoveAll(x => x is DnaData);
-                reagentData.AddRange(GetEntityBloodData(entity.Owner));
+                reagentData.AddRange(GetEntityBloodData(entity.Owner, reagent.Reagent.Prototype)); // HardLight: Added reagent.Reagent.Prototype
             }
         }
         else
@@ -586,8 +589,15 @@ public sealed class BloodstreamSystem : EntitySystem
     /// <summary>
     /// Get the reagent data for blood that a specific entity should have.
     /// </summary>
-    public List<ReagentData> GetEntityBloodData(EntityUid uid)
+    public List<ReagentData> GetEntityBloodData(EntityUid uid, string? bloodReagent = null) // HardLight: Added string? bloodReagent = null
     {
+        // HardLight start
+        if (bloodReagent == SynthBloodReagent ||
+            bloodReagent == NanitesReagent ||
+            bloodReagent == InertNanitesReagent)
+            return new List<ReagentData>();
+        // HardLight end
+
         var bloodData = new List<ReagentData>();
         var dnaData = new DnaData();
 
