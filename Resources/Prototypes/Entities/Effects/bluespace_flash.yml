@@ -26,6 +26,30 @@
       path: /Audio/Effects/Lightning/lightningbolt.ogg
 
 - type: entity
+  id: EffectNullspaceFlasherRange
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+  - type: Physics
+    bodyType: Static
+    canCollide: false
+  - type: Sprite
+    drawdepth: Effects
+    noRot: true
+    overrideContainerOcclusion: true
+    sprite: Effects/EnergyDome/energydome_big.rsi
+    layers:
+    - state: big
+      shader: unshaded
+      color: "#18abf566"
+    scale: 4.3, 4.3
+  - type: Visibility
+    layer: 32
+  - type: Tag
+    tags:
+    - HideContextMenu
+
+- type: entity
   id: EffectFlashShadeskip
   components:
   - type: PointLight
@@ -37,6 +61,45 @@
   - type: EmitSoundOnSpawn
     sound:
       path: /Audio/Effects/Lightning/lightningbolt.ogg
+
+- type: entity
+  id: EffectFlashShadowkinShadeskip
+  components:
+  - type: PointLight
+    radius: 5
+    energy: 3.5
+    color: "#7100bd"
+  - type: TimedDespawn
+    lifetime: 3
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/Effects/Shadowkin/shadeskip.ogg
+
+- type: entity
+  id: EffectFlashShadowkinDarkSwapOn
+  components:
+  - type: PointLight
+    radius: 5
+    energy: 3.5
+    color: "#7100bd"
+  - type: TimedDespawn
+    lifetime: 3
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/Effects/Shadowkin/darkswapon.ogg
+
+- type: entity
+  id: EffectFlashShadowkinDarkSwapOff
+  components:
+  - type: PointLight
+    radius: 5
+    energy: 3.5
+    color: "#7100bd"
+  - type: TimedDespawn
+    lifetime: 3
+  - type: EmitSoundOnSpawn
+    sound:
+      path: /Audio/Effects/Shadowkin/darkswapoff.ogg
 
 - type: entity
   id: EffectPyrokineticFlare

@@ -3776,3 +3776,115 @@ Entries:
       message: DNR mutation is now disabled.
   id: 406
   time: '2026-05-10T11:07:15.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: All members of Command can now issue command bounties.
+  id: 407
+  time: '2026-05-12T21:56:31.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Fix
+      message: Room saves no longer freeze the game on save or load
+    - type: Fix
+      message: Room save files shrunk from ~4 MB to ~50 KB
+    - type: Fix
+      message: >-
+        Spray-painted walls and objects now preserve their style after a room
+        load
+    - type: Fix
+      message: Material silo contents are now preserved after a room load
+    - type: Fix
+      message: >-
+        Item positions inside bags and crates are now preserved after a room
+        load
+    - type: Fix
+      message: Stack counts are now preserved after a room load
+    - type: Fix
+      message: >-
+        Paint colors (PaintedComponent), item labels, paper content/stamps, and
+        plushie appearances now survive room loads
+    - type: Fix
+      message: >-
+        Unanchored tools and equipment are no longer saved in rooms (and turning
+        non-interactable); only items tagged `RoomSaveable` (plushies, pillows,
+        potted plants) are kept
+    - type: Add
+      message: >-
+        `RoomSaveable` tag — add to any prototype to preserve it when unanchored
+        in a room save
+  id: 408
+  time: '2026-05-13T06:42:35.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Tweak
+      message: Shadekin don't inhale foam any more
+  id: 409
+  time: '2026-05-13T06:54:37.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: STC can once again be selected as a round-start job.
+    - type: Add
+      message: The HM can now access traffic control consoles.
+    - type: Fix
+      message: The STC now correctly has access to traffic control consoles.
+  id: 410
+  time: '2026-05-13T06:55:08.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Marriage Axe from Starlight
+  id: 411
+  time: '2026-05-13T06:58:04.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Fix
+      message: >-
+        Wooden televisions should no longer incorrectly use modular console
+        sprites.
+  id: 412
+  time: '2026-05-13T09:16:55.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Add
+      message: >-
+        Added Non-Con Aggressor and Non-Con Victim consent toggles. The Non-Con
+        HUD marker is now color- and shape-coded based on the target's role(s):
+        red/horns-up for aggressor, blue/horns-down for victim, purple/both for
+        either. Existing Non-Con users who don't pick a role keep the original
+        red marker.
+    - type: Add
+      message: >-
+        Added a "Use colorblind-friendly Non-Con marker colors" toggle in the
+        Consent menu. When enabled, the Non-Con role markers use a
+        colorblind-safe amber/teal-green/lavender palette instead of
+        red/blue/purple. Affects only the local viewer.
+  id: 413
+  time: '2026-05-13T09:18:30.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Fix
+      message: Maybe hopefully fix the manifest
+  id: 414
+  time: '2026-05-13T09:28:12.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Remove
+      message: Removed nullphase/shadekin changes
+    - type: Remove
+      message: 'temporarily removed the Anomaly job role '
+  id: 415
+  time: '2026-05-13T09:29:56.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Adds a new lethal security turret that targets contraband carriers
+    - type: Add
+      message: 'Added the first Livewire checkpoint to Core station  '
+    - type: Tweak
+      message: CDets no longer fire on command or security
+    - type: Tweak
+      message: CDets now go offline during Red alert or higher
+  id: 416
+  time: '2026-05-13T10:10:27.0000000+00:00'

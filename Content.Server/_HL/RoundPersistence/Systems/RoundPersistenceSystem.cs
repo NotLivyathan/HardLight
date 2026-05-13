@@ -20,6 +20,7 @@ using Content.Server._HL.RoundPersistence.Components;
 using Content.Server._NF.RoundNotifications.Events;
 using Content.Server._NF.ShuttleRecords;
 using Content.Server._NF.ShuttleRecords.Components;
+using Content.Server.CrewManifest;
 using Content.Shared.CrewManifest;
 using Content.Shared.GameTicking;
 using Content.Shared.HL.CCVar; // HardLight CCVar namespace
@@ -74,6 +75,7 @@ public sealed class RoundPersistenceSystem : EntitySystem
     [Dependency] private JobSystem _jobs = default!;
     [Dependency] private RoleSystem _roles = default!;
     [Dependency] private Content.Shared.Objectives.Systems.SharedObjectivesSystem _objectives = default!;
+    [Dependency] private CrewManifestSystem _crewManifest = default!;
 
     private ISawmill _sawmill = default!;
 
@@ -608,6 +610,9 @@ public sealed class RoundPersistenceSystem : EntitySystem
             {
                 persistedRecords.GeneralRecords[id] = record;
             }
+
+            var entries = _crewManifest.GetCrewManifest();
+            persistedRecords.CrewManifest = entries.Entries.ToList();
 
             // Get crew manifest
             persistence.StationRecords[stationName] = persistedRecords;

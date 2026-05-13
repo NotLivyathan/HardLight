@@ -50,6 +50,10 @@ public sealed class StationPaySystem : EntitySystem
         SubscribeLocalEvent<GameRunLevelChangedEvent>(OnRunLevelChanged);
         SubscribeLocalEvent<RoleAddedEvent>(OnRoleAddedEvent);
         SubscribeLocalEvent<RoleRemovedEvent>(OnRoleRemovedEvent);
+        // Mind moves between bodies do not fire role add/remove events.
+        // Use broadcast mind events and gate on JobTrackingComponent.
+        SubscribeLocalEvent<MindAddedMessage>(OnAnyMindAdded);
+        SubscribeLocalEvent<MindRemovedMessage>(OnAnyMindRemoved);
 
         /*
          * TODO: account for disconnecting players
@@ -99,7 +103,7 @@ public sealed class StationPaySystem : EntitySystem
         // payout anyone who worked less than an hour at round end
         foreach (var (uid, lastPayout) in _scheduledPayouts)
         {
-            PayoutFor(uid, now - lastPayout);
+            _ = PayoutFor(uid, now - lastPayout);
         }
 
         _scheduledPayouts.Clear();
@@ -184,18 +188,39 @@ public sealed class StationPaySystem : EntitySystem
         _scheduledPayouts.Remove((EntityUid)args.Mind.OwnedEntity);
     }
 
-    private void PayoutFor(EntityUid uid, int secondsWorked)
+    private void OnAnyMindAdded(MindAddedMessage args)
+    {
+        var uid = args.Container.Owner;
+        if (!HasComp<JobTrackingComponent>(uid)
+            || !HasComp<BankAccountComponent>(uid)
+            || !GetJobForEntity(uid, out _)
+            || !_player.TryGetSessionById(args.Mind.Comp.UserId, out var session)
+            || session.Status != SessionStatus.InGame
+            || session.AttachedEntity != uid)
+        {
+            return;
+        }
+
+        TrySchedulePayout(uid);
+    }
+
+    private void OnAnyMindRemoved(MindRemovedMessage args)
+    {
+        _scheduledPayouts.Remove(args.Container.Owner);
+    }
+
+    private bool PayoutFor(EntityUid uid, int secondsWorked)
     {
         if (!_scheduledPayouts.ContainsKey(uid))
         {
             //Log.Debug($"[stationpay] Attemped payout for {uid}, but no scheduled payout was found");
-            return;
+            return false;
         }
 
         if (!GetJobForEntity(uid, out var jobId))
         {
             //Log.Debug($"[stationpay] Attemped payout for {uid}, but no valid job found");
-            return;
+            return false;
         }
 
         var employedTime = (int)(secondsWorked / (double)PayoutDelay);
@@ -204,7 +229,13 @@ public sealed class StationPaySystem : EntitySystem
         if (employedTime <= 0)
         {
             //Log.Debug($"[stationpay] Skipping payout for {uid} due to employedTime <= 0 (secondsWorked: {secondsWorked})");
-            return;
+            return false;
+        }
+
+        if (!_player.TryGetSessionByEntity(uid, out var session)
+            || session.Status != SessionStatus.InGame)
+        {
+            return false;
         }
 
         var rate = _jobPayoutRates[(ProtoId<JobPrototype>)jobId];
@@ -213,20 +244,6 @@ public sealed class StationPaySystem : EntitySystem
 
         if (_bank.TryBankDeposit(uid, amount))
         {
-            if (!TryComp<MindContainerComponent>(uid, out var mc)
-                || !mc.HasMind
-                || !TryComp<MindComponent>(mc.Mind.Value, out var mind))
-            {
-                //Log.Debug($"[stationpay] Skipping payout for {uid} due to no mind present");
-                return;
-            }
-
-            if (!_player.TryGetSessionById(mind.UserId, out var session))
-            {
-                //Log.Debug($"[stationpay] Skipping payout for {uid} due to no session");
-                return;
-            }
-
             var job = _prototypeManager.Index<JobPrototype>(jobId);
             var message = Loc.GetString("stationpay-notify-payment",
                 ("pay", amount),
@@ -243,7 +260,11 @@ public sealed class StationPaySystem : EntitySystem
                 EntityUid.Invalid,
                 false,
                 session.Channel);
+
+            return true;
         }
+
+        return false;
         /* else
             Log.Error("[stationpay] Failed to deposit station pay for uid: " + uid); */
     }
@@ -311,7 +332,8 @@ public sealed class StationPaySystem : EntitySystem
         for (var i = 0; i < _duePayoutsScratch.Count; i++)
         {
             var (uid, oldScheduled) = _duePayoutsScratch[i];
-            var newScheduled = oldScheduled + PayoutDelay;
+            var payoutSucceeded = PayoutFor(uid, PayoutDelay);
+            var newScheduled = payoutSucceeded ? oldScheduled + PayoutDelay : oldScheduled;
 
             // Find insertion index in ascending order. Most rescheduled entries land at the end,
             // so search from the back for amortized O(1).
@@ -319,8 +341,6 @@ public sealed class StationPaySystem : EntitySystem
             while (insertIdx > 0 && _scheduledPayouts.GetAt(insertIdx - 1).Value > newScheduled)
                 insertIdx--;
             _scheduledPayouts.Insert(insertIdx, uid, newScheduled);
-
-            PayoutFor(uid, PayoutDelay);
         }
 
         base.Update(frameTime);
