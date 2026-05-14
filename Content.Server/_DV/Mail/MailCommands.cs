@@ -111,7 +111,7 @@ public sealed class MailToCommand : LocalizedCommands // Frontier: IConsoleComma
             return;
         }
 
-        if (!mailSystem.TryGetMailTeleporterForReceiver(recipientUid, out var teleporterComponent, out var teleporterUid))
+        if (!mailSystem.TryGetMailTeleporterForReceiver(recipientUid, out _, out var teleporterUid)) // HardLight: var teleporterComponent<_
         {
             shell.WriteLine(Loc.GetString("command-mailto-no-teleporter-found"));
             return;
@@ -183,7 +183,7 @@ public sealed class MailNowCommand : IConsoleCommand
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!; // Frontier
 
-    public async void Execute(IConsoleShell shell, string argStr, string[] args)
+    public void Execute(IConsoleShell shell, string argStr, string[] args) // HardLight: Removed async
     {
         var sectorService = _entitySystemManager.GetEntitySystem<SectorServiceSystem>();
         // Frontier: sector-wide mail
