@@ -206,6 +206,9 @@ uplink-security-spaceblade-sec-desc = The latest in stun tech.
 uplink-security-contraband-forensics-module-name = Contraband Forenics Module
 uplink-security-contraband-forensics-module-desc = A program for scanning and reporting contraband dead drops and pods for bounties. Slots into a forensic scanner.
 
+uplink-security-pizza-sec-name = Donuts
+uplink-security-pizza-sec-desc = May not actually be donuts, but it IS objectively the next best thing. Pizza!
+
 uplink-security-lasercanon-name = laser cannon
 uplink-security-lasercanon-desc = A heavy duty, high powered laser sniper rifle.
 
