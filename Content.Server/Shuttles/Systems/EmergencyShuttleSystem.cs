@@ -642,6 +642,25 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         return maps;
     }
 
+    /// <summary>
+    /// HardLight: Returns true if the provided map is one of the active ColComm maps.
+    /// This avoids per-call set allocations for common objective checks.
+    /// </summary>
+    public bool IsColcommMap(EntityUid mapUid)
+    {
+        if (_singletonColcommMap == mapUid)
+            return true;
+
+        var query = AllEntityQuery<StationColcommComponent>();
+        while (query.MoveNext(out var comp))
+        {
+            if (comp.MapEntity == mapUid)
+                return true;
+        }
+
+        return false;
+    }
+
     private void AddEmergencyShuttle(Entity<StationEmergencyShuttleComponent?, StationColcommComponent?> ent)
     {
         if (!Resolve(ent.Owner, ref ent.Comp1, ref ent.Comp2))
