@@ -18,6 +18,7 @@ using Content.Shared.UserInterface; // Nuclear-14
 using Content.Shared._NC.Radio; // Nuclear-14
 using Robust.Server.GameObjects; // Nuclear-14
 using Robust.Shared.Prototypes;
+using Content.Server._Starlight.Language; // Starlight
 using Content.Shared.Access.Systems; // Frontier
 using Content.Shared.Verbs; //Frontier
 using Robust.Shared.Utility; // Frontier
@@ -36,6 +37,7 @@ public sealed class RadioDeviceSystem : EntitySystem
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly InteractionSystem _interaction = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+        [Dependency] private readonly LanguageSystem _language = default!; // Starlight
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier: access
     [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!; // Frontier

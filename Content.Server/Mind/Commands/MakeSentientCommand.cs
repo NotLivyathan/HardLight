@@ -6,6 +6,9 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.Speech;
 using Robust.Shared.Console;
+using Content.Server._Starlight.Language; // Starlight
+using Content.Shared._Starlight.Language.Components; // Starlight
+using Content.Shared._Starlight.Language.Systems; // Starlight
 
 namespace Content.Server.Mind.Commands
 {
