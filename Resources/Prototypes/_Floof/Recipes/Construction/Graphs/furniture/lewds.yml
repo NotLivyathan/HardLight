@@ -29,7 +29,6 @@
               amount: 2
               doAfter: 2
 
-
     - node: FurnStripPole
       entity: StripperPole
       edges:
