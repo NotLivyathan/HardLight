@@ -186,7 +186,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         string? nameOverride = null,
         bool checkRadioPrefix = true,
         bool ignoreActionBlocker = false,
-        LanguagePrototype? languageOverride = null // Starlight
+        LanguagePrototype? languageOverride = null, // Starlight
         string? color = null
         )
     {
@@ -501,16 +501,11 @@ public sealed partial class ChatSystem : SharedChatSystem
 
         var wrappedOriginalMessage = originalMessage == message
             ? wrappedMessage
-            : Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
-                ("entityName", name),
-                ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
-                ("fontType", speech.FontId),
-                ("fontSize", speech.FontSize),
-                ("message", FormattedMessage.EscapeText(originalMessage)));
+            : WrapPublicMessage(source, name, originalMessage, language: language); // HardLight
 
-        SendInVoiceRange(ChatChannel.Local, name, message, wrappedMessage, obfuscated, wrappedObfuscated, source, range, null, originalMessage, wrappedOriginalMessage, languageOverride: language); // Starlight-edit: Languages
+        SendInVoiceRange(ChatChannel.Local, name, message, wrappedMessage, obfuscated, wrappedObfuscated, source, range, null, language, originalMessage, wrappedOriginalMessage); // HardLight
 
-        var ev = new EntitySpokeEvent(source, message, originalMessage, null, false, language); // Starlight-edit: Languages
+        var ev = new EntitySpokeEvent(source, message, originalMessage, null, null, null, false, language); // HardLight
         RaiseLocalEvent(source, ev, true);
 
         // To avoid logging any messages sent by entities that are not players, like vendors, cloning, etc.
@@ -574,18 +569,36 @@ public sealed partial class ChatSystem : SharedChatSystem
         (!CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en")
         || (CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en")); // Starlight
 
+        // HardLight start
+        var wrappedOriginalMessage = originalMessage == message
+            ? WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language)
+            : WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, originalMessage, language);
+        var obfuscatedMessage = ObfuscateMessageReadability(message);
+        var originalObfuscatedMessage = originalMessage == message
+            ? obfuscatedMessage
+            : ObfuscateMessageReadability(originalMessage);
+        // HardLight end
+
         foreach (var (session, data) in GetRecipients(source, WhisperMuffledRange))
         {
             if (session.AttachedEntity is not { Valid: true } listener) // Starlight-edit: Languages
+                continue; // HardLight
 
             if (MessageRangeCheck(session, data, range) != MessageRangeCheckResult.Full)
                 continue; // Won't get logged to chat, and ghosts are too far away to see the pop-up, so we just won't send it to them.
 
             // Starlight start
-            var canUnderstandLanguage = _language.CanUnderstand(listener, language.ID);
+            var hasXenoglossy = HasXenoglossy(listener); // HardLight
+            var canUnderstandLanguage = hasXenoglossy || _language.CanUnderstand(listener, language.ID); // HardLight: Added hasXenoglossy
             // How the entity perceives the message depends on whether it can understand its language
-            var perceivedMessage = canUnderstandLanguage ? message : languageObfuscatedMessage;
-            var obfuscated = canUnderstandLanguage != true;
+            // HardLight-edit start
+            var perceivedMessage = hasXenoglossy
+                ? originalMessage
+                : canUnderstandLanguage
+                    ? message
+                    : languageObfuscatedMessage;
+            var obfuscated = !hasXenoglossy && !canUnderstandLanguage;
+            // HardLight-edit end
 
             // Result is the intermediate message derived from the perceived one via obfuscation
             // Wrapped message is the result wrapped in an "x says y" string
@@ -593,12 +606,11 @@ public sealed partial class ChatSystem : SharedChatSystem
 
             if (data.Range <= WhisperClearRange || data.Observer != ObserverType.NoObserver)
             {
-                var understoodMessage = HasXenoglossy(listener) ? originalMessage : message;
-                var understoodWrappedMessage = HasXenoglossy(listener) ? wrappedOriginalMessage : wrappedMessage;
-
                 // Scenario 1: the listener can clearly understand the message
                 result = perceivedMessage;
-                wrappedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, result, language, obfuscated);
+                wrappedMessage = hasXenoglossy // HardLight: Added hasXenoglossy
+                    ? wrappedOriginalMessage // HardLight
+                    : WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, result, language, obfuscated);
             }
             else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange))
             {
@@ -620,11 +632,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         var replayWrap = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language); // Starlight-edit: Languages
         _replay.RecordServerMessage(new ChatMessage(ChatChannel.Whisper, message, replayWrap, GetNetEntity(source), null, MessageRangeHideChatForReplay(range))); // Starlight-edit: Languages
 
-        var originalObfuscatedMessage = originalMessage == message
-            ? obfuscatedMessage
-            : ObfuscateMessageReadability(originalMessage, 0.2f);
-
-        var ev = new EntitySpokeEvent(source, message, channel, true, language); // Starlight-edit: Languages
+        var ev = new EntitySpokeEvent(source, message, originalMessage, channel, obfuscatedMessage, originalObfuscatedMessage, true, language); // HardLight
         RaiseLocalEvent(source, ev, true);
         if (!hideLog)
             if (originalMessage == message)
@@ -838,10 +846,22 @@ public sealed partial class ChatSystem : SharedChatSystem
     /// <summary>
     ///     Sends a chat message to the given players in range of the source entity.
     /// </summary>
-    private void SendInVoiceRange(ChatChannel channel, string name, string message, string wrappedMessage, string obfuscated, string obfuscatedWrappedMessage, EntityUid source, ChatTransmitRange range, NetUserId? author = null, LanguagePrototype? languageOverride = null) // Starlight
+    private void SendInVoiceRange(
+        ChatChannel channel,
+        string name,
+        string message,
+        string wrappedMessage,
+        string obfuscated,
+        string obfuscatedWrappedMessage,
+        EntityUid source,
+        ChatTransmitRange range,
+        NetUserId? author = null,
+        LanguagePrototype? languageOverride = null, // Starlight
+        string? originalMessage = null,
+        string? wrappedOriginalMessage = null)
     {
         // Starlight start
-        var ignoreLanguage = channel.IsExcemptFromLanguages();
+        var ignoreLanguage = channel.IsExemptFromLanguages();
         var language = languageOverride ?? _language.GetLanguage(source);
         if (!ignoreLanguage && language.SpeechOverride.RequireHands && !_actionBlocker.CanInteract(source, null))
         {
@@ -856,23 +876,15 @@ public sealed partial class ChatSystem : SharedChatSystem
                 continue;
             var entHideChat = entRange == MessageRangeCheckResult.HideChat;
 
-            var listener = session.AttachedEntity;
-            var visibleMessage = message;
-            var visibleWrappedMessage = wrappedMessage;
-
-            if (originalMessage != null && wrappedOriginalMessage != null && listener is { Valid: true } attached && HasXenoglossy(attached))
-            {
-                visibleMessage = originalMessage;
-                visibleWrappedMessage = wrappedOriginalMessage;
-            }
-
             // Starlight start
             if (session.AttachedEntity is not { Valid: true } playerEntity)
                 continue;
-            EntityUid listener = session.AttachedEntity.Value;
+            EntityUid listener = playerEntity; // HardLight: session.AttachedEntity.Value<playerEntity
 
             // If the channel does not support languages, or the entity can understand the message, send the original message, otherwise send the obfuscated version
-            if (ignoreLanguage || _language.CanUnderstand(listener, language.ID))
+            if (originalMessage != null && wrappedOriginalMessage != null && HasXenoglossy(listener)) // HardLight
+                _chatManager.ChatMessageToOne(channel, originalMessage, wrappedOriginalMessage, source, entHideChat, session.Channel, author: author);
+            else if (ignoreLanguage || _language.CanUnderstand(listener, language.ID)) // HardLight: Added else if
                 _chatManager.ChatMessageToOne(channel, message, wrappedMessage, source, entHideChat, session.Channel, author: author);
             else
                 _chatManager.ChatMessageToOne(channel, obfuscated, obfuscatedWrappedMessage, source, entHideChat, session.Channel, author: author);
@@ -1188,6 +1200,7 @@ public sealed class EntitySpokeEvent : EntityEventArgs
     public readonly EntityUid Source;
     public readonly string Message;
     public readonly string? OriginalMessage;
+    public readonly string? ObfuscatedMessage;
     public readonly bool IsWhisper; // Starlight
     public readonly LanguagePrototype Language; // Starlight
     public readonly string? OriginalObfuscatedMessage;
@@ -1198,12 +1211,13 @@ public sealed class EntitySpokeEvent : EntityEventArgs
     /// </summary>
     public RadioChannelPrototype? Channel;
 
-    public EntitySpokeEvent(EntityUid source, string message, string? originalMessage, RadioChannelPrototype? channel, string? originalObfuscatedMessage, bool isWhisper, LanguagePrototype language) // Starlight
+    public EntitySpokeEvent(EntityUid source, string message, string? originalMessage, RadioChannelPrototype? channel, string? obfuscatedMessage, string? originalObfuscatedMessage, bool isWhisper, LanguagePrototype language)
     {
         Source = source;
         Message = message;
         OriginalMessage = originalMessage;
         Channel = channel;
+        ObfuscatedMessage = obfuscatedMessage;
         IsWhisper = isWhisper;
         Language = language; // Starlight-edit: Languages
         OriginalObfuscatedMessage = originalObfuscatedMessage;
