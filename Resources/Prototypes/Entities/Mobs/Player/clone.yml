@@ -58,6 +58,11 @@
   - SouthernAccent
   - SpanishAccent
   - StutteringAccent
+  # Starlight start: Languages
+  - LanguageSpeaker
+  - LanguageKnowledge
+  - ForeignerTrait
+  # Starlight end
   - GoblinAccent # Frontier
   - ScottishAccent # Frontier
   - StreetpunkAccent # Frontier
@@ -65,9 +70,9 @@
   - UltraVision # Frontier
   - DogVision # Frontier
   - StinkyTrait # Frontier
-  #- TallWhitelist # Frontier
-  #- ShortWhitelist # Frontier
-  #- SizeAttribute # Frontier
+  # - TallWhitelist # Frontier
+  # - ShortWhitelist # Frontier
+  # - SizeAttribute # Frontier
   - NFSalvageMobRestrictions # Frontier
   blacklist:
     components:

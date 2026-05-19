@@ -313,7 +313,7 @@ public sealed class RadioSystem : EntitySystem
         var languageColor = channel.Color;
 
         if (language.SpeechOverride.Color is { } colorOverride)
-            languageColor = Color.InterpolateBetween(Color.White, colorOverride, colorOverride.A);
+            languageColor = Color.InterpolateBetween(Color.White, colorOverride, colorOverride.A); // Changed first param to Color.White so it shows color correctly.
 
         var (iconId, jobName) = GetJobIcon(source);
 

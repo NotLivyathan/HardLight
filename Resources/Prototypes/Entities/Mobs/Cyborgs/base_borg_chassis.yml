@@ -269,11 +269,20 @@
     damageProtection:
       flatReductions:
         Heat: 10 # capable of touching light bulbs and stoves without feeling pain!
-  #region Starlight
+  # region Starlight
   # - type: CyborgSparkEffect # Hardlight we don't have these yet...
-  # - type: StationAIShunt #Starlight allow shunting into all borgs # Hardlight TOO SOON
+  # - type: StationAIShunt # Starlight allow shunting into all borgs # Hardlight TOO SOON
   # - type: Crawler # Hardlight TOO SOON
   # end region starlight
+  # Starlight-start: Languages
+  - type: LanguageKnowledge
+    speaks:
+    - GalacticCommon
+    - Machine
+    understands:
+    - GalacticCommon
+    - Machine
+  # Starlight-end
   - type: BorgSwitchableSubtype # CD change
   - type: BypassLock
     openWiresPanel: true
