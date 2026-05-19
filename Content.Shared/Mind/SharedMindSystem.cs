@@ -648,6 +648,15 @@ public abstract partial class SharedMindSystem : EntitySystem
             EnsureComp<EmotingComponent>(uid);
         }
 
+        // Starlight start
+        var speaker = EnsureComp<LanguageSpeakerComponent>(uid);
+
+        // If the entity already speaks some language (like monkey or robot), we do nothing else.
+        // Otherwise, we give them the fallback language
+        if (speaker.SpokenLanguages.Count == 0)
+            _language.AddLanguage(uid, SharedLanguageSystem.FallbackLanguagePrototype);
+        // Starlight end
+
         EnsureComp<ExaminerComponent>(uid);
     }
 
