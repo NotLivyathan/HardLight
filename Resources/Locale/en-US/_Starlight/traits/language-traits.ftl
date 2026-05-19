@@ -7,7 +7,7 @@ trait-language-foreigner-name = Foreigner
 trait-language-foreigner-desc = You can't understand the common language, and you require a translator at all times to talk. You have a translator to help you with your understanding and speaking, make sure to keep it charged.
 
 trait-language-signlanguage-name = Sign Language
-ttrait-language-signlanguage-desc = A sign language commonly used for those who are deaf or mute. Especially popular with spacers, due to practicality in airless environments.
+trait-language-signlanguage-desc = A sign language commonly used for those who are deaf or mute. Especially popular with spacers, due to practicality in airless environments.
 
 trait-language-bubblish-name = Bubblish
 trait-language-bubblish-desc = You've picked up on how to communicate in Bubblish, the language of the slimes spoken using a variety of blops and pops.
