@@ -13,6 +13,10 @@ using Content.Server.Players;
 using Content.Server.Nyanotrasen.Chat;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+// VRS port: Einstein Engines Language framework (via Triad).
+using Content.Server._EinsteinEngines.Language;
+using Content.Shared._EinsteinEngines.Language;
+using Content.Shared.Speech;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Administration;
 using Content.Shared.Abilities.Psionics;
@@ -72,6 +76,9 @@ public sealed partial class ChatSystem : SharedChatSystem
 
     // Nyano - Summary: pulls in the nyano chat system for psionics.
     [Dependency] private readonly NyanoChatSystem _nyanoChatSystem = default!;
+
+    // VRS port: Goobstation/Starlight CollectiveMind — number assignment.
+    [Dependency] private readonly Content.Shared._Starlight.CollectiveMind.CollectiveMindUpdateSystem _collectiveMind = default!;
 
     public const int VoiceRange = 10; // how far voice goes in world units
     public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
@@ -197,6 +204,11 @@ public sealed partial class ChatSystem : SharedChatSystem
             return;
         }
 
+        // VRS port: Goobstation/Starlight CollectiveMind \u2014 keep the per-channel
+        // numbers fresh whenever the speaker has a CollectiveMindComponent.
+        if (TryComp<Content.Shared._Starlight.CollectiveMind.CollectiveMindComponent>(source, out var collective))
+            _collectiveMind.UpdateCollectiveMind(source, collective);
+
         if (player != null && _chatManager.HandleRateLimit(player) != RateLimitStatus.Allowed)
             return;
 
@@ -240,15 +252,8 @@ public sealed partial class ChatSystem : SharedChatSystem
         bool shouldCapitalizeTheWordI = (!CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Parent.Name == "en")
             || (CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en");
 
-        // HardLight start: Corrected SubtleOOC performing IC emotes.
         string? emoteStr = null;
-        if (desiredType == InGameICChatType.SubtleOOC)
-        {
-            message = SanitizeInGameOOCMessage(message);
-        }
-        else
-        {
-            message = SanitizeInGameICMessage(source, message, out emoteStr, shouldCapitalize, shouldPunctuate, shouldCapitalizeTheWordI);
+        message = SanitizeInGameICMessage(source, message, out emoteStr, shouldCapitalize, shouldPunctuate, shouldCapitalizeTheWordI);
 
             // Was there an emote in the message? If so, send it.
             if (player != null && emoteStr != message && emoteStr != null)
@@ -267,7 +272,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             desiredType = chatTypeOverride;
 
         // This message may have a radio prefix, and should then be whispered to the resolved radio channel
-        if (checkRadioPrefix)
+        if (checkRadioPrefix && language.SpeechOverride.AllowRadio)
         {
             if (TryProccessRadioMessage(source, message, out var modMessage, out var channel))
             {
@@ -290,9 +295,6 @@ public sealed partial class ChatSystem : SharedChatSystem
                 break;
             case InGameICChatType.Subtle:
                 SendEntitySubtle(source, message, range, nameOverride, hideLog: hideLog, ignoreActionBlocker: true, color: color, channel: ChatChannel.Subtle);
-                break;
-            case InGameICChatType.SubtleOOC:
-                SendEntitySubtle(source, $"OOC: {message}", range, nameOverride, hideLog: hideLog, ignoreActionBlocker: true, color: color, channel: ChatChannel.SubtleOOC); // HardLight: Capitalized OOC for consistency with other OOC chats.
                 break;
             //Nyano - Summary: case adds the telepathic chat sending ability.
             case InGameICChatType.Telepathic:
@@ -344,6 +346,9 @@ public sealed partial class ChatSystem : SharedChatSystem
                 break;
             case InGameOOCChatType.Looc:
                 SendLOOC(source, player, message, hideChat);
+                break;
+            case InGameOOCChatType.SubtleLOOC: // VRS: Floofstation — subtle OOC routed as proper OOC
+                SendSubtleLOOC(source, player, message, hideChat);
                 break;
         }
     }
@@ -461,7 +466,8 @@ public sealed partial class ChatSystem : SharedChatSystem
         bool ignoreActionBlocker = false
         )
     {
-        if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
+        // VRS port: Einstein Engines - Language. RequireSpeech=false bypasses the speech action blocker (e.g. Sign for muted entities).
+        if (language.SpeechOverride.RequireSpeech && !_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
             return;
 
         var message = TransformSpeech(source, originalMessage, language); // Starlight-edit: Languages
@@ -542,7 +548,8 @@ public sealed partial class ChatSystem : SharedChatSystem
         bool ignoreActionBlocker = false
         )
     {
-        if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
+        // VRS port: Einstein Engines - Language. RequireSpeech=false bypasses the speech action blocker (e.g. Sign for muted entities).
+        if (language.SpeechOverride.RequireSpeech && !_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
             return;
 
         var message = TransformSpeech(source, FormattedMessage.RemoveMarkupOrThrow(originalMessage), language); // Starlight
@@ -726,6 +733,10 @@ public sealed partial class ChatSystem : SharedChatSystem
         {
             if (session.AttachedEntity is not { Valid: true } listener)
                 continue;
+            // VRS: Floofstation — subtle messages only reach those with LOS, unless they are observers or admins.
+            // Ported from Triad #27 (71eede6).
+            if (data.Observer == ObserverType.NoObserver && !data.InLOS && !_adminManager.IsAdmin(session))
+                continue;
             if (MessageRangeCheck(session, data, range) == MessageRangeCheckResult.Disallowed)
                 continue;
             _chatManager.ChatMessageToOne(channel, action, wrappedMessage, source, false, session.Channel);
@@ -764,6 +775,31 @@ public sealed partial class ChatSystem : SharedChatSystem
             player.UserId,
             languageOverride: LanguageSystem.Universal); // Starlight
         _adminLogger.Add(LogType.Chat, LogImpact.Low, $"LOOC from {player:Player}: {message}");
+    }
+
+    /// <summary>
+    ///     Sends a Subtle LOOC message — an OOC message visible to players in range with line-of-sight.
+    ///     Ported from Triad #27 (71eede6) — VRS Floofstation feature.
+    /// </summary>
+    private void SendSubtleLOOC(EntityUid source, ICommonSession player, string message, bool hideChat)
+    {
+        var name = FormattedMessage.EscapeText(Identity.Name(source, EntityManager));
+
+        var wrappedMessage = Loc.GetString("chat-manager-entity-subtle-looc-wrap-message",
+            ("entityName", name),
+            ("message", FormattedMessage.EscapeText(message)));
+
+        foreach (var (session, data) in GetRecipients(source, WhisperClearRange))
+        {
+            // Only reach those in LOS (or observers / admins).
+            if (data.Observer == ObserverType.NoObserver && !data.InLOS && !_adminManager.IsAdmin(session))
+                continue;
+            if (MessageRangeCheck(session, data, hideChat ? ChatTransmitRange.HideChat : ChatTransmitRange.Normal) == MessageRangeCheckResult.Disallowed)
+                continue;
+            _chatManager.ChatMessageToOne(ChatChannel.SubtleOOC, message, wrappedMessage, source, hideChat, session.Channel, author: player.UserId);
+        }
+
+        _adminLogger.Add(LogType.Chat, LogImpact.Low, $"Subtle LOOC from {player:Player}: {message}");
     }
 
     private void SendDeadChat(EntityUid source, ICommonSession player, string message, bool hideChat)
@@ -892,11 +928,6 @@ public sealed partial class ChatSystem : SharedChatSystem
         }
 
         _replay.RecordServerMessage(new ChatMessage(channel, message, wrappedMessage, GetNetEntity(source), null, MessageRangeHideChatForReplay(range)));
-    }
-
-    private bool HasXenoglossy(EntityUid uid)
-    {
-        return RadioSystem.HasXenoglossy(uid, EntityManager);
     }
 
     /// <summary>
@@ -1101,12 +1132,13 @@ public sealed partial class ChatSystem : SharedChatSystem
             // even if they are a ghost hearer, in some situations we still need the range
             if (sourceCoords.TryDistance(EntityManager, transformEntity.Coordinates, out var distance) && distance < voiceGetRange)
             {
-                recipients.Add(player, new ICChatRecipientData(distance, observer));
+                var inLos = _examineSystem.InRangeUnOccluded(source, playerEntity, voiceGetRange);
+                recipients.Add(player, new ICChatRecipientData(distance, observer, InLOS: inLos));
                 continue;
             }
 
             if (observer == ObserverType.Observer)
-                recipients.Add(player, new ICChatRecipientData(-1, ObserverType.Observer));
+                recipients.Add(player, new ICChatRecipientData(-1, ObserverType.Observer, InLOS: false));
         }
 
         RaiseLocalEvent(new ExpandICChatRecipientsEvent(source, voiceGetRange, recipients));
@@ -1120,7 +1152,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         ObserverNoGhostHearing
     }
 
-    public readonly record struct ICChatRecipientData(float Range, ObserverType Observer, bool? HideChatOverride = null)
+    public readonly record struct ICChatRecipientData(float Range, ObserverType Observer, bool? HideChatOverride = null, bool InLOS = true)
     {
     }
 
@@ -1152,6 +1184,84 @@ public sealed partial class ChatSystem : SharedChatSystem
             sb.Append(_random.Pick(charOptions));
         }
         return sb.ToString();
+    }
+
+    // VRS port: Goobstation/Starlight CollectiveMind \u2014 routes a parsed CM
+    // message to all entities that share the channel (or have HearAll set),
+    // plus active admins. Speaker identity follows the channel's ShowNames /
+    // SeeAllNames flags.
+    private void SendCollectiveMindChat(EntityUid source, string message, Content.Shared._Starlight.CollectiveMind.CollectiveMindPrototype? collectiveMind)
+    {
+        if (_mobStateSystem.IsDead(source)
+            || collectiveMind == null
+            || message == ""
+            || !TryComp<Content.Shared._Starlight.CollectiveMind.CollectiveMindComponent>(source, out var sourceCmComp)
+            || !sourceCmComp.Minds.ContainsKey(collectiveMind.ID))
+            return;
+
+        var clients = Filter.Empty();
+        var clientsSeeNames = Filter.Empty();
+        var mindQuery = EntityQueryEnumerator<Content.Shared._Starlight.CollectiveMind.CollectiveMindComponent, ActorComponent>();
+        while (mindQuery.MoveNext(out var uid, out var collectMindComp, out var actorComp))
+        {
+            if (_mobStateSystem.IsDead(uid))
+                continue;
+
+            if (collectMindComp.Minds.ContainsKey(collectiveMind.ID) || collectMindComp.HearAll)
+            {
+                if (collectMindComp.SeeAllNames)
+                    clientsSeeNames.AddPlayer(actorComp.PlayerSession);
+                else
+                    clients.AddPlayer(actorComp.PlayerSession);
+            }
+        }
+
+        var number = $"{sourceCmComp.Minds[collectiveMind.ID]}";
+
+        var admins = _adminManager.ActiveAdmins.Select(p => p.Channel);
+
+        var messageWrap = Loc.GetString("collective-mind-chat-wrap-message",
+            ("message", message),
+            ("channel", collectiveMind.LocalizedName),
+            ("number", number));
+        var namedMessageWrap = Loc.GetString("collective-mind-chat-wrap-message-named",
+            ("source", source),
+            ("message", message),
+            ("channel", collectiveMind.LocalizedName));
+        var adminMessageWrap = Loc.GetString("collective-mind-chat-wrap-message-admin",
+            ("source", source),
+            ("message", message),
+            ("channel", collectiveMind.LocalizedName),
+            ("number", number));
+
+        _adminLogger.Add(LogType.Chat, LogImpact.Low, $"CollectiveMind chat from {ToPrettyString(source):Player}: {message}");
+
+        _chatManager.ChatMessageToManyFiltered(clients,
+            ChatChannel.CollectiveMind,
+            message,
+            collectiveMind.ShowNames ? namedMessageWrap : messageWrap,
+            source,
+            false,
+            true,
+            collectiveMind.Color);
+
+        _chatManager.ChatMessageToManyFiltered(clientsSeeNames,
+            ChatChannel.CollectiveMind,
+            message,
+            namedMessageWrap,
+            source,
+            false,
+            true,
+            collectiveMind.Color);
+
+        _chatManager.ChatMessageToMany(ChatChannel.CollectiveMind,
+            message,
+            adminMessageWrap,
+            source,
+            false,
+            true,
+            admins,
+            collectiveMind.Color);
     }
 
     #endregion

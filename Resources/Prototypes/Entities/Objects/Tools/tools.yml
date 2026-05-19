@@ -453,10 +453,7 @@
     #Hardlight
     - AtmosDeviceFanDirectional
     - PuckLight
-    - PlatingNE
-    - PlatingNW
-    - PlatingSE
-    - PlatingSW
+    # VRS: use the explicit plating variants that still exist in this branch.
     - PlatingHalfV
     - PlatingHalfH
     - PlatingWedgeN
@@ -467,14 +464,14 @@
     - PlatingHalfTiltSEWLower
     - PlatingHalfTiltSWNLower
     - PlatingHalfTiltNWELower
-    - PlatingHalfTiltNESUpper
-    - PlatingHalfTiltSEWUpper
-    - PlatingHalfTiltSWNUpper
-    - PlatingHalfTiltNWEUpper
     - PlatingHalfTiltNEWLower
     - PlatingHalfTiltSENLower
     - PlatingHalfTiltSWELower
     - PlatingHalfTiltNWSLower
+    - PlatingHalfTiltNESUpper
+    - PlatingHalfTiltSEWUpper
+    - PlatingHalfTiltSWNUpper
+    - PlatingHalfTiltNWEUpper
     - PlatingHalfTiltNEWUpper
     - PlatingHalfTiltSENUpper
     - PlatingHalfTiltSWEUpper
@@ -484,6 +481,38 @@
     - WallShuttleDiagonal
     - WallReinforcedDiagonal
     - WallSolidDiagonal
+    # Mono - #3919
+    - Lattice
+    - LatticeCornerNE
+    - LatticeCornerNW
+    - LatticeCornerSE
+    - LatticeCornerSW
+    - LatticeHalfV
+    - LatticeHalfH
+    - LatticeWedgeN
+    - LatticeWedgeE
+    - LatticeWedgeS
+    - LatticeWedgeW
+    - LatticeHalfTiltNESLower
+    - LatticeHalfTiltSEWLower
+    - LatticeHalfTiltSWNLower
+    - LatticeHalfTiltNWELower
+    - LatticeHalfTiltNESUpper
+    - LatticeHalfTiltSEWUpper
+    - LatticeHalfTiltSWNUpper
+    - LatticeHalfTiltNWEUpper
+    - LatticeHalfTiltNEWLower
+    - LatticeHalfTiltSENLower
+    - LatticeHalfTiltSWELower
+    - LatticeHalfTiltNWSLower
+    - LatticeHalfTiltNEWUpper
+    - LatticeHalfTiltSENUpper
+    - LatticeHalfTiltSWEUpper
+    - LatticeHalfTiltNWSUpper
+    - PlatingCornerNE
+    - PlatingCornerNW
+    - PlatingCornerSE
+    - PlatingCornerSW
   - type: LimitedCharges
     maxCharges: 30
   - type: Sprite
