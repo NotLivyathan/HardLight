@@ -5,11 +5,13 @@
   description: Some cultures find them terrifying, others crunchy on the teeth.
   components:
   # Starlight-start: Languages
+  - type: LanguageSpeaker
   - type: LanguageKnowledge
     speaks:
-    - Mouse
+    - Bat
     understands:
-    - Mouse
+    - Bat
+    - GalacticCommon
   # Starlight-end
   - type: MovementSpeedModifier
     baseWalkSpeed : 3
@@ -3353,6 +3355,14 @@
   parent: MobCatSpace
   description: Explosive kitten.
   components:
+  # Starlight-start: Languages
+  - type: LanguageKnowledge
+    speaks:
+    - Cat
+    understands:
+    - Cat
+    - GalacticCommon
+  # Starlight-end
   - type: Sprite
     layers:
     - map: ["enum.DamageStateVisualLayers.Base"]
