@@ -38,9 +38,8 @@ public sealed partial class NFIsHumanoid : EntityEffectCondition
             return true;
         }
 
-        // Non-reagent entity effects don't metabolize through a body, so there
-        // is no species to check — treat as a pass-through (condition met).
-        return true;
+        // TODO: Someone needs to figure out how to do this for non-reagent effects.
+        throw new NotImplementedException();
     }
 
     public override string GuidebookExplanation(IPrototypeManager prototype)

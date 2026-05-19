@@ -8,7 +8,6 @@
     state: handdrill
   discipline: Industrial
   tier: 1
-  position: -1, 1
   cost: 7500
   recipeUnlocks:
   - MiningDrill
@@ -28,7 +27,6 @@
     state: icon
   discipline: Industrial
   tier: 1
-  position: -2, 0
   cost: 5000
   recipeUnlocks:
   - RadarConsoleCircuitboard
@@ -43,7 +41,6 @@
     state: empty
   discipline: Industrial
   tier: 1
-  position: -3, 8
   cost: 7500
   recipeUnlocks:
   - PowerCellHigh
@@ -58,7 +55,6 @@
     state: base
   discipline: Industrial
   tier: 1
-  position: -1, 8
   cost: 10000
   recipeUnlocks:
   - FlatpackerMachineCircuitboard
@@ -71,7 +67,6 @@
     state: building
   discipline: Industrial
   tier: 1
-  position: -1, 7
   cost: 10000
   recipeUnlocks:
   # Begin DeltaV Removals - replaced by upgrade kits + departmental techfabs
@@ -102,7 +97,6 @@
     state: portgen0
   discipline: Industrial
   tier: 1
-  position: -2, 8
   cost: 7500
   recipeUnlocks:
   - PortableGeneratorPacmanMachineCircuitboard
@@ -120,7 +114,6 @@
     state: freezerOff
   discipline: Industrial
   tier: 1
-  position: -2, 1
   cost: 7500
   recipeUnlocks:
   - ThermomachineFreezerMachineCircuitBoard
@@ -134,7 +127,6 @@
     state: ripley
   discipline: Industrial
   tier: 1
-  position: 0, 2
   cost: 7500
   recipeUnlocks:
   - RipleyHarness
@@ -157,7 +149,6 @@
     state: base
   discipline: Industrial
   tier: 2
-  position: -5, 7
   cost: 10000
   recipeUnlocks:
   - ShuttleConsoleCircuitboard
@@ -176,7 +167,6 @@
     state: icon
   discipline: Industrial
   tier: 2
-  position: -2, 2
   cost: 7500
   recipeUnlocks:
   - HellfireFreezerMachineCircuitBoard
@@ -194,7 +184,6 @@
     state: icon
   discipline: Industrial
   tier: 2
-  position: -1, 18
   cost: 10000
   recipeUnlocks:
     - WelderExperimental
@@ -218,7 +207,6 @@
     state: handdrill
   discipline: Industrial
   tier: 2
-  position: -1, 2
   cost: 12500
   recipeUnlocks:
   - OreBagOfHolding
@@ -238,7 +226,6 @@
     state: ripleymkii
   discipline: Industrial
   tier: 2
-  position: 0, 3
   cost: 8000
   recipeUnlocks:
   - RipleyMKIIHarness
@@ -254,7 +241,6 @@
     state: clarke
   discipline: Industrial
   tier: 2
-  position: 0, 4
   cost: 10000
   recipeUnlocks:
   - ClarkeHarness
@@ -277,7 +263,6 @@
     state: holding
   discipline: Industrial
   tier: 3
-  position: -3, 10
   cost: 15000
   recipeUnlocks:
   - SmallBluespaceAirTank #Frpntier
@@ -303,7 +288,6 @@
     state: microreactor
   discipline: Industrial
   tier: 3
-  position: -2, 7
   cost: 10000
   recipeUnlocks:
   - PowerCellMicroreactor
@@ -321,7 +305,6 @@
     state: icon-shipyard # Frontier
   discipline: Industrial
   tier: 2
-  position: -2, 18
   cost: 10000
   recipeUnlocks:
   - ShipyardRCD # Frontier

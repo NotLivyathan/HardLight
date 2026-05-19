@@ -1,7 +1,6 @@
 using System.Threading;
 using Content.Server.Spawners.Components;
 using Robust.Shared.Random;
-using RobustTimer = Robust.Shared.Timing.Timer;
 
 namespace Content.Server.Spawners.EntitySystems;
 
@@ -20,10 +19,7 @@ public sealed class SpawnerSystem : EntitySystem
     {
         component.TokenSource?.Cancel();
         component.TokenSource = new CancellationTokenSource();
-        RobustTimer.SpawnRepeating(
-            TimeSpan.FromSeconds(component.IntervalSeconds),
-            () => OnTimerFired(uid, component),
-            component.TokenSource.Token);
+        uid.SpawnRepeatingTimer(TimeSpan.FromSeconds(component.IntervalSeconds), () => OnTimerFired(uid, component), component.TokenSource.Token);
     }
 
     private void OnTimerFired(EntityUid uid, TimedSpawnerComponent component)

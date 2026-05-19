@@ -15,12 +15,3 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsUSSPCommand ]
-
-- type: entity
-  parent: HighSecDoor
-  id: HighSecUSSPLocked
-  suffix: USSP, Locked
-  components:
-  - type: ContainerFill
-    containers:
-      board: [ DoorElectronicsUSSP ]

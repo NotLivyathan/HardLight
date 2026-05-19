@@ -248,15 +248,10 @@ public sealed class CrewManifestSystem : EntitySystem
             if (card.Comp.LocalizedJobTitle != null)
                 jobTitle = card.Comp.LocalizedJobTitle;
 
-            // VRS: Use IdCardComponent.JobPrototype (live-updated by IdCardSystem) instead of
-            // PresetIdCardComponent.JobName (set once at preset spawn). Cards issued mid-round
-            // (e.g. by HoP, agent IDs) have no PresetIdCardComponent and were silently dropped
-            // from the manifest under the previous logic. JobPrototype reflects the current
-            // assignment regardless of how the card was created.
-            if (card.Comp.JobPrototype is not { } jobProto)
+            if (!TryComp<PresetIdCardComponent>(card, out var preset))
                 continue;
 
-            var entry = new CrewManifestEntry(name, jobTitle, card.Comp.JobIcon, jobProto);
+            var entry = new CrewManifestEntry(name, jobTitle, card.Comp.JobIcon, preset.JobName!.Value);
 
             entriesSort.Add((null, entry));
         } // Coyote end

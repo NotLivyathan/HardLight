@@ -1,7 +1,5 @@
-using System.Linq;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Research.Components;
-using Content.Shared._Goobstation.Research;
 using Content.Shared.UserInterface;
 using Content.Shared.Access.Components;
 using Content.Shared.Emag.Components;
@@ -80,37 +78,14 @@ public sealed partial class ResearchSystem
 
         ResearchConsoleBoundInterfaceState state;
 
-        // Goobstation R&D console rework (ported via Triad #1903): compute per-tech availability for the Fancy UI.
-        var allTechs = PrototypeManager.EnumeratePrototypes<TechnologyPrototype>();
-        Dictionary<string, ResearchAvailability> techList;
-
-        if (TryGetClientServer(uid, out var serverUid, out var serverComponent, clientComponent) &&
-            TryComp<TechnologyDatabaseComponent>(serverUid, out var db))
+        if (TryGetClientServer(uid, out _, out var serverComponent, clientComponent))
         {
-            var unlockedTechs = new HashSet<string>(db.UnlockedTechnologies);
-            techList = allTechs
-                .Where(tech => tech.GetAllDisciplines().Any(d => db.SupportedDisciplines.Contains(d)))
-                .ToDictionary(
-                    proto => proto.ID,
-                    proto =>
-                    {
-                        if (unlockedTechs.Contains(proto.ID))
-                            return ResearchAvailability.Researched;
-
-                        var prereqsMet = proto.TechnologyPrerequisites.All(p => unlockedTechs.Contains(p));
-                        var canAfford = serverComponent.Points >= proto.Cost;
-
-                        return prereqsMet
-                            ? (canAfford ? ResearchAvailability.Available : ResearchAvailability.PrereqsMet)
-                            : ResearchAvailability.Unavailable;
-                    });
-
             var points = clientComponent.ConnectedToServer ? serverComponent.Points : 0;
-            state = new ResearchConsoleBoundInterfaceState(points, techList);
+            state = new ResearchConsoleBoundInterfaceState(points);
         }
         else
         {
-            state = new ResearchConsoleBoundInterfaceState(default, new Dictionary<string, ResearchAvailability>());
+            state = new ResearchConsoleBoundInterfaceState(default);
         }
 
         _uiSystem.SetUiState(uid, ResearchConsoleUiKey.Key, state);

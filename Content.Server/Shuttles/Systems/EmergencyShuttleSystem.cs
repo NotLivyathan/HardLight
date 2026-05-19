@@ -39,8 +39,6 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Content.Shared.DeviceNetwork.Components;
 using Robust.Shared.Prototypes;
-using Content.Shared.HL.CCVar; // HardLight
-using System.Diagnostics.CodeAnalysis; // HardLight
 
 namespace Content.Server.Shuttles.Systems;
 
@@ -262,7 +260,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         if (targetGrid == null)
             return;
 
-        var config = GetEmergencyDockingConfig(stationShuttle.EmergencyShuttle.Value, targetGrid.Value, DockTag); // HardLight: _dock.GetDockingConfig<GetEmergencyDockingConfig
+        var config = _dock.GetDockingConfig(stationShuttle.EmergencyShuttle.Value, targetGrid.Value, DockTag);
         if (config == null)
             return;
 
@@ -365,7 +363,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
         }
 
         ShuttleDockResultType resultType;
-        if (TryEmergencyFTLDock(stationShuttle.EmergencyShuttle.Value, shuttle, targetGrid.Value, out var config, DockTag)) // HardLight: _shuttle.TryFTLDock<TryEmergencyFTLDock
+        if (_shuttle.TryFTLDock(stationShuttle.EmergencyShuttle.Value, shuttle, targetGrid.Value, out var config, DockTag))
         {
             _logger.Add(
                 LogType.EmergencyShuttle,
@@ -394,70 +392,6 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
             TargetGrid = targetGrid,
         };
     }
-
-    // HardLight start
-    // Use the capped docking-config lookup on evac paths so station/ColComm searches
-    // preserve DockEmergency priority, keep the full-search fallback on capped misses, and avoid
-    // paying the worst-case dock-pair scan on the common path.
-    private DockingConfig? GetEmergencyDockingConfig(EntityUid shuttleUid, EntityUid targetGrid, string? priorityTag = null)
-    {
-        if (!_configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapEnabled))
-            return _dock.GetDockingConfig(shuttleUid, targetGrid, priorityTag);
-
-        var maxShuttleDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapShuttle);
-        var maxGridDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapGrid);
-        return _dock.GetDockingConfig(shuttleUid, targetGrid, priorityTag, DockType.Airlock, maxShuttleDocks, maxGridDocks);
-    }
-
-    private bool TryEmergencyFTLDock(
-        EntityUid shuttleUid,
-        ShuttleComponent shuttle,
-        EntityUid targetGrid,
-        [NotNullWhen(true)] out DockingConfig? config,
-        string? priorityTag = null)
-    {
-        if (!_configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapEnabled))
-            return _shuttle.TryFTLDock(shuttleUid, shuttle, targetGrid, out config, priorityTag);
-
-        var maxShuttleDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapShuttle);
-        var maxGridDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapGrid);
-        return _shuttle.TryFTLDock(
-            shuttleUid,
-            shuttle,
-            targetGrid,
-            out config,
-            maxShuttleDocks,
-            maxGridDocks,
-            priorityTag);
-    }
-
-    private void QueueEmergencyFTLToDock(
-        EntityUid shuttleUid,
-        ShuttleComponent shuttle,
-        EntityUid targetGrid,
-        float? startupTime = null,
-        float? hyperspaceTime = null,
-        string? priorityTag = null)
-    {
-        if (!_configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapEnabled))
-        {
-            _shuttle.FTLToDock(shuttleUid, shuttle, targetGrid, startupTime, hyperspaceTime, priorityTag);
-            return;
-        }
-
-        var maxShuttleDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapShuttle);
-        var maxGridDocks = _configManager.GetCVar(HLCCVars.EmergencyShuttleDockCapGrid);
-        _shuttle.FTLToDock(
-            shuttleUid,
-            shuttle,
-            targetGrid,
-            maxShuttleDocks,
-            maxGridDocks,
-            startupTime,
-            hyperspaceTime,
-            priorityTag);
-    }
-    // HardLight end
 
     /// <summary>
     /// Do post-shuttle-dock setup. Announce to the crew and set up shuttle timers.

@@ -2,6 +2,7 @@ using Content.Server.Fluids.EntitySystems;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Construction;
 using JetBrains.Annotations;
+using Serilog;
 
 namespace Content.Server.Construction.Completions
 {

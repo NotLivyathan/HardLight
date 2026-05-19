@@ -10,7 +10,6 @@
     state: icon
   discipline: Arsenal
   tier: 1
-  position: -4, 8
   cost: 5000
   recipeUnlocks:
   - NFWeaponPka # Frontier: WeaponProtoKineticAccelerator<NFWeaponPka
@@ -35,7 +34,6 @@
     state: fueltank
   discipline: Arsenal
   tier: 2
-  position: 2, 14
   cost: 10000
   recipeUnlocks:
   - Magazine45_ACPPistolIncendiary
@@ -74,7 +72,6 @@
     state: icon
   discipline: Arsenal
   tier: 1
-  position: 2, 3
   cost: 7500
   recipeUnlocks: # Frontier
   - WeaponLaserCarbine # Frontier
@@ -90,7 +87,6 @@
     state: uranium
   discipline: Arsenal
   tier: 2
-  position: 3, 14
   cost: 7500
   recipeUnlocks:
   - Magazine45_ACPPistolUranium
@@ -130,7 +126,6 @@
     state: icon
   discipline: Arsenal
   tier: 1
-  position: 2, 2
   cost: 8000
   recipeUnlocks: # Frontier
   - Truncheon # Frontier
@@ -146,7 +141,6 @@
     state: payload-explosive-armed
   discipline: Arsenal
   tier: 1
-  position: 1, 14
   cost: 10000
   recipeUnlocks:
   - SignallerAdvanced
@@ -165,7 +159,6 @@
     state: icon
   discipline: Arsenal
   tier: 1
-  position: 1, 2
   cost: 5000
   recipeUnlocks:
   - ClothingBackpackElectropack
@@ -180,7 +173,6 @@
     state: icon
   discipline: Arsenal
   tier: 2
-  position: 3, 3
   cost: 10000
   recipeUnlocks: # Frontier
   - WeaponLaserCannon # Frontier
@@ -193,7 +185,6 @@
     state: display
   discipline: Arsenal
   tier: 2
-  position: 4, 2
   cost: 7500
   recipeUnlocks:
   - PKAUpgradeDamage
@@ -211,7 +202,6 @@
     state: icon
   discipline: Arsenal
   tier: 2
-  position: 4, 4
   cost: 10000
   recipeUnlocks: # Frontier
   - WeaponXrayCannon # Frontier
@@ -226,7 +216,6 @@
     state: full
   discipline: Arsenal
   tier: 2
-  position: -5, 8
   cost: 10500
   recipeUnlocks:
   - PowerCageRechargerCircuitboard
@@ -254,7 +243,6 @@
     state: icon
   discipline: Arsenal
   tier: 3
-  position: 4, 3
   cost: 15000
   recipeUnlocks:
   - WeaponAdvancedLaser # Frontier
@@ -269,7 +257,6 @@
     state: icon
   discipline: Arsenal
   tier: 3
-  position: 5, 3
   cost: 15000
   recipeUnlocks: # Frontier
   - WeaponTemperatureGun # Frontier
@@ -282,7 +269,6 @@
     state: icon
   discipline: Arsenal
   tier: 3
-  position: -5, 9
   cost: 15000
   recipeUnlocks:
   - NFWeaponEnergyPistolLaserSvalinn

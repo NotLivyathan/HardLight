@@ -34,9 +34,7 @@ namespace Content.Server.Destructible.Thresholds.Behaviors
             if (!system.PrototypeManager.TryIndex(randomInventory, out VendingMachineInventoryPrototype? packPrototype))
                 return;
 
-            var startingInventory = VendingMachineInventoryResolver.ResolveRegular(system.PrototypeManager, packPrototype);
-
-            foreach (var (entityId, count) in startingInventory)
+            foreach (var (entityId, count) in packPrototype.StartingInventory)
             {
                 var toSpawn = (int) Math.Round(count * Percent);
 

@@ -434,8 +434,7 @@ namespace Content.Server.NPC.Pathfinding
             CancellationToken cancelToken,
             PathFlags flags = PathFlags.None)
         {
-            // VRS: previously dropped the flags argument on the floor.
-            var path = await GetPath(uid, start, end, range, cancelToken, flags);
+            var path = await GetPath(uid, start, end, range, cancelToken);
             RaiseLocalEvent(uid, path);
         }
 

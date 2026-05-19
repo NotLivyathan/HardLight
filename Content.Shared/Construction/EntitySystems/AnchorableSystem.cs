@@ -30,7 +30,6 @@ public sealed partial class AnchorableSystem : EntitySystem
     [Dependency] private readonly PullingSystem _pulling = default!;
     [Dependency] private readonly SharedToolSystem _tool = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
-    [Dependency] private readonly SharedMapSystem _map = default!; // VRS: needed for new MapGrid extension methods (RT v276)
     [Dependency] private   readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
@@ -296,19 +295,17 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (!TryComp<MapGridComponent>(gridUid, out var grid))
             return false;
 
-        // VRS: SharedMapSystem replacement for grid.TileIndicesFor (RT v276)
-        var tileIndices = _map.TileIndicesFor((gridUid.Value, grid), coordinates);
-        return TileFree((gridUid.Value, grid), tileIndices, anchorBody.CollisionLayer, anchorBody.CollisionMask);
+        var tileIndices = grid.TileIndicesFor(coordinates);
+        return TileFree(grid, tileIndices, anchorBody.CollisionLayer, anchorBody.CollisionMask);
     }
 
     /// <summary>
     /// Returns true if no hard anchored entities match the collision layer or mask specified.
     /// </summary>
     /// <param name="grid"></param>
-    public bool TileFree(Entity<MapGridComponent> grid, Vector2i gridIndices, int collisionLayer = 0, int collisionMask = 0)
+    public bool TileFree(MapGridComponent grid, Vector2i gridIndices, int collisionLayer = 0, int collisionMask = 0)
     {
-        // VRS: SharedMapSystem replacement for grid.GetAnchoredEntitiesEnumerator (RT v276)
-        var enumerator = _map.GetAnchoredEntitiesEnumerator(grid, grid.Comp, gridIndices);
+        var enumerator = grid.GetAnchoredEntitiesEnumerator(gridIndices);
 
         while (enumerator.MoveNext(out var ent))
         {
@@ -330,15 +327,6 @@ public sealed partial class AnchorableSystem : EntitySystem
     }
 
     /// <summary>
-    /// VRS: backward-compat wrapper kept so existing callers passing a bare
-    /// MapGridComponent still compile. Mirrors the upstream pattern.
-    /// </summary>
-    public bool TileFree(MapGridComponent grid, Vector2i gridIndices, int collisionLayer = 0, int collisionMask = 0)
-    {
-        return TileFree((grid.Owner, grid), gridIndices, collisionLayer, collisionMask);
-    }
-
-    /// <summary>
     /// Returns true if any unstackables are also on the corresponding tile.
     /// </summary>
     public bool AnyUnstackable(EntityUid uid, EntityCoordinates location)
@@ -356,8 +344,7 @@ public sealed partial class AnchorableSystem : EntitySystem
         if (!TryComp<MapGridComponent>(gridUid, out var grid))
             return false;
 
-        // VRS: SharedMapSystem replacement for grid.GetAnchoredEntitiesEnumerator/grid.LocalToTile (RT v276)
-        var enumerator = _map.GetAnchoredEntitiesEnumerator(gridUid.Value, grid, _map.LocalToTile(gridUid.Value, grid, location));
+        var enumerator = grid.GetAnchoredEntitiesEnumerator(grid.LocalToTile(location));
 
         while (enumerator.MoveNext(out var entity))
         {

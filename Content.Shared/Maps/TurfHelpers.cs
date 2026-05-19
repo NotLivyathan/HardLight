@@ -24,12 +24,10 @@ namespace Content.Shared.Maps
 
             mapManager ??= IoCManager.Resolve<IMapManager>();
             var pos = entityManager.System<SharedTransformSystem>().ToMapCoordinates(coordinates);
-            if (!mapManager.TryFindGridAt(pos, out var gridUid, out var grid))
+            if (!mapManager.TryFindGridAt(pos, out _, out var grid))
                 return null;
 
-            // VRS: grid.TryGetTileRef(...) was removed; use SharedMapSystem.
-            var mapSys = entityManager.System<SharedMapSystem>();
-            if (!mapSys.TryGetTileRef(gridUid, grid, coordinates, out var tile))
+            if (!grid.TryGetTileRef(coordinates, out var tile))
                 return null;
 
             return tile;
@@ -131,8 +129,7 @@ namespace Content.Shared.Maps
                 // This is scaled to 90 % so it doesn't encompass walls on other tiles.
                 var tileBox = Box2.UnitCentered.Scale(0.9f);
                 tileBox = tileBox.Scale(tileGrid.TileSize);
-                // VRS: grid.GridTileToWorldPos(...) was removed; use SharedMapSystem.
-                var worldPos = entManager.System<SharedMapSystem>().GridTileToWorldPos(turf.GridUid, tileGrid, turf.GridIndices);
+                var worldPos = tileGrid.GridTileToWorldPos(turf.GridIndices);
                 tileBox = tileBox.Translated(worldPos);
                 // Now tileBox needs to be rotated to match grid rotation
                 res = new Box2Rotated(tileBox, gridRot, worldPos);

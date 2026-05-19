@@ -97,7 +97,6 @@
       - BountyContractsCartridge # Frontier
       - AstroNavCartridge # Frontier
       - NanoChatCartridge # DeltaV
-      - LandgrabCartridge # VRS
     cartridgeSlot:
       priority: -1
       name: device-pda-slot-component-slot-name-cartridge
@@ -142,10 +141,12 @@
   - type: CargoSellBlacklist # Frontier: Liltenhead moment
   - type: PirateBountyItem
     id: Pda
-  # VRS: removed ToggleableGhostRole from base PDA to avoid activation/UI interaction conflicts.
+  - type: ToggleableGhostRole # Frontier: Literally only for the wipe verb and nothing else.
+    wipeVerbText: pda-wipe-device-verb-text # Frontier
+    wipeVerbPopup: pda-wiped-device # Frontier
+    mindRoles: [] # Frontier: no default value here
   - type: ShipyardSellCondition # Frontier: Teleport to shipyard console on sale
     preserveOnSale: true
-  - type: RetroMonitorView # Mono - #3902
 
 - type: entity
   parent: BasePDA

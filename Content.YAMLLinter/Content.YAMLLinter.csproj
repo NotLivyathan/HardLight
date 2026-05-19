@@ -1,14 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
+        <TargetFramework>$(TargetFramework)</TargetFramework>
         <OutputPath>..\bin\Content.YAMLLinter\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <ServerGarbageCollection>true</ServerGarbageCollection>
-        <IsTestingPlatformApplication>false</IsTestingPlatformApplication>
-      <Nullable>disable</Nullable>
+        <IsTestProject>false</IsTestProject>
+        <StartupObject>Content.YAMLLinter.Program</StartupObject>
     </PropertyGroup>
-
-  <Import Project="../MSBuild/Content.props" />
 
   <ItemGroup>
       <ProjectReference Include="..\Content.Client\Content.Client.csproj" />
@@ -24,7 +23,5 @@
   <Import Project="..\RobustToolbox\Imports\Shared.props" />
   <Import Project="..\RobustToolbox\Imports\Client.props" />
   <Import Project="..\RobustToolbox\Imports\Server.props" />
-  <Import Project="..\RobustToolbox\Imports\Testing.props" />
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
-
 </Project>

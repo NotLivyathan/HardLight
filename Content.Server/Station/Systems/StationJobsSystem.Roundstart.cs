@@ -19,6 +19,7 @@ namespace Content.Server.Station.Systems;
 // Contains code for round-start spawning.
 public sealed partial class StationJobsSystem
 {
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IBanManager _banManager = default!;
     [Dependency] private readonly AntagSelectionSystem _antag = default!;
     [Dependency] private readonly PlayTimeTrackingSystem _playTime = default!; // Frontier
@@ -33,7 +34,7 @@ public sealed partial class StationJobsSystem
     private void InitializeRoundStart()
     {
         _jobsByWeight = new Dictionary<int, HashSet<string>>();
-        foreach (var job in _prototype.EnumeratePrototypes<JobPrototype>())
+        foreach (var job in _prototypeManager.EnumeratePrototypes<JobPrototype>())
         {
             if (!_jobsByWeight.ContainsKey(job.Weight))
                 _jobsByWeight.Add(job.Weight, new HashSet<string>());
@@ -462,7 +463,7 @@ public sealed partial class StationJobsSystem
                 if (!(priority == selectedPriority || selectedPriority is null))
                     continue;
 
-                if (!_prototype.TryIndex(jobId, out var job))
+                if (!_prototypeManager.TryIndex(jobId, out var job))
                     continue;
 
                 if (!job.CanBeAntag && (!_player.TryGetSessionById(player, out var session) || antagBlocked.Contains(session)))

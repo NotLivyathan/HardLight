@@ -16,11 +16,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout Default Branch
+      - name: Checkout Master
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.BOT_TOKEN || secrets.GITHUB_TOKEN }}
-          ref: ${{ github.event.repository.default_branch }}
+          ref: master
 
       - name: Setup Git
         run: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: Commit Changelog
         run: |
-          git pull origin "${{ github.event.repository.default_branch }}"
+          git pull origin master
           git add *.yml
           git commit -m "${{ vars.CHANGELOG_MESSAGE }} (#${{ env.PR_NUMBER }})"
           git push

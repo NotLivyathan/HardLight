@@ -34,7 +34,6 @@ verb-categories-switch = Switch
 # End Starlight
 # EE interaction system
 verb-categories-interaction = Interact
-verb-categories-devour = Devour
 
 verb-common-toggle-light = Toggle light
 verb-common-close = Close

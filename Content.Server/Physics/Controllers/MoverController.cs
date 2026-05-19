@@ -327,7 +327,7 @@ public sealed class MoverController : SharedMoverController
     /// </summary>
     public float GetAngularAcceleration(ShuttleComponent shuttle, PhysicsComponent body)
     {
-        return shuttle.AngularThrust * shuttle.AngularMultiplier * body.InvI;
+        return shuttle.AngularThrust * body.InvI;
     }
 
     /// <summary>
@@ -350,7 +350,7 @@ public sealed class MoverController : SharedMoverController
         var vertScale = MathF.Abs(vertThrust / dir.Y);
         dir *= MathF.Min(horizScale, vertScale);
 
-        return dir * shuttle.AccelerationMultiplier; // Mono
+        return dir;
     }
 
     /// <summary>
@@ -405,9 +405,6 @@ public sealed class MoverController : SharedMoverController
             // query all our pilots for input
             var toRemove = new List<EntityUid>();
 
-            // Mono: per-pilot multipliers, averaged across active pilots below.
-            var angularMul = 0f;
-            var accelMul = 0f;
             foreach (var pilot in piloted.InputSources)
             {
                 var inputsEv = new GetShuttleInputsEvent(frameTime);
@@ -416,11 +413,7 @@ public sealed class MoverController : SharedMoverController
                 if (!inputsEv.GotInput)
                     toRemove.Add(pilot);
                 else if (inputsEv.Input != null)
-                {
                     inputs.Add(inputsEv.Input.Value);
-                    angularMul += inputsEv.AngularMul;
-                    accelMul += inputsEv.AccelMul;
-                }
             }
 
             foreach (var remUid in toRemove)
@@ -450,7 +443,6 @@ public sealed class MoverController : SharedMoverController
             {
                 _thruster.DisableLinearThrusters(shuttle);
                 PhysicsSystem.SetSleepingAllowed(uid, body, true);
-                shuttle.AngularMultiplier = shuttle.AccelerationMultiplier = 1f; // Mono
                 continue;
             }
             PhysicsSystem.SetSleepingAllowed(uid, body, false);
@@ -468,10 +460,6 @@ public sealed class MoverController : SharedMoverController
             linearInput /= count;
             angularInput /= count;
             brakeInput /= count;
-
-            // Mono: per-pilot angular/accel multipliers, averaged across active pilots.
-            shuttle.AngularMultiplier = angularMul / count;
-            shuttle.AccelerationMultiplier = accelMul / count;
 
             var shuttleNorthAngle = _xformSystem.GetWorldRotation(uid);
 
@@ -533,7 +521,7 @@ public sealed class MoverController : SharedMoverController
 
                 if (body.AngularVelocity != 0f)
                 {
-                    var torque = shuttle.AngularThrust * shuttle.AngularMultiplier * brakeInput * (body.AngularVelocity > 0f ? -1f : 1f) * ShuttleComponent.BrakeCoefficient;
+                    var torque = shuttle.AngularThrust * brakeInput * (body.AngularVelocity > 0f ? -1f : 1f) * ShuttleComponent.BrakeCoefficient;
                     var torqueMul = body.InvI * frameTime;
 
                     if (body.AngularVelocity > 0f)
@@ -622,7 +610,7 @@ public sealed class MoverController : SharedMoverController
             }
             else
             {
-                var torque = shuttle.AngularThrust * shuttle.AngularMultiplier * -angularInput;
+                var torque = shuttle.AngularThrust * -angularInput;
 
                 // Need to cap the velocity if 1 tick of input brings us over cap so we don't continuously
                 // edge onto the cap over and over.

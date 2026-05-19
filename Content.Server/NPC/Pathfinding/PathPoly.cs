@@ -21,20 +21,16 @@ public sealed class PathPoly : IEquatable<PathPoly>
     public PathfindingData Data;
 
     [ViewVariables]
-    private HashSet<PathPoly>? _neighbors; // VRS: lazy init (Triad #3853)
+    public readonly HashSet<PathPoly> Neighbors;
 
-    [ViewVariables]
-    public HashSet<PathPoly> Neighbors => _neighbors ??= []; // VRS
-
-    public bool HasNeighbors => _neighbors is { Count: > 0 }; // VRS
-
-    public PathPoly(EntityUid graphUid, Vector2i chunkOrigin, byte tileIndex, Box2 vertices, PathfindingData data) // VRS: removed neighbors param
+    public PathPoly(EntityUid graphUid, Vector2i chunkOrigin, byte tileIndex, Box2 vertices, PathfindingData data, HashSet<PathPoly> neighbors)
     {
         GraphUid = graphUid;
         ChunkOrigin = chunkOrigin;
         TileIndex = tileIndex;
         Box = vertices;
         Data = data;
+        Neighbors = neighbors;
     }
 
     public bool IsValid()

@@ -200,15 +200,14 @@ public sealed partial class NavScreen : BoxContainer
         var (_, worldRot, worldMatrix) = _xformSystem.GetWorldPositionRotationMatrix(gridXform);
         var worldPos = Vector2.Transform(gridBody.LocalCenter, worldMatrix);
 
-        // Mono - remap to [0, 360)
-        var displayRot = (-worldRot).Reduced();
-        var displayRotDegrees = displayRot.FlipPositive().Degrees;
+        // Get the positive reduced angle.
+        var displayRot = -worldRot.Reduced();
 
         GridPosition.Text = Loc.GetString("shuttle-console-position-value",
             ("X", $"{worldPos.X:0.0}"),
             ("Y", $"{worldPos.Y:0.0}"));
         GridOrientation.Text = Loc.GetString("shuttle-console-orientation-value",
-            ("angle", $"{displayRotDegrees:0.0}"));
+            ("angle", $"{displayRot.Degrees:0.0}"));
 
         var gridVelocity = gridBody.LinearVelocity;
         gridVelocity = displayRot.RotateVec(gridVelocity);

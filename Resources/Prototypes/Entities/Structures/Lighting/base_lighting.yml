@@ -18,7 +18,6 @@
     anchored: true
   - type: Clickable
   - type: InteractionOutline
-  - type: BloomOverlayVisuals # Mono - #3902
   - type: Construction
     graph: LightFixture
     node: tubeLight

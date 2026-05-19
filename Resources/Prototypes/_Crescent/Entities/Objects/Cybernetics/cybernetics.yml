@@ -172,7 +172,7 @@
     - type: Sprite
       sprite: _Crescent/Objects/Misc/cybernetics.rsi
       layers:
-        - state: meditechoptics
+        - state: interdyneoptics
 
 - type: entity
   parent: [BaseCyberneticEyes, BaseC3ContrabandNoValue]

@@ -162,7 +162,7 @@ public sealed class NukeSystem : EntitySystem
 
     #region UI Events
 
-    private void OnAnchorButtonPressed(EntityUid uid, NukeComponent component, NukeAnchorMessage args) // VRS: was async void with no awaits
+    private async void OnAnchorButtonPressed(EntityUid uid, NukeComponent component, NukeAnchorMessage args)
     {
         // malicious client sanity check
         if (component.Status == NukeStatus.ARMED)

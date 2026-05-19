@@ -63,7 +63,6 @@ using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Weapons.Ranged.Systems;
 using Content.Shared.Weapons.Hitscan.Components;
-using Content.Shared.Weapons.Hitscan.Events;
 using Content.Shared.Weapons.Reflect;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
@@ -328,10 +327,6 @@ public sealed partial class GunSystem : SharedGunSystem
                                 Logs.Add(LogType.HitScanHit,
                                     $"{hitName:target} hit by hitscan dealing {dmg.GetTotal():damage} damage");
                             }
-
-                            // Mono: notify gatherable systems about hitscan damage dealt
-                            var hitscanDmgEv = new HitscanDamageDealtEvent { Target = hitEntity, DamageDealt = dmg };
-                            RaiseLocalEvent(gunUid, ref hitscanDmgEv);
                         }
                     }
                     else
@@ -397,17 +392,13 @@ public sealed partial class GunSystem : SharedGunSystem
         }
 
         // Do a throw
-        if (!TryComp(uid, out ProjectileComponent? projectileComp))
+        if (!HasComp<ProjectileComponent>(uid))
         {
             RemoveShootable(uid);
             // TODO: Someone can probably yeet this a billion miles so need to pre-validate input somewhere up the call stack.
             ThrowingSystem.TryThrow(uid, mapDirection, gun.ProjectileSpeedModified, user);
             return;
         }
-
-        // VRS (Triad #3731): apply per-gun damage modifier
-        if (gun.DamageModifier != 1f)
-            projectileComp.Damage *= gun.DamageModifier;
 
         if (GunPrediction && user != null && TryComp<ActorComponent>(user, out var actor))
         {

@@ -10,7 +10,6 @@ using Robust.Shared.Containers;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Serialization;
-using Content.Shared.Clothing; // VRS (Triad #3781)
 
 namespace Content.Shared.Movement.Systems;
 
@@ -23,7 +22,6 @@ public abstract class SharedJetpackSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
     [Dependency] private readonly IConfigurationManager _config = default!; // EE
-    [Dependency] private readonly SharedGravitySystem _gravity = default!; // VRS (Triad #3781)
 
     public override void Initialize()
     {
@@ -34,7 +32,6 @@ public abstract class SharedJetpackSystem : EntitySystem
 
         SubscribeLocalEvent<JetpackUserComponent, RefreshWeightlessModifiersEvent>(OnJetpackUserWeightlessMovement);
         SubscribeLocalEvent<JetpackUserComponent, CanWeightlessMoveEvent>(OnJetpackUserCanWeightless);
-        SubscribeLocalEvent<JetpackUserComponent, MagbootsToggledEvent>(OnJetpackUserMagbootsToggled); // VRS (Triad #3781)
         SubscribeLocalEvent<JetpackUserComponent, EntParentChangedMessage>(OnJetpackUserEntParentChanged);
         SubscribeLocalEvent<JetpackComponent, EntGotInsertedIntoContainerMessage>(OnJetpackMoved);
 
@@ -101,8 +98,7 @@ public abstract class SharedJetpackSystem : EntitySystem
         // https://discord.com/channels/310555209753690112/310555209753690112/1270067921682694234
         if (TryComp<JetpackComponent>(component.Jetpack, out var jetpack)
             && (!CanEnableOnGrid(args.Transform.GridUid)
-                || !UserNotParented(uid, jetpack) // EE
-                || !_gravity.IsWeightless(uid))) // VRS (Triad #3781)
+            || !UserNotParented(uid, jetpack))) // EE
         {
             SetEnabled(component.Jetpack, jetpack, false, uid);
 
@@ -144,8 +140,7 @@ public abstract class SharedJetpackSystem : EntitySystem
         if (args.Handled)
             return;
 
-        if (TryComp(uid, out TransformComponent? xform) && !CanEnableOnGrid(xform.GridUid)
-        || !_gravity.IsWeightless(args.Performer)) // VRS (Triad #3781)
+        if (TryComp(uid, out TransformComponent? xform) && !CanEnableOnGrid(xform.GridUid))
         {
             _popup.PopupClient(Loc.GetString("jetpack-no-station"), uid, args.Performer);
 
@@ -213,7 +208,7 @@ public abstract class SharedJetpackSystem : EntitySystem
 
     protected virtual bool CanEnable(EntityUid uid, JetpackComponent component)
     {
-        return _gravity.IsWeightless(uid); // VRS (Triad #3781)
+        return true;
     }
 
     // EE: check parent
@@ -224,17 +219,6 @@ public abstract class SharedJetpackSystem : EntitySystem
             || xform.ParentUid == xform.MapUid;
     }
     // End EE
-
-    // VRS: auto-disable jetpack when magboots are toggled on while on a grid (Triad #3781)
-    private void OnJetpackUserMagbootsToggled(EntityUid uid, JetpackUserComponent component, ref MagbootsToggledEvent args)
-    {
-        if (!args.State || !IsEnabled(component.Jetpack) || _gravity.IsWeightless(uid) || !TryComp<JetpackComponent>(component.Jetpack, out var jetpack))
-            return;
-
-        _popup.PopupClient(Loc.GetString("jetpack-to-grid"), uid, uid);
-        SetEnabled(component.Jetpack, jetpack, false, uid);
-    }
-    // End VRS
 }
 
 [Serializable, NetSerializable]

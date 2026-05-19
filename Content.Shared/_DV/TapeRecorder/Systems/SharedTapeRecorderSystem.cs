@@ -31,13 +31,6 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
 
     protected const string SlotName = "cassette_tape";
 
-    // Maximum approximate transcript character length before the tape stops accepting new messages.
-    // Accounts for per-line formatting overhead (~30 chars for timestamp + markup).
-    private const int MaxTranscriptLength = 5900;
-
-    private static int MessageLength(TapeCassetteRecordedMessage msg) =>
-        (msg.Name?.Length ?? 0) + msg.Message.Length + 30;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -47,7 +40,6 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
         SubscribeLocalEvent<TapeRecorderComponent, EntInsertedIntoContainerMessage>(OnCassetteInserted);
         SubscribeLocalEvent<TapeRecorderComponent, ExaminedEvent>(OnRecorderExamined);
         SubscribeLocalEvent<TapeRecorderComponent, ChangeModeTapeRecorderMessage>(OnChangeModeMessage);
-        SubscribeLocalEvent<TapeRecorderComponent, EraseTapeRecorderMessage>(OnEraseMessage);
         SubscribeLocalEvent<TapeRecorderComponent, AfterActivatableUIOpenEvent>(OnUIOpened);
 
         SubscribeLocalEvent<TapeCassetteComponent, ExaminedEvent>(OnTapeExamined);
@@ -103,25 +95,6 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
     }
 
     /// <summary>
-    /// UI message to erase the cassette and reset the position to the beginning
-    /// </summary>
-    private void OnEraseMessage(Entity<TapeRecorderComponent> ent, ref EraseTapeRecorderMessage args)
-    {
-        if (HasComp<ActiveTapeRecorderComponent>(ent))
-            return;
-
-        if (!TryGetTapeCassette(ent, out var tape))
-            return;
-
-        tape.Comp.RecordedData.Clear();
-        tape.Comp.Buffer.Clear();
-        tape.Comp.TranscriptLength = 0;
-        tape.Comp.CurrentPosition = 0;
-        Dirty(tape);
-        UpdateUI(ent);
-    }
-
-    /// <summary>
     /// Update the tape position and overwrite any messages between the previous and new position
     /// </summary>
     /// <param name="ent">The tape recorder to process</param>
@@ -136,49 +109,17 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
 
         //'Flushed' in this context is a mark indicating the message was not added between the last update and this update
         //Remove any flushed messages in the segment we just recorded over (ie old messages)
-        tape.Comp.RecordedData.RemoveAll(x =>
-        {
-            if (x.Timestamp > tape.Comp.CurrentPosition && x.Timestamp <= currentTime)
-            {
-                tape.Comp.TranscriptLength -= MessageLength(x);
-                return true;
-            }
-            return false;
-        });
+        tape.Comp.RecordedData.RemoveAll(x => x.Timestamp > tape.Comp.CurrentPosition && x.Timestamp <= currentTime);
 
-        var transcriptFull = false;
-        foreach (var msg in tape.Comp.Buffer)
-        {
-            var msgLength = MessageLength(msg);
-            var wouldExceed = tape.Comp.TranscriptLength + msgLength > MaxTranscriptLength;
-            tape.Comp.RecordedData.Add(msg);
-            tape.Comp.TranscriptLength += msgLength;
-            if (wouldExceed)
-            {
-                transcriptFull = true;
-                break;
-            }
-        }
+        tape.Comp.RecordedData.AddRange(tape.Comp.Buffer);
 
         tape.Comp.Buffer.Clear();
 
         //Update the tape's current time
         tape.Comp.CurrentPosition = (float)Math.Min(currentTime, tape.Comp.MaxCapacity.TotalSeconds);
 
-        if (transcriptFull)
-        {
-            RaiseLocalEvent(ent, new TapeRecordingStoppedEvent(TapeRecordingStopReason.TranscriptFull));
-            return false;
-        }
-
         //If we have reached the end of the tape - stop
-        if (tape.Comp.CurrentPosition >= tape.Comp.MaxCapacity.TotalSeconds)
-        {
-            RaiseLocalEvent(ent, new TapeRecordingStoppedEvent(TapeRecordingStopReason.TapeFull));
-            return false;
-        }
-
-        return true;
+        return tape.Comp.CurrentPosition < tape.Comp.MaxCapacity.TotalSeconds;
     }
 
     /// <summary>
@@ -472,10 +413,3 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
 
 [Serializable, NetSerializable]
 public sealed partial class TapeCassetteRepairDoAfterEvent : SimpleDoAfterEvent;
-
-public enum TapeRecordingStopReason { TapeFull, TranscriptFull }
-
-public sealed class TapeRecordingStoppedEvent(TapeRecordingStopReason reason) : EntityEventArgs
-{
-    public readonly TapeRecordingStopReason Reason = reason;
-}

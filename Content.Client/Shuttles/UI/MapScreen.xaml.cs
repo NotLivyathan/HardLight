@@ -177,13 +177,6 @@ public sealed partial class MapScreen : BoxContainer
             MapRebuildButton.Disabled = true;
             ClearMapObjects();
         }
-        else if (_mapHeadings.Count == 0)
-        {
-            // Ensure sector objects are populated on first open without requiring
-            // a manual scan click to seed the map list.
-            RebuildMapObjects();
-            BumpMapDequeue();
-        }
     }
 
     private void SetFTLAllowed(bool value)
@@ -587,12 +580,6 @@ public sealed partial class MapScreen : BoxContainer
         if (_entManager.TryGetComponent(_shuttleEntity, out TransformComponent? shuttleXform))
         {
             SetMap(shuttleXform.MapID, _maps.GetGridPosition((_shuttleEntity.Value, null, shuttleXform)));
-        }
-
-        if (!IsPingBlocked() && _mapHeadings.Count == 0)
-        {
-            RebuildMapObjects();
-            BumpMapDequeue();
         }
     }
 }

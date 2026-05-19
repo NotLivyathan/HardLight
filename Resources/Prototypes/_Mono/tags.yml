@@ -14,13 +14,6 @@
 - type: Tag
   id: CassetteTape
 
-# VRS port: Mono tags consumed by ported nanolaminate walls + EMP rocket cartridges.
-- type: Tag
-  id: WallT4
-
-- type: Tag
-  id: CartridgeRocketEmp
-
 #762x51mm tags
 
 - type: Tag
@@ -377,11 +370,3 @@
 # makes shuttle AI not target this grid
 - type: Tag
   id: ShuttleAIIgnore
-
-# Heavy airlocks
-
-- type: Tag
-  id: AirlockHeavy
-
-- type: Tag
-  id: GlassAirlockHeavy

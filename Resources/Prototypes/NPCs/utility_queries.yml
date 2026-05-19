@@ -202,7 +202,7 @@
         preset: TargetHealth
     - !type:TargetAccessibleCon
       curve: !type:BoolCurve
-    - !type:GunTargetGoodCon # VRS (Triad #3732)
+    - !type:TargetInLOSOrCurrentCon
       curve: !type:BoolCurve
 
 #- type: utilityQuery

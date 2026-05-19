@@ -1,5 +1,4 @@
 using Content.Server.Atmos.Components;
-using Content.Server.Destructible; // VRS (Triad #3732)
 using Content.Server.Fluids.EntitySystems;
 using Content.Server._Mono.NPC.HTN; // Mono
 using Content.Server.NPC.Queries;
@@ -14,7 +13,6 @@ using Content.Server.Storage.Components;
 using Content.Shared._NF.Shipyard.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Damage;
-using Content.Shared.Damage.Components; // VRS (Triad #3732)
 using Content.Shared.Examine;
 using Content.Shared.Fluids.Components;
 using Content.Shared.Hands.Components;
@@ -22,22 +20,18 @@ using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
-using Content.Shared.NPC.Components; // VRS (Triad #3732)
 using Content.Shared.NPC.Systems;
 using Content.Shared.Nutrition.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Stunnable;
-using Content.Shared.Physics; // VRS (Triad #3732)
 using Content.Shared.Tools.Systems;
 using Content.Shared.Turrets;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
-using Content.Server.Weapons.Ranged.Systems; // VRS (Triad #3732)
 using Content.Shared.Whitelist;
 using Microsoft.Extensions.ObjectPool;
 using Robust.Server.Containers;
-using Robust.Shared.Physics.Components; // VRS (Triad #3732)
 using Robust.Shared.Map.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -68,15 +62,9 @@ public sealed class NPCUtilitySystem : EntitySystem
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     [Dependency] private readonly MobThresholdSystem _thresholdSystem = default!;
     [Dependency] private readonly TurretTargetSettingsSystem _turretTargetSettings = default!;
-    [Dependency] private readonly DestructibleSystem _destructible = default!; // VRS (Triad #3732)
-    [Dependency] private readonly GunSystem _gun = default!; // VRS (Triad #3732)
-    [Dependency] private readonly NPCCombatSystem _npcCombat = default!; // VRS (Triad #3732)
 
     private EntityQuery<PuddleComponent> _puddleQuery;
     private EntityQuery<TransformComponent> _xformQuery;
-    private EntityQuery<PhysicsComponent> _physicsQuery; // VRS (Triad #3732)
-    private EntityQuery<RequireProjectileTargetComponent> _requireTargetQuery; // VRS (Triad #3732)
-    private EntityQuery<NpcFactionMemberComponent> _factionQuery; // VRS (Triad #3732)
 
     private ObjectPool<HashSet<EntityUid>> _entPool =
         new DefaultObjectPool<HashSet<EntityUid>>(new SetPolicy<EntityUid>(), 256);
@@ -91,9 +79,6 @@ public sealed class NPCUtilitySystem : EntitySystem
         base.Initialize();
         _puddleQuery = GetEntityQuery<PuddleComponent>();
         _xformQuery = GetEntityQuery<TransformComponent>();
-        _physicsQuery = GetEntityQuery<PhysicsComponent>(); // VRS (Triad #3732)
-        _requireTargetQuery = GetEntityQuery<RequireProjectileTargetComponent>(); // VRS (Triad #3732)
-        _factionQuery = GetEntityQuery<NpcFactionMemberComponent>(); // VRS (Triad #3732)
     }
 
     /// <summary>
@@ -374,17 +359,6 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
 
                 return _examine.InRangeUnOccluded(owner, targetUid, radius + bufferRange, null) ? 1f : 0f;
-            }
-            // VRS (Triad #3732)
-            case GunTargetGoodCon con:
-            {
-                if (!_gun.TryGetGun(owner, out var gunUid, out var gun))
-                    return 0f;
-
-                var radius = blackboard.GetValueOrDefault<float>(blackboard.GetVisionRadiusKey(EntityManager), EntityManager);
-                const float bufferRange = 0.5f;
-
-                return _npcCombat.InRangeGoodTarget((gunUid, gun), owner, targetUid, radius + bufferRange, con.ShootThroughThreshold) ? 1f : 0f;
             }
             case TargetIsAliveCon:
             {

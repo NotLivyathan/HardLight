@@ -108,9 +108,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
             return mod;
         }
 
-        // VRS: include T name, biome, and remaining rating so a content author who under-budgets a difficulty
-        // can identify which mod table and biome failed to find a fit instead of seeing a bare InvalidOperationException.
-        throw new InvalidOperationException($"No {typeof(T).Name} found for biome '{biome}' with remaining rating {rating}; check SalvageDifficultyPrototype.ModifierBudget vs the cheapest mod's Cost.");
+        throw new InvalidOperationException();
     }
 
     public T GetMod<T>(System.Random rand, ref float rating) where T : class, IPrototype, ISalvageMod
@@ -129,9 +127,7 @@ public abstract partial class SharedSalvageSystem : EntitySystem
             return mod;
         }
 
-        // VRS: include T name and remaining rating so a content author who under-budgets a difficulty
-        // can identify which mod table failed to find a fit instead of seeing a bare InvalidOperationException.
-        throw new InvalidOperationException($"No {typeof(T).Name} found with remaining rating {rating}; check SalvageDifficultyPrototype.ModifierBudget vs the cheapest mod's Cost.");
+        throw new InvalidOperationException();
     }
 
     private List<string> GetRewards(int difficulty, System.Random rand)

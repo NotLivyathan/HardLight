@@ -63,6 +63,7 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
     public Action<EntityCoordinates>? OnRadarClick;
     public bool ShowIFF { get; set; } = true;
+    public bool RotateWithEntity { get; set; } = true;
 
     public FireControlNavControl() : base(64f, 1500f, 512f)
     {
@@ -153,7 +154,13 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
     private void TryFireAtPosition(Vector2 relativePosition)
     {
-        var coords = GetMouseEntityCoordinates(relativePosition);
+        if (_coordinates == null || _rotation == null || OnRadarClick == null)
+            return;
+
+        var a = InverseScalePosition(relativePosition);
+        var relativeWorldPos = new Vector2(a.X, -a.Y);
+        relativeWorldPos = _rotation.Value.RotateVec(relativeWorldPos);
+        var coords = _coordinates.Value.Offset(relativeWorldPos);
         OnRadarClick?.Invoke(coords);
     }
 
@@ -179,6 +186,7 @@ public sealed class FireControlNavControl : BaseShuttleControl
     {
         SetMatrix(EntManager.GetCoordinates(state.Coordinates), state.Angle);
         _docks = state.Docks;
+        RotateWithEntity = state.RotateWithEntity;
     }
 
     protected override void Draw(DrawingHandleScreen handle)
@@ -204,12 +212,12 @@ public sealed class FireControlNavControl : BaseShuttleControl
             return;
         }
 
-        var worldRot = _rotation.Value;
-
-        var mapPos = _transform.ToMapCoordinates(_coordinates.Value).Offset(_rotation.Value.RotateVec(Offset));
-        var mapCoord = _transform.ToCoordinates(mapPos);
-        var worldToShuttle = Matrix3Helpers.CreateTranslation(-mapCoord.Position) * Matrix3Helpers.CreateRotation(-worldRot);
-        Matrix3x2.Invert(worldToShuttle, out var shuttleToWorld);
+        var mapPos = _transform.ToMapCoordinates(_coordinates.Value);
+        var posMatrix = Matrix3Helpers.CreateTransform(_coordinates.Value.Position, _rotation.Value);
+        var ourEntRot = RotateWithEntity ? _transform.GetWorldRotation(xform) : _rotation.Value;
+        var ourEntMatrix = Matrix3Helpers.CreateTransform(_transform.GetWorldPosition(xform), ourEntRot);
+        var shuttleToWorld = Matrix3x2.Multiply(posMatrix, ourEntMatrix);
+        Matrix3x2.Invert(shuttleToWorld, out var worldToShuttle);
         var shuttleToView = Matrix3x2.CreateScale(new Vector2(MinimapScale, -MinimapScale)) * Matrix3x2.CreateTranslation(MidPointVector);
         var worldToView = worldToShuttle * shuttleToView;
         Matrix3x2.Invert(worldToView, out var viewToWorld);
@@ -505,21 +513,9 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
     private Vector2 InverseScalePosition(Vector2 value)
     {
+        // Account for UI scaling: value is unscaled, so adjust by UIScale
         var scaledValue = value * UIScale;
         return (scaledValue - MidPointVector) / MinimapScale;
-    }
-
-    // Mono
-    private EntityCoordinates GetMouseEntityCoordinates(Vector2 relativePosition)
-    {
-        if (_coordinates is not { } cord || _rotation is not { } rot)
-            return new();
-
-        var screenRelativeWorldPos = InverseMapPosition(relativePosition);
-        var relativeWorldPos = rot.RotateVec(screenRelativeWorldPos);
-        var coordEntRot = _transform.GetWorldRotation(cord.EntityId);
-        var coords = cord.Offset((-coordEntRot).RotateVec(relativeWorldPos));
-        return coords;
     }
 
     private void DrawBlipShape(DrawingHandleScreen handle, Vector2 position, float size, Color color, RadarBlipShape shape)
@@ -642,7 +638,15 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
         _lastCursorUpdateTime = (float)currentTime;
 
-        var coords = GetMouseEntityCoordinates(relativePosition);
+        // Convert mouse position to world coordinates for missile tracking
+        if (_coordinates == null || _rotation == null || OnRadarClick == null)
+            return;
+
+        var a = InverseScalePosition(relativePosition);
+        var relativeWorldPos = new Vector2(a.X, -a.Y);
+        relativeWorldPos = _rotation.Value.RotateVec(relativeWorldPos);
+        var coords = _coordinates.Value.Offset(relativeWorldPos);
+
         // This will update the server of our cursor position without triggering actual firing
         OnRadarClick?.Invoke(coords);
     }
