@@ -26,6 +26,8 @@
     - Sylvan
     - Terrum
     - VoxPidgin
+    - Scratch
+    - SolCommon
   # Starlight-end
   - type: Instrument
     allowPercussion: false

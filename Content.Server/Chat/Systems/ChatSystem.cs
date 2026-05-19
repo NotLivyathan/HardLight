@@ -39,7 +39,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Replays;
 using Robust.Shared.Utility;
 using Content.Server._Starlight.Language; // Starlight
-using Content.Shared._Starlight.Language;
+using Content.Shared._Starlight.Language; // Starlight
 using Content.Shared.Popups; // Starlight
 
 namespace Content.Server.Chat.Systems;
@@ -1013,6 +1013,11 @@ public sealed partial class ChatSystem : SharedChatSystem
     /// </summary>
     public string WrapPublicMessage(EntityUid source, string name, string message, LanguagePrototype? language = null, bool? obfuscated = false)
     {
+        if (obfuscated == true
+            && language is not null
+            && language.SpeechOverride.ObfuscationFont == true)
+            return WrapMessage("chat-manager-entity-say-wrap-message", InGameICChatType.Speak, source, name, message, language, obfuscated);
+
         var wrapId = GetSpeechVerb(source, message).Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message";
         return WrapMessage(wrapId, InGameICChatType.Speak, source, name, message, language, obfuscated);
     }
