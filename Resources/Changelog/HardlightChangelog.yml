@@ -4090,3 +4090,19 @@ Entries:
       message: Freelancers can no longer be targeted for antagonist roles.
   id: 440
   time: '2026-05-18T18:48:07.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Add
+      message: Advanced tape with 60 minutes of recording
+    - type: Tweak
+      message: >-
+        Tape recorder has limit on words and notifies when recording time/limit
+        is reached
+  id: 441
+  time: '2026-05-18T22:04:37.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Damaged RTGs no longer duplicate with the SRD
+  id: 442
+  time: '2026-05-18T22:05:52.0000000+00:00'
