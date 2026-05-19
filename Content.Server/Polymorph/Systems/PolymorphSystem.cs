@@ -49,7 +49,6 @@ public sealed partial class PolymorphSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly SharedMindSystem _mindSystem = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
-    [Dependency] private readonly IComponentFactory _compFact = default!; // Starlight
     [Dependency] private readonly ISerializationManager _serialization = default!; // Starlight
 
     private const string RevertPolymorphId = "ActionRevertPolymorph";
