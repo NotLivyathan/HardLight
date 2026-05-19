@@ -1,35 +1,12 @@
 # Placeholder PAIs, aka semi-automatic ghost roles
 
 - type: entity
-  parent: BaseItem
+  parent: [ BaseItem, BaseSiliconLanguages ] # Starlight: Languages
   id: PersonalAI
   name: personal ai device
   description: Your electronic pal who's fun to be with!
   components:
-  # Starlight-start: Languages
-  - type: LanguageSpeaker
-  - type: LanguageKnowledge
-    speaks:
-    - GalacticCommon
-    - Machine
-    understands:
-    - GalacticCommon
-    - Machine
-    - Canilunzt
-    - Sign
-    - Bubblish
-    - Chittin
-    - Draconic
-    - Marish
-    - Moffic
-    - Nekomimetic
-    - Sylvan
-    - Terrum
-    - VoxPidgin
-    - Scratch
-    - SolCommon
-    - Thaveyan
-  # Starlight-end
+  - type: LanguageSpeaker # Starlight: Languages
   - type: Instrument
     allowPercussion: false
     handheld: false
