@@ -9,6 +9,7 @@ namespace Content.Server.Speech.EntitySystems;
 public sealed class ListeningSystem : EntitySystem
 {
     [Dependency] private readonly SharedTransformSystem _xforms = default!;
+    [Dependency] private readonly ChatSystem _chat = default!; // Starlight
 
     public override void Initialize()
     {
@@ -18,10 +19,10 @@ public sealed class ListeningSystem : EntitySystem
 
     private void OnSpeak(EntitySpokeEvent ev)
     {
-        PingListeners(ev.Source, ev.Message, ev.ObfuscatedMessage, ev.OriginalMessage, ev.OriginalObfuscatedMessage);
+        PingListeners(ev.Source, ev.Message, ev.IsWhisper, ev.OriginalMessage, ev.OriginalObfuscatedMessage); // Starlight
     }
 
-    public void PingListeners(EntityUid source, string message, string? obfuscatedMessage, string? originalMessage = null, string? originalObfuscatedMessage = null)
+    public void PingListeners(EntityUid source, string message, bool isWhisper, string? originalMessage = null, string? originalObfuscatedMessage = null) // Starlight
     {
         // TODO whispering / audio volume? Microphone sensitivity?
         // for now, whispering just arbitrarily reduces the listener's max range.
@@ -32,7 +33,7 @@ public sealed class ListeningSystem : EntitySystem
 
         var attemptEv = new ListenAttemptEvent(source);
         var ev = new ListenEvent(message, originalMessage, source);
-        var obfuscatedEv = obfuscatedMessage == null ? null : new ListenEvent(obfuscatedMessage, originalObfuscatedMessage, source);
+        var obfuscatedEv = bool isWhisper ? null : new ListenEvent(_chat.ObfuscateMessageReadability(message), originalObfuscatedMessage, source); // Starlight
         var query = EntityQueryEnumerator<ActiveListenerComponent, TransformComponent>();
 
         while (query.MoveNext(out var listenerUid, out var listener, out var xform))

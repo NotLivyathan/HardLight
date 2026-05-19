@@ -497,7 +497,27 @@
     - sprite: Mobs/Silicon/holograms.rsi
       state: ai_female
   - type: NameIdentifier
-    group: StationAi
+    group: StationAi'
+  # Starlight-start: Languages
+  - type: LanguageKnowledge
+    speaks:
+    - GalacticCommon
+    - Machine
+    understands:
+    - GalacticCommon
+    - Machine
+    - Canilunzt
+    - Sign
+    - Bubblish
+    - Chittin
+    - Draconic
+    - Marish
+    - Moffic
+    - Nekomimetic
+    - Sylvan
+    - Terrum
+    - VoxPidgin
+  # Starlight-end
 
 # Hologram projection that the AI's eye tracks.
 - type: entity

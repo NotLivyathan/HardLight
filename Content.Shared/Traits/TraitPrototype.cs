@@ -63,17 +63,43 @@ public sealed partial class TraitPrototype : IPrototype, IComparable<TraitProtot
     [DataField]
     public ProtoId<TraitCategoryPrototype>? Category;
 
-        /// <summary>
-        ///     List of traits that ca't be taken together with this one.
-        /// </summary>
-        [DataField]
-        public HashSet<ProtoId<TraitPrototype>> MutuallyExclusiveTraits { get; private set; } = new();
+    // Starlight start
+    /// <summary>
+    ///     The list of all Spoken Languages that this trait adds.
+    /// </summary>
+    [DataField]
+    public List<string>? LanguagesSpoken { get; private set; } = default!;
 
-        /// <summary>
-        ///     List of species that can't have this trait.
-        /// </summary>
-        [DataField]
-        public HashSet<ProtoId<SpeciesPrototype>> SpeciesBlacklist { get; private set; } = new();
+    /// <summary>
+    ///     The list of all Understood Languages that this trait adds.
+    /// </summary>
+    [DataField]
+    public List<string>? LanguagesUnderstood { get; private set; } = default!;
+
+    /// <summary>
+    ///     The list of all Spoken Languages that this trait removes.
+    /// </summary>
+    [DataField]
+    public List<string>? RemoveLanguagesSpoken { get; private set; } = default!;
+
+    /// <summary>
+    ///     The list of all Understood Languages that this trait removes.
+    /// </summary>
+    [DataField]
+    public List<string>? RemoveLanguagesUnderstood { get; private set; } = default!;
+    // Starlight end
+
+    /// <summary>
+    ///     List of traits that ca't be taken together with this one.
+    /// </summary>
+    [DataField]
+    public HashSet<ProtoId<TraitPrototype>> MutuallyExclusiveTraits { get; private set; } = new();
+
+    /// <summary>
+    ///     List of species that can't have this trait.
+    /// </summary>
+    [DataField]
+    public HashSet<ProtoId<SpeciesPrototype>> SpeciesBlacklist { get; private set; } = new();
 
     // Einstein Engines - Language begin (remove this if trait system refactor)
     /// <summary>

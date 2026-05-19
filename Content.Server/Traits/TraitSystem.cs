@@ -24,6 +24,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using System.Linq;
+using Content.Server._Starlight.Language; // Starlight
 
 namespace Content.Server.Traits;
 
@@ -151,6 +152,26 @@ public sealed class TraitSystem : EntitySystem
 
         // Add all components required by the prototype
         EntityManager.AddComponents(uid, traitPrototype.Components, traitPrototype.ReplaceComponents); // Hardlight: Added ReplaceComponents
+
+            // Starlight start
+            var language = EntityManager.System<LanguageSystem>();
+
+            if (traitPrototype.RemoveLanguagesSpoken is not null)
+                foreach (var lang in traitPrototype.RemoveLanguagesSpoken)
+                    language.RemoveLanguage(args.Mob, lang, true, false);
+
+            if (traitPrototype.RemoveLanguagesUnderstood is not null)
+                foreach (var lang in traitPrototype.RemoveLanguagesUnderstood)
+                    language.RemoveLanguage(args.Mob, lang, false, true);
+
+            if (traitPrototype.LanguagesSpoken is not null)
+                foreach (var lang in traitPrototype.LanguagesSpoken)
+                    language.AddLanguage(args.Mob, lang, true, false);
+
+            if (traitPrototype.LanguagesUnderstood is not null)
+                foreach (var lang in traitPrototype.LanguagesUnderstood)
+                    language.AddLanguage(args.Mob, lang, false, true);
+            // Starlight end
 
         // HardLight: Force an immediate refresh so movement penalties/bonuses apply on spawn.
         _movementSpeed.RefreshMovementSpeedModifiers(uid);

@@ -5,15 +5,24 @@
   id: BaseMobMoth
   abstract: true
   components:
+  # Starlight-start: Languages
+  - type: LanguageKnowledge
+    speaks:
+    - GalacticCommon
+    - Moffic
+    understands:
+    - GalacticCommon
+    - Moffic
+  # Starlight-end
   - type: HumanoidAppearance
     species: Moth
     hideLayersOnEquip:
     - HeadTop
-    # HL start: Hide genital markings on equip
+    # HardLight start: Hide genital markings on equip
     - Genital
     - Penis
     - Breasts
-    # HL end
+    # HardLight end
   - type: Hunger
   - type: Thirst
   - type: Carriable # Carrying system from nyanotrasen.
