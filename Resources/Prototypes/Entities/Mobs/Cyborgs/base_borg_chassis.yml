@@ -293,6 +293,8 @@
     - Sylvan
     - Terrum
     - VoxPidgin
+    - Scratch
+    - SolCommon
   # Starlight-end
   - type: BorgSwitchableSubtype # CD change
   - type: BypassLock
