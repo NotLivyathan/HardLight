@@ -135,7 +135,7 @@ public sealed class RadioSystem : EntitySystem
         if (language == null)
             language = _language.GetLanguage(messageSource);
 
-        if (!language.SpeechOverride.AllowRadio)
+        if (!language.Speech.AllowRadio)
             return;
         // Starlight end
 
@@ -312,7 +312,7 @@ public sealed class RadioSystem : EntitySystem
         var speech = _chat.GetSpeechVerb(source, message);
         var languageColor = channel.Color;
 
-        if (language.SpeechOverride.Color is { } colorOverride)
+        if (language.Speech.Color is { } colorOverride)
             languageColor = Color.InterpolateBetween(Color.White, colorOverride, colorOverride.A); // Changed first param to Color.White so it shows color correctly.
 
         var (iconId, jobName) = GetJobIcon(source);
@@ -321,15 +321,15 @@ public sealed class RadioSystem : EntitySystem
         if (_language.GetLanguageIcon(language, obfuscated))
             namestring = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] [icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {name}";
 
-        var fonttype = language.SpeechOverride.FontId ?? speech.FontId;
-        if ((language.SpeechOverride.ObfuscationFont ?? false) && !obfuscated)
+        var fonttype = language.Speech.FontId ?? speech.FontId;
+        if ((language.Speech.ObfuscationFont ?? false) && !obfuscated)
             fonttype = speech.FontId;
 
         return Loc.GetString(speech.Bold ? "chat-radio-message-wrap-bold" : "chat-radio-message-wrap",
             ("color", channel.Color),
             ("languageColor", languageColor),
             ("fontType", fonttype),
-            ("fontSize", language.SpeechOverride.FontSize ?? speech.FontSize),
+            ("fontSize", language.Speech.FontSize ?? speech.FontSize),
             ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
             ("channel", channelText),
             ("name", namestring),

@@ -3,7 +3,6 @@ using Content.Shared._Starlight.Language;
 using Content.Shared._Starlight.Language.Components;
 using Content.Shared._Starlight.Language.Events;
 using Content.Shared._Starlight.Language.Systems;
-using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._Starlight.Language;
@@ -15,7 +14,6 @@ public sealed partial class LanguageSystem : SharedLanguageSystem
         base.Initialize();
 
         SubscribeLocalEvent<LanguageSpeakerComponent, MapInitEvent>(OnInitLanguageSpeaker);
-        SubscribeLocalEvent<LanguageSpeakerComponent, ComponentGetState>(OnGetLanguageState);
         SubscribeLocalEvent<UniversalLanguageSpeakerComponent, DetermineEntityLanguagesEvent>(OnDetermineUniversalLanguages);
         SubscribeNetworkEvent<LanguagesSetMessage>(OnClientSetLanguage);
 
@@ -31,16 +29,6 @@ public sealed partial class LanguageSystem : SharedLanguageSystem
             ent.Comp.CurrentLanguage = ent.Comp.SpokenLanguages.FirstOrDefault(UniversalPrototype);
 
         UpdateEntityLanguages(ent!);
-    }
-
-    private void OnGetLanguageState(Entity<LanguageSpeakerComponent> entity, ref ComponentGetState args)
-    {
-        args.State = new LanguageSpeakerComponent.State
-        {
-            CurrentLanguage = entity.Comp.CurrentLanguage,
-            SpokenLanguages = entity.Comp.SpokenLanguages,
-            UnderstoodLanguages = entity.Comp.UnderstoodLanguages
-        };
     }
 
     private void OnDetermineUniversalLanguages(Entity<UniversalLanguageSpeakerComponent> entity, ref DetermineEntityLanguagesEvent ev)
