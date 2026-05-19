@@ -7,6 +7,7 @@ using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared.PowerCell;
+using Content.Shared.PowerCell.Components; // HardLight
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -21,7 +22,7 @@ public sealed class TranslatorSystem : EntitySystem
     [Dependency] private readonly ItemToggleSystem _itemToggle = default!;
     [Dependency] private readonly SharedLanguageSystem _language = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly PowerCellSystem _powerCell = default!;
+    [Dependency] private readonly SharedPowerCellSystem _powerCell = default!; // HardLight: PowerCellSystem<SharedPowerCellSystem
 
     public override void Initialize()
     {
@@ -44,7 +45,10 @@ public sealed class TranslatorSystem : EntitySystem
     {
         if (TryComp<ItemToggleComponent>(ent, out var toggle))
         {
-            _itemToggle.SetOnActivate((ent.Owner, toggle), ent.Comp.ToggleOnInteract);
+            // HardLight-edit start
+            toggle.OnActivate = ent.Comp.ToggleOnInteract;
+            Dirty(ent.Owner, toggle);
+            // HardLight-edit end
             _itemToggle.TrySetActive((ent.Owner, toggle), ent.Comp.Enabled);
         }
     }
@@ -108,7 +112,7 @@ public sealed class TranslatorSystem : EntitySystem
         Dirty(translator);
 
         _powerCell.SetDrawEnabled(translator.Owner, isEnabled);
-        _appearance.SetData(translator, ToggleableVisuals.Enabled, translator.Comp.Enabled);
+        _appearance.SetData(translator, ToggleableLightVisuals.Enabled, translator.Comp.Enabled); // HardLight: ToggleableVisuals<ToggleableLightVisuals
 
         if (_containers.TryGetContainingContainer(translator.Owner, out var holderCont)
             && TryComp<LanguageSpeakerComponent>(holderCont.Owner, out var languageComp))

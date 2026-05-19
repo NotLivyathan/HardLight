@@ -33,9 +33,6 @@ public abstract partial class SharedLanguageSystem : EntitySystem
     /// </summary>
     public static LanguagePrototype Universal { get; private set; } = default!;
 
-    [Dependency] protected readonly IPrototypeManager _prototype = default!;
-    [Dependency] protected readonly SharedGameTicker _ticker = default!;
-
     public override void Initialize()
     {
         Universal = _prototype.Index(UniversalPrototype);
@@ -72,7 +69,7 @@ public abstract partial class SharedLanguageSystem : EntitySystem
             return;
         var clone = ev.CloneUid;
         var comp = EnsureComp<LanguageKnowledgeComponent>(ev.CloneUid);
-        if (HasComp<RestoreLanguageCacheOnClone>(ent) && TryComp<LanguageCacheComponent>(ent, out var cache))
+        if (HasComp<RestoreLanguageCacheOnCloneComponent>(ent) && TryComp<LanguageCacheComponent>(ent, out var cache))
         {
             RestoreCache((ent, cache));
         }

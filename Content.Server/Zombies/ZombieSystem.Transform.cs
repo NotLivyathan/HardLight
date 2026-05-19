@@ -122,7 +122,7 @@ public sealed partial class ZombieSystem
         _language.CaptureCache((target, knowledge));
         RemComp<UniversalLanguageSpeakerComponent>(target);
         EnsureComp<LanguageSpeakerComponent>(target, out var speaker);
-        EnsureComp<RestoreLanguageCacheOnClone>(target);
+        EnsureComp<RestoreLanguageCacheOnCloneComponent>(target);
 
         knowledge.Speaks.Clear();
         knowledge.Understands.Clear();
