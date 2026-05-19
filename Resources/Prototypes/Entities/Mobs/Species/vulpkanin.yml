@@ -12,6 +12,8 @@
     understands:
     - GalacticCommon
     - Canilunzt
+    - Fox # "vaguely canidae"
+    - Dog # "vaguely canidae"
   - type: Hunger
   - type: Thirst
   # HardLight start: Removed for now, will re-add later.

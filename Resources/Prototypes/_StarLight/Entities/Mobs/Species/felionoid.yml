@@ -12,6 +12,7 @@
     understands:
     - GalacticCommon
     - Nekomimetic
+    - Cat
   # - type: Absorbable # HL: component not available in this codebase
   # copied from felinid
   - type: Sprite

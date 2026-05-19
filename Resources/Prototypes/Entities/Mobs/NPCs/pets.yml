@@ -185,6 +185,7 @@
     understands:
     - Cat
     - GalacticCommon
+    - Nekomimetic
   # Starlight-end
   - type: NpcFactionMember
     factions:
@@ -218,6 +219,7 @@
     understands:
     - Cat
     - GalacticCommon
+    - Nekomimetic
   # Starlight-end
   - type: NpcFactionMember
     factions:
@@ -302,6 +304,7 @@
     understands:
     - Cat
     - GalacticCommon
+    - Nekomimetic
   # Starlight-end
   - type: NpcFactionMember
     factions:
