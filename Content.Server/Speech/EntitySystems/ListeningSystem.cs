@@ -33,7 +33,11 @@ public sealed class ListeningSystem : EntitySystem
 
         var attemptEv = new ListenAttemptEvent(source);
         var ev = new ListenEvent(message, originalMessage, source);
-        var obfuscatedEv = bool isWhisper ? null : new ListenEvent(_chat.ObfuscateMessageReadability(message), originalObfuscatedMessage, source); // Starlight
+        // HardLight-edit start
+        ListenEvent? obfuscatedEv = isWhisper
+            ? null
+            : new ListenEvent(_chat.ObfuscateMessageReadability(message), originalObfuscatedMessage, source); // Starlight
+        // HardLight-edit end
         var query = EntityQueryEnumerator<ActiveListenerComponent, TransformComponent>();
 
         while (query.MoveNext(out var listenerUid, out var listener, out var xform))

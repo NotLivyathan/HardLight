@@ -282,13 +282,13 @@ public sealed class RadioSystem : EntitySystem
             }
         }
 
-        if (TryComp<BorgChassisComponent>(messageSource, out var chassis) || HasComp<BorgBrainComponent>(messageSource)) // HardLight
+        if (TryComp<BorgChassisComponent>(messageSource, out _) || HasComp<BorgBrainComponent>(messageSource)) // HardLight
         {
-            iconId = chassis?.JobIconOverride ?? "JobIconBorg";
-            jobName = Loc.GetString(chassis?.LocalizedJobTitle ?? "job-name-borg");
+            iconId = "JobIconBorg";
+            jobName = Loc.GetString("job-name-borg");
         }
 
-        if (HasComp<StationAiHeldComponent>(messageSource) || (TryComp<StationAIShuntComponent>(messageSource, out var aiShunt) && aiShunt.Return.HasValue))
+        if (HasComp<StationAiHeldComponent>(messageSource))
         {
             iconId = "JobIconStationAi";
             jobName = Loc.GetString("job-name-station-ai");
