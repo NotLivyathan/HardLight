@@ -3,6 +3,7 @@ using Content.Server.Humanoid;
 using Content.Server.Inventory;
 using Content.Server.Mobs.Components;
 using Content.Server.Polymorph.Components;
+using Content.Shared.Actions; // HardLight
 using Content.Shared.Buckle;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Coordinates;
