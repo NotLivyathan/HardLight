@@ -193,6 +193,7 @@
     - Chicken
     understands:
     - Chicken
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -500,6 +501,7 @@
     understands:
     - Moffic
     - Mothroach
+    - GalacticCommon
   # Starlight-end
   - type: GhostRole
     makeSentient: true
@@ -681,9 +683,10 @@
   # Starlight-start: Languages
   - type: LanguageKnowledge
     speaks:
-    - Sylvan
+    - Duck
     understands:
-    - Sylvan
+    - Duck
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -1230,6 +1233,7 @@
     - Ancestor
     understands:
     - Ancestor
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -1403,6 +1407,7 @@
     - Ancestor
     understands:
     - Ancestor
+    - GalacticCommon
   # Starlight-end
   - type: CombatMode
   - type: SurgeryTarget # Shitmed
@@ -1529,8 +1534,6 @@
   - type: Genetics # Funkystation - Genetics
     mutationSlots: 4
 
-
-
 - type: entity
   name: monkey
   id: MobMonkey
@@ -1656,6 +1659,7 @@
     understands:
     - Ancestor
     - Draconic
+    - GalacticCommon
   # Starlight-end
   - type: NameIdentifier
     group: Kobold
@@ -1846,6 +1850,7 @@
     - Mouse
     understands:
     - Mouse
+    - GalacticCommon
   # Starlight-end
   - type: Body
     prototype: Mouse
@@ -2622,6 +2627,7 @@
     - Chittin
     understands:
     - Chittin
+    - GalacticCommon
   # Starlight-end
   - type: Carriable # DeltaV: Shiva deserves to be held
   - type: Physics
@@ -2985,6 +2991,7 @@
     understands:
     - Fox
     - Canilunzt
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -3074,6 +3081,7 @@
     understands:
     - Dog
     - Canilunzt
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -3137,6 +3145,16 @@
   id: MobCorgiNarsi
   description: Ian! No!
   components:
+  # Starlight-start: Languages
+  - type: LanguageSpeaker
+  - type: LanguageKnowledge
+    speaks:
+    - Dog
+    understands:
+    - Dog
+    - Canilunzt
+    - GalacticCommon
+  # Starlight-end
   - type: Sprite
     drawdepth: Mobs
     sprite: Mobs/Pets/corgi.rsi
@@ -3233,6 +3251,7 @@
     understands:
     - Cat
     - Nekomimetic
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -3604,6 +3623,7 @@
     - Mouse
     understands:
     - Mouse
+    - GalacticCommon
   # Starlight-end
   - type: GhostRole
     makeSentient: true
@@ -3760,6 +3780,7 @@
     - Pig
     understands:
     - Pig
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -3838,6 +3859,7 @@
     - Sylvan
     understands:
     - Sylvan
+    - GalacticCommon
   # Starlight-end
   - type: Sprite
     drawdepth: Mobs
@@ -3926,6 +3948,7 @@
     - Sylvan
     understands:
     - Sylvan
+    - GalacticCommon
   # Starlight-end
 
 - type: entity

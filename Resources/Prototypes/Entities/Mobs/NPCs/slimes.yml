@@ -12,6 +12,7 @@
     - Bubblish
     understands:
     - Bubblish
+    - GalacticCommon
   # Starlight - End
   - type: Sprite
     drawdepth: Mobs
