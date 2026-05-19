@@ -5,6 +5,7 @@ using Content.Shared._Starlight.Language.Events;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Content.Shared.Cloning.Events;
+using Content.Shared.Zombies;
 
 namespace Content.Shared._Starlight.Language.Systems;
 
@@ -32,10 +33,14 @@ public abstract class SharedLanguageSystem : EntitySystem
     {
         Universal = _prototype.Index(UniversalPrototype);
         SubscribeLocalEvent<LanguageKnowledgeComponent, CloningEvent>(OnClone);
+
+        SubscribeLocalEvent<AdditionalLanguageKnowledgeComponent, MapInitEvent>(OnMapInitAdditional);
     }
 
     private void OnClone(Entity<LanguageKnowledgeComponent> ent, ref CloningEvent ev)
     {
+        if (HasComp<ZombieComponent>(ent))
+            return; // If we were zombified, cloning will revert this so we don't clone the zed language
         if (!ev.Settings.EventComponents.Contains(Factory.GetRegistration(ent.Comp.GetType()).Name))
             return;
         var clone = ev.CloneUid;
@@ -44,6 +49,22 @@ public abstract class SharedLanguageSystem : EntitySystem
         comp.UnderstoodLanguages = ent.Comp.UnderstoodLanguages;
         if (TryComp<LanguageSpeakerComponent>(clone, out var speaker))
             UpdateEntityLanguages((clone,speaker));
+    }
+
+    /// <summary>
+    ///     Add additional languages, generally as part of a role
+    /// </summary>
+    private void OnMapInitAdditional(Entity<AdditionalLanguageKnowledgeComponent> ent, ref MapInitEvent ev)
+    {
+        if (TryComp<LanguageKnowledgeComponent>(ent, out var langComp))
+        {
+            langComp.SpokenLanguages = langComp.SpokenLanguages.Union(ent.Comp.SpokenLanguages).Distinct().ToList();
+            langComp.UnderstoodLanguages = langComp.UnderstoodLanguages.Union(ent.Comp.UnderstoodLanguages).Distinct().ToList();
+            if (TryComp<LanguageSpeakerComponent>(ent, out var speaker))
+            {
+                UpdateEntityLanguages((ent, speaker));
+            }
+        }
     }
 
     public LanguagePrototype? GetLanguagePrototype(ProtoId<LanguagePrototype> id)
