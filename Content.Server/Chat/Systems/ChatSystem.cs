@@ -255,11 +255,13 @@ public sealed partial class ChatSystem : SharedChatSystem
         string? emoteStr = null;
         message = SanitizeInGameICMessage(source, message, out emoteStr, shouldCapitalize, shouldPunctuate, shouldCapitalizeTheWordI);
 
-        // Was there an emote in the message? If so, send it.
-        if (player != null && emoteStr != message && emoteStr != null)
-        {
-            SendEntityEmote(source, emoteStr, range, nameOverride, language, ignoreActionBlocker); // Starlight
+            // Was there an emote in the message? If so, send it.
+            if (player != null && emoteStr != message && emoteStr != null)
+            {
+                SendEntityEmote(source, emoteStr, range, nameOverride, language, ignoreActionBlocker); // Starlight
+            }
         }
+        // HardLight end
 
         // This can happen if the entire string is sanitized out.
         if (string.IsNullOrEmpty(message))
