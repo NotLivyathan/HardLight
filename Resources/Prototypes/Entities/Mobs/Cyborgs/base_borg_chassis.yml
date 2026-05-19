@@ -295,6 +295,7 @@
     - VoxPidgin
     - Scratch
     - SolCommon
+    - Thaveyan
   # Starlight-end
   - type: BorgSwitchableSubtype # CD change
   - type: BypassLock

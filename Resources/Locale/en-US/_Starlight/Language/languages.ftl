@@ -85,3 +85,6 @@ language-Duck-description = Quack!
 
 language-Pig-name = Pig
 language-Pig-description = Oink!
+
+language-Thaveyan-name = Thaveyan
+language-Thaveyan-description = A lyrical sing-songy language common to the Thaven which reminds others of listening to the waves.
