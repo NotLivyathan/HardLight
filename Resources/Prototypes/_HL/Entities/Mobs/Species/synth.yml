@@ -1,10 +1,17 @@
 - type: entity
-  parent: [ BaseMobSpecies, MobBloodstream, MobAtmosExposed, MobFlammable, BaseSiliconBrainLanguages ]
+  parent: [ BaseMobSpecies, MobBloodstream, MobAtmosExposed, MobFlammable ]
   id: BaseMobSynth
   name: Urist McSynth
   save: false
   abstract: true
   components:
+  - type: LanguageKnowledge
+    speaks:
+    - GalacticCommon
+    - Machine
+    understands:
+    - GalacticCommon
+    - Machine
   - type: Sprite
   - type: Icon # It will not have an icon in the adminspawn menu without this. Body parts seem fine for whatever reason.
     sprite: _HL/Mobs/Species/Synth/parts.rsi
