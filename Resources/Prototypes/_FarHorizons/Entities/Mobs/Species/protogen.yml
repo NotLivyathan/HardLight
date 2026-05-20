@@ -2,11 +2,19 @@
 # bear with me here, I am unfamiliar with EE forks.
 
 - type: entity
-  parent: [ BaseMobSpeciesOrganic, BaseSiliconBrainLanguages ] # HardLight: BaseSiliconBrainLanguages
+  parent: BaseMobSpeciesOrganic
   id: BaseMobProtogen
   name: Urist McToaster
   abstract: true
   components:
+  # HardLight start
+  - type: LanguageKnowledge
+    speaks:
+    - GalacticCommon
+    understands:
+    - GalacticCommon
+    - Machine
+  # HardLight end
   - type: Carriable # Frontier: Carrying system from nyanotrasen.
   - type: PotentialPsionic #Nyano - Summary: makes potentially psionic.
   - type: Sprite
