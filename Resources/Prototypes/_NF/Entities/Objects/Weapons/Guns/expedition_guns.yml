@@ -414,25 +414,27 @@
 - type: entity
   parent:
   - BaseExpeditionWeaponTier5
-  - NFWeaponLauncherRocket
+  - WeaponLauncherRocket # HardLight: NFWeaponLauncherRocket<WeaponLauncherRocket
 #  categories: [ HideSpawnMenu ]
   id: NFWeaponLauncherRocketExpedition
+  name: worn RPG-7 # HardLight
 
 - type: entity
   parent:
   - BaseExpeditionWeaponTier5Syndicate
-  - NFWeaponLauncherChinaLake
+  - WeaponLauncherChinaLake # HardLight: NFWeaponLauncherChinaLake<WeaponLauncherChinaLake
 #  categories: [ HideSpawnMenu ]
   id: NFWeaponLauncherChinaLakeExpedition
+  name: worn china lake # HardLight
 
 # LMGs
 - type: entity
   parent:
   - BaseExpeditionWeaponTier5Syndicate
-  - NFWeaponLightMachineGunL6
+  - WeaponLightMachineGunL6 # HardLight: NFWeaponLightMachineGunL6<WeaponLightMachineGunL6
 #  categories: [ HideSpawnMenu ]
   id: NFWeaponLightMachineGunL6Expedition
-  name: worn L6
+  name: worn L6C ROW (762x39mm) # HardLight; worn L6<worn L6C ROW (762x39mm)
 
 # Energy
 - type: entity

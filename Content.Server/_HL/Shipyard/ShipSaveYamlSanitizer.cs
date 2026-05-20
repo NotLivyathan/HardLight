@@ -133,6 +133,18 @@ public static class ShipSaveYamlSanitizer
         "VendingMachineTankDispenserEVAPOI",
         "VendingMachineVendomatPOI",
         "VendingMachineYouToolPOI",
+        // Syndicate items
+        "ClothingOuterHardsuitSyndieCommander",
+        "ClothingOuterHardsuitJuggernaut",
+        "ClothingOuterArmorRaid",
+        "ClothingHeadHelmetRaid",
+        "WeaponLauncherChinaLake",
+        "WeaponLightMachineGunL6",
+        "BorgModuleL6C",
+        // ColSec items
+        "ClothingOuterHardsuitNfsdExperimental",
+        "WeaponLauncherRocket",
+        "WeaponLauncherRiotGun",
         // Everything else
         "ContainmentField",
         "PortalBlue",
