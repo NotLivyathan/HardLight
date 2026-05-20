@@ -1,5 +1,5 @@
 - type: entity
-  parent: [ BaseMobSpecies, MobBloodstream, MobAtmosExposed, MobFlammable ]
+  parent: [ BaseMobSpecies, MobBloodstream, MobAtmosExposed, MobFlammable, BaseSiliconBrainLanguages ]
   id: BaseMobSynth
   name: Urist McSynth
   save: false

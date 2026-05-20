@@ -2,7 +2,7 @@
 # bear with me here, I am unfamiliar with EE forks.
 
 - type: entity
-  parent: BaseMobSpeciesOrganic
+  parent: [ BaseMobSpeciesOrganic, BaseSiliconBrainLanguages ] # HardLight: BaseSiliconBrainLanguages
   id: BaseMobProtogen
   name: Urist McToaster
   abstract: true
@@ -1090,7 +1090,7 @@
     - map: [ "clownedon" ]
       sprite: "Effects/creampie.rsi"
       state: "creampie_vox" # Not default
-      visible: false      
+      visible: false
   - type: DamageVisuals
     thresholds: [ 10, 30, 50, 70]
     targetLayers:
@@ -2487,12 +2487,12 @@
           sizeMaps:
             32:
               sprite: _Starlight/Mobs/Species/Avali/displacement.rsi
-              state: back  
+              state: back
         outerClothing:
           sizeMaps:
             32:
               sprite: _Starlight/Mobs/Species/Avali/displacement.rsi
-              state: outerclothing   
+              state: outerclothing
 
 #region ARACHNID ####
 

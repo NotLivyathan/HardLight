@@ -9,10 +9,10 @@
   - type: LanguageKnowledge
     speaks:
     - GalacticCommon
-    - Draconic
+    - Scratch
     understands:
     - GalacticCommon
-    - Draconic
+    - Scratch
   # Starlight-end
   - type: JumpAbility
     action: ActionResomiGravityJump
