@@ -1,3 +1,4 @@
+using System; // HardLight
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using Content.Shared.StatusIcon;
@@ -14,6 +15,8 @@ namespace Content.Client.UserInterface.RichText;
 
 public sealed class IconTag : IMarkupTag
 {
+    private static readonly Thickness IconMargin = new(0, 0, 4, 0); // HardLight
+
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
     private SpriteSystem? _spriteSystem;
@@ -32,8 +35,18 @@ public sealed class IconTag : IMarkupTag
         /* Starlight start */
         AnimatedTextureRect? animated = null;
         TextureRect? icon = null;
+        // HardLight start
+        var iconId = id.StringValue;
 
-    _prototype.TryIndex<JobIconPrototype>(id.StringValue, out var jobProto);
+        if (_cfg.GetCVar(CCVars.DisableLanguageIcons) &&
+            iconId.StartsWith("LanguageIcon", StringComparison.Ordinal))
+        {
+            control = null;
+            return false;
+        }
+        // HardLight end
+
+        _prototype.TryIndex<JobIconPrototype>(iconId, out var jobProto); // HardLight: Added iconId
 
         if (jobProto != null)
         {
@@ -50,6 +63,7 @@ public sealed class IconTag : IMarkupTag
                     anim.DisplayRect.SetWidth = 20;
                     anim.DisplayRect.SetHeight = 20;
                     anim.DisplayRect.Stretch = TextureRect.StretchMode.Scale;
+                    anim.Margin = IconMargin; // HardLight
                     anim.MouseFilter = Control.MouseFilterMode.Stop;
                     animated = anim;
                 }
@@ -62,6 +76,7 @@ public sealed class IconTag : IMarkupTag
                         SetWidth = 20,
                         SetHeight = 20,
                         Stretch = TextureRect.StretchMode.Scale,
+                        Margin = IconMargin, // HardLight
                         MouseFilter = Control.MouseFilterMode.Stop,
                     };
                 }
@@ -76,6 +91,7 @@ public sealed class IconTag : IMarkupTag
                     SetWidth = 20,
                     SetHeight = 20,
                     Stretch = TextureRect.StretchMode.Scale,
+                    Margin = IconMargin, // HardLight
                     MouseFilter = Control.MouseFilterMode.Stop,
                 };
             }

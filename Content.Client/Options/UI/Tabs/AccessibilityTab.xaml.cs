@@ -26,8 +26,8 @@ public sealed partial class AccessibilityTab : Control
         Control.AddOptionCheckBox(CCVars.AccessibilityClientCensorNudity, CensorNudityCheckBox);
 
         Control.AddOptionCheckBox(CCVars.DisableJobIconAnimation, DisableJobIconAnimationCheckBox); // 🌟Starlight🌟
+        Control.AddOptionCheckBox(CCVars.DisableLanguageIcons, DisableLanguageIconsCheckBox); // HardLight
 
         Control.Initialize();
     }
 }
-

@@ -310,9 +310,9 @@ public sealed class RadioSystem : EntitySystem
         LanguagePrototype language)
     {
         var (iconId, jobName) = GetJobIcon(source);
-        var defaultNameString = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] {name}";
+        var defaultNameString = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"]{name}"; // HardLight: Removed spaces
         var obfuscatedNameString = _language.GetLanguageIcon(language, true)
-            ? $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] [icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {name}"
+            ? $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"][icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"]{name}" // HardLight: Removed spaces
             : defaultNameString;
 
         return (defaultNameString, obfuscatedNameString);

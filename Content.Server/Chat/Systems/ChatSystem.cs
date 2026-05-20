@@ -1055,7 +1055,7 @@ public sealed partial class ChatSystem : SharedChatSystem
 
         var namestring = entityName;
         if (_language.GetLanguageIcon(language, obfuscated ?? false))
-            namestring = $"[icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {entityName}";
+            namestring = $"[icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"]{entityName}"; // HardLight: Removed spaces
 
         var fonttype = language.Speech.FontId ?? speech.FontId;
         if ((language.Speech.ObfuscationFont ?? false) && (!obfuscated ?? false))
