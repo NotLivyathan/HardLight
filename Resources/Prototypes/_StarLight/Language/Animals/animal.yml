@@ -12,6 +12,8 @@
 - type: language
   id: Mouse
   icon: LanguageIconAnimal
+  speech: # Omu
+    color: "#C4A484"
   obfuscation:
     !type:SyllableObfuscation
     minSyllables: 2

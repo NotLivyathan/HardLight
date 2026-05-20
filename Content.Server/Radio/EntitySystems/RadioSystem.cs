@@ -177,7 +177,11 @@ public sealed class RadioSystem : EntitySystem
         var originalContent = originalMessage == null // HardLight
             ? content
             : (escapeMarkup ? FormattedMessage.EscapeText(originalMessage) : originalMessage);
-        var wrappedMessage = WrapRadioMessage(messageSource, channel, name, originalContent, language, false, channelText); // HardLight
+        // HardLight-edit start
+        var selectedVerb = Loc.GetString(_random.Pick(speech.SpeechVerbStrings));
+        var (defaultNameString, obfuscatedNameString) = GetRadioNameStrings(messageSource, name, language);
+        var wrappedMessage = WrapRadioMessage(channel, originalContent, language, false, channelText, speech, selectedVerb, defaultNameString, obfuscatedNameString);
+        // HardLight-edit end
 
         // most radios are relayed to chat, so lets parse the chat message beforehand
         // HardLight-edit start
@@ -188,7 +192,7 @@ public sealed class RadioSystem : EntitySystem
             NetEntity.Invalid,
             null);
         var obfuscated = _language.ObfuscateSpeech(originalContent, language);
-        var obfuscatedWrapped = WrapRadioMessage(messageSource, channel, name, obfuscated, language, true, channelText);
+        var obfuscatedWrapped = WrapRadioMessage(channel, obfuscated, language, true, channelText, speech, selectedVerb, defaultNameString, obfuscatedNameString); // HardLight
         var obfuscatedChat = new ChatMessage(
             ChatChannel.Radio,
             obfuscated,
@@ -299,27 +303,41 @@ public sealed class RadioSystem : EntitySystem
         return (iconId, jobName);
     }
 
-    private string WrapRadioMessage(
+    // HardLight start
+    private (string DefaultNameString, string ObfuscatedNameString) GetRadioNameStrings(
         EntityUid source,
-        RadioChannelPrototype channel,
         string name,
+        LanguagePrototype language)
+    {
+        var (iconId, jobName) = GetJobIcon(source);
+        var defaultNameString = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] {name}";
+        var obfuscatedNameString = _language.GetLanguageIcon(language, true)
+            ? $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] [icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {name}"
+            : defaultNameString;
+
+        return (defaultNameString, obfuscatedNameString);
+    }
+    // HardLight end
+
+    private string WrapRadioMessage(
+        RadioChannelPrototype channel,
         string message,
         LanguagePrototype language, // Starlight
         bool obfuscated,
-        string channelText)
+        string channelText,
+        // HardLight start
+        SpeechVerbPrototype speech,
+        string verb,
+        string defaultNameString,
+        string obfuscatedNameString)
+        // HardLight end
     {
-        // TODO: code duplication with ChatSystem.WrapMessage
-        var speech = _chat.GetSpeechVerb(source, message);
         var languageColor = channel.Color;
 
         if (language.Speech.Color is { } colorOverride)
             languageColor = Color.InterpolateBetween(Color.White, colorOverride, colorOverride.A); // Changed first param to Color.White so it shows color correctly.
 
-        var (iconId, jobName) = GetJobIcon(source);
-
-        var namestring = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] {name}";
-        if (_language.GetLanguageIcon(language, obfuscated))
-            namestring = $"[icon src=\"{iconId}\" tooltip=\"{jobName}\"] [icon src=\"{language.Icon}\" tooltip=\"{language.Name}\"] {name}";
+        var namestring = obfuscated ? obfuscatedNameString : defaultNameString; // HardLight
 
         var fonttype = language.Speech.FontId ?? speech.FontId;
         if ((language.Speech.ObfuscationFont ?? false) && !obfuscated)
@@ -330,7 +348,7 @@ public sealed class RadioSystem : EntitySystem
             ("languageColor", languageColor),
             ("fontType", fonttype),
             ("fontSize", language.Speech.FontSize ?? speech.FontSize),
-            ("verb", Loc.GetString(_random.Pick(speech.SpeechVerbStrings))),
+            ("verb", verb), // HardLight
             ("channel", channelText),
             ("name", namestring),
             ("message", message));

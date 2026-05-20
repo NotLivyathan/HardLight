@@ -149,7 +149,8 @@ public sealed class TranslatorSystem : EntitySystem
         if (!TryComp<LanguageKnowledgeComponent>(ent, out var knowledge))
             return;
 
-        foreach (var translator in ent.Comp.Translators.ToArray())
+        List<EntityUid>? staleTranslators = null; // HardLight
+        foreach (var translator in ent.Comp.Translators) // HardLight: Translators.ToArray()<Translators
         {
             if (!TryComp(translator, out HandheldTranslatorComponent? translatorComp))
                 continue;
@@ -160,12 +161,23 @@ public sealed class TranslatorSystem : EntitySystem
             if (!_containers.TryGetContainingContainer(translator, out var container) ||
                 container.Owner != ent.Owner)
             {
-                ent.Comp.Translators.RemoveWhere(it => it == translator);
+                staleTranslators ??= []; // HardLight
+                staleTranslators.Add(translator); // HardLight
                 continue;
             }
 
             CopyLanguages(translatorComp, ev, knowledge);
         }
+
+        // HardLight start
+        if (staleTranslators == null)
+            return;
+
+        foreach (var staleTranslator in staleTranslators)
+        {
+            ent.Comp.Translators.RemoveWhere(it => it == staleTranslator);
+        }
+        // HardLight end
 
         Dirty(ent);
     }

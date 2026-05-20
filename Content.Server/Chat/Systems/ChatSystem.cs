@@ -570,9 +570,11 @@ public sealed partial class ChatSystem : SharedChatSystem
         || (CultureInfo.CurrentCulture.IsNeutralCulture && CultureInfo.CurrentCulture.Name == "en")); // Starlight
 
         // HardLight start
+        var wrappedClearMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language);
         var wrappedOriginalMessage = originalMessage == message
-            ? WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, message, language)
+            ? wrappedClearMessage
             : WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, originalMessage, language);
+        var wrappedLanguageObfuscatedMessage = WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, languageObfuscatedMessage, language, true);
         var obfuscatedMessage = ObfuscateMessageReadability(message);
         var originalObfuscatedMessage = originalMessage == message
             ? obfuscatedMessage
@@ -609,8 +611,12 @@ public sealed partial class ChatSystem : SharedChatSystem
                 // Scenario 1: the listener can clearly understand the message
                 result = perceivedMessage;
                 wrappedMessage = hasXenoglossy // HardLight: Added hasXenoglossy
-                    ? wrappedOriginalMessage // HardLight
-                    : WrapWhisperMessage(source, "chat-manager-entity-whisper-wrap-message", name, result, language, obfuscated);
+                    // HardLight start
+                    ? wrappedOriginalMessage
+                    : canUnderstandLanguage
+                        ? wrappedClearMessage
+                        : wrappedLanguageObfuscatedMessage;
+                    // HardLight end
             }
             else if (_examineSystem.InRangeUnOccluded(source, listener, WhisperMuffledRange))
             {
