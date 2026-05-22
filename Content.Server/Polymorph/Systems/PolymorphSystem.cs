@@ -117,13 +117,6 @@ public sealed partial class PolymorphSystem : EntitySystem
         {
             action.EntityIcon = component.Parent;
             action.UseDelay = TimeSpan.FromSeconds(component.Configuration.Delay);
-
-            if (TryComp<HLLivyathanComponent>(uid, out var hlLivyathan))
-            {
-                action.UseDelay = TimeSpan.FromSeconds(hlLivyathan.DragonMorphDoAfter);
-                action.EntityIcon = null;
-                action.Icon = new SpriteSpecifier.Rsi(new ResPath("/Textures/Mobs/Species/Skeleton/parts.rsi"), "skull_icon");
-            }
         }
     }
 
@@ -140,11 +133,7 @@ public sealed partial class PolymorphSystem : EntitySystem
     private void OnRevertPolymorphActionEvent(Entity<PolymorphedEntityComponent> ent,
         ref RevertPolymorphActionEvent args)
     {
-        if (args.Handled)
-            return;
-
         Revert((ent, ent));
-        args.Handled = true;
     }
 
     private void OnBeforeFullyEaten(Entity<PolymorphedEntityComponent> ent, ref BeforeFullyEatenEvent args)
